@@ -433,6 +433,7 @@ kbd{display:inline-block;min-width:22px;text-align:center;padding:1px 6px;margin
 
 #adminModal{z-index:85}.admPanel{max-height:94vh;overflow:auto}.admGrid{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;margin:6px 0;text-align:left}.admGrid label{font-size:13px;font-weight:700;display:flex;flex-direction:column;gap:2px}.admGrid input{width:100%;padding:6px 8px;border:2px solid #1d2340;border-radius:8px;font:inherit;font-size:15px;user-select:text;-webkit-user-select:text}
 #codeIn,#chalIn{user-select:text;-webkit-user-select:text}
+#tutSkip{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(max(18px,env(safe-area-inset-bottom)) + 84px);z-index:40;display:none;border:3px solid #1d2340;border-radius:999px;background:#fff;color:#1d2340;font-family:'Luckiest Guy',sans-serif;font-size:15px;padding:6px 16px;box-shadow:0 3px 0 #1d2340;cursor:pointer}#tutSkip.show{display:block}
 </style>
 </head>
 <body>
@@ -469,6 +470,7 @@ kbd{display:inline-block;min-width:22px;text-align:center;padding:1px 6px;margin
 <button id="replayTag">🎬 REPLAY · tap to close</button>
 <button id="pushBtn" aria-label="Push people out of the way"><span class="hw">✋</span><small>Push</small></button>
 <button id="heelyBtn" aria-label="Use Heel Wheels"><span class="hw">👟</span><b id="heelyCount">0</b><small>Wheels</small></button>
+<button id="tutSkip" onclick="skipTutorial()">Skip tutorial ⏭</button>
 <div id="tutPrompt"><div class="tutHand" id="tutHand"></div><b id="tutTitle"></b><small id="tutSub"></small></div>
 <div id="popCol"></div><div id="hudStack"><div id="hRival" class="hRival" style="display:none"></div><div id="quizBox"></div><div id="toast"></div></div>
 <div id="countdown"></div>
@@ -528,7 +530,7 @@ kbd{display:inline-block;min-width:22px;text-align:center;padding:1px 6px;margin
     <div class="setRow"><b>Battery &amp; voice</b><div class="soundRow" style="justify-content:flex-start;flex-wrap:wrap;gap:6px"><button class="chip off" id="bBattery">🔋 Battery saver</button><button class="chip" id="bVoice">📣 Announcer voice</button></div><small>Battery saver: 30 fps, low graphics, fewer crowds and particles (reloads the game).</small></div>
     <div class="setRow"><b>💾 Your save</b><small>Progress saves automatically in this browser / on this phone (device ID <b id="saveDev"></b>). To move it to another device or browser, copy your save code and load it there.</small><div class="soundRow" style="justify-content:flex-start;flex-wrap:wrap;gap:6px;margin-top:4px"><button class="chip" id="saveCopy">📋 Copy save code</button><button class="chip" id="saveFile">⬇️ Download save</button><button class="chip" id="saveLoad">⬆️ Load save code</button></div></div>
     <div class="setRow"><b>🔑 Secret codes</b><div class="frow"><input id="codeIn" maxlength="24" placeholder="Type a code" autocomplete="off" autocapitalize="characters"><button class="btn gold small" id="codeGo">Enter</button></div><small id="codeState"></small><button class="chip" id="bAdmin" style="display:none">🛠 Admin panel</button></div>
-    <div class="setRow"><b>Controls</b><button class="chip" onclick="toggleControls(true)" style="margin:4px 0">⌨️ Show all controls</button><div class="soundRow" style="justify-content:flex-start"><button class="chip off" id="bLefty">🫲 Left-handed buttons</button></div><small>Swipe anywhere, even starting on a button. Buttons only react to taps.</small></div>
+    <div class="setRow"><b>Controls</b><button class="chip" onclick="toggleControls(true)" style="margin:4px 0">⌨️ Show all controls</button><button class="chip" onclick="showScreen(null);startTutorial()" style="margin:4px 0 4px 6px">🎓 Replay tutorial</button><div class="soundRow" style="justify-content:flex-start"><button class="chip off" id="bLefty">🫲 Left-handed buttons</button></div><small>Swipe anywhere, even starting on a button. Buttons only react to taps.</small></div>
     <div class="setRow"><b>Vibration</b><div class="seg" id="vibeSeg"><button data-v="off">Off</button><button data-v="light">Light</button><button data-v="full">Full</button></div><small>Light = only crashes, bumps and pushes.</small></div>
     <div class="setRow"><b>Sound effects</b><div class="soundRow" style="justify-content:flex-start"><button class="chip" id="bSfx">🔊 Sound effects</button></div></div>
     <div class="setRow" id="cloudRow"><b>☁️ Cloud save (Google account)</b><small id="cloudState"></small>
@@ -1131,13 +1133,13 @@ for (const k in THEMES) { const t = THEMES[k]; t._fog = hex(t.fog); t._fa = hex(
 /* ---------------- LEVELS ---------------- */
 const BASE_LEVELS = [
   { name: 'Elementary School', diff: 'Easy', dcol: '#06a77d', theme: 'elem', dest: 'Art Class', laneW: 2.3, s0: 10, s1: 13, target: 900, time: 100, density: 0.36, safeObs: 0.15, gapMul: 1.25,
-    pool: [['kidline', 3], ['kid', 4], ['group', 3], ['monitor', 1], ['backpack', 3], ['cone', 2], ['trash', 2], ['banner', 2], ['carry', 1], ['tray', 2], ['volcano', 1]] },
+    pool: [['kidline', 3], ['kid', 4], ['group', 3], ['monitor', 1], ['backpack', 3], ['cone', 2], ['trash', 2], ['banner', 2], ['carry', 1], ['tray', 2], ['volcano', 1], ['bandkid', 1], ['lunchtable', 1]] },
   { name: 'Middle School', diff: 'Medium', dcol: '#118ab2', theme: 'middle', dest: 'Science Lab', laneW: 2.1, s0: 12, s1: 16, target: 1300, time: 108, density: 0.47, safeObs: 0.25, gapMul: 1.1,
-    pool: [['group', 5], ['walkers', 4], ['student', 3], ['lockerkid', 3], ['rusher', 2], ['monitor', 1], ['teacher', 1], ['backpack', 2], ['trash', 2], ['cone', 1], ['bucket', 1], ['banner', 2], ['carry', 1], ['mop', 1], ['tray', 2], ['chair', 1], ['volcano', 1]] },
+    pool: [['group', 5], ['walkers', 4], ['student', 3], ['lockerkid', 3], ['rusher', 2], ['monitor', 1], ['teacher', 1], ['backpack', 2], ['trash', 2], ['cone', 1], ['bucket', 1], ['banner', 2], ['carry', 1], ['mop', 1], ['tray', 2], ['chair', 1], ['volcano', 1], ['bandkid', 2], ['lunchtable', 1], ['paintladder', 1], ['robot', 1]] },
   { name: 'High School', diff: 'Hard', dcol: '#ef476f', theme: 'high', dest: 'Homeroom', laneW: 2.0, s0: 14, s1: 20, target: 1700, time: 112, density: 0.56, safeObs: 0.3, gapMul: 1.0,
-    pool: [['group', 5], ['walkers', 4], ['student', 3], ['lockerkid', 2], ['rusher', 2], ['teacher', 3], ['monitor', 2], ['cart', 1], ['cone', 2], ['trash', 1], ['backpack', 1], ['bucket', 1], ['carry', 2], ['poster', 1], ['banner', 1], ['mop', 1], ['tray', 1], ['chair', 1], ['avcart', 1], ['pyramid', 1]] },
+    pool: [['group', 5], ['walkers', 4], ['student', 3], ['lockerkid', 2], ['rusher', 2], ['teacher', 3], ['monitor', 2], ['cart', 1], ['cone', 2], ['trash', 1], ['backpack', 1], ['bucket', 1], ['carry', 2], ['poster', 1], ['banner', 1], ['mop', 1], ['tray', 1], ['chair', 1], ['avcart', 1], ['pyramid', 1], ['bandkid', 2], ['lunchtable', 1], ['paintladder', 2], ['robot', 2]] },
   { name: 'College Campus', diff: 'Expert', dcol: '#7b2cbf', theme: 'college', dest: 'Lecture Hall 3B', laneW: 2.2, s0: 15, s1: 23, target: 2100, time: 122, density: 0.56, safeObs: 0.3, gapMul: 1.0, cross: 'scooter', crossChance: 0.16,
-    pool: [['walkers', 4], ['group', 3], ['student', 3], ['sleepy', 3], ['rusher', 2], ['professor', 2], ['trash', 2], ['backpack', 1], ['cone', 1], ['banner', 2], ['carry', 1], ['chair', 2], ['avcart', 1]] },
+    pool: [['walkers', 4], ['group', 3], ['student', 3], ['sleepy', 3], ['rusher', 2], ['professor', 2], ['trash', 2], ['backpack', 1], ['cone', 1], ['banner', 2], ['carry', 1], ['chair', 2], ['avcart', 1], ['paintladder', 1], ['robot', 2]] },
   { name: 'After-School Athletics', diff: 'Bonus', dcol: '#ff7b00', theme: 'gym', dest: 'Track & Water Polo', laneW: 2.2, s0: 14, s1: 21, target: 1500, time: 98, density: 0.5, safeObs: 0.35, gapMul: 1.0,
     pool: [['basketball', 3], ['sprinkler', 2], ['hurdle', 3], ['banner', 2], ['coach', 2], ['group', 3], ['walkers', 2], ['pyramid', 2]] },
   { name: 'Museum Field Trip', diff: 'Trip', dcol: '#c9a227', theme: 'trip_museum', dest: 'the Dinosaur Hall', laneW: 2.1, s0: 15, s1: 23, target: 1800, time: 112, density: 0.56, safeObs: 0.3, gapMul: 1.0, count: 13, pool: [['group', 4], ['walkers', 4], ['student', 3], ['rusher', 2], ['teacher', 2], ['trash', 2], ['cone', 2], ['banner', 2], ['tray', 1], ['chair', 1], ['carry', 1], ['avcart', 1]] },
@@ -2616,6 +2618,29 @@ const KINDS = {
     init(o) { o.say = 'NO RUNNING!'; },
     build(o) { const g = new THREE.Group(); actorAt(o, g, 'teacher', 0, 0, 0); return g; },
     anim(o, t) { const mv = o.tx !== undefined && Math.abs(o.tx - o.x) > 0.05; o.acts[0].pose(mv ? 'walkFormal' : o.shout > 0 ? 'talk' : 'idle', mv ? 1.6 : 1); } },
+  // round 9 obstacles
+  bandkid: { cat: 'obs', type: 'block', h: 1.75, hw: 0.5, d: 0.6, vz: -1.1, sway: true, label: 'a marching band drummer', who: 'student', chaseLine: 'YOU MADE ME MISS A BEAT!',
+    init(o) { o.say = pick(['BOOM BOOM!', 'left, right, left!', 'band coming through!']); },
+    build(o) { const g = new THREE.Group(); actorAt(o, g, 'student', 0, 0, 0, { colors: { top: '#c1121f', pants: '#f8f9fa', hair: pick(HAIR_COLS), skin: pick(SKIN_TONES), suit: '#c1121f' } });
+      const dr = cyl(g, 0.3, 0.32, MS('#f8f9fa', 0.5, 0.1), 0, 0.95, 0.3); dr.rotation.x = Math.PI / 2; for (const z of [0.14, 0.46]) { const r = cyl(g, 0.31, 0.04, MS('#c1121f', 0.5, 0.2), 0, 0.95, z); r.rotation.x = Math.PI / 2; }
+      cyl(g, 0.12, 0.12, '#1d3557', 0, 1.88, 0); box(g, 0.06, 0.22, 0.04, '#ffd60a', 0, 2.05, 0); return g; },
+    anim(o, t) { o.acts[0].pose('walk', 1.3); } },
+  lunchtable: { cat: 'obs', type: 'low', h: 0.8, hw: 0.95, d: 0.9, label: 'a cafeteria table', who: 'tray',
+    build(o) { const g = new THREE.Group(); box(g, 1.85, 0.07, 0.8, '#5f9ea0', 0, 0.74, 0); for (const x of [-0.8, 0.8]) for (const z of [-0.32, 0.32]) cyl(g, 0.03, 0.72, '#777', x, 0.36, z);
+      for (const z of [-0.6, 0.6]) box(g, 1.85, 0.05, 0.28, '#5f9ea0', 0, 0.45, z);
+      for (let i = 0; i < 3; i++) { box(g, 0.42, 0.03, 0.3, '#e9c46a', -0.6 + i * 0.6, 0.79, i % 2 ? 0.15 : -0.15); ball(g, 0.07, pick(['#e63946', '#f1faee', '#6a994e']), -0.6 + i * 0.6, 0.84, i % 2 ? 0.15 : -0.15); }
+      box(g, 0.1, 0.2, 0.1, '#ffffff', 0.3, 0.88, -0.2); return g; } },
+  paintladder: { cat: 'obs', type: 'high', hw: 1.0, d: 0.4, label: 'a painter\'s plank', who: 'janitor', chaseLine: 'WET PAINT! Look what you did!',
+    build(o) { const g = new THREE.Group(); for (const sx of [-0.95, 0.95]) { for (const dz of [-0.25, 0.25]) { const l = box(g, 0.06, 2.0, 0.06, '#c9a26b', sx, 1.0, dz); l.rotation.x = dz > 0 ? -0.12 : 0.12; } for (let k = 0; k < 5; k++) box(g, 0.06, 0.04, 0.5, '#c9a26b', sx, 0.35 + k * 0.38, 0); }
+      box(g, 2.1, 0.08, 0.4, '#deb887', 0, 1.62, 0); texBox(g, 1.2, 0.36, 0.03, bannerTex('WET PAINT', '#ffd60a'), 'banWET PAINT#ffd60a', '#ffd60a', 0, 1.4, 0.21);
+      cyl(g, 0.12, 0.18, '#3a86ff', 0.5, 1.75, 0); cyl(g, 0.12, 0.18, '#ef476f', -0.45, 1.75, 0); return g; } },
+  robot: { cat: 'obs', type: 'block', h: 1.3, hw: 0.45, d: 0.6, vz: -2.2, label: 'the robotics club robot', who: 'robot', chaseLine: 'BEEP! INTRUDER DETECTED!',
+    init(o) { o.say = pick(['BEEP BOOP', 'MOVE, HUMAN', 'ERROR 404: LANE']); },
+    build(o) { const g = new THREE.Group(); o.spin = grp(g); box(g, 0.7, 0.6, 0.55, MS('#adb5bd', 0.35, 0.7), 0, 0.55, 0); box(g, 0.45, 0.32, 0.4, MS('#ced4da', 0.35, 0.7), 0, 1.06, 0);
+      for (const x of [-0.11, 0.11]) mesh(GEO.sph, MGlow('#00f5d4', 0.95), g, x, 1.08, 0.21, 0.06, 0.06, 0.04); cyl(g, 0.015, 0.25, '#555', 0, 1.34, 0); o.bulb = mesh(GEO.sph, MGlow('#ff006e', 0.95), g, 0, 1.48, 0, 0.05, 0.05, 0.05);
+      for (const x of [-0.38, 0.38]) for (const z of [-0.2, 0.2]) { const w = cyl(g, 0.13, 0.08, '#212529', x, 0.13, z); w.rotation.z = Math.PI / 2; }
+      box(g, 0.5, 0.06, 0.02, '#ffd60a', 0, 0.6, 0.28); return g; },
+    anim(o, t) { if (o.bulb) o.bulb.visible = Math.sin(t * 10) > 0; } },
   // Ms. Moore: a real teacher who asked to be in the game. Short, quick, and she WILL step into your lane.
   moore: { cat: 'obs', type: 'block', h: 1.5, hw: 0.4, d: 0.5, steps: true, label: 'Ms. Moore', who: 'teacher', chaseLine: "STOP!, It's the little teacher!",
     init(o) { o.say = "STOP!, It's the little teacher!"; },
@@ -3023,7 +3048,7 @@ function recordRun(score, dist) {
 const CHASE_TIME = 10;
 const chaseTime = () => Math.max(4, (charDef().perk === 'chase' ? 7 : CHASE_TIME) - (petDef().help === 'calm' ? 3 : 0));
 const chaseLayer = new THREE.Group(); scene.add(chaseLayer);
-const CHASER_ROLE = { cone: 'janitor', bucket: 'janitor', trash: 'janitor', backpack: 'student', banner: 'janitor', mop: 'janitor', basketball: 'coach', hurdle: 'coach', sprinkler: 'coach' };
+const CHASER_ROLE = { robot: 'teacher', lunchtable: 'monitor', paintladder: 'janitor', cone: 'janitor', bucket: 'janitor', trash: 'janitor', backpack: 'student', banner: 'janitor', mop: 'janitor', basketball: 'coach', hurdle: 'coach', sprinkler: 'coach' };
 const CHASER_LINE = { janitor: 'I JUST MOPPED THAT!', coach: 'GIMME 10 LAPS!', student: 'HEY! That\'s MY bag!', monitor: 'HALL PASS! NOW!' };
 function clearChase() { if (G.hunt && G.scene !== 'play') G.hunt = null;
   if (!G.chase) return;
@@ -3804,7 +3829,7 @@ const TROPHY_RW = [{ cash: 300 }, { cash: 800, gs: 1 }, { gs: 3, otok: 2 }, { gs
 const TIER_NAME = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 function trophyTier(t) { const v = t.stat(stats()) || 0; let k = 0; while (k < t.tiers.length && v >= t.tiers[k]) k++; return k; }
 function trophyClaimable() { const tc = save.trophies || {}; return TROPHIES.reduce((a, t) => a + Math.max(0, trophyTier(t) - (tc[t.id] || 0)), 0); }
-const YEARBOOK = [['moore', '👩🏾‍🏫', 'Ms. Moore'], ['group', '👯', 'Chatting Crowd'], ['walkers', '🚶', 'Hallway Walkers'], ['student', '📱', 'Texting Student'], ['rusher', '🏃', 'Late Sprinter'], ['kidline', '🧒', 'Class in Line'], ['kid', '🧒', 'Little Kid'], ['lockerkid', '🔐', 'Locker Kid'], ['teacher', '👩‍🏫', 'Strict Teacher'], ['monitor', '🦺', 'Hall Monitor'], ['cart', '🧹', 'Janitor & Cart'], ['mop', '🪣', 'Mopping Janitor'], ['carry', '🖼️', 'Poster Carrier'], ['coach', '📣', 'Coach'], ['professor', '🎓', 'Professor'], ['sleepy', '😴', 'Sleepy Student'], ['avcart', '📺', 'AV Cart Teacher'], ['pyramid', '🤸', 'Cheer Squad'], ['umbrellas', '☂️', 'Rainy Day Pair']];
+const YEARBOOK = [['bandkid', '🥁', 'Band Drummer'], ['lunchtable', '🍽️', 'Lunch Table'], ['paintladder', '🎨', 'Wet Paint'], ['robot', '🤖', 'Robotics Robot'], ['moore', '👩🏾‍🏫', 'Ms. Moore'], ['group', '👯', 'Chatting Crowd'], ['walkers', '🚶', 'Hallway Walkers'], ['student', '📱', 'Texting Student'], ['rusher', '🏃', 'Late Sprinter'], ['kidline', '🧒', 'Class in Line'], ['kid', '🧒', 'Little Kid'], ['lockerkid', '🔐', 'Locker Kid'], ['teacher', '👩‍🏫', 'Strict Teacher'], ['monitor', '🦺', 'Hall Monitor'], ['cart', '🧹', 'Janitor & Cart'], ['mop', '🪣', 'Mopping Janitor'], ['carry', '🖼️', 'Poster Carrier'], ['coach', '📣', 'Coach'], ['professor', '🎓', 'Professor'], ['sleepy', '😴', 'Sleepy Student'], ['avcart', '📺', 'AV Cart Teacher'], ['pyramid', '🤸', 'Cheer Squad'], ['umbrellas', '☂️', 'Rainy Day Pair']];
 function yearbookSeen(k) { save.yb = save.yb || {}; if (!save.yb[k] && YEARBOOK.some(y => y[0] === k)) { save.yb[k] = 1; persist(); const n = Object.keys(save.yb).length; popup('📸 Yearbook: ' + YEARBOOK.find(y => y[0] === k)[2], '#ffd60a'); if (n % 5 === 0) { grant({ gs: 1, cash: 250 }); toast('Yearbook page complete!', '+1★ +$250', 1800); } if (n === YEARBOOK.length) { grant({ gs: 10 }); toast('YEARBOOK COMPLETE!', '+10★', 2600); } } }
 function buildTrophies() {
   const box = $('trList'); box.innerHTML = ''; save.trophies = save.trophies || {};
@@ -3892,10 +3917,14 @@ const TUT_CARDS = {
   done: ['You\'re ready!', 'Missions raise your score multiplier, the daily word and login streak give free rewards, and events unlock exclusive runners. +$100 and 1 pair of Heel Wheels to start!']
 };
 function startTutorial() {
-  startRun('tutorial');
+  startRun('tutorial'); $('tutSkip').classList.add('show');
   G.tut = { i: -1, target: null, card: null, saved: false, lane: 0 };
   G.countdown = 1.0; G.lastCount = 2; clearChase();
   tutNext();
+}
+function skipTutorial() {
+  if (G.mode !== 'tutorial') return; save.tutDone = 1; persist(); $('tutCard').classList.remove('show'); $('tutPrompt').classList.remove('show'); $('tutSkip').classList.remove('show'); G.tutHold = false;
+  goMenu(); startRun('infinite'); toast('TUTORIAL SKIPPED', 'Settings → Replay tutorial any time', 1600);
 }
 function tutCard(key, then) {
   const [t, b] = TUT_CARDS[key]; G.tutHold = true;
@@ -4156,7 +4185,7 @@ G.lastQuiz = 0; G.lastShortcut = 0; G.lastLetter = -999; G.tpStart = undefined; 
   G.scene = 'play'; G.countdown = 0; G.lastCount = 0; G.intro = fromMenu && mode !== 'campaign' ? INTRO : 0; G.caught = false; clearChase(); startChase(null, { role: 'monitor', t: 3.2, warmup: true, line: 'HEY! NO RUNNING!' });
   if (mode !== 'tutorial') { if (cheatOn('flyer')) G.pw.cheat = pwTime('cheat') + 3; if (cheatOn('juiced')) G.pw.energy = pwTime('energy') + 3; }
   G.cheated = unfairCheats();
-  showScreen(null); $('popCol').innerHTML = ''; $('hud').classList.add('show'); $('heelyBtn').classList.toggle('show', true); $('pushBtn').classList.toggle('show', mode !== 'tutorial');
+  showScreen(null); $('popCol').innerHTML = ''; if (mode !== 'tutorial') $('tutSkip').classList.remove('show'); $('hud').classList.add('show'); $('heelyBtn').classList.toggle('show', true); $('pushBtn').classList.toggle('show', mode !== 'tutorial');
   if (G.fun === 'coinrush') G.timeLeft = 60;
   $('hCamp').style.visibility = mode === 'campaign' || G.fun === 'coinrush' || G.fun === 'trial' ? 'visible' : 'hidden';
   setDark(G.fun === 'dark' || (mode === 'campaign' && !!LEVELS[G.levelIdx].night));
@@ -4584,7 +4613,7 @@ function update(dt) {
             if (G.stumble > 0 || (G.chase && G.chase.boss)) { G.caught = true; crash(o, (G.chase ? G.chase.name[0].toUpperCase() + G.chase.name.slice(1) : 'They') + ' caught you!'); }
             else { breakChain(); G.tpBump = true; G.stumble = chaseTime(); G.shake = 0.25; sfx('bump'); vibrate(60); popup('BUMPED! RUN!', '#ef476f'); startChase(o); }
           } else {
-            const msgs = { pie: 'SPLAT! A pie to the face. Slide under flying pies!', door: 'A classroom door swung open right into you! Watch for the flashing light.', locker: 'BONK! A locker door popped open. Slide under next time!', tape: 'You ran into the Principal\'s caution tape!', puddle: 'SPLASH! You slipped in a puddle. Jump it!', tray: 'You slipped on a spilled lunch tray! Jump it next time!', chair: 'A runaway rolling chair took you out! Jump it!', volcano: 'You crashed into the science fair volcano. Jump over it!', walkers: 'You crashed into two students walking to class!', kidline: 'You plowed through a whole class walking in line!', lockerkid: 'You slammed into a kid at their locker!', cart: "You crashed into the janitor's cart!", teacher: 'A teacher caught you running. Detention!', professor: 'The professor caught you. Expect a pop quiz!', monitor: 'The hall monitor wrote you up!', coach: 'The coach caught you. Laps for days!', group: 'You plowed right into a group of chatting students!', kid: 'You bumped into a little kid. Off to the principal!', student: 'You ran smack into another student!', sleepy: 'You woke up a sleepy student the hard way!' };
+            const msgs = { robot: 'CLANK! The robotics club robot ran you over. Switch lanes!', pie: 'SPLAT! A pie to the face. Slide under flying pies!', door: 'A classroom door swung open right into you! Watch for the flashing light.', locker: 'BONK! A locker door popped open. Slide under next time!', tape: 'You ran into the Principal\'s caution tape!', puddle: 'SPLASH! You slipped in a puddle. Jump it!', tray: 'You slipped on a spilled lunch tray! Jump it next time!', chair: 'A runaway rolling chair took you out! Jump it!', volcano: 'You crashed into the science fair volcano. Jump over it!', walkers: 'You crashed into two students walking to class!', kidline: 'You plowed through a whole class walking in line!', lockerkid: 'You slammed into a kid at their locker!', cart: "You crashed into the janitor's cart!", teacher: 'A teacher caught you running. Detention!', professor: 'The professor caught you. Expect a pop quiz!', monitor: 'The hall monitor wrote you up!', coach: 'The coach caught you. Laps for days!', group: 'You plowed right into a group of chatting students!', kid: 'You bumped into a little kid. Off to the principal!', student: 'You ran smack into another student!', sleepy: 'You woke up a sleepy student the hard way!' };
             if (K.who === 'tray') sfx('tray');
     crash(o, msgs[K.who] || (K.type === 'high' ? 'Bonk! You ran into ' + K.label + '. Slide under next time!' : 'You tripped over ' + K.label + '. Jump next time!'));
             return;
@@ -4707,7 +4736,7 @@ function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('show'));
   curScreen = id; if (id) $(id).classList.add('show');
 }
-function goMenu() {
+function goMenu() { $('tutSkip').classList.remove('show');
   G.scene = 'menu'; G.dist = 0; G.intro = 0; G.fun = null; if (darkOn) setDark(false); G.decorSeed = 1 + Math.floor(Math.random() * 997); for (const sg of segs) sg.userData.k = null; if (menuSet) menuSet.position.set(0, 0, 0); clearObjs(); clearChase(); G.paused = false; G.tut = null; G.tutHold = false; $('heelyBtn').classList.remove('show'); $('pushBtn').classList.remove('show'); $('tutPrompt').classList.remove('show'); $('boostBar').classList.remove('show'); $('hud').classList.remove('show'); $('countdown').style.display = 'none';
   if (G.mode !== 'campaign') G.themeKey = hallPick('locations').theme;
   laneW = 2.1; setCamera(); Object.assign(P, { x: 0, y: 0, vy: 0, slide: 0, fall: 0, lane: 0 }); rebuildPlayer();
