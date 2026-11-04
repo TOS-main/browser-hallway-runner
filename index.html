@@ -421,7 +421,7 @@ body.noflash *{animation:none!important;transition:none!important}
 #ctrlModal{z-index:80}.ctrlPanel{width:min(640px,100%)!important;max-height:92vh;overflow:auto;text-align:left}
 .ctrlGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:4px 18px}.ctrlGrid h3{margin:6px 0;font-family:'Luckiest Guy',sans-serif;font-weight:400}.ctrlGrid p{margin:5px 0;font-size:15px}
 kbd{display:inline-block;min-width:22px;text-align:center;padding:1px 6px;margin:0 2px;border:2px solid #1d2340;border-bottom-width:4px;border-radius:6px;background:#fff;color:#1d2340;font:700 13px/1.4 system-ui,sans-serif}
-.ctrlChip{position:absolute;left:12px;bottom:max(12px,env(safe-area-inset-bottom));display:none;z-index:2}
+.ctrlChip{position:absolute;left:12px;top:calc(max(12px,env(safe-area-inset-top)) + 54px);display:none;z-index:2;font-size:12px;padding:4px 10px;opacity:.9}
 @media (hover:hover) and (pointer:fine){.ctrlChip{display:block}.tapPlay::after{content:'';}}
 
 .adPanel .adTop{display:flex;justify-content:space-between;align-items:center;gap:8px}.adPanel .adTop .linkBtn{font-size:13px;margin:0}
@@ -434,6 +434,9 @@ kbd{display:inline-block;min-width:22px;text-align:center;padding:1px 6px;margin
 #adminModal{z-index:85}.admPanel{max-height:94vh;overflow:auto}.admGrid{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;margin:6px 0;text-align:left}.admGrid label{font-size:13px;font-weight:700;display:flex;flex-direction:column;gap:2px}.admGrid input{width:100%;padding:6px 8px;border:2px solid #1d2340;border-radius:8px;font:inherit;font-size:15px;user-select:text;-webkit-user-select:text}
 #codeIn,#chalIn{user-select:text;-webkit-user-select:text}
 #tutSkip{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(max(18px,env(safe-area-inset-bottom)) + 84px);z-index:40;display:none;border:3px solid #1d2340;border-radius:999px;background:#fff;color:#1d2340;font-family:'Luckiest Guy',sans-serif;font-size:15px;padding:6px 16px;box-shadow:0 3px 0 #1d2340;cursor:pointer}#tutSkip.show{display:block}
+html,body{position:fixed;inset:0;height:100%;height:100dvh}
+.fsChip{left:auto!important;right:12px}.appChip{left:50%!important;transform:translateX(-50%);top:calc(max(12px,env(safe-area-inset-top)) + 200px)!important;text-decoration:none;background:#3ddc84!important;color:#0b3d1f!important;font-weight:900}
+@media (pointer:coarse){.fsChip{display:none!important}}
 </style>
 </head>
 <body>
@@ -500,7 +503,7 @@ kbd{display:inline-block;min-width:22px;text-align:center;padding:1px 6px;margin
       
     </div>
   </div>
-  <button class="chip ctrlChip" id="bCtrlMenu">⌨️ Controls (C)</button>
+  <button class="chip ctrlChip" id="bCtrlMenu">⌨️ Controls (C)</button><a class="chip ctrlChip appChip" id="bGetApp" href="https://github.com/TOS-main/browser-hallway-runner/raw/main/HallwayDash.apk" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="display:none">📱 Android app</a><button class="chip ctrlChip fsChip" id="bFull" onclick="event.stopPropagation();toggleFullscreen()">⛶ Full screen (F)</button>
   <div class="tapZone" id="tapZone"><div class="tipLine" id="mTipTxt"></div><div class="tapPlay">Tap to Play</div></div>
   <div class="mNav">
     <button class="nav" id="bMissions"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><span>Missions</span><em class="badge" id="missBadge"></em></button>
@@ -700,6 +703,7 @@ kbd{display:inline-block;min-width:22px;text-align:center;padding:1px 6px;margin
         <p><kbd>P</kbd> or <kbd>Esc</kbd> pause</p>
         <p><kbd>Space</kbd>/<kbd>Enter</kbd> or click: start a run</p>
         <p><kbd>C</kbd> show these controls</p>
+        <p><kbd>F</kbd> full screen (on the menu)</p>
       </div>
       <div><h3>👆 Touch / mouse</h3>
         <p>Swipe (or drag) left / right: switch lanes</p>
@@ -2262,7 +2266,15 @@ function resize() {
   W = window.innerWidth; H = window.innerHeight;
   renderer.setPixelRatio(Math.min(DPR, curPr)); renderer.setSize(W, H, false);
   ovCanvas.width = Math.round(W * DPR); ovCanvas.height = Math.round(H * DPR); octx.setTransform(DPR, 0, 0, DPR, 0, 0);
-  setCamera();
+  setCamera(); fitMenu();
+}
+// the start screen always fits the window (short laptop screens and small phones used to cut off the bottom bar)
+function fitMenu() {
+  const el = $('sMenu'); if (!el || !el.classList.contains('show')) return;
+  const apply = sc => Object.assign(el.style, sc >= 0.995 ? { transform: '', width: '', height: '', right: '', bottom: '', transformOrigin: '' } : { transformOrigin: '0 0', transform: 'scale(' + sc + ')', width: (window.innerWidth / sc) + 'px', height: (window.innerHeight / sc) + 'px', right: 'auto', bottom: 'auto' });
+  apply(1); let sc = 1;
+  const bottom = () => { let b = 0; for (const c of el.querySelectorAll('#sMenu > *, #mNav *, .mRow *')) { if (c.classList.contains('ctrlChip') || !c.offsetParent) continue; b = Math.max(b, c.getBoundingClientRect().bottom); } return b; };
+  for (let k = 0; k < 6; k++) { const b = bottom(), lim = window.innerHeight - 8; if (b <= lim) break; sc = Math.max(0.45, sc * lim / b); apply(sc); }
 }
 let PITCH = 0.3;
 function setCamera() {
@@ -2661,6 +2673,16 @@ const KINDS = {
       texBox(g, Math.min(w - 0.2, 1.6), 0.4, 0.02, bannerTex(o.look === 'bleach' ? 'GO TIGERS!' : 'TALENT SHOW', o.col), 'ban' + o.look + o.col, o.col, 0, H * 0.55, -R + 0.01);
       if (R) { const ang = Math.atan2(H, R), rp = box(g, w * 0.9, 0.08, Math.hypot(H, R), MS('#9aa0a6', 0.5, 0.6), 0, H / 2 - 0.04, -R / 2); rp.rotation.x = ang;
         for (let k = 1; k < 5; k++) { const st = box(g, w * 0.9, 0.03, 0.05, '#ffd60a', 0, H * k / 5 + 0.02, -R * k / 5); st.rotation.x = ang; } }
+      return g; } },
+  // a long row of cafeteria tables pushed end to end: jump up and run along the top (a bench in front works as a step)
+  tablerow: { cat: 'plat', top: 0.8, stepLen: 1.0, stepH: 0.45, label: 'a row of lunch tables',
+    build(o) { const g = new THREE.Group(), H = 0.8, w = laneW * 0.92, L = o.len, S = o.ramp ? 1.0 : 0, body = L - S;
+      const top = MS(pick(['#5f9ea0', '#e9c46a', '#8ecae6', '#f4a261']), 0.6, 0.05), leg = MS('#8a8f98', 0.4, 0.7);
+      const n = Math.max(2, Math.round(body / 2.4)), tl = body / n;
+      for (let k = 0; k < n; k++) { const zc = -(S + tl * k + tl / 2); box(g, w, 0.08, tl - 0.06, top, 0, H - 0.04, zc); box(g, w - 0.1, 0.06, 0.05, '#6c757d', 0, H - 0.11, zc - tl / 2 + 0.1);
+        for (const sx of [-1, 1]) for (const dz of [-1, 1]) cyl(g, 0.03, H - 0.08, leg, sx * (w / 2 - 0.12), (H - 0.08) / 2, zc + dz * (tl / 2 - 0.2));
+        if (Math.random() < 0.7) { const tx = rand(-w / 3, w / 3), tz = zc + rand(-tl / 3, tl / 3); box(g, 0.42, 0.03, 0.3, '#e9c46a', tx, H + 0.015, tz); ball(g, 0.06, pick(['#e63946', '#f1faee', '#6a994e', '#ffb703']), tx - 0.08, H + 0.06, tz); box(g, 0.08, 0.14, 0.08, '#ffffff', tx + 0.12, H + 0.08, tz); } }
+      if (S) { box(g, w * 0.95, 0.06, 0.34, top, 0, 0.42, -0.5); for (const sx of [-1, 1]) cyl(g, 0.025, 0.4, leg, sx * (w / 2 - 0.15), 0.2, -0.5); }
       return g; } },
   // round 9 obstacles
   bandkid: { cat: 'obs', type: 'block', h: 1.75, hw: 0.5, d: 0.6, vz: -1.1, sway: true, label: 'a marching band drummer', who: 'student', chaseLine: 'YOU MADE ME MISS A BEAT!',
@@ -3334,7 +3356,7 @@ const MISSIONS = {
   coins_total: { txt: n => `Collect ${n} coins in total`, t: [300, 700, 1200, 2000, 3500] },
   dodges: { txt: n => `Dodge past ${n} people`, t: [10, 25, 45, 70, 100] },
   heelys: { txt: n => `Ride Heel Wheels ${n} time${n > 1 ? 's' : ''}`, t: [1, 2, 3, 4, 6] },
-  platform: { txt: n => `Run on top of ${n} bleacher${n > 1 ? 's' : ''}`, t: [2, 4, 7, 10, 15] },
+  platform: { txt: n => `Run along ${n} lunch table${n > 1 ? 's' : ''}`, t: [2, 4, 7, 10, 15] },
   letters: { txt: n => `Collect ${n} daily-word letters`, t: [2, 3, 4, 5, 6] },
   tricks: { txt: n => `Land ${n} skate tricks`, t: [3, 6, 10, 15, 25] }
 };
@@ -4092,7 +4114,8 @@ const wN = () => clamp((G.weight - 0.2) / 0.8, 0, 1);
 function jumpV() { return lerp(11.2, 9.0, wN()) * (save.up.helium ? 1.1 : 1) * shoeDef().jump * (charDef().perk === 'jump' ? 1.08 : 1); }
 function onWax() { for (const o of G.objs) if (o.kind === 'wax' && o.z < PZ + 0.3 && o.z + o.len > PZ && Math.abs(o.x - P.x) < laneW * 0.6) return true; return false; }
 // height of whatever you're standing over (0 = the hallway floor, or the top / ramp of a platform)
-function platUnder(x) { for (const o of G.objs) { if (o.K.cat !== 'plat' || o.dead) continue; const rel = PZ - o.z; if (rel < 0 || rel > o.len || Math.abs(o.x - x) > laneW * 0.46) continue; const H = o.K.top; return { o, h: o.ramp && rel < RAMP_LEN ? H * rel / RAMP_LEN : H }; } return null; }
+function platH(o, rel) { const K = o.K; if (!o.ramp) return K.top; if (K.stepLen) return rel < K.stepLen ? K.stepH : K.top; return rel < RAMP_LEN ? K.top * clamp(rel / RAMP_LEN, 0, 1) : K.top; }
+function platUnder(x) { for (const o of G.objs) { if (o.K.cat !== 'plat' || o.dead) continue; const rel = PZ - o.z; if (rel < 0 || rel > o.len || Math.abs(o.x - x) > laneW * 0.46) continue; return { o, h: platH(o, rel) }; } return null; }
 function floorAt(x) { const u = platUnder(x); return u ? u.h : 0; }
 function laneSpeed() { return (G.waxed ? 0.35 : 1) * laneW * lerp(11, 5.2, wN()) * shoeDef().lane * (charDef().perk === 'lanes' ? 1.2 : 1); }
 function slideDur() { return lerp(0.5, 0.95, wN()) * shoeDef().slide; }
@@ -4107,7 +4130,7 @@ function addObj(kind, lane, z, extra) {
   const K = KINDS[kind];
   if (K.cat === 'pick' && lane !== undefined && !(extra && extra.x !== undefined) && hidesSomething(lane, z, (extra && extra.y) || 0)) return null;
   if (smallObs(K) && G.mode !== 'tutorial') for (let i = G.objs.length - 1; i >= 0; i--) { const q = G.objs[i]; if (q.K.cat === 'pick' && Math.abs(q.x - lane * laneW) < 0.9 && q.z < z + 0.5 && z - q.z < 11 && q.y < (K.h || 0.8) + 0.9) killObj(i); }
-  if (K.cat === 'pick' && G.plat && G.objs.includes(G.plat) && lane === G.plat.lane && z > G.plat.z - 0.3 && z < G.plat.z + G.plat.len && !(extra && extra.x !== undefined)) { const P2 = G.plat, rel = z - P2.z, top = P2.ramp && rel < RAMP_LEN ? KINDS.riser.top * Math.max(0, rel) / RAMP_LEN : KINDS.riser.top; extra = Object.assign({}, extra || {}); extra.y = Math.max(extra.y || 0, top + ((extra.y || 0.6) > 1.5 ? 0.6 : (extra.y || 0.6))); }
+  if (K.cat === 'pick' && G.plat && G.objs.includes(G.plat) && lane === G.plat.lane && z > G.plat.z - 0.3 && z < G.plat.z + G.plat.len && !(extra && extra.x !== undefined)) { const P2 = G.plat, rel = z - P2.z, top = platH(P2, Math.max(0, rel)); extra = Object.assign({}, extra || {}); extra.y = Math.max(extra.y || 0, top + ((extra.y || 0.6) > 1.5 ? 0.6 : (extra.y || 0.6))); }
   const o = Object.assign({ kind, K, lane, x: lane * laneW, z, y: 0, row: G.rowId, seed: Math.random(), t: rand(0, 5), shout: 0 }, extra || {});
   if (K.init) K.init(o);
   const seeded = Math.random; if (G.fixed) Math.random = REAL_RANDOM; // looks are random for everyone; only the layout follows the weekly seed
@@ -4187,9 +4210,9 @@ function spawnRowInner(z) {
   let plLane = pl && z > pl.z - 3 && z < pl.z + pl.len + 8 ? pl.lane : null;
   if (!pl && G.mode !== 'tutorial' && G.fun !== 'sled' && G.fun !== 'coinrush' && !G.quiz && G.dist > 220 && G.dist - (G.lastPlat || 0) > 260 && Math.random() < 0.22) {
     const opts = [-1, 0, 1].filter(l => l !== scLane); const L = pick(opts);
-    if (L !== undefined) { const len = Math.round(rand(14, 24)), ramp = Math.random() < 0.75 || L === safe; const o3 = addObj('riser', L, z + 0.5, { len, ramp }); G.plat = o3; G.lastPlat = G.dist; plLane = L;
-      for (let zz = o3.z + (ramp ? 1.2 : 1.6); zz < o3.z + len - 0.8; zz += 1.5) addObj(Math.random() < 0.08 ? 'bill' : 'coin', L, zz, { y: (ramp && zz - o3.z < RAMP_LEN ? KINDS.riser.top * (zz - o3.z) / RAMP_LEN : KINDS.riser.top) + 0.6, x: L * laneW });
-      if (Math.random() < 0.25) addObj(pick(['pass', 'cheat', 'energy']), L, o3.z + len * 0.7, { y: KINDS.riser.top + 1.0, x: L * laneW }); }
+    if (L !== undefined) { const len = Math.round(rand(10, 20)), ramp = Math.random() < 0.6 || L === safe; const o3 = addObj('tablerow', L, z + 0.5, { len, ramp }); G.plat = o3; G.lastPlat = G.dist; plLane = L;
+      for (let zz = o3.z + 1.4; zz < o3.z + len - 0.8; zz += 1.5) addObj(Math.random() < 0.08 ? 'bill' : 'coin', L, zz, { y: platH(o3, zz - o3.z) + 0.6, x: L * laneW });
+      if (Math.random() < 0.25) addObj(pick(['pass', 'cheat', 'energy']), L, o3.z + len * 0.7, { y: o3.K.top + 1.0, x: L * laneW }); }
   }
   const skipL = l => l === scLane || l === plLane;
   // more stuff on harder difficulties; the safe-lane rule below still guarantees a path every row
@@ -4513,10 +4536,11 @@ window.addEventListener('keydown', e => {
   initAudio();
   if (e.target && e.target.tagName === 'INPUT') return;
   if (e.code === 'KeyE' || e.code === 'KeyH') { useHeelys(); return; }
-  if (e.code === 'KeyQ' || e.code === 'KeyF') { doPush(); return; }
+  if ((e.code === 'KeyQ' || e.code === 'KeyF') && G.scene === 'play') { doPush(); return; }
   if (e.code === 'KeyX') { doFinisher(); return; }
   if (G.scene === 'menu' && curScreen === 'sMenu' && (e.code === 'Space' || e.code === 'Enter') && !document.querySelector('.modal.show')) { e.preventDefault(); $('tapZone').click(); return; }
   if (e.code === 'KeyC' && !e.ctrlKey && !e.metaKey) { toggleControls(); return; }
+  if (e.code === 'KeyF' && G.scene !== 'play') { toggleFullscreen(); return; }
   if (e.code === 'KeyP' || e.code === 'Escape') { if (G.scene === 'play') togglePause(); e.preventDefault(); return; }
   const a = KEYMAP[e.code]; if (a) { e.preventDefault(); if (!e.repeat) act(a); }
 });
@@ -4537,6 +4561,17 @@ window.addEventListener('mouseup', e => { if (!mdown) return; const dx = e.clien
 // leaving the tab/window pauses the run. On the phone app it counts you back in by itself (3-2-1); in a browser it
 // stays on the pause screen until you press Resume, so you never come back to a crash
 const IS_WEB = !window.HallwayAds && !/; wv\)/.test(navigator.userAgent);
+// browser: track the real visible size (mobile address bars), and offer full screen
+if (window.visualViewport) visualViewport.addEventListener('resize', () => resize());
+window.addEventListener('orientationchange', () => setTimeout(resize, 250));
+function goFullscreen() { const d = document.documentElement, f = d.requestFullscreen || d.webkitRequestFullscreen; if (!f || document.fullscreenElement || document.webkitFullscreenElement) return; try { const r = f.call(d, { navigationUI: 'hide' }); if (r && r.catch) r.catch(() => {}); } catch (e) {} try { screen.orientation && screen.orientation.lock && screen.orientation.lock('portrait').catch(() => {}); } catch (e) {} }
+function toggleFullscreen() { if (document.fullscreenElement || document.webkitFullscreenElement) { (document.exitFullscreen || document.webkitExitFullscreen).call(document); } else goFullscreen(); }
+document.addEventListener('fullscreenchange', () => setTimeout(resize, 100));
+// on the website, Android phones get a link to the app
+if (IS_WEB && /Android/i.test(navigator.userAgent) && location.protocol.startsWith('http')) { const ga = document.getElementById('bGetApp'); if (ga) ga.style.display = 'block'; }
+// phones in a browser: the first tap to play also goes full screen (no address bar, nothing to scroll)
+if (IS_WEB && matchMedia('(pointer:coarse)').matches) window.addEventListener('pointerup', function fsOnce() { if (save.webFull !== false) goFullscreen(); window.removeEventListener('pointerup', fsOnce); });
+document.addEventListener('wheel', e => { if (!e.target.closest('.panel,.mPanel,.board,.ctrlPanel,.admPanel')) e.preventDefault(); }, { passive: false });
 function autoPause() { if (G.scene === 'play' && !G.paused && !G.reviving && !G.dying && !G.photo) { togglePause(true); G.autoPaused = !IS_WEB; } }
 document.addEventListener('visibilitychange', () => { if (G.adOpen) return; if (document.hidden) { autoPause(); appHidden(); } else { appShown(); graceResume(); } });
 window.addEventListener('pagehide', appHidden);
@@ -4634,8 +4669,8 @@ function update(dt) {
     if (P.y <= P.fl) { P.y = P.fl; P.dj = false; P.vy = 0; sfx('land'); if (G.trick) landTrick(); emit(P.x, 0.1, 0.2, 6, '#cfc6b4', 1.8, 0.4, 0.25, 2, false, true); if (P.slideQ) { P.slideQ = false; P.slide = slideDur(); sfx('slide'); } }
   }
   else if (P.y < P.fl) P.y = P.fl; // walking up a ramp
-  if (P.fl > 0.5) G.highAir = true; else if (P.y <= 0.01) G.highAir = false;
-  if (P.fl > 1.3 && P.y >= P.fl - 0.01 && !G.onPlat) { G.onPlat = true; mission('platform', 1); popup('ON TOP!', '#7bdff2'); addChain(1); } else if (P.fl < 0.5) G.onPlat = false;
+  if (P.fl > 0.5) G.highAir = true; else if (P.y <= 0.01) G.highAir = false; // jumped from a table
+  if (P.fl > 0.7 && P.y >= P.fl - 0.01 && !G.onPlat) { G.onPlat = true; mission('platform', 1); popup('TABLE RUN!', '#7bdff2'); addChain(1); } else if (P.fl < 0.4) G.onPlat = false;
   if (P.slide > 0) P.slide = Math.max(0, P.slide - dt);
   { const w = onWax(); if (w && !G.waxed) { popup('SLIPPERY!', '#bfe9ff'); sfx('slide'); } G.waxed = w; }
   tpUpdate(); petHelp(dt);
@@ -4699,12 +4734,12 @@ function update(dt) {
     } else if (K.cat === 'plat') {
       const rel = PZ - o.z, ax = Math.abs(o.x - P.x);
       if (rel > -0.35 && rel < o.len - 0.2 && ax < laneW * 0.46 + 0.28 && !(G.pw.cheat > 0)) {
-        const need = o.ramp && rel < RAMP_LEN ? K.top * clamp(rel / RAMP_LEN, 0, 1) : K.top;
+        const need = platH(o, Math.max(0, rel));
         if (P.y < need - 0.6) {
           const moving = Math.abs(P.x - P.lane * laneW) > 0.2 && P.fromLane !== P.lane && ax > laneW * 0.3;
           if (moving) { P.lane = P.fromLane; G.shake = 0.2; sfx('bump'); vibrate(40); popup('BLOCKED!', '#ef476f'); breakChain(); } // bounced off its side
           else if (inv) { P.y = need; P.vy = 0; }
-          else { crash(o, 'You ran into ' + K.label + '. Run up the ramp, or jump on!'); return; }
+          else { crash(o, 'You ran into ' + K.label + '. ' + (K.stepLen ? 'Jump up onto it!' : 'Run up the ramp, or jump on!')); return; }
         }
       }
     } else if (K.cat === 'obs' && !o.ignore && !(G.pw.cheat > 0 && P.y > 1.0)) {
@@ -4713,7 +4748,10 @@ function update(dt) {
         let hit = false;
         if (K.type === 'low') hit = P.y < K.h - 0.12;
         else if (K.type === 'high') hit = !sliding || P.y > 0.2;
-        else hit = !(G.highAir && P.y > (K.h || 1.8) - 0.1); // jumping off a platform can clear people
+        else hit = !(G.highAir && P.y > (K.h || 1.8) - 0.1); // jumping off a table can clear people
+        if (hit && K.type === 'block' && o.acts && o.acts.length && P.y > (K.h || 1.75) - 0.45 && (P.vy <= 0 || P.y > (K.h || 1.75) - 0.1) && !o.hopped) { // HEAD HOP: land on their head and bounce off
+          o.hopped = true; o.ignore = true; P.vy = jumpV() * 0.82; P.dj = false; G.highAir = true; o.shout = 1.4; o.say = pick(['MY HEAD!', 'Hey!!', 'OW!', 'Not the hair!']);
+          for (const a2 of o.acts) a2.pose('hit', 1.2, 0.08); G.score += 75 * scoreMult(); addChain(2); sfx('jump'); buzz && buzz('push'); popup('HEAD HOP! +75', '#7bdff2'); mission('dodges', 1); continue; }
         if (hit) {
           if (inv) { o.flying = true; o.fx = 0; o.fy = 0; o.fvx = (o.x >= P.x ? 1 : -1) * rand(8, 14); o.fvy = rand(8, 12); o.rot = 0; G.score += 50; G.smashed++; sfx('smash'); emit(o.x, 1, -(o.z - PZ), 18, pick(['#ffd60a', '#ef476f', '#06d6a0']), 6, 0.6, 0.35, 8, true, true); popup('+50', '#ffd60a'); G.shake = 0.15; continue; }
           const tutSide = G.tut && TUT_STEPS[G.tut.i] && TUT_STEPS[G.tut.i].side && o === G.tut.target;
@@ -4849,6 +4887,7 @@ let curScreen = 'sMenu';
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('show'));
   curScreen = id; if (id) $(id).classList.add('show');
+  if (id === 'sMenu') requestAnimationFrame(fitMenu);
 }
 function goMenu() { $('tutSkip').classList.remove('show');
   G.scene = 'menu'; G.dist = 0; G.intro = 0; G.fun = null; if (darkOn) setDark(false); G.decorSeed = 1 + Math.floor(Math.random() * 997); for (const sg of segs) sg.userData.k = null; if (menuSet) menuSet.position.set(0, 0, 0); clearObjs(); clearChase(); G.paused = false; G.tut = null; G.tutHold = false; $('heelyBtn').classList.remove('show'); $('pushBtn').classList.remove('show'); $('tutPrompt').classList.remove('show'); $('boostBar').classList.remove('show'); $('hud').classList.remove('show'); $('countdown').style.display = 'none';
@@ -4856,7 +4895,7 @@ function goMenu() { $('tutSkip').classList.remove('show');
   laneW = 2.1; setCamera(); Object.assign(P, { x: 0, y: 0, vy: 0, slide: 0, fall: 0, lane: 0 }); rebuildPlayer();
   refreshMenu(); showScreen('sMenu');
 }
-const TIPS = ['Swipe UP twice for a SPRINT burst!', 'Duck into a SHORTCUT classroom for free coins!', 'Tap PUSH to shove people out of your lane!', 'Swipe ↓ to slide under banners!', 'Grab a Hall Pass to go invincible!', 'Lighter backpack = higher jumps!', 'Claim your FREE reward daily!', 'Beat Maya on the leaderboard!', 'Bump something and it chases you for 10s!', 'Slam the lockers and their owner comes after you!'];
+const TIPS = ['Time your jump to land on someone\'s head: HEAD HOP!', 'Jump onto a row of lunch tables and run along the top!', 'Swipe UP twice for a SPRINT burst!', 'Duck into a SHORTCUT classroom for free coins!', 'Tap PUSH to shove people out of your lane!', 'Swipe ↓ to slide under banners!', 'Grab a Hall Pass to go invincible!', 'Lighter backpack = higher jumps!', 'Claim your FREE reward daily!', 'Beat Maya on the leaderboard!', 'Bump something and it chases you for 10s!', 'Slam the lockers and their owner comes after you!'];
 function refreshMenu() {
   $('mBank').textContent = save.bank.toLocaleString(); $('mStars').textContent = (save.gs || 0).toLocaleString();
   ensureMissions(); const md = save.missions.filter(m => m.done).length; $('missBadge').textContent = missionsAllDone() ? '!' : md + '/3'; $('missBadge').classList.add('on');
@@ -5247,6 +5286,7 @@ try { const away = AWAY_MS; if (save.tutDone && away > 3 * 86400000) setTimeout(
 try { G.themeKey = hallPick('locations').theme; } catch (e) {}
 loadCharacters().then(() => {
   rebuildPlayer(); refreshMenu(); try { initWebAds(); } catch (e) {}
+  fitMenu(); setInterval(() => { if (curScreen === 'sMenu' || $('sMenu').classList.contains('show')) fitMenu(); }, 1200);
   if (tourOn() && save.tutDone && save.tourSeen !== tourWeek()) { save.tourSeen = tourWeek(); persist(); setTimeout(() => toast('🌍 WORLD TOUR: ' + tourStop().name.toUpperCase(), tourStop().flag + ' New school this week · run 1000m for a Tour Stamp', 3200), 1200); }
   const ld = $('loading'); if (ld) { ld.classList.add('done'); setTimeout(() => ld.remove(), 500); }
   requestAnimationFrame(frame);
