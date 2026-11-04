@@ -531,6 +531,7 @@ kbd{display:inline-block;min-width:22px;text-align:center;padding:1px 6px;margin
     <div class="setRow"><b>💾 Your save</b><small>Progress saves automatically in this browser / on this phone (device ID <b id="saveDev"></b>). To move it to another device or browser, copy your save code and load it there.</small><div class="soundRow" style="justify-content:flex-start;flex-wrap:wrap;gap:6px;margin-top:4px"><button class="chip" id="saveCopy">📋 Copy save code</button><button class="chip" id="saveFile">⬇️ Download save</button><button class="chip" id="saveLoad">⬆️ Load save code</button></div></div>
     <div class="setRow"><b>🔑 Secret codes</b><div class="frow"><input id="codeIn" maxlength="24" placeholder="Type a code" autocomplete="off" autocapitalize="characters"><button class="btn gold small" id="codeGo">Enter</button></div><small id="codeState"></small><button class="chip" id="bAdmin" style="display:none">🛠 Admin panel</button></div>
     <div class="setRow"><b>Controls</b><button class="chip" onclick="toggleControls(true)" style="margin:4px 0">⌨️ Show all controls</button><button class="chip" onclick="showScreen(null);startTutorial()" style="margin:4px 0 4px 6px">🎓 Replay tutorial</button><div class="soundRow" style="justify-content:flex-start"><button class="chip off" id="bLefty">🫲 Left-handed buttons</button></div><small>Swipe anywhere, even starting on a button. Buttons only react to taps.</small></div>
+    <div class="setRow" id="remindRow"><b>🔔 Daily reminder</b><div class="soundRow" style="justify-content:flex-start"><button class="chip" id="bRemind">🔔 Remind me once a day</button></div><small>Phone app only. One notification a day when your free spin is ready, skipped if you already played.</small></div>
     <div class="setRow"><b>Vibration</b><div class="seg" id="vibeSeg"><button data-v="off">Off</button><button data-v="light">Light</button><button data-v="full">Full</button></div><small>Light = only crashes, bumps and pushes.</small></div>
     <div class="setRow"><b>Sound effects</b><div class="soundRow" style="justify-content:flex-start"><button class="chip" id="bSfx">🔊 Sound effects</button></div></div>
     <div class="setRow" id="cloudRow"><b>☁️ Cloud save (Google account)</b><small id="cloudState"></small>
@@ -574,7 +575,7 @@ kbd{display:inline-block;min-width:22px;text-align:center;padding:1px 6px;margin
     <div class="topbar"><h2>Locker Room</h2><span class="pills"><span class="bankPill" id="sBank">$0</span><span class="bankPill starPill" id="sStars">★ 0</span></span></div>
     <canvas id="preview" width="300" height="300"></canvas>
     <div class="statline"><span>Backpack load: <span class="meter"><i id="pW"></i></span> <span id="pWt">100%</span></span></div>
-    <div class="tabs"><button class="tab on" data-tab="char">Runners</button><button class="tab" data-tab="inv">My Locker</button><button class="tab" data-tab="up">Upgrades</button><button class="tab" data-tab="pet">Sidekicks</button><button class="tab" data-tab="boost">Boosts</button><button class="tab" data-tab="pack">Packs</button><button class="tab" data-tab="hat">Hats</button><button class="tab" data-tab="plane">Planes</button><button class="tab" data-tab="shoe">Shoes</button><button class="tab" data-tab="hall">Hallway</button></div>
+    <div class="tabs"><button class="tab on" data-tab="char">Runners</button><button class="tab" data-tab="inv">My Locker</button><button class="tab" data-tab="up">Upgrades</button><button class="tab" data-tab="pet">Sidekicks</button><button class="tab" data-tab="boost">Boosts</button><button class="tab" data-tab="pack">Packs</button><button class="tab" data-tab="hat">Hats</button><button class="tab" data-tab="plane">Planes</button><button class="tab" data-tab="shoe">Shoes</button><button class="tab" data-tab="wheel">Wheels</button><button class="tab" data-tab="hall">Hallway</button></div>
     <div class="bagStyles" id="bagStyles"></div>
     <div class="hallCats" id="hallCats"><button data-hc="locations">Location</button><button data-hc="lockers">Lockers</button><button data-hc="banners">Banners</button><button data-hc="floors">Floors</button><button data-hc="lights">Lights</button></div>
     <div class="items" id="shopItems"></div>
@@ -802,7 +803,7 @@ kbd{display:inline-block;min-width:22px;text-align:center;padding:1px 6px;margin
   <div class="mPanel starter">
     <small class="ribbon">ONE-TIME OFFER</small>
     <h2>Starter Pack</h2>
-    <div class="stGrid"><div><b>$12,000</b><small>Cash</small></div><div><b>⭐</b><small>Best value, one time</small></div><div><b>👟 5</b><small>Heel Wheels</small></div><div><b>👕 15</b><small>Outfit Tokens</small></div></div>
+    <div class="stGrid"><div><b>$12,000</b><small>Cash</small></div><div><b>🚫</b><small>No ads between runs</small></div><div><b>👟 5</b><small>Heel Wheels</small></div><div><b>👕 15</b><small>Outfit Tokens</small></div></div>
     <button class="btn gold" id="stBuy"><span id="stPrice">Buy</span></button>
     <button class="linkBtn" id="stClose">No thanks</button>
   </div>
@@ -843,7 +844,7 @@ kbd{display:inline-block;min-width:22px;text-align:center;padding:1px 6px;margin
 <!-- PLACEHOLDER AD (web only; the Android app shows real AdMob ads) -->
 <div class="modal" id="adModal">
   <div class="mPanel adPanel">
-    <div class="adTop"><small>Ad · reward in <b id="adLeft">5</b>s</small><button class="linkBtn" id="adClose">Skip (no reward) ✕</button></div>
+    <div class="adTop"><small>Ad · <b id="adLeft">5</b>s</small><button class="linkBtn" id="adClose">Skip (no reward) ✕</button></div>
     <div class="adFake" id="adCard"><div class="adIco" id="adIco">🛷</div><b id="adHead">Snow Day sledding!</b><span id="adSub">Try it in Modes</span></div>
     <div class="adBar"><i id="adBar"></i></div>
     <button class="btn green" id="adClaim" disabled>Watch 5 seconds…</button>
@@ -1027,24 +1028,24 @@ const SHOP = {
     { id: 'sporty', name: 'Sporty', key: 'W_Casual', price: 0, colors: { top: '#ffffff', pants: '#118ab2', hair: '#4a2e16', skin: '#c68642' }, perk: 'jump', desc: 'Perk: jumps 8% higher.' },
     { id: 'skater', name: 'Skater', key: 'M_Casual2', price: 400, colors: { top: '#2ec4b6', pants: '#264653', hair: '#141414', skin: '#8d5524' }, perk: 'heelys', desc: 'Perk: Heel Wheels last 50% longer.' },
     { id: 'beach', name: 'Summer School', key: 'M_Beach', price: 600, colors: { top: '#ffd166', pants: '#118ab2', hair: '#a55728', skin: '#f6d0b1' }, perk: 'magnet', desc: 'Perk: Juice Box magnet lasts 3s longer.' },
-    { id: 'punk', name: 'Punk Rocker', key: 'M_Punk', price: 6, cur: 'gs', colors: { pants: '#2b2d42', top: '#1b1b1b', skin: '#eac09a' }, perk: 'pass', desc: 'Perk: starts every run with a 3s Hall Pass.' },
-    { id: 'rocker', name: 'Rocker Girl', key: 'W_Punk', price: 6, cur: 'gs', colors: { top: '#ff006e', hair: '#141414', skin: '#a0673c' }, perk: 'coins', desc: 'Perk: +10% coins.' },
-    { id: 'prez', name: 'Class President', key: 'W_Formal', price: 12, cur: 'gs', colors: { top: '#3a86ff', hair: '#c0392b', skin: '#f6d0b1' }, perk: 'mult', desc: 'Perk: +1 score multiplier.' },
+    { id: 'punk', name: 'Punk Rocker', key: 'M_Punk', price: 6, cur: 'gs', colors: { pants: '#2b2d42', top: '#1b1b1b', skin: '#eac09a' }, perk: 'pass', desc: 'Perk: starts every run with a 3s Hall Pass. · ABILITY: Double jump (swipe up again in the air)', ab: 'djump' },
+    { id: 'rocker', name: 'Rocker Girl', key: 'W_Punk', price: 6, cur: 'gs', colors: { top: '#ff006e', hair: '#141414', skin: '#a0673c' }, perk: 'coins', desc: 'Perk: +10% coins. · ABILITY: Coin magnet pulls coins from the next lanes', ab: 'magnet' },
+    { id: 'prez', name: 'Class President', key: 'W_Formal', price: 12, cur: 'gs', colors: { top: '#3a86ff', hair: '#c0392b', skin: '#f6d0b1' }, perk: 'mult', desc: 'Perk: +1 score multiplier. · ABILITY: Starts every run with a shield that blocks one crash', ab: 'shield' },
     { id: 'farm', name: 'Band Kid', key: 'M_Casual', price: 900, colors: { top: '#7b2cbf', pants: '#1b1f3b', hair: '#6b3e1e', skin: '#e0ac69' }, perk: 'weight', desc: 'Perk: backpack starts 15% lighter.' },
     { id: 'cadet', name: 'Track Star', key: 'W_Casual', price: 1200, colors: { top: '#ffbe0b', pants: '#e63946', hair: '#141414', skin: '#8d5524' }, perk: 'lanes', desc: 'Perk: 20% faster lane switching.' },
     { id: 'explorer', name: 'Science Fair Champ', key: 'M_Casual2', price: 1500, colors: { top: '#2a9d8f', pants: '#3d405b', hair: '#d4a373', skin: '#f6d0b1' }, perk: 'stars', desc: 'Perk: Gold Stars show up 60% more often.' },
     { id: 'scout', name: 'Bookworm', key: 'W_Formal', price: 1500, colors: { top: '#6a994e', hair: '#5a3a22', skin: '#c68642' }, perk: 'letters', desc: 'Perk: daily-word letters show up twice as often.' },
-    { id: 'robot', name: 'Robotics Captain', key: 'W_Punk', price: 15, cur: 'gs', colors: { top: '#00b4d8', hair: '#3a0ca3', skin: '#f1c27d' }, perk: 'pass2', desc: 'Perk: Hall Pass lasts 2s longer.' },
-    { id: 'astro', name: 'Space Club', key: 'M_Casual', price: 20, cur: 'gs', colors: { top: '#14213d', pants: '#fca311', hair: '#141414', skin: '#a0673c' }, perk: 'chase', desc: 'Perk: chases only last 7 seconds.' },
+    { id: 'robot', name: 'Robotics Captain', key: 'W_Punk', price: 15, cur: 'gs', colors: { top: '#00b4d8', hair: '#3a0ca3', skin: '#f1c27d' }, perk: 'pass2', desc: 'Perk: Hall Pass lasts 2s longer. · ABILITY: Glides: falls slowly after a jump', ab: 'glide' },
+    { id: 'astro', name: 'Space Club', key: 'M_Casual', price: 20, cur: 'gs', colors: { top: '#14213d', pants: '#fca311', hair: '#141414', skin: '#a0673c' }, perk: 'chase', desc: 'Perk: chases only last 7 seconds. · ABILITY: Double jump (swipe up again in the air)', ab: 'djump' },
     { id: 'spooky', name: 'Drama Club', key: 'W_Punk', event: 'halloween', colors: { top: '#ff7b00', hair: '#141414', skin: '#f6d0b1' }, perk: 'tokens', desc: 'Halloween event exclusive. Perk: event tokens count double.' },
     { id: 'snowday', name: 'Snow Day', key: 'W_Casual', event: 'snow', colors: { top: '#dff4ff', pants: '#4d96ff', hair: '#f4f4f4', skin: '#f6d0b1' }, perk: 'cheat', desc: 'Snow Day event exclusive. Perk: Paper Plane flights last 3s longer.' },
-    { id: 'goldhood', name: 'Golden Hoodie', key: 'M_Casual', pass: 30, colors: { top: '#ffcc33', pants: '#1b1f3b', hair: '#141414', skin: '#c68642' }, perk: 'mult', desc: 'School Year Pass reward (tier 30). Perk: +1 score multiplier.' },
-    { id: 'mascot', name: 'Team Mascot', key: 'M_Beach', weekly: 0, price: 12, cur: 'gs', colors: { top: '#ffb703', pants: '#023047', hair: '#6b3e1e', skin: '#c68642' }, perk: 'chase', desc: 'Weekly runner. Perk: chases only last 7 seconds.' },
+    { id: 'goldhood', name: 'Golden Hoodie', key: 'M_Casual', pass: 30, colors: { top: '#ffcc33', pants: '#1b1f3b', hair: '#141414', skin: '#c68642' }, perk: 'mult', desc: 'School Year Pass reward (tier 30). Perk: +1 score multiplier. · ABILITY: Starts every run with a shield that blocks one crash', ab: 'shield' },
+    { id: 'mascot', name: 'Team Mascot', key: 'M_Beach', weekly: 0, price: 12, cur: 'gs', colors: { top: '#ffb703', pants: '#023047', hair: '#6b3e1e', skin: '#c68642' }, perk: 'chase', desc: 'Weekly runner. Perk: chases only last 7 seconds. · ABILITY: Glides: falls slowly after a jump', ab: 'glide' },
     { id: 'exchange', name: 'Exchange Student', key: 'W_Casual', weekly: 1, price: 1500, colors: { top: '#2a9d8f', pants: '#264653', hair: '#141414', skin: '#f1c27d' }, perk: 'coins', desc: 'Weekly runner. Perk: +10% coins.' },
-    { id: 'valedict', name: 'Valedictorian', key: 'W_Suit', weekly: 2, price: 15, cur: 'gs', colors: { suit: '#1d3557', hair: '#5a3a22', skin: '#8d5524' }, perk: 'mult', desc: 'Weekly runner. Perk: +1 score multiplier.' },
+    { id: 'valedict', name: 'Valedictorian', key: 'W_Suit', weekly: 2, price: 15, cur: 'gs', colors: { suit: '#1d3557', hair: '#5a3a22', skin: '#8d5524' }, perk: 'mult', desc: 'Weekly runner. Perk: +1 score multiplier. · ABILITY: Starts every run with a shield that blocks one crash', ab: 'shield' },
     { id: 'skatepro', name: 'Skate Pro', key: 'M_Punk', weekly: 3, price: 2000, colors: { top: '#3a86ff', pants: '#1b1b1b', skin: '#e0ac69' }, perk: 'heelys', desc: 'Weekly runner. Perk: Heel Wheels last 50% longer.' },
     { id: 'lunchlegend', name: 'Lunch Line Legend', key: 'M_Casual2', weekly: 4, price: 1200, colors: { top: '#ff7b00', pants: '#3d405b', hair: '#d4a373', skin: '#f6d0b1' }, perk: 'magnet', desc: 'Weekly runner. Perk: Juice Box magnet lasts 3s longer.' },
-    { id: 'artkid', name: 'Art Kid', key: 'W_Punk', weekly: 5, price: 10, cur: 'gs', colors: { top: '#8338ec', hair: '#ff006e', skin: '#a0673c' }, perk: 'letters', desc: 'Weekly runner. Perk: daily-word letters show up twice as often.' },
+    { id: 'artkid', name: 'Art Kid', key: 'W_Punk', weekly: 5, price: 10, cur: 'gs', colors: { top: '#8338ec', hair: '#ff006e', skin: '#a0673c' }, perk: 'letters', desc: 'Weekly runner. Perk: daily-word letters show up twice as often. · ABILITY: Coin magnet pulls coins from the next lanes', ab: 'magnet' },
     { id: 'marshal', name: 'Fire Marshal', key: 'M_Worker', event: 'firedrill', colors: { vest: '#ff7b00', cap: '#e63946' }, perk: 'chase', desc: 'Fire Drill exclusive. Perk: chases only last 7 seconds.' },
     { id: 'speedster', name: 'Speedster', key: 'W_Casual', event: 'hallpass', colors: { top: '#06d6a0', pants: '#118ab2', hair: '#141414', skin: '#c68642' }, perk: 'lanes', desc: 'Hall Pass Rush exclusive. Perk: 20% faster lane switching.' },
     { id: 'chefkid', name: 'Lunch Hero', key: 'M_Casual2', event: 'foodfight', colors: { top: '#ffffff', pants: '#e63946', hair: '#3b2414', skin: '#c68642' }, perk: 'magnet', desc: 'Food Fight exclusive. Perk: Juice Box magnet lasts 3s longer.' },
@@ -1090,6 +1091,16 @@ const SHOP = {
     { id: 'pl_galaxy', name: 'Galaxy', price: 10, cur: 'gs', desc: 'Folded from the night sky.' },
     { id: 'pl_gold', name: 'Gold Foil', price: 15, cur: 'gs', desc: 'The trophy-case special.' }
   ],
+  // Heel Wheels looks (cosmetic only)
+  wheel: [
+    { id: 'wh_basic', name: 'Classic Wheels', price: 0, tire: '#1b1b1b', hub: '#d6dbe3', glow: '#7fd3ff', trail: '', desc: 'The originals.' },
+    { id: 'wh_neon', name: 'Neon Glow', price: 1500, tire: '#f8f9fa', hub: '#ff2bd6', glow: '#ff2bd6', trail: 'glow', desc: 'Light-up pink wheels with a glowing trail.' },
+    { id: 'wh_ice', name: 'Ice Rollers', price: 2500, tire: '#bfe9ff', hub: '#ffffff', glow: '#9be7ff', trail: 'snow', desc: 'Frosty wheels that leave a snow trail.' },
+    { id: 'wh_galaxy', name: 'Galaxy Spinners', price: 6000, tire: '#240046', hub: '#9d4edd', glow: '#c77dff', trail: 'stars', desc: 'Deep-space wheels with a trail of stars.' },
+    { id: 'wh_flame', name: 'Flame Riders', price: 6, cur: 'gs', tire: '#7f1d1d', hub: '#ffb703', glow: '#ff6b00', trail: 'fire', desc: 'Leave a trail of fire behind you.' },
+    { id: 'wh_gold', name: 'Gold Spinners', price: 10, cur: 'gs', tire: '#b8860b', hub: '#ffd60a', glow: '#ffe066', trail: 'sparkle', desc: 'Solid gold. Sparkles everywhere.' },
+    { id: 'wh_rainbow', name: 'Rainbow Rush', price: 14, cur: 'gs', tire: '#ffffff', hub: '#ff006e', glow: 'rainbow', trail: 'rainbow', desc: 'Every colour at once, with a rainbow trail.' }
+  ],
   shoe: [
     { id: 'basic', name: 'Classroom Sneakers', price: 0, color: '#f1f1f1', sole: '#8a8a8a', lane: 1, jump: 1, slide: 1, desc: 'Nothing special.' },
     { id: 'runners', name: 'Lightweight Running Shoes', price: 250, color: '#ff7b00', sole: '#fff', lane: 1.35, jump: 1, slide: 1, desc: '+35% lane switch speed.' },
@@ -1107,6 +1118,7 @@ const petDef = () => SHOP.pet.find(p => p.id === save.pet && save.owned[p.id]) |
 const hatDef = () => SHOP.hat.find(c => c.id === save.hat && (c.price === 0 || save.owned[c.id])) || SHOP.hat[0];
 // prices x2.5 for cash cosmetics, Gold Star items +50%: maxing everything takes a long time, like the big runners
 for (const t of ['char', 'plane', 'hat', 'pack', 'shoe', 'pet']) for (const it of SHOP[t]) if (it.price > 0) it.price = it.cur === 'gs' ? Math.ceil(it.price * 1.5) : Math.round(it.price * 2.5 / 50) * 50;
+const wheelDef = () => SHOP.wheel.find(c => c.id === save.wheel && (c.price === 0 || save.owned[c.id])) || SHOP.wheel[0];
 const planeDef = () => SHOP.plane.find(c => c.id === save.plane && (c.price === 0 || save.owned[c.id])) || SHOP.plane[0];
 const charDef = () => SHOP.char.find(c => c.id === save.char) || SHOP.char[0];
 const shoeDef = () => SHOP.shoe.find(p => p.id === save.shoe) || SHOP.shoe[0];
@@ -1194,6 +1206,7 @@ const INF_THEMES = ['high', 'middle', 'college', 'gym', 'elem'];
 const INF_CFG = { laneW: 2.1, density: 0.52, safeObs: 0.3, gapMul: 1.0 };
 
 /* ---------------- 3D ENGINE (three.js) ---------------- */
+const RAMP_LEN = 3.4;
 const PZ = 5.5, SPAWN_Z = 82, SEG = 10, NSEG = 14, WALLH = 9.5;
 let laneW = 2.1, HW = 4.4, CAMX = 0, CAMD = 9, CAMY = 5;
 /* ---------- GRAPHICS QUALITY ---------- */
@@ -1330,7 +1343,21 @@ const HALL = {
   ]
 };
 for (const c in HALL) for (const it of HALL[c]) if (it.price > 0) it.price = it.cur === 'gs' ? Math.ceil(it.price * 1.5) : Math.round(it.price * HALL_X / 50) * 50;
-const hallPick = cat => { const want = (save.hall || {})[cat], list = HALL[cat]; return list.find(it => it.id === want && (it.price === 0 || save.owned['hall_' + cat + '_' + it.id])) || list[0]; };
+// WORLD TOUR: every week the school dresses up as a different school around the world (lockers, banners, a little
+// weather in the air). Turn it off in the Locker Room → Hallway tab to see your own hallway style.
+const TOUR = [
+  { id: 'tokyo', name: 'Tokyo Academy', flag: '🇯🇵', fx: 'petals', lockers: ['#ff8fab', '#f8f9fa'], banners: ['#e63946', '#ffffff', '#ffb3c6'], words: ['TOKYO', 'GANBATTE!', 'SAKURA FEST', 'ARIGATO!'] },
+  { id: 'london', name: 'London Prep', flag: '🇬🇧', fx: 'drizzle', lockers: ['#1d3557', '#c1121f'], banners: ['#c1121f', '#1d3557', '#ffffff'], words: ['LONDON', 'MIND THE GAP', 'TEA TIME', 'CHEERIO!'] },
+  { id: 'rio', name: 'Rio High', flag: '🇧🇷', fx: 'confetti', lockers: ['#2a9d8f', '#ffd60a'], banners: ['#06a77d', '#ffd60a', '#1d4ed8'], words: ['RIO', 'CARNAVAL', 'GOOOL!', 'SAMBA'] },
+  { id: 'paris', name: 'Paris Lycée', flag: '🇫🇷', fx: 'leaves', lockers: ['#3a86ff', '#f8f9fa', '#e63946'], banners: ['#1d4ed8', '#ffffff', '#e63946'], words: ['PARIS', 'BONJOUR!', 'OUI OUI', 'MERCI!'] },
+  { id: 'cairo', name: 'Cairo International', flag: '🇪🇬', fx: 'sand', lockers: ['#e0a800', '#c8955c'], banners: ['#e0a800', '#1b1f3b', '#c1121f'], words: ['CAIRO', 'PYRAMIDS', 'NILE TRIP', 'SPHINX'] },
+  { id: 'nyc', name: 'New York Public', flag: '🇺🇸', fx: 'confetti', lockers: ['#ffbe0b', '#1b1b1b'], banners: ['#ffbe0b', '#1b1b1b', '#ffffff'], words: ['NEW YORK', 'BIG APPLE', 'TAXI!', 'BROADWAY'] }
+];
+const tourWeek = () => Math.floor((Math.floor((Date.now() - new Date().getTimezoneOffset() * 60000) / 86400000) + 3) / 7);
+const tourStop = () => TOUR[tourWeek() % TOUR.length];
+const tourOn = () => save.tourOn !== false;
+const hallPick = cat => { if (tourOn() && (cat === 'lockers' || cat === 'banners')) { const t = tourStop(); return cat === 'lockers' ? { id: 'tour_' + t.id, name: t.name, cols: t.lockers } : { id: 'tour_' + t.id, name: t.name, cols: t.banners, words: t.words }; }
+  const want = (save.hall || {})[cat], list = HALL[cat]; return list.find(it => it.id === want && (it.price === 0 || save.owned['hall_' + cat + '_' + it.id])) || list[0]; };
 const hallKey = () => ['lockers', 'banners', 'floors', 'lights', 'locations'].map(c => hallPick(c).id).join('.');
 function bannerTexH(word, col, txtCol) {
   return canvasTex('hb' + word + col, 256, 512, (x, w, h) => {
@@ -2005,7 +2032,7 @@ function buildPlayerModel() {
   pp.plane = planeMesh(planeDef().id); pp.plane.visible = false;
   pp.hat = addHat(act, hatDef().id);
   // Heel Wheels: a single wheel that pops out of each sneaker's heel
-  pp.wheels = [0, 1].map(() => { const w = grp(root); const tire = cyl(w, 0.052, 0.04, MS('#1b1b1b', 0.6, 0), 0, 0, 0); tire.rotation.z = Math.PI / 2; const hub = cyl(w, 0.03, 0.045, MS('#d6dbe3', 0.25, 0.9), 0, 0, 0); hub.rotation.z = Math.PI / 2; mesh(GEO.sph, MGlow('#7fd3ff', 0.35), w, 0, 0, 0, 0.09, 0.06, 0.09); w.spin = [tire, hub];
+  const WD = wheelDef(); pp.wheels = [0, 1].map(() => { const w = grp(root); const tire = cyl(w, 0.052, 0.04, MS(WD.tire, 0.6, 0), 0, 0, 0); tire.rotation.z = Math.PI / 2; const hub = cyl(w, 0.03, 0.045, MS(WD.hub, 0.25, 0.9), 0, 0, 0); hub.rotation.z = Math.PI / 2; w.glow = mesh(GEO.sph, WD.glow === 'rainbow' ? new THREE.MeshBasicMaterial({ color: 0xff006e, transparent: true, opacity: 0.45, depthWrite: false }) : MGlow(WD.glow, 0.4), w, 0, 0, 0, 0.09, 0.06, 0.09); w.spin = [tire, hub];
     w.visible = false; return w; });
   if (false) [0].map(() => { const w = grp(root); for (const z of [-0.07, 0.07]) { const c = cyl(w, 0.045, 0.05, MS('#ffd60a', 0.3, 0.6, { emissive: 0x6b4e00 }), 0, 0, z); c.rotation.z = Math.PI / 2; } mesh(GEO.sph, MGlow('#ffb703', 0.35), w, 0, 0, 0, 0.13, 0.08, 0.2); w.visible = false; return w; });
   followChest(pp); // capture the chest's neutral (bind) pose before any animation plays
@@ -2423,7 +2450,8 @@ const SHIRTS = ['#ef476f', '#118ab2', '#06d6a0', '#ffd166', '#8338ec', '#fb5607'
 function randPerson(extra) {
   return Object.assign({ skin: pick(SKINS), hair: pick(HAIRS), shirt: pick(SHIRTS), pants: pick(['#2b2d42', '#264653', '#3d405b', '#5c4033', '#1d3557', '#6c8ebf']), shoe: pick(['#333333', '#f5f5f5', '#c1121f']), longHair: Math.random() < 0.3, hairStyle: pick(['short', 'short', 'long', 'pony', 'bun', 'curly', 'spiky']), shortSleeves: Math.random() < 0.4, ph: rand(0, 6) }, extra || {});
 }
-const CHAT = ['lol', 'OMG', 'did u see that?!', 'no wayyy', 'haha', 'wait what', 'literally me', 'so anyway...', '...right?!', 'brb'];
+// things students actually say to each other between classes
+const CHAT = ['Did you do the homework?', 'Pizza for lunch today!', 'Is the quiz today?!', 'See you at practice!', 'I forgot my gym clothes', 'That test was SO hard', 'Field trip on Friday!', 'Sit with me at lunch?', 'Which class is next?', 'I love this song!'];
 const BAG_COLS = ['#e63946', '#1d3557', '#2a9d8f', '#f4a261', '#6a4c93', '#ffb703', '#264653', '#ef476f', '#118ab2', '#3d405b', '#8ac926'];
 // students carry backpacks (college kids sometimes a messenger bag); built once, glued to the chest bone
 function npcBag(a) {
@@ -2494,7 +2522,7 @@ const KINDS = {
   bucket: { deep: true, cat: 'obs', type: 'low', h: 0.7, hw: 0.6, d: 0.6, label: "the janitor's mop bucket",
     build(o) { const g = new THREE.Group(); box(g, 0.75, 0.42, 0.5, '#ffd60a', 0, 0.27, 0); box(g, 0.3, 0.25, 0.5, '#c9a800', 0.25, 0.6, 0); for (const sx of [-0.3, 0.3]) for (const sz of [-0.2, 0.2]) { const w = cyl(g, 0.05, 0.04, '#222', sx, 0.05, sz); w.rotation.z = Math.PI / 2; } const mp = cyl(g, 0.025, 1.4, '#a0522d', -0.15, 0.85, 0); mp.rotation.z = 0.35; cyl(g, 0.2, 0.06, '#5a9bd5', 0, 0.48, 0); const pd = mesh(GEO.circle, MGlow('#7cc4ff', 0.5), g, 0.35, 0.02, 0.4, 0.8, 0.55, 1); pd.rotation.x = -Math.PI / 2; blob(g, 0.6); return g; } },
   walkers: { cat: 'obs', type: 'block', h: 1.75, hw: 0.72, d: 0.6, label: 'two students walking and talking', who: 'walkers', chaseLine: 'HEY! Watch where you\'re going!',
-    init(o) { o.same = Math.random() < 0.45; o.vz = o.same ? rand(1.2, 2.2) : -rand(1.3, 2.0); o.say = pick(CHAT); if (fireDrill()) { o.same = true; o.vz = rand(3.2, 4.4); o.fast = true; o.say = pick(['FIRE DRILL!', 'single file!!', 'which exit??']); } },
+    init(o) { o.same = Math.random() < 0.45; o.vz = o.same ? rand(1.2, 2.2) : -rand(1.3, 2.0); o.say = pick(CHAT); if (fireDrill()) { o.same = true; o.vz = rand(3.2, 4.4); o.fast = true; o.say = pick(['FIRE DRILL!', 'Single file!', 'Which exit??']); } },
     build(o) { const g = new THREE.Group(); actorAt(o, g, 'student', -0.36, -0.08, o.same ? Math.PI - 0.25 : 0.25); actorAt(o, g, 'student', 0.36, 0.08, o.same ? Math.PI + 0.25 : -0.25); return g; },
     anim(o, t) { o.acts.forEach((a, i) => a.pose('walk', 1.05 + i * 0.04)); } },
   kidline: { cat: 'obs', type: 'block', h: 1.3, hw: 0.45, d: 3.6, vz: 1.3, label: 'a class walking in line', who: 'kidline', chaseLine: 'NO RUNNING! Back in line!',
@@ -2502,7 +2530,7 @@ const KINDS = {
     build(o) { const g = new THREE.Group(); for (let i = 0; i < 4; i++) actorAt(o, g, 'kid', Math.sin(i * 2.1) * 0.08, 1.2 - i * 0.8, Math.PI); o.teacher = actorAt(o, g, 'teacher', 0, -1.9, Math.PI); return g; },
     anim(o, t) { o.acts.forEach(a => a.pose(a === o.teacher ? 'walkFormal' : 'walk', a === o.teacher ? 0.8 : 1.1)); } },
   lockerkid: { outer: true, cat: 'obs', type: 'block', h: 1.75, hw: 0.6, d: 0.7, label: 'a student digging in their locker', who: 'lockerkid', chaseLine: 'HEY! You knocked my books!',
-    init(o) { o.say = Math.random() < 0.4 ? pick(['where is my homework?!', 'ugh, my combo...', 'found it!']) : ''; },
+    init(o) { o.say = Math.random() < 0.4 ? pick(['Where is my homework?!', 'What\'s my locker code?', 'Found it!']) : ''; },
     build(o) { const g = new THREE.Group(), sd = Math.sign(o.lane) || 1; actorAt(o, g, 'student', sd * 0.2, 0, sd * Math.PI / 2);
       const hinge = grp(g, sd * 1.0, 1.3, 0.45); hinge.rotation.y = sd * -1.15; box(hinge, 0.05, 1.9, 0.62, '#2f4f86', 0, 0, -0.31); for (let v = 0; v < 3; v++) box(hinge, 0.06, 0.03, 0.35, '#1b2f52', 0, 0.6 + v * 0.06, -0.31); bake(hinge, false); return g; },
     anim(o, t) { o.acts[0].pose('interact', 0.6); if (o.acts[0].cur === 'Interact' && o.acts[0].actions.Interact) o.acts[0].actions.Interact.setLoop(THREE.LoopRepeat, Infinity); } },
@@ -2539,7 +2567,7 @@ const KINDS = {
 
   /* BLOCKERS — switch lanes */
   kid: { cat: 'obs', type: 'block', h: 1.3, hw: 0.4, d: 0.5, label: 'a little kid', who: 'kid', chaseLine: 'MEANIE! Come back here!',
-    init(o) { o.same = Math.random() < 0.5; o.vz = o.same ? rand(1, 2) : -rand(1, 1.6); o.say = Math.random() < 0.4 ? pick(['wheee!', 'recess!!', 'tag! ur it', 'hi!!']) : ''; },
+    init(o) { o.same = Math.random() < 0.5; o.vz = o.same ? rand(1, 2) : -rand(1, 1.6); o.say = Math.random() < 0.4 ? pick(['Wheee!', 'Recess time!', 'Tag, you\'re it!', 'Hi!!']) : ''; },
     build(o) { const g = new THREE.Group(); actorAt(o, g, 'kid', 0, 0, o.same ? Math.PI : 0); return g; }, anim(o, t) { o.acts[0].pose('walk', 1.3); } },
   hose: { cat: 'obs', type: 'low', h: 0.35, hw: 1.0, d: 0.5, label: 'a fire hose across the hall', ev: 'firedrill',
     build(o) { const g = new THREE.Group(); const t = mesh(GEO.torus || GEO.sph, M('#c1121f'), g, -0.55, 0.12, 0, 0.32, 0.32, 0.32); t.rotation.x = Math.PI / 2; box(g, 1.6, 0.1, 0.12, '#c1121f', 0.25, 0.06, 0.15); box(g, 0.25, 0.14, 0.14, '#ffd60a', 1.1, 0.08, 0.15); cyl(g, 0.05, 0.3, '#888', 1.3, 0.1, 0.15).rotation.z = Math.PI / 2; return g; } },
@@ -2566,7 +2594,7 @@ const KINDS = {
   puddle: { cat: 'obs', type: 'low', h: 0.3, hw: 0.8, d: 1.2, label: 'a big rain puddle', who: 'puddle',
     build(o) { const g = new THREE.Group(); const p = mesh(GEO.circle, MS('#5fa8d3', 0.05, 0.3, { transparent: true, opacity: 0.85 }), g, 0, 0.02, 0, 0.95, 0.7, 1); p.rotation.x = -Math.PI / 2; for (let i = 0; i < 3; i++) { const r = mesh(GEO.torus, MGlow('#e0f4ff', 0.6), g, 0, 0.03, 0, 0.3 + i * 0.2, 0.2 + i * 0.15, 0.3 + i * 0.2); r.rotation.x = Math.PI / 2; } mesh(GEO.cone, M('#ffd60a'), g, 0.8, 0.3, 0.3, 0.12, 0.6, 0.12); return g; } },
   umbrellas: { cat: 'obs', type: 'block', h: 2.2, hw: 0.8, d: 0.7, label: 'students with open umbrellas', who: 'group', chaseLine: 'HEY, I\'M GETTING WET!',
-    init(o) { o.same = Math.random() < 0.5; o.vz = o.same ? rand(1, 1.6) : -rand(1, 1.6); o.say = pick(['ugh, rain', 'my hair!!', 'share?']); },
+    init(o) { o.same = Math.random() < 0.5; o.vz = o.same ? rand(1, 1.6) : -rand(1, 1.6); o.say = pick(['Ugh, rain again', 'My hair!!', 'Share my umbrella?']); },
     build(o) { const g = new THREE.Group(); for (const x of [-0.42, 0.42]) { const a = actorAt(o, g, 'student', x, 0, o.same ? Math.PI : 0); const u = grp(g, x, 0, 0); cyl(u, 0.015, 1.1, '#333', 0, 1.55, 0.05); mesh(GEO.cone, M(pick(['#e63946', '#3a86ff', '#ffbe0b', '#06d6a0'])), u, 0, 2.15, 0.05, 0.55, 0.3, 0.55); } return g; },
     anim(o, t) { o.acts.forEach(a => a.pose('walk', 0.8)); } },
   pie: { cat: 'obs', type: 'high', hw: 0.45, d: 0.4, vz: -7, label: 'a flying pie', who: 'pie',
@@ -2586,7 +2614,7 @@ const KINDS = {
       box(g, 0.7, 0.5, 0.45, '#111111', 0, 1.25, 0.2); box(g, 0.6, 0.4, 0.01, MGlow('#4cc9f0', 0.7), 0, 1.27, 0.43); box(g, 0.3, 0.15, 0.3, '#888', 0, 0.42, 0.2);
       actorAt(o, g, 'teacher', 0, -0.55, 0); return g; }, anim(o, t) { o.acts[0].pose('push', 0.7); } },
   pyramid: { cat: 'obs', type: 'block', h: 2.6, hw: 0.95, d: 0.7, label: 'a cheer squad pyramid', who: 'group', chaseLine: 'YOU RUINED THE ROUTINE!',
-    init(o) { o.say = pick(['GO TEAM!', 'ready... OK!', 'hold it!!']); },
+    init(o) { o.say = pick(['GO TEAM!', 'Ready? OK!', 'Hold it!!']); },
     build(o) { const g = new THREE.Group(); const cheer = { top: '#c1121f', pants: '#ffffff' };
       for (const x of [-0.4, 0.4]) { const a = actorAt(o, g, 'athlete', x, 0, 0); for (const n in cheer) a.spec.colors[n] = cheer[n]; }
       const top = actorAt(o, g, 'athlete', 0, 0, 0); top.root.position.y = 1.3; top.root.scale.setScalar(0.85); return g; },
@@ -2604,12 +2632,12 @@ const KINDS = {
       for (let i = 0; i < 4; i++) { const zz = -(3 + i * (L - 6) / 3); for (const sx of [-1, 1]) { box(g, 0.5, 0.05, 0.4, '#c9a26b', sx * (w / 2 - 0.35), 0.72, zz); box(g, 0.05, 0.7, 0.05, '#666', sx * (w / 2 - 0.35), 0.36, zz); } }
       return g; } },
   rusher: { cat: 'obs', type: 'block', h: 1.75, hw: 0.42, d: 0.5, label: 'a student sprinting the other way', who: 'student', chaseLine: 'WATCH IT, I\'M LATE TOO!',
-    init(o) { if (fireDrill()) { o.vz = rand(3.5, 4.5); o.same = true; o.fast = true; o.say = 'EVACUATE!'; return; } o.vz = -rand(3.2, 4.6); o.say = Math.random() < 0.5 ? pick(['LATE LATE LATE', 'move move move!', 'coming through!', 'sorry!!']) : ''; },
+    init(o) { if (fireDrill()) { o.vz = rand(3.5, 4.5); o.same = true; o.fast = true; o.say = 'EVACUATE!'; return; } o.vz = -rand(3.2, 4.6); o.say = Math.random() < 0.5 ? pick(['I\'m SO late!', 'Move, move, move!', 'Coming through!', 'Sorry!!']) : ''; },
     build(o) { const g = new THREE.Group(); actorAt(o, g, 'student', 0, 0, o.same ? Math.PI : 0); return g; }, anim(o, t) { o.acts[0].pose('jog', 1.3); } },
   student: { cat: 'obs', type: 'block', h: 1.75, hw: 0.4, d: 0.5, label: 'a student texting while walking', who: 'student', chaseLine: 'You made me drop my PHONE!',
-    init(o) { if (fireDrill()) { o.same = true; o.vz = rand(3.2, 4.4); o.fast = true; o.say = 'GO GO GO'; return; } o.same = Math.random() < 0.45; o.vz = o.same ? rand(1, 1.8) : -rand(1.2, 1.9); o.say = Math.random() < 0.3 ? pick(['*texting*', 'ugh, Mondays', 'where is room 12?']) : ''; },
+    init(o) { if (fireDrill()) { o.same = true; o.vz = rand(3.2, 4.4); o.fast = true; o.say = 'GO GO GO'; return; } o.same = Math.random() < 0.45; o.vz = o.same ? rand(1, 1.8) : -rand(1.2, 1.9); o.say = Math.random() < 0.3 ? pick(['*texting*', 'Ugh, Mondays', 'Where is room 12?']) : ''; },
     build(o) { const g = new THREE.Group(); const a = actorAt(o, g, 'student', 0, 0, o.same ? Math.PI : 0); a.post = a2 => { const h = a2.bone('Head'); if (h) h.rotation.x += 0.35; }; return g; }, anim(o, t) { o.acts[0].pose(o.fast ? 'jog' : 'walk', o.fast ? 1.2 : 0.85); } },
-  group: { cat: 'obs', type: 'block', h: 1.75, hw: 0.95, d: 0.9, label: 'a group of chatting students', who: 'group', chaseLine: 'GET HIM!!',
+  group: { cat: 'obs', type: 'block', h: 1.75, hw: 0.95, d: 0.9, label: 'a group of chatting students', who: 'group', chaseLine: 'GET BACK HERE!!',
     init(o) { o.n = pick([2, 3, 3, 4]); o.say = pick(CHAT); },
     build(o) { const g = new THREE.Group(); const n = o.n; const xs = n === 2 ? [-0.4, 0.4] : n === 3 ? [-0.5, 0.05, 0.5] : [-0.52, -0.15, 0.2, 0.55], zs = n === 2 ? [0, 0] : n === 3 ? [0.15, -0.3, 0.12] : [0.1, -0.35, 0.3, -0.1];
       for (let i = 0; i < n; i++) actorAt(o, g, 'student', xs[i], zs[i], Math.atan2(-xs[i], -zs[i] - 0.6) * 0.8); return g; },
@@ -2618,9 +2646,25 @@ const KINDS = {
     init(o) { o.say = 'NO RUNNING!'; },
     build(o) { const g = new THREE.Group(); actorAt(o, g, 'teacher', 0, 0, 0); return g; },
     anim(o, t) { const mv = o.tx !== undefined && Math.abs(o.tx - o.x) > 0.05; o.acts[0].pose(mv ? 'walkFormal' : o.shout > 0 ? 'talk' : 'idle', mv ? 1.6 : 1); } },
+  // things you can run on top of (like the trains in other runners): rolling gym bleachers and stage risers.
+  // Most have a ramp at the front; without one you have to jump on.
+  riser: { cat: 'plat', top: 1.45, label: 'the rolling bleachers',
+    init(o) { o.look = G.themeKey === 'gym' || G.themeKey === 'high' || Math.random() < 0.5 ? 'bleach' : 'stage'; o.col = pick(['#1d4ed8', '#c1121f', '#2a9d8f', '#7b2cbf']); },
+    build(o) { const g = new THREE.Group(), H = KINDS.riser.top, w = laneW * 0.92, L = o.len, R = o.ramp ? RAMP_LEN : 0, body = L - R, zc = -(R + body / 2);
+      const wood = MS('#c8955c', 0.7, 0), side = MS(o.col, 0.6, 0.1);
+      box(g, w, 0.1, body, wood, 0, H - 0.05, zc); // running surface
+      for (const sx of [-1, 1]) box(g, 0.06, H - 0.1, body, side, sx * (w / 2 - 0.03), (H - 0.1) / 2, zc);
+      box(g, w, H - 0.1, 0.06, side, 0, (H - 0.1) / 2, -R - 0.03); box(g, w, H - 0.1, 0.06, side, 0, (H - 0.1) / 2, -L + 0.03);
+      if (o.look === 'bleach') for (let k = 1; k < body / 1.2; k++) box(g, w + 0.02, 0.05, 0.08, '#8d6e4a', 0, H + 0.01, -R - k * 1.2); // bench seams
+      else { box(g, w + 0.04, 0.12, body, MS('#222', 0.8, 0), 0, H - 0.16, zc); }
+      for (const sx of [-1, 1]) for (let k = 0; k < 3; k++) { const wz = -R - 0.6 - k * (body - 1.2) / 2; const wh = cyl(g, 0.12, 0.08, '#222', sx * (w / 2 - 0.15), 0.12, wz); wh.rotation.z = Math.PI / 2; }
+      texBox(g, Math.min(w - 0.2, 1.6), 0.4, 0.02, bannerTex(o.look === 'bleach' ? 'GO TIGERS!' : 'TALENT SHOW', o.col), 'ban' + o.look + o.col, o.col, 0, H * 0.55, -R + 0.01);
+      if (R) { const ang = Math.atan2(H, R), rp = box(g, w * 0.9, 0.08, Math.hypot(H, R), MS('#9aa0a6', 0.5, 0.6), 0, H / 2 - 0.04, -R / 2); rp.rotation.x = ang;
+        for (let k = 1; k < 5; k++) { const st = box(g, w * 0.9, 0.03, 0.05, '#ffd60a', 0, H * k / 5 + 0.02, -R * k / 5); st.rotation.x = ang; } }
+      return g; } },
   // round 9 obstacles
   bandkid: { cat: 'obs', type: 'block', h: 1.75, hw: 0.5, d: 0.6, vz: -1.1, sway: true, label: 'a marching band drummer', who: 'student', chaseLine: 'YOU MADE ME MISS A BEAT!',
-    init(o) { o.say = pick(['BOOM BOOM!', 'left, right, left!', 'band coming through!']); },
+    init(o) { o.say = pick(['BOOM BOOM!', 'Left, right, left!', 'Band coming through!']); },
     build(o) { const g = new THREE.Group(); actorAt(o, g, 'student', 0, 0, 0, { colors: { top: '#c1121f', pants: '#f8f9fa', hair: pick(HAIR_COLS), skin: pick(SKIN_TONES), suit: '#c1121f' } });
       const dr = cyl(g, 0.3, 0.32, MS('#f8f9fa', 0.5, 0.1), 0, 0.95, 0.3); dr.rotation.x = Math.PI / 2; for (const z of [0.14, 0.46]) { const r = cyl(g, 0.31, 0.04, MS('#c1121f', 0.5, 0.2), 0, 0.95, z); r.rotation.x = Math.PI / 2; }
       cyl(g, 0.12, 0.12, '#1d3557', 0, 1.88, 0); box(g, 0.06, 0.22, 0.04, '#ffd60a', 0, 2.05, 0); return g; },
@@ -2647,17 +2691,17 @@ const KINDS = {
     build(o) { const g = new THREE.Group(); actorAt(o, g, 'teacher', 0, 0, 0, { key: 'W_Suit', scale: 0.8, colors: { skin: '#5a3825', hair: '#141414', suit: '#7b2cbf', top: '#f8f9fa', pants: '#2b2d42' } }); return g; },
     anim(o, t) { const mv = o.tx !== undefined && Math.abs(o.tx - o.x) > 0.05; o.acts[0].pose(mv ? 'walkFormal' : o.shout > 0 ? 'talk' : 'idle', mv ? 1.9 : 1); if (o.shout > 1.5 && !o.voiced) { o.voiced = true; voice('moore', 4); } } },
   monitor: { cat: 'obs', type: 'block', h: 1.7, hw: 0.42, d: 0.5, label: 'a hall monitor', who: 'monitor', chaseLine: 'HALL PASS! NOW!',
-    init(o) { o.say = pick(['Hall pass?', 'Walk please.', 'Name?', 'Slow down!']); },
+    init(o) { o.say = pick(['Hall pass, please!', 'Walk, please.', 'Slow down!', 'Where are you going?']); },
     build(o) { const g = new THREE.Group(); actorAt(o, g, 'monitor', 0, 0, 0); return g; }, anim(o, t) { o.acts[0].pose('idle'); } },
   professor: { cat: 'obs', type: 'block', h: 1.85, hw: 0.42, d: 0.5, steps: true, label: 'a strict professor', who: 'professor', chaseLine: 'That\'s a ZERO, young one!',
-    init(o) { o.say = pick(['Late AGAIN?', 'This WILL be on the exam!', 'Walk, please!', 'Office hours!']); },
+    init(o) { o.say = pick(['Late AGAIN?', 'This WILL be on the exam!', 'Walk, please!', 'See me in office hours!']); },
     build(o) { const g = new THREE.Group(); actorAt(o, g, 'professor', 0, 0, 0); return g; },
     anim(o, t) { const mv = o.tx !== undefined && Math.abs(o.tx - o.x) > 0.05; o.acts[0].pose(mv ? 'walkFormal' : o.shout > 0 ? 'talk' : 'idle', mv ? 1.6 : 1); } },
   sleepy: { cat: 'obs', type: 'block', h: 1.75, hw: 0.4, d: 0.5, sway: true, label: 'a sleep-deprived student', who: 'sleepy', chaseLine: 'I WAS NAPPING!',
     init(o) { o.say = 'zzz...'; },
     build(o) { const g = new THREE.Group(); const a = actorAt(o, g, 'student', 0, 0, 0); a.post = a2 => { const h = a2.bone('Head'); if (h) h.rotation.x += 0.5; }; return g; }, anim(o, t) { o.acts[0].pose('idle', 0.5); } },
   coach: { cat: 'obs', type: 'block', h: 1.85, hw: 0.45, d: 0.5, steps: true, label: 'the coach', who: 'coach', chaseLine: 'DROP AND GIMME 50!',
-    init(o) { o.say = pick(['HUSTLE!', 'NO RUNNING IN THE HALL!', 'Gimme 10 laps!']); },
+    init(o) { o.say = pick(['HUSTLE!', 'Pick up the pace!', 'Gimme 10 laps!']); },
     build(o) { const g = new THREE.Group(); actorAt(o, g, 'coach', 0, 0, 0); return g; },
     anim(o, t) { const mv = o.tx !== undefined && Math.abs(o.tx - o.x) > 0.05; o.acts[0].pose(mv ? 'jog' : o.shout > 0 ? 'talk' : 'idle'); } },
 
@@ -2773,6 +2817,12 @@ function syncObjs() {
     if (o.acts) for (const a of o.acts) a.update(FRAME_DT);
   }
 }
+function wheelFx(w, i) {
+  const WD = wheelDef(); if (WD.glow === 'rainbow') w.glow.material.color.setHSL((G.t * 0.6 + i * 0.3) % 1, 1, 0.55);
+  if (!WD.trail || G.scene !== 'play' || save.battery || Math.random() > 0.55) return;
+  const x = P.x + (i ? 0.12 : -0.12), y = P.y + 0.06, c = WD.trail === 'fire' ? pick(['#ff6b00', '#ffb703', '#ff006e']) : WD.trail === 'snow' ? '#ffffff' : WD.trail === 'stars' ? pick(['#c77dff', '#ffffff', '#7bdff2']) : WD.trail === 'sparkle' ? pick(['#ffd60a', '#fff3a0']) : WD.trail === 'rainbow' ? '#' + new THREE.Color().setHSL(Math.random(), 1, 0.55).getHexString() : WD.glow;
+  emit(x, y, 0.35, 1, c, WD.trail === 'fire' ? 1.6 : 1.1, 0.35, WD.trail === 'fire' ? 0.14 : 0.09, WD.trail === 'fire' ? 1.5 : 0, true, true);
+}
 // rotate a bone around an axis given in the character's own space (+z forward, +y up, +x the character's left)
 const _tq1 = new THREE.Quaternion(), _tq2 = new THREE.Quaternion(), _tq3 = new THREE.Quaternion(), _tax = new THREE.Vector3();
 function twist(act, name, ax, ay, az, ang) {
@@ -2798,7 +2848,7 @@ function syncPlayer() {
   const sliding = P.slide > 0 && !inMenu;
   if (G.dying) a.pose('die', 1.3, 0.1);
   else if (sliding) a.pose('idle', 1, 0.12);
-  else if (P.y > 0.05 && !inMenu) a.pose(G.trick && G.trick.kind === 'grab' ? 'roll' : 'jump', G.trick && G.trick.kind === 'grab' ? 0.35 : 1, 0.15);
+  else if (P.y - (P.fl || 0) > 0.05 && !inMenu) a.pose(G.trick && G.trick.kind === 'grab' ? 'roll' : 'jump', G.trick && G.trick.kind === 'grab' ? 0.35 : 1, 0.15);
   else if (G.pushAnim > 0 && G.scene === 'play') a.pose('push', 2.2, 0.06); // shoving through
   else if (G.heely > 0 && G.scene === 'play') a.pose('idle', 0.6, 0.1); // rolling on the heel wheels
   else if (G.scene === 'play' && G.countdown > 0) a.pose('idle');
@@ -2809,7 +2859,7 @@ function syncPlayer() {
   pp.sled.visible = sledding; if (sledding) { pp.sled.position.set(P.x, P.y, 0.1); pp.sled.rotation.set(0, 0, clamp((P.x - P.lane * laneW) / laneW, -1, 1) * 0.35); if (Math.random() < 0.5) emit(P.x + rand(-0.3, 0.3), 0.1, 0.6, 1, '#ffffff', 1.6, 0.4, 0.14, 0, false, true); }
   pp.plane.visible = flying || (pp.plane.visible && P.y > 0.3 && G.scene === 'play');
   if (pp.plane.visible) { pp.plane.position.set(P.x, P.y + 0.42, 0.15); pp.plane.rotation.set(0.05 + Math.sin(G.t * 3) * 0.03, 0, clamp((P.x - P.lane * laneW) / laneW, -1, 1) * 0.5 + Math.sin(G.t * 2) * 0.04); }
-  const heelRoll = G.heely > 0 && G.scene === 'play' && P.y <= 0.05 && !sliding && !G.dying;
+  const heelRoll = G.heely > 0 && G.scene === 'play' && P.y - (P.fl || 0) <= 0.05 && !sliding && !G.dying;
   a.noGround = sliding || flying || sledding;
   if (flying || sledding) a.pose('idle', 0.5, 0.15);
   a.post = (flying || sledding) ? (A => { // kneeling on the plane, hands on the wings
@@ -2833,7 +2883,7 @@ function syncPlayer() {
   if (skating) { const ph = G.t * 2.4; pp.root.rotation.z += Math.sin(ph) * 0.05; pp.root.rotation.y = Math.PI + Math.sin(ph * 0.5) * 0.12; }
   if (!sliding) pp.pivot.rotation.x = lerp(pp.pivot.rotation.x, skating ? -0.06 : 0, Math.min(1, FRAME_DT * 10));
   // tricks: rotate around the hips while airborne
-  if (G.trick && P.y > 0.02) { const T = G.trick; T.t += FRAME_DT; const k = clamp(T.t / T.dur, 0, 1), e = k * k * (3 - 2 * k);
+  if (G.trick && P.y - (P.fl || 0) > 0.02) { const T = G.trick; T.t += FRAME_DT; const k = clamp(T.t / T.dur, 0, 1), e = k * k * (3 - 2 * k);
     pp.pivot.rotation.set(0, 0, 0);
     if (T.kind === 'spin') pp.pivot.rotation.y = e * Math.PI * 2;
     else if (T.kind === 'flip') pp.pivot.rotation.x = e * Math.PI * 2;
@@ -2849,7 +2899,7 @@ function syncPlayer() {
   if (pp.aura.visible) pp.aura.scale.setScalar(1 + Math.sin(G.t * 10) * 0.05);
   const wheelsOn = G.heely > 0 && G.scene === 'play' && blink(G.heely);
   const feet = ['FootL', 'FootR'];
-  pp.wheels.forEach((w, i) => { w.visible = wheelsOn; if (!wheelsOn) return; const f = a.bone(feet[i]); if (!f) return; f.getWorldPosition(_v1); pp.root.worldToLocal(_v1); w.position.set(_v1.x, Math.max(0.052, _v1.y - 0.07), _v1.z - 0.05); for (const sp of w.spin) sp.rotation.x += G.speed * FRAME_DT / 0.052; });
+  pp.wheels.forEach((w, i) => { w.visible = wheelsOn; if (!wheelsOn) return; const f = a.bone(feet[i]); if (!f) return; f.getWorldPosition(_v1); pp.root.worldToLocal(_v1); w.position.set(_v1.x, Math.max(0.052, _v1.y - 0.07), _v1.z - 0.05); for (const sp of w.spin) sp.rotation.x += G.speed * FRAME_DT / 0.052;  wheelFx(w, i); });
   // keep the blob shadow on the floor while jumping
   if (pp.hat && pp.hat.userData.prop) pp.hat.userData.prop.rotation.y += FRAME_DT * (G.scene === 'play' ? 6 + G.speed * 0.9 : 4);
   pp.shadow.position.y = 0.003 - P.y; pp.shadow.scale.setScalar(0.42 * Math.max(0.4, 1 - P.y * 0.25));
@@ -2902,6 +2952,11 @@ function drawOverlay() {
     ctx.font = '900 30px "Luckiest Guy",sans-serif'; ctx.textAlign = 'center'; ctx.fillStyle = '#fff'; ctx.strokeStyle = '#1b1f3b'; ctx.lineWidth = 6; ctx.strokeText('MOVE!', (a[0] + c[0]) / 2, (a[1] + c[1]) / 2); ctx.fillText('MOVE!', (a[0] + c[0]) / 2, (a[1] + c[1]) / 2); }
   if (G.scene === 'play' && (G.burstT > 0 || G.pw.cheat > 0 || G.pw.energy > 0 || G.headTo)) { const n = save.battery ? 10 : 22; ctx.strokeStyle = 'rgba(255,255,255,.5)'; ctx.lineWidth = 2; ctx.beginPath();
     for (let i = 0; i < n; i++) { const a = (i / n) * Math.PI * 2 + G.t * 0.7, r0 = Math.min(W, H) * (0.42 + 0.08 * Math.sin(i * 7.3 + G.t * 9)), r1 = r0 + 40 + 30 * Math.sin(i * 3.1 + G.t * 13); const cx = W / 2, cy = H * 0.45; ctx.moveTo(cx + Math.cos(a) * r0, cy + Math.sin(a) * r0 * 1.2); ctx.lineTo(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1 * 1.2); } ctx.stroke(); }
+  if (tourOn() && G.scene === 'play' && !G.fun && !save.battery && !G.rain) { const fx = tourStop().fx, n = 26;
+    for (let i = 0; i < n; i++) { const x = (i * 97.13 + Math.sin(G.t * 0.8 + i) * 40 + W) % W, y = (i * 211.7 + G.t * (fx === 'drizzle' ? 700 : fx === 'sand' ? 40 : 70 + (i % 4) * 20)) % H;
+      if (fx === 'drizzle') { ctx.strokeStyle = 'rgba(200,220,255,.45)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x - 3, y + 14); ctx.stroke(); continue; }
+      ctx.fillStyle = fx === 'petals' ? 'rgba(255,183,197,.85)' : fx === 'leaves' ? ['#e76f51', '#f4a261', '#e9c46a'][i % 3] : fx === 'sand' ? 'rgba(224,168,0,.45)' : ['#ff006e', '#ffd60a', '#3a86ff', '#06d6a0'][i % 4];
+      ctx.save(); ctx.translate(x, y); ctx.rotate(G.t * 2 + i); ctx.fillRect(-4, -2, fx === 'sand' ? 3 : 8, fx === 'sand' ? 3 : 5); ctx.restore(); } }
   if (G.fun === 'sled' && G.scene === 'play') { ctx.fillStyle = 'rgba(255,255,255,.85)'; const n = save.battery ? 40 : 90; for (let i = 0; i < n; i++) { const x = (i * 97.13 + Math.sin(G.t + i) * 30) % W, y = (i * 211.7 + G.t * (60 + (i % 4) * 25)) % H; ctx.fillRect(x, y, 3, 3); } }
   if (G.rain && G.scene === 'play') { ctx.strokeStyle = 'rgba(200,225,255,.55)'; ctx.lineWidth = 1.5; ctx.beginPath(); const n = save.battery ? 40 : 90; for (let i = 0; i < n; i++) { const x = (i * 97.13 + G.t * 60 * (i % 3 + 1)) % W, y = (i * 211.7 + G.t * 900) % H; ctx.moveTo(x, y); ctx.lineTo(x - 4, y + 16); } ctx.stroke(); }
   if (fireDrill() && G.scene === 'play' && !A11Y().flash) { ctx.fillStyle = 'rgba(255,0,0,' + Math.max(0, Math.sin(G.t * 5)) * 0.08 + ')'; ctx.fillRect(0, 0, W, H); }
@@ -3119,7 +3174,7 @@ const Ads = {
       fakeAd(tag);
     });
   },
-  finish(ok) { const cb = this.cb; this.cb = null; G.adOpen = false; appShown(); if (cb) cb(!!ok); }
+  finish(ok) { const cb = this.cb; this.cb = null; G.adOpen = false; save.lastRewardAd = Date.now(); appShown(); if (cb) cb(!!ok); }
 };
 window.onAdReward = (tag, ok) => Ads.finish(ok);
 window.onAdUnavailable = () => { toast('No ad right now', 'Check your internet and try again', 1600); Ads.finish(false); };
@@ -3164,6 +3219,31 @@ function houseAd(tag) {
   $('adClose').onclick = () => end(false);
 }
 
+
+/* ---------- interstitial ads between runs ----------
+   Every 3rd finished run (not in your first 3 runs, never right after you chose to watch a rewarded ad, never in
+   the tutorial), shown when you leave the game-over screen. Android: AdMob interstitial. Browser: 5-second house ad. */
+const INTER_EVERY = 3;
+function maybeInterstitial(then) {
+  save.runsSinceAd = (save.runsSinceAd || 0) + 1; const total = (save.runsTotal = (save.runsTotal || 0) + 1);
+  if (total === 2 && save.remind !== false && window.HallwayNotify) { try { HallwayNotify.requestPermission(); } catch (e) {} }
+  const recentReward = Date.now() - (save.lastRewardAd || 0) < 90000;
+  if (total <= 3 || save.runsSinceAd < INTER_EVERY || recentReward || G.mode === 'tutorial' || save.noAds) { persist(); then(); return; }
+  save.runsSinceAd = 0; persist();
+  let done = false; const fin = () => { if (done) return; done = true; G.adOpen = false; appShown(); then(); };
+  window.onInterstitialDone = () => fin();
+  G.adOpen = true; appHidden();
+  if (window.HallwayAds && HallwayAds.showInterstitial) { try { HallwayAds.showInterstitial(); setTimeout(fin, 45000); return; } catch (e) {} }
+  houseInterstitial(fin);
+}
+function houseInterstitial(fin) {
+  const m = $('adModal'), ad = HOUSE_ADS[(save.adN = ((save.adN || 0) + 1)) % HOUSE_ADS.length];
+  $('adIco').textContent = ad[0]; $('adHead').textContent = ad[1]; $('adSub').textContent = ad[2]; $('adCard').style.setProperty('--adbg', ad[3]);
+  m.classList.add('show'); $('adClose').style.display = 'none'; const T = 5, t0 = performance.now(); $('adClaim').disabled = true; $('adClaim').textContent = 'Continue in 5…';
+  const iv = setInterval(() => { const el = Math.min(T, (performance.now() - t0) / 1000); $('adBar').style.width = (el / T * 100) + '%'; $('adLeft').textContent = Math.ceil(T - el);
+    if (el >= T && $('adClaim').disabled) { $('adClaim').disabled = false; $('adClaim').textContent = 'Continue ▶'; } else if (el < T) $('adClaim').textContent = 'Continue in ' + Math.ceil(T - el) + '…'; }, 100);
+  $('adClaim').onclick = () => { clearInterval(iv); m.classList.remove('show'); $('adClose').style.display = ''; fin(); };
+}
 
 /* ---------- CHEAT CODES + ADMIN ----------
    Type codes in Settings → Secret codes. Reward codes work once per device; toggle codes switch on/off.
@@ -3219,7 +3299,7 @@ function adminApply() {
 function adminDo(what) {
   if (!save.admin) return;
   if (what === 'stages') { save.unlocked = LEVELS.length; save.stars = save.stars || {}; }
-  if (what === 'items') { for (const t of ['char', 'pet', 'pack', 'shoe', 'plane', 'hat']) for (const it of SHOP[t]) save.owned[it.id] = 1; if (typeof HALL_STYLE !== 'undefined') {} }
+  if (what === 'items') { for (const t of ['char', 'pet', 'pack', 'shoe', 'plane', 'hat', 'wheel']) for (const it of SHOP[t]) save.owned[it.id] = 1; if (typeof HALL_STYLE !== 'undefined') {} }
   if (what === 'upgrades') { for (const it of SHOP.up) { if (it.lv) save.up[it.lv] = MAXLV; else save.up[it.id] = 1; } }
   if (what === 'daily') { save.spinDay = ''; save.spinAds = 0; save.mlocker = 0; if (save.dc) save.dc.done = 0; if (save.tp) save.tp.done = 0; if (save.starDay) save.starDay.n = 0; }
   if (what === 'tokens') { const e = eventSave(); e.tokens = (e.tokens || 0) + 50; }
@@ -3254,6 +3334,7 @@ const MISSIONS = {
   coins_total: { txt: n => `Collect ${n} coins in total`, t: [300, 700, 1200, 2000, 3500] },
   dodges: { txt: n => `Dodge past ${n} people`, t: [10, 25, 45, 70, 100] },
   heelys: { txt: n => `Ride Heel Wheels ${n} time${n > 1 ? 's' : ''}`, t: [1, 2, 3, 4, 6] },
+  platform: { txt: n => `Run on top of ${n} bleacher${n > 1 ? 's' : ''}`, t: [2, 4, 7, 10, 15] },
   letters: { txt: n => `Collect ${n} daily-word letters`, t: [2, 3, 4, 5, 6] },
   tricks: { txt: n => `Land ${n} skate tricks`, t: [3, 6, 10, 15, 25] }
 };
@@ -3426,7 +3507,7 @@ function landTrick() {
 const PUSH_CD = 8, pushCD = () => Math.max(3, pwTime('push'));
 function pushOne(o, quiet) {
   const side = o.x > 0.3 ? 1 : o.x < -0.3 ? -1 : (Math.random() < 0.5 ? -1 : 1);
-  o.pushed = { dir: side, t: 0 }; o.ignore = true; o.vz = 0; o.shout = 1.4; o.say = pick(['HEY!', 'RUDE!', 'excuse YOU', 'woah!', 'my lunch!!']);
+  o.pushed = { dir: side, t: 0 }; o.ignore = true; o.vz = 0; o.shout = 1.4; o.say = pick(['HEY!', 'RUDE!', 'Excuse YOU!', 'Whoa!', 'My lunch!!']);
   for (const a of o.acts) a.pose('hit', 1.2, 0.08);
   if (!quiet) { G.score += 40 * scoreMult(); popup('OUTTA MY WAY!', '#ffd60a'); sfx('bump'); buzz('push'); }
 }
@@ -3875,13 +3956,13 @@ const Billing = {
 };
 window.onPurchase = (sku, ok, why) => { const cb = Billing.cb; Billing.cb = null; if (!ok && why === 'unavailable') toast('Store not ready', 'Check your connection and try again', 1600); if (cb) cb(!!ok); };
 window.onOwned = sku => { if (sku === STARTER.sku && !save.starterBought) { grantStarter(); toast('Starter Pack restored', '', 1600); refreshMenuSoft(); } };
-function grantStarter() { grant({ cash: STARTER.cash, heelys: STARTER.heelys, otok: STARTER.otok }); save.starterBought = 1; persist(); Analytics.log('purchase', { item_id: STARTER.sku }); }
+function grantStarter() { grant({ cash: STARTER.cash, heelys: STARTER.heelys, otok: STARTER.otok }); save.starterBought = 1; save.noAds = 1; persist(); Analytics.log('purchase', { item_id: STARTER.sku }); }
 function openStarter() {
   if (save.starterBought || save.age === 'child') return;
   save.starterSeen = (save.starterSeen || 0) + 1; persist();
   const p = Billing.price(STARTER.sku); $('stPrice').textContent = p ? 'Buy for ' + p : 'Buy';
   $('starterModal').classList.add('show'); Analytics.log('view_promotion', { promotion_id: 'starter' });
-  $('stBuy').onclick = async () => { const ok = await Billing.buy(STARTER.sku); if (ok) { grantStarter(); $('starterModal').classList.remove('show'); sfx('win'); toast('Starter Pack unlocked!', '$12,000 · 5 Heel Wheels · 15 Outfit Tokens', 2600); refreshMenu(); } };
+  $('stBuy').onclick = async () => { const ok = await Billing.buy(STARTER.sku); if (ok) { grantStarter(); $('starterModal').classList.remove('show'); sfx('win'); toast('Starter Pack unlocked!', '$12,000 · 5 Heel Wheels · 15 Outfit Tokens · no ads between runs', 2600); refreshMenu(); } };
   $('stClose').onclick = () => $('starterModal').classList.remove('show');
 }
 
@@ -4010,6 +4091,9 @@ let SPEED_MAX = 27;
 const wN = () => clamp((G.weight - 0.2) / 0.8, 0, 1);
 function jumpV() { return lerp(11.2, 9.0, wN()) * (save.up.helium ? 1.1 : 1) * shoeDef().jump * (charDef().perk === 'jump' ? 1.08 : 1); }
 function onWax() { for (const o of G.objs) if (o.kind === 'wax' && o.z < PZ + 0.3 && o.z + o.len > PZ && Math.abs(o.x - P.x) < laneW * 0.6) return true; return false; }
+// height of whatever you're standing over (0 = the hallway floor, or the top / ramp of a platform)
+function platUnder(x) { for (const o of G.objs) { if (o.K.cat !== 'plat' || o.dead) continue; const rel = PZ - o.z; if (rel < 0 || rel > o.len || Math.abs(o.x - x) > laneW * 0.46) continue; const H = o.K.top; return { o, h: o.ramp && rel < RAMP_LEN ? H * rel / RAMP_LEN : H }; } return null; }
+function floorAt(x) { const u = platUnder(x); return u ? u.h : 0; }
 function laneSpeed() { return (G.waxed ? 0.35 : 1) * laneW * lerp(11, 5.2, wN()) * shoeDef().lane * (charDef().perk === 'lanes' ? 1.2 : 1); }
 function slideDur() { return lerp(0.5, 0.95, wN()) * shoeDef().slide; }
 // row spacing follows the speed WITHOUT the Fast/Turbo multiplier: faster modes really are harder (less time per row), not just stretched out
@@ -4023,6 +4107,7 @@ function addObj(kind, lane, z, extra) {
   const K = KINDS[kind];
   if (K.cat === 'pick' && lane !== undefined && !(extra && extra.x !== undefined) && hidesSomething(lane, z, (extra && extra.y) || 0)) return null;
   if (smallObs(K) && G.mode !== 'tutorial') for (let i = G.objs.length - 1; i >= 0; i--) { const q = G.objs[i]; if (q.K.cat === 'pick' && Math.abs(q.x - lane * laneW) < 0.9 && q.z < z + 0.5 && z - q.z < 11 && q.y < (K.h || 0.8) + 0.9) killObj(i); }
+  if (K.cat === 'pick' && G.plat && G.objs.includes(G.plat) && lane === G.plat.lane && z > G.plat.z - 0.3 && z < G.plat.z + G.plat.len && !(extra && extra.x !== undefined)) { const P2 = G.plat, rel = z - P2.z, top = P2.ramp && rel < RAMP_LEN ? KINDS.riser.top * Math.max(0, rel) / RAMP_LEN : KINDS.riser.top; extra = Object.assign({}, extra || {}); extra.y = Math.max(extra.y || 0, top + ((extra.y || 0.6) > 1.5 ? 0.6 : (extra.y || 0.6))); }
   const o = Object.assign({ kind, K, lane, x: lane * laneW, z, y: 0, row: G.rowId, seed: Math.random(), t: rand(0, 5), shout: 0 }, extra || {});
   if (K.init) K.init(o);
   const seeded = Math.random; if (G.fixed) Math.random = REAL_RANDOM; // looks are random for everyone; only the layout follows the weekly seed
@@ -4097,11 +4182,21 @@ function spawnRowInner(z) {
     for (let zz = o2.z + 1.5; zz < o2.z + o2.len - 1; zz += 1.4) addObj(Math.random() < 0.12 ? 'bill' : 'coin', L, zz, { y: 0.7 });
     if (starOK() && Math.random() < 0.25) { addObj('gstar', L, o2.z + o2.len * 0.6, { y: 1.1 }); G.lastStarD = G.dist; }
   }
+  // rolling bleachers / stage risers you can run along the top of
+  const pl = G.plat && G.objs.includes(G.plat) ? G.plat : null; if (!pl) G.plat = null;
+  let plLane = pl && z > pl.z - 3 && z < pl.z + pl.len + 8 ? pl.lane : null;
+  if (!pl && G.mode !== 'tutorial' && G.fun !== 'sled' && G.fun !== 'coinrush' && !G.quiz && G.dist > 220 && G.dist - (G.lastPlat || 0) > 260 && Math.random() < 0.22) {
+    const opts = [-1, 0, 1].filter(l => l !== scLane); const L = pick(opts);
+    if (L !== undefined) { const len = Math.round(rand(14, 24)), ramp = Math.random() < 0.75 || L === safe; const o3 = addObj('riser', L, z + 0.5, { len, ramp }); G.plat = o3; G.lastPlat = G.dist; plLane = L;
+      for (let zz = o3.z + (ramp ? 1.2 : 1.6); zz < o3.z + len - 0.8; zz += 1.5) addObj(Math.random() < 0.08 ? 'bill' : 'coin', L, zz, { y: (ramp && zz - o3.z < RAMP_LEN ? KINDS.riser.top * (zz - o3.z) / RAMP_LEN : KINDS.riser.top) + 0.6, x: L * laneW });
+      if (Math.random() < 0.25) addObj(pick(['pass', 'cheat', 'energy']), L, o3.z + len * 0.7, { y: KINDS.riser.top + 1.0, x: L * laneW }); }
+  }
+  const skipL = l => l === scLane || l === plLane;
   // more stuff on harder difficulties; the safe-lane rule below still guarantees a path every row
   const density = (save.battery ? 0.85 : 1) * clamp((G.cfg.density || 0.5) + diff().dens + (G.mode === 'infinite' ? Math.min(0.15, G.dist / 20000) : 0), 0.15, 0.95);
   let blocks = 0; const occ = {};
   for (const lane of [-1, 0, 1]) {
-    if (lane === scLane) continue; // inside the shortcut: always clear
+    if (skipL(lane)) continue; // inside the shortcut / under a platform: always clear
     if (lane === safe) {
       if (Math.random() < clamp((G.cfg.safeObs || 0.25) + diff().safe, 0, 0.6)) { const k = weightedPick(pool, K => (K.type === 'low' || K.type === 'high') && !K.cross); if (k) { addObj(k, lane, z); occ[lane] = KINDS[k].type; } }
       continue;
@@ -4110,17 +4205,17 @@ function spawnRowInner(z) {
   }
   // mid-run hazards: a door or locker that swings open into an outer lane (never the safe lane), or a waxed floor
   if (G.mode !== 'tutorial' && !G.fun && G.rowCount > 6 && !THEME().outdoor && Math.random() < 0.12) {
-    const outer = [-1, 1].filter(l => l !== safe && !occ[l] && l !== scLane);
+    const outer = [-1, 1].filter(l => l !== safe && !occ[l] && !skipL(l));
     if (outer.length) { const l = pick(outer), k = Math.random() < 0.55 ? 'doorswing' : 'lockerpop'; addObj(k, l, z - g * 0.45); }
-  } else if (G.mode !== 'tutorial' && G.rowCount > 6 && Math.random() < 0.06) { const l = pick([-1, 0, 1].filter(q => !occ[q])); if (l !== undefined) addObj('wax', l, z - g * 0.2, { len: 9 }); }
+  } else if (G.mode !== 'tutorial' && G.rowCount > 6 && Math.random() < 0.06) { const l = pick([-1, 0, 1].filter(q => !occ[q] && !skipL(q))); if (l !== undefined) addObj('wax', l, z - g * 0.2, { len: 9 }); }
   // coins & money
   const r = Math.random();
-  if (!occ[safe] && r < 0.65) coinLine(safe, z - g * 0.75, z + 0.1);
+  if (skipL(safe)) {} else if (!occ[safe] && r < 0.65) coinLine(safe, z - g * 0.75, z + 0.1);
   else if (occ[safe] === 'low' && r < 0.7) coinArc(safe, z);
   if (blocks >= 2 && Math.random() < 0.45) addObj('bill', safe, z + (occ[safe] ? -3 : 0), { y: occ[safe] === 'low' ? 2.0 : occ[safe] === 'high' ? 0.4 : 0.8 });
   // coins in every lane, like the big runners: trails in open lanes, arcs over jumpable things, a low line under banners
   for (const lane of [-1, 0, 1]) {
-    if (lane === safe || lane === scLane) continue;
+    if (lane === safe || skipL(lane)) continue;
     if (!occ[lane]) { if (Math.random() < (G.fun === 'coinrush' ? 0.95 : 0.55)) coinLine(lane, z - g * 0.6, z - 1); }
     else if (occ[lane] === 'low' && Math.random() < 0.45) coinArc(lane, z);
     else if (occ[lane] === 'high' && Math.random() < 0.35) for (let k = -2; k <= 2; k++) addObj('coin', lane, z + k * 1.3, { y: 0.35 });
@@ -4180,11 +4275,11 @@ G.lastQuiz = 0; G.lastShortcut = 0; G.lastLetter = -999; G.tpStart = undefined; 
   showBoostBar(mode);
   if (charDef().perk === 'pass') G.pw.pass = 3;
   G.weight = baseWeight();
-  Object.assign(P, { lane: 0, fromLane: 0, x: 0, y: 0, vy: 0, slide: 0, slideQ: false, fall: 0 });
+  Object.assign(P, { lane: 0, fromLane: 0, x: 0, y: 0, vy: 0, slide: 0, slideQ: false, fall: 0, fl: 0 }); G.highAir = false; G.onPlat = false; G.plat = null;
   G.speed = baseSpeed();
   G.scene = 'play'; G.countdown = 0; G.lastCount = 0; G.intro = fromMenu && mode !== 'campaign' ? INTRO : 0; G.caught = false; clearChase(); startChase(null, { role: 'monitor', t: 3.2, warmup: true, line: 'HEY! NO RUNNING!' });
   if (mode !== 'tutorial') { if (cheatOn('flyer')) G.pw.cheat = pwTime('cheat') + 3; if (cheatOn('juiced')) G.pw.energy = pwTime('energy') + 3; }
-  G.cheated = unfairCheats();
+  G.cheated = unfairCheats(); G.shield = mode !== 'tutorial' && charDef().ab === 'shield' ? 1 : 0; P.dj = false;
   showScreen(null); $('popCol').innerHTML = ''; if (mode !== 'tutorial') $('tutSkip').classList.remove('show'); $('hud').classList.add('show'); $('heelyBtn').classList.toggle('show', true); $('pushBtn').classList.toggle('show', mode !== 'tutorial');
   if (G.fun === 'coinrush') G.timeLeft = 60;
   $('hCamp').style.visibility = mode === 'campaign' || G.fun === 'coinrush' || G.fun === 'trial' ? 'visible' : 'hidden';
@@ -4201,6 +4296,7 @@ G.lastQuiz = 0; G.lastShortcut = 0; G.lastLetter = -999; G.tpStart = undefined; 
 function crash(o, msg) {
   if (G.dying) return;
   if (save.admin && save.adminGod && G.mode !== 'tutorial') { if (o) o.ignore = true; return; } // admin god mode
+  if (G.shield && G.mode !== 'tutorial') { G.shield = 0; if (o) o.ignore = true; G.pw.pass = Math.max(G.pw.pass, 1.5); G.caught = false; popup('🛡 SHIELD SAVED YOU!', '#7bdff2'); sfx('smash'); G.shake = 0.3; return; }
   if (petDef().help === 'guard' && !G.foxSaved && G.mode !== 'tutorial') { G.foxSaved = true; if (o) o.ignore = true; G.pw.pass = Math.max(G.pw.pass, 1.5); G.caught = false; popup('🦊 FOX TO THE RESCUE!', '#ff9f1c'); sfx('power'); clearChase(); G.stumble = 0; return; }
   if (G.mode !== 'tutorial') breakChain(true);
   if (heelySave(o)) { if (G.tut) G.tut.saved = true; return; }
@@ -4281,6 +4377,7 @@ function endRun(win, reason) {
   mission('runs', 1); mission('coins_total', G.coins); setTimeout(() => Cloud.save(), 500); mission('dist_run', Math.floor(G.dist)); mission('score_run', Math.floor(G.score));
   const sc = Math.floor(G.score);
   if (G.mode === 'infinite' && !G.fun && !G.tourney) save.lastCode = challengeCode(sc);
+  if (G.mode === 'infinite' && !G.fun && tourOn() && G.dist >= 1000 && save.tourStamp !== tourWeek()) { save.tourStamp = tourWeek(); save.tourStamps = (save.tourStamps || 0) + 1; grant({ cash: 1000, gs: 1 }); setTimeout(() => toast(tourStop().flag + ' TOUR STAMP!', tourStop().name + ' · +$1,000 +1★ (' + save.tourStamps + ' stamps)', 2600), 1600); }
   let newBest = false;
   let placed = null;
   if (G.mode === 'infinite' && !G.fun) { if (sc > save.best) { save.best = sc; newBest = true; } save.bestDist = Math.max(save.bestDist, Math.floor(G.dist)); if (sc > 0 && !G.fun) { placed = recordRun(sc, Math.floor(G.dist)); if (sc >= save.best && !G.cheated) Online.submit(save.name || 'Runner', sc, G.dist); } }
@@ -4388,10 +4485,11 @@ function act(a) {
   else if (a === 'right' && P.lane < 1) { P.fromLane = P.lane; P.lane++; sfx('lane'); G.laneT = G.t; G.tpLane = true; }
   else if ((a === 'left' && P.lane === -1) || (a === 'right' && P.lane === 1)) lockerSlam(a === 'left' ? -1 : 1);
   else if (a === 'jump') {
-    if (P.y <= 0.001) { P.vy = jumpV() * (G.heely > 0 ? 1.12 : 1); P.slide = 0; P.slideQ = false; sfx('jump'); if (G.heely > 0) startTrick(); G.lastJumpT = G.t; }
+    if (P.y <= (P.fl || 0) + 0.001) { P.vy = jumpV() * (G.heely > 0 ? 1.12 : 1); P.slide = 0; P.slideQ = false; sfx('jump'); if (G.heely > 0) startTrick(); G.lastJumpT = G.t; }
+    else if (charDef().ab === 'djump' && !P.dj && P.vy < jumpV() * 0.7) { P.dj = true; P.vy = jumpV() * 0.88; sfx('jump'); popup('DOUBLE JUMP!', '#7bdff2'); emit(P.x, P.y, 0.2, 10, '#ffffff', 2.5, 0.4, 0.15, 0, true, true); }
     else if (G.t - (G.lastJumpT || -9) < 0.7 && !(G.burstCd > 0) && G.mode !== 'tutorial') { G.burstT = 1.8; G.burstCd = 6; P.vy = Math.min(P.vy, 2); popup('SPRINT!', '#ff9f1c'); sfx('whistle'); voice('go_go_go', 8); buzz('power'); } // swipe up twice = sprint burst
   } else if (a === 'slide') {
-    if (P.y > 0.001) { P.vy = Math.min(P.vy, -22); P.slideQ = true; }
+    if (P.y > (P.fl || 0) + 0.001) { P.vy = Math.min(P.vy, -22); P.slideQ = true; }
     else if (P.slide <= 0.1) { P.slide = slideDur(); sfx('slide'); }
   }
 }
@@ -4481,7 +4579,7 @@ function update(dt) {
   if (G.reviving) { G.objs.forEach(o => o.t += dt); return; }
   if (G.dying) {
     G.dyingT -= dt; P.fall = Math.min(1, P.fall + dt * 3);
-    if (P.y > 0) { P.vy -= 30 * dt; P.y = Math.max(0, P.y + P.vy * dt); }
+    if (P.y > (P.fl || 0)) { P.vy -= 30 * dt; P.y = Math.max(P.fl || 0, P.y + P.vy * dt); }
     G.objs.forEach(o => o.t += dt);
     if (G.dyingT <= 0 && !G.reviving) { if (!offerRevive()) endRun(false); }
     return;
@@ -4524,16 +4622,20 @@ function update(dt) {
   // player
   const tx = P.lane * laneW, ls = laneSpeed() * dt;
   { const d = tx - P.x; P.x += Math.abs(d) < 0.004 ? d : clamp(d * Math.min(1, dt * 24), -ls, ls); } // eased lane change: full speed at first, soft landing in the lane
+  P.fl = floorAt(P.x);
   if (G.pw.cheat > 0) { // paper plane: cruise above everything
-    const want = G.pw.cheat > 0.9 ? 3.6 : 0.4; P.y += (want - P.y) * Math.min(1, dt * (G.pw.cheat > 0.9 ? 3 : 4)); P.vy = 0; P.slide = 0;
+    const want = G.pw.cheat > 0.9 ? 3.6 : P.fl + 0.4; P.y += (want - P.y) * Math.min(1, dt * (G.pw.cheat > 0.9 ? 3 : 4)); P.vy = 0; P.slide = 0;
     if (Math.random() < 0.25) emit(P.x + rand(-0.8, 0.8), P.y + 0.45, 1.2, 1, '#ffffff', 1.2, 0.35, 0.06, 0, true, true);
     if (G.pw.cheat - dt <= 0) { G.pw.pass = Math.max(G.pw.pass, 1.2); P.vy = -2; }
     if (G.pw.cheat > 0.9 && G.pw.cheat - dt <= 0.9) for (const o of G.objs) if (o.sky && o.z > PZ - 0.5 && !o.dead) { o.dead = true; emit(o.x, o.y, -(o.z - PZ), 4, '#ffd60a', 2, 0.4, 0.1, 0, true, true); } // plane is landing: leftover sky coins pop
-  } else if (P.y > 0 || P.vy > 0) {
-    const g = 26 * (save.up.helium && P.vy < 0 ? 0.72 : 1) * (cheatOn('moon') ? 0.45 : 1);
+  } else if (P.y > P.fl + 0.0001 || P.vy > 0) {
+    const g = 26 * (save.up.helium && P.vy < 0 ? 0.72 : 1) * (cheatOn('moon') ? 0.45 : 1) * (charDef().ab === 'glide' && P.vy < 0 ? 0.55 : 1);
     P.vy -= g * dt; P.y += P.vy * dt;
-    if (P.y <= 0) { P.y = 0; P.vy = 0; sfx('land'); if (G.trick) landTrick(); emit(P.x, 0.1, 0.2, 6, '#cfc6b4', 1.8, 0.4, 0.25, 2, false, true); if (P.slideQ) { P.slideQ = false; P.slide = slideDur(); sfx('slide'); } }
+    if (P.y <= P.fl) { P.y = P.fl; P.dj = false; P.vy = 0; sfx('land'); if (G.trick) landTrick(); emit(P.x, 0.1, 0.2, 6, '#cfc6b4', 1.8, 0.4, 0.25, 2, false, true); if (P.slideQ) { P.slideQ = false; P.slide = slideDur(); sfx('slide'); } }
   }
+  else if (P.y < P.fl) P.y = P.fl; // walking up a ramp
+  if (P.fl > 0.5) G.highAir = true; else if (P.y <= 0.01) G.highAir = false;
+  if (P.fl > 1.3 && P.y >= P.fl - 0.01 && !G.onPlat) { G.onPlat = true; mission('platform', 1); popup('ON TOP!', '#7bdff2'); addChain(1); } else if (P.fl < 0.5) G.onPlat = false;
   if (P.slide > 0) P.slide = Math.max(0, P.slide - dt);
   { const w = onWax(); if (w && !G.waxed) { popup('SLIPPERY!', '#bfe9ff'); sfx('slide'); } G.waxed = w; }
   tpUpdate(); petHelp(dt);
@@ -4583,24 +4685,35 @@ function update(dt) {
     if (K.steps && !o.stepped && o.z < 30 && o.z > 15) {
       o.stepped = true; o.shout = 1.6;
       const pl = P.lane;
-      if (pl !== o.lane && Math.abs(pl - o.lane) === 1 && Math.random() < 0.6 && !G.objs.some(q => q !== o && q.row === o.row && q.lane === pl && q.K.cat === 'obs')) {
+      if (pl !== o.lane && Math.abs(pl - o.lane) === 1 && Math.random() < 0.6 && !(G.plat && G.objs.includes(G.plat) && G.plat.lane === pl && G.plat.z < o.z + 2 && G.plat.z + G.plat.len > o.z - 2) && !G.objs.some(q => q !== o && q.row === o.row && q.lane === pl && q.K.cat === 'obs')) {
         o.lane = pl; o.tx = pl * laneW; sfx('whistle');
       }
     }
     if (o.tx !== undefined) o.x += clamp(o.tx - o.x, -4.5 * wdt, 4.5 * wdt);
     if (o.shout > 0) o.shout -= wdt;
     if (K.cat === 'pick') {
-      const petPull = petDef().perk === 'magnet' && Math.abs(o.x - P.x) < laneW * 1.3 && o.z < 12;
+      const petPull = (petDef().perk === 'magnet' || charDef().ab === 'magnet') && Math.abs(o.x - P.x) < laneW * 1.3 && o.z < 12;
       if ((magnet || petPull) && (o.kind === 'coin' || o.kind === 'bill') && o.z < 28 && o.z > PZ - 1) { const k = Math.min(1, dt * 9); o.x += (P.x - o.x) * k; o.y += (P.y + 0.8 - o.y) * k; o.z -= (o.z - PZ) * Math.min(1, dt * 4); }
       const top = P.y + (sliding ? 0.9 : 1.9);
       if (Math.abs(o.z - PZ) < 0.9 && Math.abs(o.x - P.x) < K.r && o.y > P.y - 0.4 && o.y < top + 0.3) { collect(o); killObj(i); continue; }
+    } else if (K.cat === 'plat') {
+      const rel = PZ - o.z, ax = Math.abs(o.x - P.x);
+      if (rel > -0.35 && rel < o.len - 0.2 && ax < laneW * 0.46 + 0.28 && !(G.pw.cheat > 0)) {
+        const need = o.ramp && rel < RAMP_LEN ? K.top * clamp(rel / RAMP_LEN, 0, 1) : K.top;
+        if (P.y < need - 0.6) {
+          const moving = Math.abs(P.x - P.lane * laneW) > 0.2 && P.fromLane !== P.lane && ax > laneW * 0.3;
+          if (moving) { P.lane = P.fromLane; G.shake = 0.2; sfx('bump'); vibrate(40); popup('BLOCKED!', '#ef476f'); breakChain(); } // bounced off its side
+          else if (inv) { P.y = need; P.vy = 0; }
+          else { crash(o, 'You ran into ' + K.label + '. Run up the ramp, or jump on!'); return; }
+        }
+      }
     } else if (K.cat === 'obs' && !o.ignore && !(G.pw.cheat > 0 && P.y > 1.0)) {
       const dz = Math.abs(o.z - PZ), dx = Math.abs(o.x - P.x);
       if (dz < (K.d || 0.5) / 2 + 0.3 && dx < K.hw + 0.3) {
         let hit = false;
         if (K.type === 'low') hit = P.y < K.h - 0.12;
         else if (K.type === 'high') hit = !sliding || P.y > 0.2;
-        else hit = true;
+        else hit = !(G.highAir && P.y > (K.h || 1.8) - 0.1); // jumping off a platform can clear people
         if (hit) {
           if (inv) { o.flying = true; o.fx = 0; o.fy = 0; o.fvx = (o.x >= P.x ? 1 : -1) * rand(8, 14); o.fvy = rand(8, 12); o.rot = 0; G.score += 50; G.smashed++; sfx('smash'); emit(o.x, 1, -(o.z - PZ), 18, pick(['#ffd60a', '#ef476f', '#06d6a0']), 6, 0.6, 0.35, 8, true, true); popup('+50', '#ffd60a'); G.shake = 0.15; continue; }
           const tutSide = G.tut && TUT_STEPS[G.tut.i] && TUT_STEPS[G.tut.i].side && o === G.tut.target;
@@ -4702,6 +4815,7 @@ function updateHUD() {
   let html = '';
   if (G.heely > 0) html += '<div class="hudBox pw' + (G.heely < 3 ? ' low' : '') + '">👟<div class="pbar"><i style="width:' + (G.heely / (G.heelyMax || HEELY_TIME) * 100).toFixed(0) + '%;background:#ffb703"></i></div></div>';
   for (const [k, ic, col, d] of pws) if (G.pw[k] > 0) html += '<div class="hudBox pw' + (G.pw[k] < 2 ? ' low' : '') + '">' + ic + '<div class="pbar"><i style="width:' + (G.pw[k] / d * 100).toFixed(0) + '%;background:' + col + '"></i></div></div>';
+  if (G.shield) html += '<div class="hudBox pw">🛡 Shield</div>';
   if (G.stumble > 0) html += '<div class="hudBox pw chaseBox"><span>Being chased! ' + Math.ceil(G.stumble) + 's</span><div class="pbar"><i style="width:' + (G.stumble / CHASE_TIME * 100).toFixed(0) + '%;background:#ef476f"></i></div></div>';
   if (hudCache.pw !== html) { hudCache.pw = html; $('hPw').innerHTML = html; }
   layoutStack();
@@ -4914,8 +5028,12 @@ function buildLockerInv(box) {
     b.onclick = () => { if (!it.n) { sfx('deny'); return; } if (on) save.loadout = save.loadout.filter(x => x !== it.id); else { if (save.loadout.length >= 2) save.loadout.shift(); save.loadout.push(it.id); } persist(); sfx('click'); buildShop(); }; hd.querySelector('.lockerShelf').appendChild(b); }
 }
 function buildHallShop(box) {
+  if (hallCat === 'lockers' || hallCat === 'banners') { const t = tourStop(), d = document.createElement('div'); d.className = 'item' + (tourOn() ? ' eq' : '');
+    d.innerHTML = '<div class="sw" style="display:grid;place-items:center;font-size:44px;background:linear-gradient(160deg,' + t.lockers[0] + ',' + t.banners[0] + ')"></div><b></b><small></small>'; d.querySelector('.sw').textContent = t.flag; d.querySelector('b').textContent = '🌍 World Tour: ' + t.name; d.querySelector('small').textContent = 'This week\'s school colours. Changes every Monday.';
+    const b = document.createElement('button'); b.className = 'btn ' + (tourOn() ? 'green' : 'blue'); b.textContent = tourOn() ? 'On' : 'Turn on';
+    b.onclick = () => { save.tourOn = !tourOn(); persist(); sfx('click'); rebuildWorld(); buildShop(); }; d.appendChild(b); box.appendChild(d); }
   for (const it of HALL[hallCat]) {
-    const id = 'hall_' + hallCat + '_' + it.id, owned = it.price === 0 || !!save.owned[id], on = hallPick(hallCat).id === it.id;
+    const id = 'hall_' + hallCat + '_' + it.id, owned = it.price === 0 || !!save.owned[id], on = hallPick(hallCat).id === it.id && !((hallCat === 'lockers' || hallCat === 'banners') && tourOn());
     const d = document.createElement('div'); d.className = 'item' + (on ? ' eq' : '');
     d.innerHTML = '<div class="sw"><img alt=""></div><b></b><small></small>'; d.querySelector('img').src = hallSwatch(hallCat, it); d.querySelector('b').textContent = it.name;
     d.querySelector('small').textContent = hallCat === 'locations' ? 'Where you run in Infinite' : it.price === 0 ? 'Free' : it.cur === 'gs' ? 'Premium style' : 'Hallway style';
@@ -4924,14 +5042,14 @@ function buildHallShop(box) {
     b.onclick = () => {
       initAudio(); const wallet = it.cur === 'gs' ? 'gs' : 'bank';
       if (!owned) { if ((save[wallet] || 0) < it.price) { sfx('deny'); toast(wallet === 'gs' ? 'Not enough Gold Stars' : 'Not enough cash', 'Need ' + (wallet === 'gs' ? '★' : '$') + (it.price - (save[wallet] || 0)) + ' more', 1200); return; } save[wallet] -= it.price; save.owned[id] = 1; sfx('buy'); } else sfx('click');
-      save.hall = save.hall || {}; save.hall[hallCat] = it.id; persist(); if (hallCat === 'locations' && G.scene === 'menu') { G.themeKey = it.theme; } rebuildWorld(); buildShop();
+      save.hall = save.hall || {}; save.hall[hallCat] = it.id; if (hallCat === 'lockers' || hallCat === 'banners') save.tourOn = false; persist(); if (hallCat === 'locations' && G.scene === 'menu') { G.themeKey = it.theme; } rebuildWorld(); buildShop();
     };
     d.appendChild(b); box.appendChild(d);
   }
 }
 document.querySelectorAll('[data-hc]').forEach(t => t.onclick = () => { document.querySelectorAll('[data-hc]').forEach(x => x.classList.remove('on')); t.classList.add('on'); hallCat = t.dataset.hc; sfx('click'); buildShop(); });
 function canBuy(it) { const owned = it.price === 0 || save.owned[it.id]; if (owned || it.pass || it.event || it.lv) return false; if (it.weekly !== undefined && it.weekly !== weekNum() % 6) return false; return (it.cur === 'gs' ? save.gs || 0 : save.bank) >= it.price; }
-function affordableCount() { let n = 0; for (const t of ['char', 'pet', 'pack', 'shoe', 'plane', 'hat']) for (const it of SHOP[t]) if (canBuy(it)) n++; return n; }
+function affordableCount() { let n = 0; for (const t of ['char', 'pet', 'pack', 'shoe', 'plane', 'hat', 'wheel']) for (const it of SHOP[t]) if (canBuy(it)) n++; return n; }
 function buildShop() {
   refreshMenu();
   const box = $('shopItems'); box.innerHTML = '';
@@ -4949,10 +5067,10 @@ function buildShop() {
     let owned, equipped = false;
     if (shopTab === 'up') owned = it.lv ? upLv(it.lv) >= MAXLV : !!save.up[it.id];
     else if (shopTab === 'boost') owned = false;
-    else { owned = !!save.owned[it.id] || it.price === 0; equipped = (shopTab === 'pack' ? save.pack : shopTab === 'char' ? save.char : shopTab === 'pet' ? (save.pet || 'nopet') : shopTab === 'plane' ? planeDef().id : shopTab === 'hat' ? hatDef().id : save.shoe) === it.id; }
+    else { owned = !!save.owned[it.id] || it.price === 0; equipped = (shopTab === 'pack' ? save.pack : shopTab === 'char' ? save.char : shopTab === 'pet' ? (save.pet || 'nopet') : shopTab === 'plane' ? planeDef().id : shopTab === 'hat' ? hatDef().id : shopTab === 'wheel' ? wheelDef().id : save.shoe) === it.id; }
     d.className = 'item' + (equipped ? ' eq' : '');
     if (shopTab !== 'boost' && shopTab !== 'up' && canBuy(it) && it === items.filter(canBuy).sort((a, b) => b.price - a.price)[0]) { const t = document.createElement('span'); t.className = 'tag pick'; t.textContent = 'BEST PICK'; d.appendChild(t); }
-    const sw = shopTab === 'hat' ? '<div class="sw" style="background:linear-gradient(160deg,#ffe066,#ff9f1c);font-size:40px">' + ({ hat_none: '🙂', hat_cap: '🧢', hat_beanie: '🧶', hat_phones: '🎧', hat_party: '🥳', hat_grad: '🎓', hat_heli: '🚁', hat_crayon: '🖍️', hat_goggles: '🥽', hat_helmet: '🏈', hat_gradgold: '🏅', hat_sweat: '💪', hat_explorer: '🤠', hat_shark: '🦈', hat_astro: '👨‍🚀', hat_crown_boss: '👑' }[it.id] || '🎩') + '</div>' : shopTab === 'plane' ? '<div class="sw" style="background:linear-gradient(160deg,#9bf6ff,#3a86ff)"><img alt="" src="' + planeSwatch(it.id) + '"></div>' : shopTab === 'pet' ? '<div class="sw" style="background:linear-gradient(160deg,#7fd3ff,#2c3f9e)">' + (it.key && petPortrait(it) ? '<img alt="" src="' + petPortrait(it) + '">' : '<svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5 19 19 5"/></svg>') + '</div>' : shopTab === 'char' ? '<div class="sw" style="background:' + CHAR_BG(it) + '">' + (portrait(it) ? '<img alt="" src="' + portrait(it) + '">' : '') + '</div>' : shopTab === 'up' ? tile(it.lv || it.id, svgIcon(it.lv || it.id)) : shopTab === 'boost' ? tile(it.id, svgIcon(it.id)) : shopTab === 'pack' ? '<div class="sw" style="background:rgba(255,255,255,.06);display:grid;place-items:center">' + packSvg(it) + '</div>' : shopTab === 'shoe' ? '<div class="sw" style="background:rgba(255,255,255,.06);display:grid;place-items:center">' + shoeSvg(it) + '</div>' : shopTab === 'boost' ? '<div class="sw" style="background:#fff3d6">' + it.icon + '</div>' : shopTab === 'char' ? '<div class="sw" style="background:linear-gradient(135deg,' + (it.colors.top || '#888') + ' 50%,' + (it.colors.pants || it.colors.hair || '#444') + ' 50%)"><span style="width:26px;height:26px;border-radius:50%;background:' + it.colors.skin + ';border:3px solid #fff;display:block"></span></div>' : shopTab === 'up' ? '<div class="sw" style="background:#f0e6ff">' + it.icon + '</div>' : shopTab === 'pack' ? '<div class="sw" style="background:' + it.color + '"><span style="display:block;width:40%;height:40%;border-radius:6px;background:' + it.trim + '"></span></div>' : '<div class="sw" style="background:linear-gradient(transparent 60%,' + it.sole + ' 60%),' + it.color + '">👟</div>';
+    const sw = shopTab === 'hat' ? '<div class="sw" style="background:linear-gradient(160deg,#ffe066,#ff9f1c);font-size:40px">' + ({ hat_none: '🙂', hat_cap: '🧢', hat_beanie: '🧶', hat_phones: '🎧', hat_party: '🥳', hat_grad: '🎓', hat_heli: '🚁', hat_crayon: '🖍️', hat_goggles: '🥽', hat_helmet: '🏈', hat_gradgold: '🏅', hat_sweat: '💪', hat_explorer: '🤠', hat_shark: '🦈', hat_astro: '👨‍🚀', hat_crown_boss: '👑' }[it.id] || '🎩') + '</div>' : shopTab === 'plane' ? '<div class="sw" style="background:linear-gradient(160deg,#9bf6ff,#3a86ff)"><img alt="" src="' + planeSwatch(it.id) + '"></div>' : shopTab === 'pet' ? '<div class="sw" style="background:linear-gradient(160deg,#7fd3ff,#2c3f9e)">' + (it.key && petPortrait(it) ? '<img alt="" src="' + petPortrait(it) + '">' : '<svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5 19 19 5"/></svg>') + '</div>' : shopTab === 'char' ? '<div class="sw" style="background:' + CHAR_BG(it) + '">' + (portrait(it) ? '<img alt="" src="' + portrait(it) + '">' : '') + '</div>' : shopTab === 'up' ? tile(it.lv || it.id, svgIcon(it.lv || it.id)) : shopTab === 'boost' ? tile(it.id, svgIcon(it.id)) : shopTab === 'pack' ? '<div class="sw" style="background:rgba(255,255,255,.06);display:grid;place-items:center">' + packSvg(it) + '</div>' : shopTab === 'wheel' ? '<div class="sw" style="display:grid;place-items:center;font-size:42px;background:radial-gradient(circle,' + (it.glow === 'rainbow' ? '#ff006e,#3a86ff' : it.glow + ',' + it.tire) + ')">🛞</div>' : shopTab === 'shoe' ? '<div class="sw" style="background:rgba(255,255,255,.06);display:grid;place-items:center">' + shoeSvg(it) + '</div>' : shopTab === 'boost' ? '<div class="sw" style="background:#fff3d6">' + it.icon + '</div>' : shopTab === 'char' ? '<div class="sw" style="background:linear-gradient(135deg,' + (it.colors.top || '#888') + ' 50%,' + (it.colors.pants || it.colors.hair || '#444') + ' 50%)"><span style="width:26px;height:26px;border-radius:50%;background:' + it.colors.skin + ';border:3px solid #fff;display:block"></span></div>' : shopTab === 'up' ? '<div class="sw" style="background:#f0e6ff">' + it.icon + '</div>' : shopTab === 'pack' ? '<div class="sw" style="background:' + it.color + '"><span style="display:block;width:40%;height:40%;border-radius:6px;background:' + it.trim + '"></span></div>' : '<div class="sw" style="background:linear-gradient(transparent 60%,' + it.sole + ' 60%),' + it.color + '">👟</div>';
     let label, cls;
     const priceTxt = it.cur === 'gs' ? '★ ' + it.price : '$' + it.price;
     if (it.lv) { const L = upLv(it.lv); label = L >= MAXLV ? 'MAX' : '$' + UP_PRICES[L]; cls = L >= MAXLV ? 'gray' : 'gold'; }
@@ -4987,8 +5105,8 @@ function buildShop() {
       }
       if (shopTab === 'up') { if (owned) return; if (save.bank < it.price) { sfx('deny'); toast('Not enough cash', 'Need $' + (it.price - save.bank) + ' more', 1200); return; } save.bank -= it.price; save.up[it.id] = 1; sfx('buy'); }
       else if (!owned) { if ((save[wallet] || 0) < it.price) { sfx('deny'); toast(wallet === 'gs' ? 'Not enough Gold Stars' : 'Not enough cash', 'Need ' + (wallet === 'gs' ? '★' : '$') + (it.price - (save[wallet] || 0)) + ' more', 1200); return; } save[wallet] -= it.price; save.owned[it.id] = 1; if (shopTab === 'pack') save.pack = it.id; else if (shopTab === 'char') save.char = it.id; else if (shopTab === 'pet') save.pet = it.id; else save.shoe = it.id; sfx('buy'); }
-      else { if (shopTab === 'pack') save.pack = it.id; else if (shopTab === 'char') save.char = it.id; else if (shopTab === 'pet') save.pet = it.id; else if (shopTab === 'plane') save.plane = it.id; else if (shopTab === 'hat') save.hat = it.id; else save.shoe = it.id; sfx('click'); }
-      if (shopTab === 'char' || shopTab === 'pack' || shopTab === 'plane' || shopTab === 'hat') rebuildPlayer();
+      else { if (shopTab === 'pack') save.pack = it.id; else if (shopTab === 'char') save.char = it.id; else if (shopTab === 'pet') save.pet = it.id; else if (shopTab === 'plane') save.plane = it.id; else if (shopTab === 'hat') save.hat = it.id; else if (shopTab === 'wheel') save.wheel = it.id; else save.shoe = it.id; sfx('click'); }
+      if (shopTab === 'char' || shopTab === 'pack' || shopTab === 'plane' || shopTab === 'hat' || shopTab === 'wheel') rebuildPlayer();
       persist(); buildShop();
     };
     if (/^\$\d/.test(b.textContent)) b.innerHTML = '<span class="pricec"><span class="cn"></span>' + b.textContent.slice(1) + '</span>'; else if (/^★ \d/.test(b.textContent)) b.innerHTML = '<span class="pricec">★ ' + b.textContent.slice(2) + '</span>';
@@ -5042,6 +5160,9 @@ $('saveLoad').onclick = () => { $('saveIn').value = ''; $('saveModal').classList
 $('saveCancel').onclick = () => $('saveModal').classList.remove('show');
 $('saveDo').onclick = () => { if (loadSaveCode($('saveIn').value)) { toast('Save loaded!', 'Restarting…', 1200); setTimeout(() => location.reload(), 900); } else { sfx('deny'); toast('That save code didn\'t work', 'Copy the whole code (it starts with HD1.)', 2000); } };
 $('saveDev').textContent = myCode();
+if (!window.HallwayNotify) $('remindRow').style.display = 'none';
+$('bRemind').classList.toggle('off', save.remind === false);
+$('bRemind').onclick = () => { save.remind = save.remind === false; persist(); $('bRemind').classList.toggle('off', save.remind === false); try { window.HallwayNotify && HallwayNotify.setEnabled(save.remind !== false); if (save.remind !== false && window.HallwayNotify) HallwayNotify.requestPermission(); } catch (e) {} toast(save.remind === false ? 'Daily reminder off' : 'Daily reminder on', save.remind === false ? '' : 'Once a day around 5 pm, only if you haven\'t played', 1600); };
 $('codeGo').onclick = () => { enterCode($('codeIn').value); $('codeIn').value = ''; };
 $('codeIn').addEventListener('keydown', e => { if (e.key === 'Enter') $('codeGo').click(); });
 for (const id of ['bAdmin', 'bAdmin2']) $(id).onclick = () => openAdmin();
@@ -5092,10 +5213,10 @@ $('ctrlClose').onclick = () => toggleControls(false); $('bCtrl2').onclick = () =
 $('bResume').onclick = () => { sfx('click'); G.autoPaused = true; graceResume(); };
 $('bRestart').onclick = () => { sfx('click'); G.seedNext = G.seedRun; G.tourneyNext = G.tourney; G.funNext = G.fun; startRun(G.mode, G.levelIdx); };
 $('bQuit').onclick = () => { sfx('click'); goMenu(); syncMusic(); };
-$('bAgain').onclick = () => { sfx('click'); G.seedNext = G.seedRun; G.tourneyNext = G.tourney; G.funNext = G.fun; startRun(G.mode, G.levelIdx); };
-$('bNext').onclick = () => { sfx('click'); startRun('campaign', Math.min(LEVELS.length - 1, G.levelIdx + 1)); };
+$('bAgain').onclick = () => { sfx('click'); const m = G.mode, l = G.levelIdx, sd = G.seedRun, tr = G.tourney, f = G.fun; maybeInterstitial(() => { G.seedNext = sd; G.tourneyNext = tr; G.funNext = f; startRun(m, l); }); };
+$('bNext').onclick = () => { sfx('click'); const l = G.levelIdx; maybeInterstitial(() => startRun('campaign', Math.min(LEVELS.length - 1, l + 1))); };
 $('bOverShop').onclick = () => { sfx('click'); G.scene = 'menu'; clearObjs(); Object.assign(P, { y: 0, slide: 0, fall: 0 }); buildShop(); showScreen('sShop'); };
-$('bOverMenu').onclick = () => { sfx('click'); goMenu(); };
+$('bOverMenu').onclick = () => { sfx('click'); maybeInterstitial(() => goMenu()); };
 function toggleSound() { save.sound = save.sound ? 0 : 1; persist(); initAudio(); applyAudioSettings(); sfx('click'); }
 function setTrack(id) { save.track = id; save.music = id === 'off' ? 0 : 1; persist(); initAudio(); applyAudioSettings(); MUSIC.restart(); syncMusic(); buildMusicList(); }
 function toggleMusic() { setTrack(curTrack() === 'off' ? (save.lastTrack || 'groove') : (save.lastTrack = curTrack(), 'off')); }
@@ -5126,6 +5247,7 @@ try { const away = AWAY_MS; if (save.tutDone && away > 3 * 86400000) setTimeout(
 try { G.themeKey = hallPick('locations').theme; } catch (e) {}
 loadCharacters().then(() => {
   rebuildPlayer(); refreshMenu(); try { initWebAds(); } catch (e) {}
+  if (tourOn() && save.tutDone && save.tourSeen !== tourWeek()) { save.tourSeen = tourWeek(); persist(); setTimeout(() => toast('🌍 WORLD TOUR: ' + tourStop().name.toUpperCase(), tourStop().flag + ' New school this week · run 1000m for a Tour Stamp', 3200), 1200); }
   const ld = $('loading'); if (ld) { ld.classList.add('done'); setTimeout(() => ld.remove(), 500); }
   requestAnimationFrame(frame);
 });
