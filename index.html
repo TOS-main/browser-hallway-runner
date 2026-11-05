@@ -7,6 +7,10 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="google-adsense-account" content="ca-pub-9841041313313334">
+<!-- AdSense: the exact tag AdSense asks for on every page. Ad requests start paused and non-personalized; the game un-pauses them only for players 13+ after the age check. -->
+<script>(window.adsbygoogle = window.adsbygoogle || []).pauseAdRequests = 1; window.adsbygoogle.requestNonPersonalizedAds = 1;</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9841041313313334"
+     crossorigin="anonymous"></script>
 <title>Hallway Dash</title>
 <style>
 :root{--ink:#1b1f3b;--gold:#ffd60a;--red:#ef476f;--blue:#118ab2;--green:#06a77d;--purple:#7b2cbf;--paper:#fffdf6}
@@ -485,10 +489,18 @@ body.pwRight #pwSide{left:auto;right:12px}
 .modal.kb{align-items:flex-start!important;padding-top:6vh!important}
 
 /* ===== Round 16: quick controls, duel, side modes, per-difficulty board, bigger web text ===== */
-#quickCtl{position:fixed;left:50%;transform:translateX(-50%);bottom:max(8px,env(safe-area-inset-bottom));z-index:6;display:none;gap:6px;flex-wrap:wrap;justify-content:center;max-width:calc(100% - 200px);pointer-events:none;transition:opacity .6s}
-#quickCtl.show{display:flex}#quickCtl.dim{opacity:.55}#quickCtl.gone{opacity:0}
-#quickCtl span{background:rgba(15,20,45,.78);color:#fff;border:2px solid rgba(255,255,255,.25);border-radius:10px;padding:3px 7px;font-weight:800;font-size:13px;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
-#quickCtl kbd{background:#fff;color:#1d2340;border-radius:5px;padding:0 6px;font:inherit;font-size:13px;font-weight:900;border-bottom:2px solid #9aa3c0;min-width:20px;text-align:center}
+/* quick controls: a small side panel during runs, hidden with one tap (remembered), reopened from the edge tab */
+#quickCtl{position:fixed;left:8px;top:calc(max(10px,env(safe-area-inset-top)) + 150px);z-index:8;display:none;flex-direction:column;gap:4px;width:max-content;max-width:42vw;background:rgba(15,20,45,.8);color:#fff;border:2px solid rgba(255,255,255,.3);border-radius:14px;padding:6px 7px 7px;touch-action:manipulation}
+#quickCtl.show{display:flex}
+#quickCtl .qcHead{display:flex;align-items:center;justify-content:space-between;gap:8px}#quickCtl .qcHead b{font-size:12px;letter-spacing:.4px;text-transform:uppercase;opacity:.85}
+#qcHide{background:#ef476f;color:#fff;border:2px solid #fff;border-radius:50%;width:26px;height:26px;padding:0;font:900 13px/1 sans-serif;cursor:pointer;flex:none}
+#quickCtl .qcList{display:flex;flex-direction:column;gap:3px}
+#quickCtl .qcList span{font-weight:800;font-size:12px;white-space:nowrap;display:flex;align-items:center;gap:5px}
+#quickCtl kbd{background:#fff;color:#1d2340;border-radius:5px;padding:0 5px;font:inherit;font-size:12px;font-weight:900;border-bottom:2px solid #9aa3c0;min-width:18px;text-align:center}
+#qcTab{position:fixed;left:0;top:calc(max(10px,env(safe-area-inset-top)) + 150px);z-index:8;display:none;flex-direction:column;align-items:center;background:rgba(15,20,45,.8);color:#fff;border:2px solid rgba(255,255,255,.3);border-left:0;border-radius:0 12px 12px 0;padding:5px 6px;font-size:18px;line-height:1;cursor:pointer;opacity:.75}
+#qcTab small{font-size:9px;font-weight:800;margin-top:2px}#qcTab.show{display:flex}
+body.pwRight #quickCtl{left:auto;right:8px}body.pwRight #qcTab{left:auto;right:0;border-left:2px solid rgba(255,255,255,.3);border-right:0;border-radius:12px 0 0 12px}
+body.web #quickCtl .qcList span,body.web #quickCtl kbd{font-size:14px}
 #duelBox{position:fixed;right:10px;top:50%;transform:translateY(-50%);z-index:6;width:170px;background:rgba(15,20,45,.82);color:#fff;border:3px solid #1d2340;box-shadow:0 4px 0 #1d2340;border-radius:16px;padding:10px 12px;pointer-events:none;font-family:'Luckiest Guy',sans-serif}
 #duelBox .dTitle{text-align:center;color:#ffd60a;font-size:18px;letter-spacing:1px}
 #duelBox .dRow{display:flex;justify-content:space-between;align-items:baseline;gap:6px;font-size:15px;margin:4px 0}#duelBox .dRow span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -572,7 +584,7 @@ body.web .playSoon{font-size:13px}
 <div id="tutPrompt"><div class="tutHand" id="tutHand"></div><b id="tutTitle"></b><small id="tutSub"></small></div>
 <div id="popCol"></div><div id="hudStack"><div id="hRival" class="hRival" style="display:none"></div><div id="quizBox"></div><div id="toast"></div></div>
 <div id="countdown"></div>
-<div id="quickCtl" aria-hidden="true"></div>
+<div id="quickCtl"><div class="qcHead"><b>Controls</b><button id="qcHide" aria-label="Hide controls" title="Hide (K)">✕</button></div><div class="qcList" id="qcList"></div></div><button id="qcTab" aria-label="Show controls" title="Show controls (K)">🎮<small>Controls</small></button>
 <div id="duelBox" style="display:none"><div class="dTitle">⚔️ DUEL</div><div class="dRow me"><span>You</span><b id="duelMe">0</b></div><div class="dBar"><i id="duelBar"></i></div><div class="dRow them"><span id="duelName">Friend</span><b id="duelThem">0</b></div><small id="duelNote"></small></div>
 
 <!-- MENU (start screen over the live 3D scene) -->
@@ -3237,7 +3249,7 @@ function syncPlayer() {
 }
 let lastRenderT = performance.now(), baseFov = 60, FRAME_DT = 0.016;
 function render() {
-  const now = performance.now(), rdt = Math.min(0.05, (now - lastRenderT) / 1000); lastRenderT = now; FRAME_DT = rdt; G.frameN = (G.frameN || 0) + 1;
+  const now = performance.now(), rdt = Math.min(0.05, (now - lastRenderT) / 1000); lastRenderT = now; FRAME_DT = rdt; G.frameN = (G.frameN || 0) + 1; if (G.frameN % 12 === 0 && G.scene === 'play' && typeof syncQuickPanel === 'function') syncQuickPanel(); // hide the controls panel while you fall, bring it back on revive
   updParts(rdt);
   if (A11Y().flash) G.shake = 0; if (G.shake > 0) G.shakeX = rand(-1, 1) * G.shake * 0.5; else G.shakeX = 0;
   const menuView = G.scene === 'menu' && curScreen !== 'sLevels';
@@ -3533,10 +3545,12 @@ function initWebAds() {
   const c = window.WEB_ADS && WEB_ADS.adsenseClient; if (!c || window.HallwayAds || !save.age || save.age === 'child') return;
   window.adsbygoogle = window.adsbygoogle || []; syncWebAdPrefs();
   if (h5Loaded) return; h5Loaded = true; window.adBreak = window.adConfig = function (o) { adsbygoogle.push(o); };
-  const sc = document.createElement('script'); sc.async = true; sc.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + encodeURIComponent(c);
-  if (save.age === 'teen') sc.setAttribute('data-tag-for-age-treatment', '2');
-  sc.setAttribute('data-ad-client', c); sc.setAttribute('data-ad-frequency-hint', '30s'); sc.crossOrigin = 'anonymous';
-  sc.onload = () => { h5Ready = true; try { adConfig({ preloadAdBreaks: 'on', sound: save.sfx === false ? 'off' : 'on' }); } catch (e) {} };
+  adsbygoogle.pauseAdRequests = 0; // the <head> tag starts paused, so under-13 players never send an ad request
+  const ready = () => { h5Ready = true; try { adConfig({ preloadAdBreaks: 'on', sound: save.sfx === false ? 'off' : 'on' }); } catch (e) {} };
+  let sc = document.querySelector('script[src*="adsbygoogle.js"]');
+  if (sc) { if (adsbygoogle.loaded) ready(); else sc.addEventListener('load', ready); return; }
+  sc = document.createElement('script'); sc.async = true; sc.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + encodeURIComponent(c);
+  sc.setAttribute('data-ad-frequency-hint', '30s'); sc.crossOrigin = 'anonymous'; sc.onload = ready;
   document.head.appendChild(sc);
 }
 function fakeAd(tag) {
@@ -4576,9 +4590,10 @@ const SPEEDS = { chill: { name: 'Chill', mul: 0.88, score: 0.8 }, normal: { name
 const speedMode = () => (G && G.fixed) ? SPEEDS.normal : SPEEDS[save.speedMode] || SPEEDS.normal;
 let SPEED_MAX = 27;
 const wN = () => clamp((G.weight - 0.2) / 0.8, 0, 1);
-// HEAD HOP targets: any person (or person with a cart) up to normal adult height. Taller stacks (the cheer pyramid,
-// open umbrellas, doors) can't be hopped.
-function hoppable(o) { return !!(o && o.K.type === 'block' && o.acts && o.acts.length && (o.K.h || 1.75) <= 2.0 && !o.knocked); }
+// HEAD HOP targets: every person (and person with a cart or umbrella). Only the 3-high cheer pyramid can't be hopped
+// (and a swinging door, which has no head to land on).
+const NO_HOP = { pyramid: 1, doorswing: 1 };
+function hoppable(o) { return !!(o && o.K.type === 'block' && o.acts && o.acts.length && !NO_HOP[o.kind] && !o.knocked); }
 // Jump assist: a ground jump toward a hoppable person in your lane is tuned so you come down right on their head
 // (before, only short kids were reliably reachable, and adults needed frame-perfect timing and a light backpack).
 function hopAssist(vy) {
@@ -5918,16 +5933,23 @@ $('duelIn').addEventListener('keydown', e => { if (e.key === 'Enter') $('duelGo'
 
 /* ---- quick controls: always on screen on the website, a short reminder at the start of each run in the app ---- */
 function quickCtlStart() {
-  const q = $('quickCtl'); if (!q) return; q.className = ''; clearTimeout(q._t); clearTimeout(q._t2);
-  if (save.quickCtl === false || G.mode === 'tutorial') return;
-  q.innerHTML = IS_WEB
-    ? '<span><kbd>←</kbd><kbd>→</kbd> Move</span><span><kbd>↑</kbd> Jump</span><span><kbd>↓</kbd> Slide</span><span><kbd>Q</kbd> Push</span><span><kbd>E</kbd> Heel Wheels ×' + (save.heelys || 0) + '</span><span><kbd>X</kbd> Finisher</span><span><kbd>P</kbd> Pause</span><span><kbd>R</kbd> Restart</span><span><kbd>M</kbd> Menu</span>'
-    : '<span>👈👉 Swipe to move</span><span>👆 Jump</span><span>👇 Slide</span><span>✋ Push</span><span>👟 Wheels ×' + (save.heelys || 0) + '</span>';
-  q.classList.add('show'); q._t = setTimeout(() => q.classList.add(IS_WEB ? 'dim' : 'gone'), 7000); if (!IS_WEB) q._t2 = setTimeout(() => q.classList.remove('show'), 7800);
+  const q = $('quickCtl'), tab = $('qcTab'); if (!q) return; q.classList.remove('show'); tab.classList.remove('show');
+  if (G.mode === 'tutorial') return;
+  $('qcList').innerHTML = IS_WEB
+    ? '<span><kbd>←</kbd><kbd>→</kbd> Move</span><span><kbd>↑</kbd> Jump</span><span><kbd>↓</kbd> Slide</span><span><kbd>Q</kbd> Push</span><span><kbd>E</kbd> Wheels ×' + (save.heelys || 0) + '</span><span><kbd>X</kbd> Finisher</span><span><kbd>P</kbd> Pause</span><span><kbd>R</kbd> Restart</span><span><kbd>M</kbd> Menu</span><span><kbd>K</kbd> Hide this</span>'
+    : '<span>👈👉 Swipe to move</span><span>👆 Swipe up: jump</span><span>👇 Swipe down: slide</span><span>✋ Push button</span><span>👟 Wheels ×' + (save.heelys || 0) + '</span>';
+  syncQuickPanel();
 }
-function hideRunUi() { const q = $('quickCtl'); if (q) q.className = ''; const d = $('duelBox'); if (d) d.style.display = 'none'; }
+function syncQuickPanel() { const on = G.scene === 'play' && G.mode !== 'tutorial' && !G.dying, open = save.quickCtl !== false;
+  $('quickCtl').classList.toggle('show', on && open); $('qcTab').classList.toggle('show', on && !open); }
+function setQuickCtl(open) { save.quickCtl = !!open; persist(); syncQuickPanel(); syncQuickBtn(); sfx('click'); }
+function hideRunUi() { const q = $('quickCtl'); if (q) q.classList.remove('show'); const t = $('qcTab'); if (t) t.classList.remove('show'); const d = $('duelBox'); if (d) d.style.display = 'none'; }
 function syncQuickBtn() { $('bQuickCtl').classList.toggle('off', save.quickCtl === false); }
-$('bQuickCtl').onclick = () => { save.quickCtl = save.quickCtl === false; persist(); syncQuickBtn(); sfx('click'); toast(save.quickCtl ? 'Quick controls on' : 'Quick controls off', 'Shown at the bottom during runs', 1100); };
+$('bQuickCtl').onclick = () => { save.quickCtl = save.quickCtl === false; persist(); syncQuickBtn(); syncQuickPanel(); sfx('click'); toast(save.quickCtl ? 'Controls panel shown' : 'Controls panel hidden', 'Tap the 🎮 tab at the side of the screen to bring it back', 1300); };
+// taps on the panel never reach the game (no accidental jumps or swipes)
+for (const id of ['quickCtl', 'qcTab']) for (const ev of ['touchstart', 'touchend', 'pointerdown', 'mousedown']) $(id).addEventListener(ev, e => e.stopPropagation(), { passive: true });
+$('qcHide').onclick = e => { e.stopPropagation(); setQuickCtl(false); };
+$('qcTab').onclick = e => { e.stopPropagation(); setQuickCtl(true); };
 syncQuickBtn();
 
 /* ---- website menu: every play mode listed on the side, one click to play ---- */
@@ -5954,6 +5976,7 @@ function hotkey(e) {
   const c = e.code, playing = G.scene === 'play', over = G.scene === 'over' || curScreen === 'sOver';
   const ageOpen = $('ageModal') && $('ageModal').classList.contains('show'); if (ageOpen) return false;
   const closeModals = () => document.querySelectorAll('.modal.show').forEach(m => m.classList.remove('show'));
+  if (c === 'KeyK') { if (playing && G.mode !== 'tutorial') { setQuickCtl(save.quickCtl === false); return true; } return false; }
   if (c === 'KeyR') { if ((playing || over) && G.mode !== 'tutorial') { closeModals(); $('bRestart').onclick(); return true; } return false; }
   if (c === 'KeyM') { if (playing || over || (curScreen && curScreen !== 'sMenu')) { closeModals(); sfx('click'); goMenu(); syncMusic(); return true; } return false; }
   if (c === 'KeyN') { toggleMusic(); toast(curTrack() === 'off' ? 'Music off' : 'Music on', '', 900); return true; }
