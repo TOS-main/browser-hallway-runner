@@ -403,7 +403,7 @@ body.lefty #pushBtn{left:auto;right:12px}body.lefty #heelyBtn{right:auto;left:12
 .ybook{background:#fff;border:3px solid var(--ink);border-radius:14px;padding:10px;margin-bottom:10px;box-shadow:0 4px 0 var(--ink)}.ybGrid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:8px 0}.ybPic{aspect-ratio:1;display:grid;place-items:center;font-size:22px;border:2px solid var(--ink);border-radius:8px;background:#fff3c4}.ybPic.no{background:#e6e0cc;color:#9a9478;font-family:'Luckiest Guy',sans-serif}
 body.hc .panel,body.hc .mPanel{background:#ffffff!important;background-image:none!important}body.hc .sub,body.hc small{color:#000!important}body.hc .btn{filter:contrast(1.25) saturate(1.2)}body.hc .hudBox{background:#000!important;color:#fff!important}
 body.noflash *{animation:none!important;transition:none!important}
-#finBtn{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(max(18px,env(safe-area-inset-bottom)) + 6px);z-index:7;display:none;flex-direction:column;align-items:center;border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink);border-radius:16px;background:linear-gradient(180deg,#ff2bd6,#8338ec);color:#fff;font-family:'Luckiest Guy',sans-serif;font-size:26px;padding:4px 16px;animation:tutPulse .6s ease-in-out infinite}#finBtn small{font-size:12px}#finBtn.show{display:flex}
+#finBtn{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(max(18px,env(safe-area-inset-bottom)) + 6px);z-index:7;display:none;flex-direction:column;align-items:center;border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink);border-radius:16px;background:linear-gradient(180deg,#ff2bd6,#8338ec);color:#fff;font-family:'Luckiest Guy',sans-serif;font-size:26px;padding:4px 16px;animation:finPulse .6s ease-in-out infinite}@keyframes finPulse{50%{transform:translateX(-50%) scale(1.06)}}#finBtn.placed{animation-name:tutPulse}#finBtn small{font-size:12px}#finBtn.show{display:flex}
 #photoBar{position:fixed;left:50%;transform:translateX(-50%);bottom:20px;z-index:20;display:none;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center;background:rgba(255,253,243,.95);border:3px solid var(--ink);border-radius:16px;padding:8px}#photoBar.show{display:flex}#photoBar .btn{width:auto;margin:0}
 #replayTag{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:20;display:none;font-family:'Luckiest Guy',sans-serif;background:#ff4d6d;color:#fff;border:3px solid var(--ink);border-radius:12px;padding:6px 14px}#replayTag.show{display:block}
 .lockerInside{background:linear-gradient(180deg,#2f5fb3,#1d3f8f);border:4px solid var(--ink);border-radius:14px;padding:12px;color:#fff;grid-column:1/-1}.lockerInside small{display:block;color:#dfe8ff!important}.lockerShelf{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;background:#16306b;border-radius:10px;padding:8px;box-shadow:inset 0 4px 0 rgba(0,0,0,.3)}
@@ -480,7 +480,7 @@ body.pwRight #pwSide{left:auto;right:12px}
 #appTour{position:fixed;inset:0;z-index:95}.tourHole{position:fixed;border-radius:14px;box-shadow:0 0 0 9999px rgba(8,12,34,.72);border:3px solid #ffd60a;transition:all .25s;pointer-events:none}
 .tourCard{position:fixed;left:16px;right:16px;max-width:420px;margin:0 auto;background:#fffdf5;color:#1d2340;border:3px solid #1d2340;border-radius:16px;padding:12px;box-shadow:0 6px 0 #1d2340}.tourCard b{font-family:'Luckiest Guy',sans-serif;font-weight:400;font-size:20px}.tourCard p{margin:4px 0 8px;font-size:15px}.tourCard div{display:flex;gap:8px;justify-content:flex-end}
 #btnEdit{position:fixed;left:12px;right:12px;top:calc(max(12px,env(safe-area-inset-top)) + 8px);z-index:90;background:#fffdf5;color:#1d2340;border:3px solid #1d2340;border-radius:14px;padding:10px;display:flex;justify-content:space-between;align-items:center;gap:8px}
-.editing{outline:3px dashed #ffd60a;outline-offset:4px;animation:tutPulse 1s ease-in-out infinite;touch-action:none;z-index:91!important}
+.editing{outline:3px dashed #ffd60a;outline-offset:4px;animation:tutPulse 1s ease-in-out infinite;touch-action:none;user-select:none;-webkit-user-select:none;z-index:91!important}#finBtn.editing:not(.placed){animation-name:finPulse}.noPulse{animation:none!important}
 #finBtn.editing{display:flex}
 .modal.kb{align-items:flex-start!important;padding-top:6vh!important}
 
@@ -501,7 +501,8 @@ body.pwRight #duelBox{right:auto;left:10px}
 .duelPanel{width:min(520px,100%)!important;text-align:left}.duelStep{background:#f1f3ff;border:2px solid #1d2340;border-radius:14px;padding:10px;margin:10px 0}.duelStep b{display:block;font-size:17px}.duelStep small{display:block;opacity:.8;margin:2px 0 6px}
 .duelNow{font-weight:800;margin:6px 0;color:#7b2cbf}
 .allBest{background:linear-gradient(135deg,#ffd60a,#ff9f1c);color:#1d2340;border:3px solid #1d2340;border-radius:14px;padding:8px 12px;margin:6px 0;font-weight:900;display:flex;justify-content:space-between;align-items:center;gap:8px}.allBest small{font-weight:800;opacity:.8;display:block}.allBest b{font-size:22px}
-.seg.boardDiff{margin:6px 0}
+.seg.boardDiff{margin:6px 0}.seg.boardPer{margin:0 0 6px}.seg.boardPer button{font-size:13px;padding:6px 4px}
+.toBeat{background:#1d2340;color:#fff;border:3px solid #ffd60a;border-radius:14px;padding:8px 12px;margin:4px 0 6px;display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:800}.toBeat small{display:block;color:#ffd60a;font-weight:900;font-size:11px;letter-spacing:.3px}.toBeat span{font-size:13px}.toBeat b{font-size:22px;color:#ffd60a;white-space:nowrap}.toBeat.mine{border-color:#06d6a0}.toBeat.mine small{color:#06d6a0}
 .volNum{font-style:normal;font-weight:900;min-width:38px;text-align:right}
 .mModes{display:none}
 /* the website: all play modes listed on the side of the menu */
@@ -658,6 +659,8 @@ body.web .playSoon{font-size:13px}
     <div class="friendBox" id="friendBox"><div>Your friend code: <b id="myCode">------</b></div><div style="margin-top:8px" id="chalNow"></div><div class="frow"><button class="btn green small" id="chalLive">⏱ Race now (same time)</button><button class="btn blue small" id="chalNew">🎲 New challenge hallway</button><button class="btn gold small" id="chalCopy">📋 Copy my code</button></div><small style="display:block;margin:4px 0">Codes work between phones and the browser. A code with a 3rd part (MAYA-5K2-AB3) gives your friend the exact same hallway.</small><div class="frow"><input id="chalIn" maxlength="16" placeholder="e.g. MAYA-5K2" autocomplete="off"><button class="btn gold small" id="chalAdd">Accept</button></div><div class="frow"><input id="friendIn" maxlength="6" placeholder="Friend's code" autocomplete="off"><button class="btn blue small" id="friendAdd">Add</button></div></div>
     <div class="allBest" id="allBest"></div>
     <div class="seg boardDiff" id="boardDiff"><button data-bd="easy">Easy</button><button data-bd="normal">Normal</button><button data-bd="hard">Hard</button><button data-bd="insane">Insane</button></div>
+    <div class="seg boardPer" id="boardPer"><button data-bp="all">All-time</button><button data-bp="month">Month</button><button data-bp="week">Week</button><button data-bp="day">Today</button></div>
+    <div class="toBeat" id="toBeat" style="display:none"></div>
     <div class="sub" id="boardSub">Top Infinite Runs on this phone. Beat your classmates!</div>
     <ol class="board" id="boardList"></ol>
     <button class="btn gold" id="bRanksPlay">Play Infinite Run</button>
@@ -3384,7 +3387,7 @@ var CPU_DIFF = { easy: 0.6, normal: 1, hard: 1.6, insane: 2.3 }; // classmates' 
 function boardRows(dk) {
   dk = dk || runDiff(); const me = (save.name || '').trim().toLowerCase(), k = CPU_DIFF[dk] || 1;
   const rows = CLASSMATES.filter(([n]) => n.toLowerCase() !== me).map(([n, s, d]) => ({ n, s: Math.round(s * k / 10) * 10, d, cpu: true }));
-  const b = bestFor(dk); if (b && b.s > 0) rows.push({ n: save.name || 'You', s: b.s, d: b.d || 0, me: true, t: b.t || 0 }); // you appear once, at your best score on this difficulty
+  const per = boardPer(), b = per === 'all' ? bestFor(dk) : { s: myPeriodBest(dk, per) }; if (b && b.s > 0) rows.push({ n: save.name || 'You', s: b.s, d: b.d || 0, me: true, t: b.t || 0 }); // you appear once, at your best score on this difficulty (in the chosen period)
   rows.sort((a, b) => b.s - a.s);
   return rows.slice(0, 10);
 }
@@ -3395,19 +3398,23 @@ function buildBoard(highlightT) {
   $('friendBox').style.display = boardMode === 'friends' ? 'block' : 'none'; $('chalNow').textContent = save.challenge ? 'Current challenge: beat ' + save.challenge.from + '\'s ' + save.challenge.score.toLocaleString() : 'Got a challenge code from a friend\'s score card? Enter it:'; $('myCode').textContent = myCode() || '------';
   if (boardMode === 'friends') {
     const rows = (save.friends || []).map(f => ({ n: f.n, s: f.s || 0, d: f.d })); if (save.best > 0) rows.push({ n: save.name || 'You', s: save.best, me: true });
-    rows.sort((a, b) => b.s - a.s); rows.forEach((r, i) => ol.appendChild(boardRow(r, i)));
+    rows.sort((a, b) => b.s - a.s); rows.forEach((r, i) => ol.appendChild(boardRow(r, i))); showToBeat(null, dk);
     $('boardSub').textContent = (save.friends || []).length ? 'You vs your friends. Their best distance shows up during your runs.' : 'Share your code and add friends by theirs. Their best runs show up as targets while you play.' + (Online.ready() ? '' : ' (Needs the online board: see README.)');
     refreshFriends().then(() => { if (boardMode === 'friends' && curScreen === 'sRanks') { const r2 = (save.friends || []).length; if (r2) { ol.innerHTML = ''; const rr = save.friends.map(f => ({ n: f.n, s: f.s || 0 })); if (save.best > 0) rr.push({ n: save.name || 'You', s: save.best, me: true }); rr.sort((a, b) => b.s - a.s).forEach((r, i) => ol.appendChild(boardRow(r, i))); } } });
     return;
   }
   if (boardMode === 'world') {
-    if (!Online.ready()) { $('boardSub').textContent = 'The world leaderboard isn\'t connected yet. (Setup steps are in the README.)'; return; }
-    $('boardSub').textContent = 'Loading world scores...';
-    Online.top(100).then(all => { if (boardMode !== 'world') return; checkCrown(all); const rows = all.filter(r => (r.diff || 'normal') === dk).slice(0, 25); $('boardSub').textContent = rows.length ? 'Top ' + DIFF[dk].name + ' runs from players everywhere' : 'No ' + DIFF[dk].name + ' runs on the world board yet. Be the first!'; ol.innerHTML = ''; rows.forEach((r, i) => ol.appendChild(boardRow(r, i))); }).catch(() => { $('boardSub').textContent = 'Couldn\'t reach the world leaderboard. Check your connection.'; });
+    if (!Online.ready()) { $('boardSub').textContent = 'The world leaderboard isn\'t connected yet. (Setup steps are in the README.)'; showToBeat(null, dk); return; }
+    const per = boardPer(); $('boardSub').textContent = 'Loading world scores...';
+    if (per === 'all') Online.top(100).then(all => checkCrown(all)).catch(() => {});
+    Online.board(dk, per).then(rows => { if (boardMode !== 'world' || boardDK !== dk && boardDK) return; rows = rows.slice(0, 25);
+      $('boardSub').textContent = rows.length ? 'Top ' + DIFF[dk].name + ' runs from players everywhere · ' + BOARD_PER[per] : 'No ' + DIFF[dk].name + ' runs on the world board ' + (per === 'all' ? 'yet' : BOARD_PER[per].toLowerCase()) + '. Be the first!';
+      ol.innerHTML = ''; rows.forEach((r, i) => ol.appendChild(boardRow(r, i))); showToBeat(rows, dk); })
+      .catch(() => { if (boardMode !== 'world') return; ol.innerHTML = ''; showToBeat(null, dk); $('boardSub').textContent = per === 'all' ? 'Couldn\'t reach the world board. Check your connection and try again.' : BOARD_PER[per] + ' world boards turn on after one quick Firebase rules update (README → Online leaderboard).'; });
     return;
   }
   $('boardSub').textContent = 'Top ' + DIFF[dk].name + ' Infinite Runs on this ' + (IS_WEB ? 'browser' : 'phone') + '. Beat your classmates!';
-  boardRows(dk).forEach((r, i) => ol.appendChild(boardRow(r, i, highlightT)));
+  { const rows = boardRows(dk); rows.forEach((r, i) => ol.appendChild(boardRow(r, i, highlightT))); showToBeat(rows, dk); }
   const bb = bestFor(dk); $('rBest').textContent = DIFF[dk].name + ' best ' + (bb ? bb.s : 0).toLocaleString();
 }
 function boardRow(r, i, highlightT) {
@@ -3647,10 +3654,21 @@ function startAppTour(force) {
 }
 /* ---------- BUTTON LAYOUT: drag Push / Heel Wheels / Finisher where you want them ---------- */
 const BTN_IDS = ['pushBtn', 'heelyBtn', 'finBtn'];
-function applyBtnPos() { const bp = save.btnPos || {}; for (const id of BTN_IDS) { const el = $(id), p = bp[id]; if (!el) continue; if (p) Object.assign(el.style, { left: p.x + '%', top: p.y + '%', right: 'auto', bottom: 'auto', transform: 'translate(-50%,-50%)' }); else Object.assign(el.style, { left: '', top: '', right: '', bottom: '', transform: '' }); } }
+// A moved button is centred with the separate CSS `translate` property, never `transform`: the buttons' pulse animation
+// animates `transform`, and it used to wipe out the centring every half second, so a placed button jumped back and forth.
+const BTN_TRANSLATE = (() => { try { return CSS.supports('translate', '1px'); } catch (e) { return false; } })();
+function applyBtnPos() { const bp = save.btnPos || {}; for (const id of BTN_IDS) { const el = $(id), p = bp[id]; if (!el) continue;
+  el.classList.toggle('placed', !!p); el.classList.toggle('noPulse', !!p && !BTN_TRANSLATE);
+  if (p) Object.assign(el.style, { left: p.x + '%', top: p.y + '%', right: 'auto', bottom: 'auto' }, BTN_TRANSLATE ? { translate: '-50% -50%', transform: 'none' } : { transform: 'translate(-50%,-50%)' });
+  else Object.assign(el.style, { left: '', top: '', right: '', bottom: '', transform: '', translate: '' }); } }
 function editButtons() {
   showScreen(null); const bar = document.createElement('div'); bar.id = 'btnEdit'; bar.innerHTML = '<b>Drag the buttons where you want them</b><div><button class="btn gray small" id="beReset">Reset</button><button class="btn green small" id="beDone">Done</button></div>'; document.body.appendChild(bar);
-  for (const id of BTN_IDS) { const el = $(id); el.classList.add('show', 'editing'); el.onpointerdown = e => { e.preventDefault(); e.stopPropagation(); const mv = ev => { save.btnPos = save.btnPos || {}; save.btnPos[id] = { x: clamp(ev.clientX / innerWidth * 100, 6, 94), y: clamp(ev.clientY / innerHeight * 100, 8, 94) }; applyBtnPos(); }; const up = () => { removeEventListener('pointermove', mv); removeEventListener('pointerup', up); persist(); }; addEventListener('pointermove', mv); addEventListener('pointerup', up); }; }
+  for (const id of BTN_IDS) { const el = $(id); el.classList.add('show', 'editing'); el.onpointerdown = e => { e.preventDefault(); e.stopPropagation();
+      // the button keeps the same spot under your finger (it used to jump so its centre sat on the finger), follows only that finger, and stops cleanly
+      const r = el.getBoundingClientRect(), ox = e.clientX - (r.left + r.width / 2), oy = e.clientY - (r.top + r.height / 2), pid = e.pointerId; try { el.setPointerCapture(pid); } catch (er) {}
+      const mv = ev => { if (ev.pointerId !== pid) return; ev.preventDefault(); save.btnPos = save.btnPos || {}; save.btnPos[id] = { x: clamp((ev.clientX - ox) / innerWidth * 100, 6, 94), y: clamp((ev.clientY - oy) / innerHeight * 100, 8, 94) }; applyBtnPos(); };
+      const up = ev => { if (ev.pointerId !== pid) return; removeEventListener('pointermove', mv); removeEventListener('pointerup', up); removeEventListener('pointercancel', up); persist(); };
+      addEventListener('pointermove', mv, { passive: false }); addEventListener('pointerup', up); addEventListener('pointercancel', up); }; }
   const done = () => { bar.remove(); for (const id of BTN_IDS) { const el = $(id); el.classList.remove('show', 'editing'); el.onpointerdown = null; } persist(); goMenu(); toast('Buttons saved', 'They show up here during every run', 1500); };
   bar.querySelector('#beDone').onclick = done; bar.querySelector('#beReset').onclick = () => { save.btnPos = {}; applyBtnPos(); persist(); };
 }
@@ -4032,7 +4050,8 @@ const Online = {
   },
   async remove() {
     if (!(window.ONLINE_BOARD && ONLINE_BOARD.projectId && ONLINE_BOARD.apiKey) || !save.fbAuth) return true;
-    try { const a = await this.token(); const r = await fetch(this.url('/scores/' + encodeURIComponent(a.uid)), { method: 'DELETE', headers: { Authorization: 'Bearer ' + a.idToken } }); return r.ok; } catch (e) { return false; }
+    try { const a = await this.token(), H = { method: 'DELETE', headers: { Authorization: 'Bearer ' + a.idToken } }; const r = await fetch(this.url('/scores/' + encodeURIComponent(a.uid)), H);
+      await Promise.allSettled(DIFF_KEYS.map(k => fetch(this.url('/runs/' + encodeURIComponent(a.uid + '_' + k)), H))); return r.ok; } catch (e) { return false; }
   },
   async byCode(code) {
     const r = await fetch(this.url(':runQuery'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ structuredQuery: { from: [{ collectionId: 'scores' }], where: { fieldFilter: { field: { fieldPath: 'code' }, op: 'EQUAL', value: { stringValue: code } } }, limit: 1 } }) });
@@ -4040,11 +4059,37 @@ const Online = {
     const d = (await r.json()).find(x => x.document); if (!d) return null; const f = d.document.fields;
     return { n: f.name.stringValue, s: +f.score.integerValue, d: +(f.dist && f.dist.integerValue || 0) };
   },
+  // Per-difficulty rows with all-time, monthly, weekly and daily bests: runs/{uid}_{difficulty}
+  async submitRun(name, dist) {
+    if (!this.ready()) return; const dk = runDiff(), b = bestFor(dk), p = (save.pb || {})[dk]; if (!b || !p) return;
+    try {
+      const a = await this.token(), I = v => ({ integerValue: String(Math.floor(v || 0)) }), S = v => ({ stringValue: String(v || '') });
+      const r = await fetch(this.url('/runs/' + encodeURIComponent(a.uid + '_' + dk)), { method: 'PATCH', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + a.idToken }, body: JSON.stringify({ fields: {
+        uid: S(a.uid), name: S((name || 'Runner').slice(0, 14)), code: S(myCode()), diff: S(dk), best: I(b.s), bestDist: I(b.d),
+        day: S(p.day), dayS: I(p.dayS), week: S(p.week), weekS: I(p.weekS), month: S(p.month), monthS: I(p.monthS), ts: { timestampValue: new Date().toISOString() } } }) });
+      if (r.ok) { p.sent = Date.now(); persist(); }
+    } catch (e) { /* offline or rules not updated yet: ignore */ }
+  },
+  async board(dk, per) {
+    const K = perKeys(), eq = (f, v) => ({ fieldFilter: { field: { fieldPath: f }, op: 'EQUAL', value: { stringValue: v } } });
+    const where = per === 'all' ? eq('diff', dk) : { compositeFilter: { op: 'AND', filters: [eq('diff', dk), eq(per, K[per])] } };
+    const uid = save.fbAuth && save.fbAuth.uid, best = new Map(), add = (id, row) => { const o = best.get(id); if (!o || row.s > o.s) best.set(id, row); };
+    const q = fetch(this.url(':runQuery'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ structuredQuery: { from: [{ collectionId: 'runs' }], where, limit: 300 } }) })
+      .then(async r => { if (!r.ok) throw new Error('HTTP ' + r.status); for (const x of await r.json()) { if (!x.document) continue; const f = x.document.fields, id = f.uid ? f.uid.stringValue : '';
+        const sc = +((per === 'all' ? f.best : f[per + 'S']) || {}).integerValue || 0; if (sc > 0) add(id, { n: f.name.stringValue, s: sc, d: per === 'all' ? +(f.bestDist && f.bestDist.integerValue || 0) : 0, diff: dk, me: !!uid && id === uid }); } return true; });
+    if (per !== 'all') await q; // daily / weekly / monthly come only from the new rows
+    else { // all-time also keeps everyone already on the original board
+      const [a, b] = await Promise.allSettled([q, this.top(100)]);
+      if (b.status === 'fulfilled') for (const r of b.value) if ((r.diff || 'normal') === dk) add(r.uid || r.n + '|' + r.s, r);
+      if (a.status === 'rejected' && b.status === 'rejected') throw a.reason;
+    }
+    return [...best.values()].sort((a, b) => b.s - a.s);
+  },
   async top(n = 25) {
     const r = await fetch(this.url(':runQuery'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ structuredQuery: { from: [{ collectionId: 'scores' }], orderBy: [{ field: { fieldPath: 'score' }, direction: 'DESCENDING' }], limit: n } }) });
     if (!r.ok) throw new Error('HTTP ' + r.status);
     const rows = await r.json();
-    const uid = save.fbAuth && save.fbAuth.uid; return rows.filter(x => x.document).map(x => { const f = x.document.fields; return { n: f.name.stringValue, s: +f.score.integerValue, d: +(f.dist && f.dist.integerValue || 0), diff: (f.diff && f.diff.stringValue) || 'normal', me: !!uid && x.document.name.endsWith('/' + uid) }; });
+    const uid = save.fbAuth && save.fbAuth.uid; return rows.filter(x => x.document).map(x => { const f = x.document.fields; return { n: f.name.stringValue, s: +f.score.integerValue, d: +(f.dist && f.dist.integerValue || 0), diff: (f.diff && f.diff.stringValue) || 'normal', uid: x.document.name.split('/').pop(), me: !!uid && x.document.name.endsWith('/' + uid) }; });
   }
 };
 
@@ -4853,7 +4898,7 @@ function endRun(win, reason) {
   if (G.mode === 'infinite' && !G.fun && tourOn() && G.dist >= 1000 && save.tourStamp !== tourWeek()) { save.tourStamp = tourWeek(); save.tourStamps = (save.tourStamps || 0) + 1; grant({ cash: 1000, gs: 1 }); setTimeout(() => toast(tourStop().flag + ' TOUR STAMP!', tourStop().name + ' · +$1,000 +1★ (' + save.tourStamps + ' stamps)', 2600), 1600); }
   let newBest = false;
   let placed = null;
-  if (G.mode === 'infinite' && !G.fun) { if (sc > 0) logRunByDiff(sc, Math.floor(G.dist)); duelEnd(sc); if (sc > save.best) { save.best = sc; newBest = true; } save.bestDist = Math.max(save.bestDist, Math.floor(G.dist)); if (sc > 0 && !G.fun) { placed = recordRun(sc, Math.floor(G.dist)); if (sc >= save.best && !G.cheated) Online.submit(save.name || 'Runner', sc, G.dist); } }
+  if (G.mode === 'infinite' && !G.fun) { if (sc > 0) { const nb = logRunByDiff(sc, Math.floor(G.dist)), np = logRunPeriods(sc); if ((nb || np) && !G.cheated) Online.submitRun(save.name || 'Runner', G.dist); } duelEnd(sc); if (sc > save.best) { save.best = sc; newBest = true; } save.bestDist = Math.max(save.bestDist, Math.floor(G.dist)); if (sc > 0 && !G.fun) { placed = recordRun(sc, Math.floor(G.dist)); if (sc >= save.best && !G.cheated) Online.submit(save.name || 'Runner', sc, G.dist); } }
   persist();
   let funLine = '';
   if (G.fun) {
@@ -5798,7 +5843,7 @@ function setDifficulty(k) { if (!DIFF[k]) return; save.difficulty = k; persist()
 function syncBoardDiff() {
   const dk = boardDK || runDiff();
   document.querySelectorAll('#boardDiff button').forEach(b => b.classList.toggle('on', b.dataset.bd === dk));
-  $('boardDiff').style.display = boardMode === 'friends' ? 'none' : '';
+  $('boardDiff').style.display = boardMode === 'friends' ? 'none' : ''; syncBoardPer();
   const at = allTimeBest();
   $('allBest').innerHTML = '<div><small>🏅 HIGHEST SCORE EVER</small><span></span></div><b></b>';
   $('allBest').querySelector('span').textContent = at ? DIFF[at.k].name + ' · ' + (at.d || 0).toLocaleString() + ' m' + (at.t ? ' · ' + new Date(at.t).toLocaleDateString() : '') : 'Play an Infinite Run to set one';
@@ -5806,6 +5851,25 @@ function syncBoardDiff() {
   return dk;
 }
 document.querySelectorAll('#boardDiff button').forEach(b => b.onclick = () => { sfx('click'); boardDK = b.dataset.bd; buildBoard(); });
+/* ---- leaderboard periods: All-time (default) / This month / This week / Today, plus the run to beat ---- */
+var BOARD_PER = { all: 'All-time', month: 'This month', week: 'This week', day: 'Today' };
+function boardPer() { return BOARD_PER[save.boardPer] ? save.boardPer : 'all'; }
+function perKeys(t) { // UTC, so every player in the world is on the same day / week / month
+  const d = new Date(t || Date.now()), iso = d.toISOString(), mon = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - (d.getUTCDay() + 6) % 7));
+  return { day: iso.slice(0, 10), week: 'W' + mon.toISOString().slice(0, 10), month: iso.slice(0, 7) }; }
+function logRunPeriods(sc) { const dk = runDiff(), K = perKeys(); save.pb = save.pb || {}; const p = save.pb[dk] || (save.pb[dk] = {}); let ch = false;
+  for (const per of ['day', 'week', 'month']) { if (p[per] !== K[per]) { p[per] = K[per]; p[per + 'S'] = sc; ch = true; } else if (sc > (p[per + 'S'] || 0)) { p[per + 'S'] = sc; ch = true; } } return ch; }
+function myPeriodBest(dk, per) { if (per === 'all') { const b = bestFor(dk); return b ? b.s : 0; } const p = (save.pb || {})[dk], K = perKeys(); return p && p[per] === K[per] ? p[per + 'S'] || 0 : 0; }
+function syncBoardPer() { const per = boardPer(); document.querySelectorAll('#boardPer button').forEach(b => b.classList.toggle('on', b.dataset.bp === per)); $('boardPer').style.display = boardMode === 'friends' ? 'none' : ''; return per; }
+document.querySelectorAll('#boardPer button').forEach(b => b.onclick = () => { sfx('click'); save.boardPer = b.dataset.bp; persist(); buildBoard(); });
+function showToBeat(rows, dk) {
+  const el = $('toBeat'); if (!el) return; const per = boardPer(), top = rows && rows[0], mine = myPeriodBest(dk, per);
+  if (!top) { el.style.display = 'none'; return; } el.style.display = '';
+  const where = DIFF[dk].name + ' · ' + BOARD_PER[per] + (boardMode === 'world' ? ' · World' : ' · Classmates');
+  el.innerHTML = '<div><small></small><span></span></div><b></b>'; el.classList.toggle('mine', !!top.me);
+  el.querySelector('small').textContent = top.me ? '👑 YOU\'RE #1 · ' + where : '🎯 RUN TO BEAT · ' + where;
+  el.querySelector('span').textContent = top.me ? 'Keep it! Someone is coming for it.' : top.n + (mine > 0 ? ' · you: ' + mine.toLocaleString() + ' (' + Math.max(1, top.s - mine + 1).toLocaleString() + ' to go)' : ' · play a run to get on the board');
+  el.querySelector('b').textContent = top.s.toLocaleString(); }
 
 /* ---- world record alerts: if you hold #1 on the world board and someone beats it, you hear about it ---- */
 async function checkCrown(rows) {
