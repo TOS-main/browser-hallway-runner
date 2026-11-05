@@ -3562,7 +3562,7 @@ function houseAd(tag) {
 
 /* ---------- interstitial ads between runs ----------
    Every 3rd finished run (not in your first 3 runs, never right after you chose to watch a rewarded ad, never in
-   the tutorial), shown when you leave the game-over screen. Android: AdMob interstitial. Browser: 5-second house ad. */
+   the tutorial), shown when you leave the game-over screen. Android: AdMob interstitial. Browser: a Google H5 "next" ad if one is ready (13+ only), otherwise the 5-second house ad. These breaks and the rewarded buttons are the only places ads show. */
 const INTER_EVERY = 3;
 function maybeInterstitial(then) {
   save.runsSinceAd = (save.runsSinceAd || 0) + 1; const total = (save.runsTotal = (save.runsTotal || 0) + 1);
@@ -3574,6 +3574,9 @@ function maybeInterstitial(then) {
   window.onInterstitialDone = () => fin();
   G.adOpen = true; appHidden();
   if (window.HallwayAds && HallwayAds.showInterstitial) { try { HallwayAds.showInterstitial(); setTimeout(fin, 180000); return; } catch (e) {} }
+  if (h5Ready && window.adBreak) { // real Google interstitial; the house ad fills in when Google has none to show
+    try { adBreak({ type: 'next', name: 'between-runs', adBreakDone: info => { if (info && info.breakStatus === 'viewed') fin(); else houseInterstitial(fin); } }); return; } catch (e) {}
+  }
   houseInterstitial(fin);
 }
 function houseInterstitial(fin) {
