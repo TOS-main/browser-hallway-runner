@@ -2,7 +2,7 @@
 
 **Play:** https://tos-main.github.io/browser-hallway-runner/
 
-A 3D school-hallway endless runner. Dodge crowds, teachers and bosses on the way to class. It runs in any modern browser on phone or computer. Swipe on a phone, or use the arrow keys / WASD on a computer (P to pause, Q to push, X for the combo finisher).
+A 3D school-hallway endless runner. Dodge crowds, teachers and bosses on the way to class. It runs in any modern browser on phone or computer. Swipe on a phone, or use the arrow keys / WASD on a computer (Q push, E heel wheels, X combo finisher, P pause, R restart, M menu, L leaderboard, O modes, U duel a friend, 1-4 difficulty, N music, V sound effects).
 
 - `index.html` is the whole game in one self-contained file (three.js, models, sounds and fonts embedded). It works offline once loaded, and you can also just download it and open it.
 - `privacy.html` is the privacy policy (also used by the Google Play listing).
