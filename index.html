@@ -2648,7 +2648,7 @@ const KINDS = {
     build(o) { const g = new THREE.Group(); actorAt(o, g, 'student', 0, 0, o.same ? Math.PI : 0); return g; }, anim(o, t) { o.acts[0].pose('jog', 1.3); } },
   student: { cat: 'obs', type: 'block', h: 1.75, hw: 0.4, d: 0.5, label: 'a student texting while walking', who: 'student', chaseLine: 'You made me drop my PHONE!',
     init(o) { if (fireDrill()) { o.same = true; o.vz = rand(3.2, 4.4); o.fast = true; o.say = 'GO GO GO'; return; } o.same = Math.random() < 0.45; o.vz = o.same ? rand(1, 1.8) : -rand(1.2, 1.9); o.say = Math.random() < 0.3 ? pick(['*texting*', 'Ugh, Mondays', 'Where is room 12?']) : ''; },
-    build(o) { const g = new THREE.Group(); const a = actorAt(o, g, 'student', 0, 0, o.same ? Math.PI : 0); a.post = a2 => { const h = a2.bone('Head'); if (h) h.rotation.x += 0.35; }; return g; }, anim(o, t) { o.acts[0].pose(o.fast ? 'jog' : 'walk', o.fast ? 1.2 : 0.85); } },
+    build(o) { const g = new THREE.Group(); const a = actorAt(o, g, 'student', 0, 0, o.queue ? Math.PI : o.same ? Math.PI : 0); if (!o.queue) a.post = a2 => { const h = a2.bone('Head'); if (h) h.rotation.x += 0.35; }; return g; }, anim(o, t) { if (o.queue) { o.acts[0].pose('idle', 1); return; } o.acts[0].pose(o.fast ? 'jog' : 'walk', o.fast ? 1.2 : 0.85); } },
   group: { cat: 'obs', type: 'block', h: 1.75, hw: 0.95, d: 0.9, label: 'a group of chatting students', who: 'group', chaseLine: 'GET BACK HERE!!',
     init(o) { o.n = pick([2, 3, 3, 4]); o.say = pick(CHAT); },
     build(o) { const g = new THREE.Group(); const n = o.n; const xs = n === 2 ? [-0.4, 0.4] : n === 3 ? [-0.5, 0.05, 0.5] : [-0.52, -0.15, 0.2, 0.55], zs = n === 2 ? [0, 0] : n === 3 ? [0.15, -0.3, 0.12] : [0.1, -0.35, 0.3, -0.1];
@@ -3356,6 +3356,7 @@ const MISSIONS = {
   coins_total: { txt: n => `Collect ${n} coins in total`, t: [300, 700, 1200, 2000, 3500] },
   dodges: { txt: n => `Dodge past ${n} people`, t: [10, 25, 45, 70, 100] },
   heelys: { txt: n => `Ride Heel Wheels ${n} time${n > 1 ? 's' : ''}`, t: [1, 2, 3, 4, 6] },
+  hops: { txt: n => `Head hop ${n} time${n > 1 ? 's' : ''}`, t: [3, 8, 15, 25, 40] },
   platform: { txt: n => `Run along ${n} lunch table${n > 1 ? 's' : ''}`, t: [2, 4, 7, 10, 15] },
   letters: { txt: n => `Collect ${n} daily-word letters`, t: [2, 3, 4, 5, 6] },
   tricks: { txt: n => `Land ${n} skate tricks`, t: [3, 6, 10, 15, 25] }
@@ -3831,6 +3832,7 @@ const TITLES = [
   { id: 'boss', t: 'Boss Buster', ok: () => stats().boss >= 5, how: 'Beat 5 bosses' },
   { id: 'hunt', t: 'Untouchable', ok: () => (stats().hunts || 0) >= 10, how: 'Escape 10 Endless hunts' },
   { id: 'honor', t: 'Honor Roll', ok: () => save.stars.reduce((a, b) => a + (b || 0), 0) >= 300, how: 'Earn 300 campaign stars' },
+  { id: 'surfer', t: 'Crowd Surfer', ok: () => (stats().bestHops || 0) >= 5, how: 'Head hop 5 people in a row' },
   { id: 'legend', t: 'Hallway Legend', ok: () => leagueSave().tier >= 5, how: 'Reach Legend league' }
 ];
 const myTitle = () => (TITLES.find(t => t.id === save.title && t.ok()) || TITLES[0]).t;
@@ -4215,11 +4217,20 @@ function spawnRowInner(z) {
       if (Math.random() < 0.25) addObj(pick(['pass', 'cheat', 'energy']), L, o3.z + len * 0.7, { y: o3.K.top + 1.0, x: L * laneW }); }
   }
   const skipL = l => l === scLane || l === plLane;
+  // HEAD HOP LINE: a line of students waiting (for the water fountain / the bathroom), spaced for bouncing head to head
+  if (G.mode !== 'tutorial' && !G.fun && G.dist > 400 && G.dist - (G.lastHopLine || 0) > 550 && Math.random() < 0.18) {
+    const opts2 = [-1, 0, 1].filter(l => l !== safe && !skipL(l)); const L = pick(opts2);
+    if (L !== undefined) { G.lastHopLine = G.dist; const sp = G.speed * 0.45 + 0.55, n = pick([3, 3, 4, 5]); // the bounce lands mid-window on the next head
+      for (let k = 0; k < n; k++) { const q = addObj('student', L, z + k * sp, { queue: true }); if (q) { q.vz = 0; q.say = k === 0 ? 'Wait your turn!' : ''; } }
+      for (let k = 0; k < n - 1; k++) for (let c = 1; c <= 3; c++) addObj('coin', L, z + k * sp + sp * c / 4, { y: 2.2 + Math.sin(Math.PI * c / 4) * 1.0, x: L * laneW });
+      G.hopLane = L; G.hopLineEnd = z + n * sp; } }
+  const hopL = G.hopLane !== undefined && z < (G.hopLineEnd || 0) + 2 ? G.hopLane : null;
+  const skipL2 = skipL; const skipLx = l => skipL2(l) || l === hopL;
   // more stuff on harder difficulties; the safe-lane rule below still guarantees a path every row
   const density = (save.battery ? 0.85 : 1) * clamp((G.cfg.density || 0.5) + diff().dens + (G.mode === 'infinite' ? Math.min(0.15, G.dist / 20000) : 0), 0.15, 0.95);
   let blocks = 0; const occ = {};
   for (const lane of [-1, 0, 1]) {
-    if (skipL(lane)) continue; // inside the shortcut / under a platform: always clear
+    if (skipLx(lane)) continue; // inside the shortcut / under a platform: always clear
     if (lane === safe) {
       if (Math.random() < clamp((G.cfg.safeObs || 0.25) + diff().safe, 0, 0.6)) { const k = weightedPick(pool, K => (K.type === 'low' || K.type === 'high') && !K.cross); if (k) { addObj(k, lane, z); occ[lane] = KINDS[k].type; } }
       continue;
@@ -4228,17 +4239,17 @@ function spawnRowInner(z) {
   }
   // mid-run hazards: a door or locker that swings open into an outer lane (never the safe lane), or a waxed floor
   if (G.mode !== 'tutorial' && !G.fun && G.rowCount > 6 && !THEME().outdoor && Math.random() < 0.12) {
-    const outer = [-1, 1].filter(l => l !== safe && !occ[l] && !skipL(l));
+    const outer = [-1, 1].filter(l => l !== safe && !occ[l] && !skipLx(l));
     if (outer.length) { const l = pick(outer), k = Math.random() < 0.55 ? 'doorswing' : 'lockerpop'; addObj(k, l, z - g * 0.45); }
-  } else if (G.mode !== 'tutorial' && G.rowCount > 6 && Math.random() < 0.06) { const l = pick([-1, 0, 1].filter(q => !occ[q] && !skipL(q))); if (l !== undefined) addObj('wax', l, z - g * 0.2, { len: 9 }); }
+  } else if (G.mode !== 'tutorial' && G.rowCount > 6 && Math.random() < 0.06) { const l = pick([-1, 0, 1].filter(q => !occ[q] && !skipLx(q))); if (l !== undefined) addObj('wax', l, z - g * 0.2, { len: 9 }); }
   // coins & money
   const r = Math.random();
-  if (skipL(safe)) {} else if (!occ[safe] && r < 0.65) coinLine(safe, z - g * 0.75, z + 0.1);
+  if (skipLx(safe)) {} else if (!occ[safe] && r < 0.65) coinLine(safe, z - g * 0.75, z + 0.1);
   else if (occ[safe] === 'low' && r < 0.7) coinArc(safe, z);
   if (blocks >= 2 && Math.random() < 0.45) addObj('bill', safe, z + (occ[safe] ? -3 : 0), { y: occ[safe] === 'low' ? 2.0 : occ[safe] === 'high' ? 0.4 : 0.8 });
   // coins in every lane, like the big runners: trails in open lanes, arcs over jumpable things, a low line under banners
   for (const lane of [-1, 0, 1]) {
-    if (lane === safe || skipL(lane)) continue;
+    if (lane === safe || skipLx(lane)) continue;
     if (!occ[lane]) { if (Math.random() < (G.fun === 'coinrush' ? 0.95 : 0.55)) coinLine(lane, z - g * 0.6, z - 1); }
     else if (occ[lane] === 'low' && Math.random() < 0.45) coinArc(lane, z);
     else if (occ[lane] === 'high' && Math.random() < 0.35) for (let k = -2; k <= 2; k++) addObj('coin', lane, z + k * 1.3, { y: 0.35 });
@@ -4666,11 +4677,12 @@ function update(dt) {
   } else if (P.y > P.fl + 0.0001 || P.vy > 0) {
     const g = 26 * (save.up.helium && P.vy < 0 ? 0.72 : 1) * (cheatOn('moon') ? 0.45 : 1) * (charDef().ab === 'glide' && P.vy < 0 ? 0.55 : 1);
     P.vy -= g * dt; P.y += P.vy * dt;
-    if (P.y <= P.fl) { P.y = P.fl; P.dj = false; P.vy = 0; sfx('land'); if (G.trick) landTrick(); emit(P.x, 0.1, 0.2, 6, '#cfc6b4', 1.8, 0.4, 0.25, 2, false, true); if (P.slideQ) { P.slideQ = false; P.slide = slideDur(); sfx('slide'); } }
+    if (P.y <= P.fl) { P.y = P.fl; P.dj = false; if (G.hopN > 1 && P.fl < 0.3) { G.hopT = 0; } G.hopN = P.fl < 0.3 ? 0 : G.hopN; P.vy = 0; sfx('land'); if (G.trick) landTrick(); emit(P.x, 0.1, 0.2, 6, '#cfc6b4', 1.8, 0.4, 0.25, 2, false, true); if (P.slideQ) { P.slideQ = false; P.slide = slideDur(); sfx('slide'); } }
   }
   else if (P.y < P.fl) P.y = P.fl; // walking up a ramp
   if (P.fl > 0.5) G.highAir = true; else if (P.y <= 0.01) G.highAir = false; // jumped from a table
   if (P.fl > 0.7 && P.y >= P.fl - 0.01 && !G.onPlat) { G.onPlat = true; mission('platform', 1); popup('TABLE RUN!', '#7bdff2'); addChain(1); } else if (P.fl < 0.4) G.onPlat = false;
+  if (G.hopT > 0) G.hopT -= dt;
   if (P.slide > 0) P.slide = Math.max(0, P.slide - dt);
   { const w = onWax(); if (w && !G.waxed) { popup('SLIPPERY!', '#bfe9ff'); sfx('slide'); } G.waxed = w; }
   tpUpdate(); petHelp(dt);
@@ -4750,8 +4762,16 @@ function update(dt) {
         else if (K.type === 'high') hit = !sliding || P.y > 0.2;
         else hit = !(G.highAir && P.y > (K.h || 1.8) - 0.1); // jumping off a table can clear people
         if (hit && K.type === 'block' && o.acts && o.acts.length && P.y > (K.h || 1.75) - 0.45 && (P.vy <= 0 || P.y > (K.h || 1.75) - 0.1) && !o.hopped) { // HEAD HOP: land on their head and bounce off
-          o.hopped = true; o.ignore = true; P.vy = jumpV() * 0.82; P.dj = false; G.highAir = true; o.shout = 1.4; o.say = pick(['MY HEAD!', 'Hey!!', 'OW!', 'Not the hair!']);
-          for (const a2 of o.acts) a2.pose('hit', 1.2, 0.08); G.score += 75 * scoreMult(); addChain(2); sfx('jump'); buzz && buzz('push'); popup('HEAD HOP! +75', '#7bdff2'); mission('dodges', 1); continue; }
+          o.hopped = true; o.ignore = true; P.vy = jumpV() * 0.82;
+          { // aim the bounce at the next person in this lane (makes head-to-head chains land)
+            let nx = null; for (const q of G.objs) if (q !== o && !q.hopped && !q.ignore && q.K.type === 'block' && q.acts && q.acts.length && Math.abs(q.x - P.x) < 0.6 && q.z > o.z + 2 && q.z - PZ < 16 && (!nx || q.z < nx.z)) nx = q;
+            if (nx) { const t = (nx.z - PZ - 0.45) / Math.max(4, G.speed), want = (nx.K.h || 1.75) - 0.2; if (t > 0.25 && t < 1.0) { const v = (want - P.y + 13 * t * t) / t; if (v > 2 && v < 26 * t) P.vy = v; } } } P.dj = false; G.highAir = true; o.shout = 1.4; o.say = pick(['MY HEAD!', 'Hey!!', 'OW!', 'Not the hair!']);
+          for (const a2 of o.acts) a2.pose('hit', 1.2, 0.08);
+          G.hopN = (G.hopT > 0 ? (G.hopN || 0) : 0) + 1; G.hopT = 1.3; const hn = G.hopN, pts = 75 * hn; // chain: bounce person to person without touching the floor
+          G.score += pts * scoreMult(); addChain(hn > 1 ? 3 : 2); sfx(hn > 2 ? 'power' : 'jump'); buzz && buzz('push');
+          const st = stats(); st.hops = (st.hops || 0) + 1; st.bestHops = Math.max(st.bestHops || 0, hn); mission('hops', 1);
+          popup(hn > 1 ? 'HEAD HOP x' + hn + '! +' + pts : 'HEAD HOP! +75', hn >= 4 ? '#ff6bd6' : hn > 1 ? '#ffd60a' : '#7bdff2');
+          if (hn === 3) voice('awesome', 6); if (hn === 5) { toast('CROWD SURFER!', '5 heads in a row', 1400); voice('excellent', 6); } emit(P.x, P.y, 0.2, 8 + hn * 3, pick(['#ffd60a', '#7bdff2', '#ff6bd6']), 3, 0.5, 0.14, 2, true, true); continue; }
         if (hit) {
           if (inv) { o.flying = true; o.fx = 0; o.fy = 0; o.fvx = (o.x >= P.x ? 1 : -1) * rand(8, 14); o.fvy = rand(8, 12); o.rot = 0; G.score += 50; G.smashed++; sfx('smash'); emit(o.x, 1, -(o.z - PZ), 18, pick(['#ffd60a', '#ef476f', '#06d6a0']), 6, 0.6, 0.35, 8, true, true); popup('+50', '#ffd60a'); G.shake = 0.15; continue; }
           const tutSide = G.tut && TUT_STEPS[G.tut.i] && TUT_STEPS[G.tut.i].side && o === G.tut.target;
