@@ -1817,10 +1817,17 @@ function makeActor(spec) {
     const clipName = CLIP_ALIAS[name] || name;
     act.speed = speed;
     if (act.cur === clipName) { if (act.actions[clipName]) act.actions[clipName].timeScale = speed; return; }
+    // a reaction (bumped, head-hopped) plays to the end: the walk/talk loop asking for its clip back the very next
+    // frame used to cut it off after one frame, which read as the character snapping/resetting
+    if (act.hold > 0 && clipName !== 'Death01') return;
     const clip = clips[clipName]; if (!clip) return;
     const a = act.actions[clipName] || (act.actions[clipName] = act.mixer.clipAction(clip));
-    const keepT = !ONE_SHOT[clipName] && act.phase ? act.phase[clipName] || 0 : 0; // looping clips pick up where they left off (stop() rewinds them, so the phase is remembered separately)
-    a.reset(); a.timeScale = speed; a.enabled = true; if (keepT) a.time = keepT;
+    // never rewind a looping clip: if it is still fading out it simply carries on from where it is, otherwise it
+    // picks up from where it stopped (stop() rewinds to 0, so the phase is remembered separately)
+    const live = !ONE_SHOT[clipName] && a.enabled && a.isRunning() && a.getEffectiveWeight() > 0.001, liveT = a.time;
+    const keepT = !ONE_SHOT[clipName] && act.phase ? act.phase[clipName] || 0 : 0;
+    a.reset(); a.timeScale = speed; a.enabled = true; if (live) a.time = liveT; else if (keepT) a.time = keepT;
+    act.hold = clipName === 'Hit_Chest' ? clip.duration / Math.max(0.1, speed) * 0.8 : 0;
     if (ONE_SHOT[clipName]) { a.setLoop(THREE.LoopOnce, 1); a.clampWhenFinished = true; } else a.setLoop(THREE.LoopRepeat, Infinity);
     const prevA = act.cur && act.actions[act.cur];
     // fade out EVERY other clip (not just the last one): quick switches like run -> jump -> slide used to leave an
@@ -1830,22 +1837,27 @@ function makeActor(spec) {
     a.play();
     let fromW = 0; const from = []; if (prevA && fade > 0) for (const k in act.actions) { const o = act.actions[k]; if (o !== a && o.enabled && o.getEffectiveWeight() > 0.001) { from.push([o, o.getEffectiveWeight()]); fromW += o.getEffectiveWeight(); } }
     if (fromW > 0.05) { for (const f of from) f[1] /= fromW; a.setEffectiveWeight(0); act.blend = { to: a, from, t: 0, dur: fade }; } // weights always add up to 1: a gap let the bind pose (arms out, knees locked) flash through
-    else { for (const k in act.actions) { const o = act.actions[k]; if (o !== a) o.stop(); } a.setEffectiveWeight(1); act.blend = null; }
+    else { for (const k in act.actions) { const o = act.actions[k]; if (o !== a) act.stopA(k); } a.setEffectiveWeight(1); act.blend = null; }
     if (!act.cur && !ONE_SHOT[clipName]) a.time = Math.random() * clip.duration; // desync crowds
     act.cur = clipName;
   };
+  act.stopA = k => { const o = act.actions[k]; if (!o) return; if (!ONE_SHOT[k] && o.enabled && o.isRunning()) act.phase[k] = o.time; o.stop(); }; // remember where a loop was before stop() rewinds it
   act.groundY = 0;
   act.phase = {};
   act.update = dt => {
-    if (act.blend) { const B = act.blend; B.t += dt; const k = Math.min(1, B.t / B.dur); B.to.setEffectiveWeight(k); for (const [o, w0] of B.from) { if (k >= 1) o.stop(); else o.setEffectiveWeight(w0 * (1 - k)); } if (k >= 1) { act.blend = null; for (const n in act.actions) if (act.actions[n] !== B.to) act.actions[n].stop(); } }
+    if (act.hold > 0) act.hold -= dt;
+    if (act.blend) { const B = act.blend; B.t += dt; const k = Math.min(1, B.t / B.dur); B.to.setEffectiveWeight(k); for (const [o, w0] of B.from) { if (k < 1) o.setEffectiveWeight(w0 * (1 - k)); } if (k >= 1) { act.blend = null; for (const n in act.actions) if (act.actions[n] !== B.to) act.stopA(n); } }
     act.mixer.update(dt);
     { const ca = act.cur && act.actions[act.cur]; if (ca && !ONE_SHOT[act.cur]) act.phase[act.cur] = ca.time; }
-    if (!act.sole) { const want = act.cur ? groundOffset(spec.key, act.cur) : 0; act.groundY += (want - act.groundY) * Math.min(1, dt * 10); model.position.y = act.groundY * (spec.scale || 1); }
+    { // ground contact: every clip has ONE fixed lift (worked out once from the shoe soles over the whole clip), and the body
+      // lift is those lifts mixed by the clips' current blend weights. It changes only as smoothly as the animations blend,
+      // so landing, bumping or switching clips can never pop the body up or pull it into the floor
+      let wsum = 0, y = 0; for (const k in act.actions) { const o = act.actions[k]; if (!o.isRunning()) continue; const w = o.getEffectiveWeight(); if (w > 0.001) { y += w * soleOffset(spec.key, k); wsum += w; } }
+      if (wsum > 0.001) act.liftT = y / wsum; const on = act.noGround ? 0 : 1; act.gK = act.gK === undefined ? on : act.gK + (on - act.gK) * Math.min(1, dt * 10);
+      act.groundY = (act.liftT || 0) * act.gK; model.position.y = (act.groundY + 0.02) * (spec.scale || 1); }
     if (act.lids) { act.blinkT -= dt; const k = act.blinkT < 0.12 && act.blinkT > 0 ? 1 - Math.abs(act.blinkT - 0.06) / 0.06 : 0; if (act.blinkT <= 0) act.blinkT = 2 + Math.random() * 4; for (const l of act.lids) { const u = l.userData; l.position.lerpVectors(u.p0, u.p1, k); l.scale.copy(u.s0); l.scale.y *= 1 + k * 0.7; } }
     if (act.post) act.post(act);
     if (act.cur === 'Idle_Loop' || act.cur === 'Idle_Talking_Loop' || act.cur === 'Walk_Loop') twist(act, 'Head', 1, 0, 0, -0.22); // chin up, look ahead
-    if (act.sole && !act.noGround) groundFeet(act, dt);
-    else if (act.sole && act.noGround) { act.groundY += (0 - act.groundY) * Math.min(1, dt * 12); model.position.y = act.groundY; } // sliding / plane / sled: settle instead of keeping the last jump's lift
   };
   act.sole = solePoints(spec.key, model);
   return act;
@@ -1866,9 +1878,21 @@ function groundOffset(key, clipName) {
   const off = /Roll|Death|Jump/.test(clipName) ? Math.max(0, restLow - low) : restLow - low;
   return (GROUND[id] = clamp(off, -0.5, 0.5));
 }
-// Per-frame foot planting: each foot's sole (heel + toe points found on the mesh in its rest pose, stored
-// in the foot bone's space) is tracked every frame and the body is lifted/lowered so the lowest sole point
-// sits exactly on the floor. This fixes sinking/floating for every character, size and animation.
+// Fixed per-clip lift from the shoe soles: the lowest sole point over the whole clip is put exactly on the floor
+// (a running stride never dips into the floor; jumps, rolls and falls are only ever lifted, never sunk).
+function soleOffset(key, clipName) {
+  const id = 'S|' + key + '|' + clipName; if (GROUND[id] !== undefined) return GROUND[id];
+  const clip = CH.clips[key[0]][clipName]; if (!clip || !CH.tpl[key]) return (GROUND[id] = 0);
+  solePoints(key, CH.tpl[key]); if (!SOLE[key]) return (GROUND[id] = groundOffset(key, clipName));
+  const m = THREE.SkeletonUtils.clone(CH.tpl[key]); m.position.set(0, 0, 0); m.rotation.set(0, 0, 0); m.scale.setScalar(1);
+  const sole = mapSole(SOLE[key], m), mx = new THREE.AnimationMixer(m); mx.clipAction(clip).play(); let low = 9; const n = 32;
+  for (let i = 0; i <= n; i++) { mx.setTime(clip.duration * Math.min(i / n, 0.999)); m.updateMatrixWorld(true); for (const s of sole.pts) { _sv.copy(s.p).applyMatrix4(s.bone.matrixWorld); if (_sv.y < low) low = _sv.y; } }
+  mx.stopAllAction();
+  const off = /Roll|Death|Jump/.test(clipName) ? Math.max(0, -low) : -low;
+  return (GROUND[id] = clamp(off, -0.5, 0.5));
+}
+// Shoe-sole points: each foot's sole (heel + toe points found on the mesh in its rest pose, stored
+// in the foot bone's space), used by soleOffset() to find each clip's floor lift.
 const SOLE = {}, _sv = new THREE.Vector3(), _rv = new THREE.Vector3();
 const STRIDE = { Sprint_Loop: 1, Jog_Fwd_Loop: 1 };
 const GROUNDED = { Idle_Loop: 1, Idle_Talking_Loop: 1, Walk_Loop: 1, Walk_Formal_Loop: 1, Push_Loop: 1, Dance_Loop: 1, Interact: 1, Hit_Chest: 1 };
@@ -1894,21 +1918,6 @@ function solePoints(key, model) {
 }
 function readV(attr, i, v) { return v.fromBufferAttribute(attr, i); } // three r149 already un-normalises quantised attributes
 function mapSole(sole, model) { if (!sole) return null; const m = { pts: [] }; model.traverse(o => { if (o.isBone && sole[o.name]) for (const p of sole[o.name]) m.pts.push({ bone: o, p }); }); return m.pts.length ? m : null; }
-function groundFeet(act, dt) {
-  const model = act.model, root = act.root; model.position.y = 0; model.updateMatrixWorld(true);
-  root.getWorldPosition(_rv); const rs = root.matrixWorld.elements[5] || 1; // root's vertical scale (roots are never tilted)
-  let low = 9; for (const s of act.sole.pts) { _sv.copy(s.p).applyMatrix4(s.bone.matrixWorld); low = Math.min(low, _sv.y); }
-  const rel = (low - _rv.y) / rs; let want = -rel; // root-space lift that puts the lowest sole on the floor
-  if (STRIDE[act.cur]) { // runs: both feet leave the floor mid-stride, so use the lowest point of the last ~0.7s
-    // the history survives jumps, and blended frames (landing: jump legs still tucked up) are not recorded, so a landing
-    // never pulls the body down into the floor to plant a foot that is still in the air
-    const h = act.lowHist || (act.lowHist = []); if (!act.blend || !h.length) { h.push(rel); if (h.length > 40) h.shift(); }
-    want = act.blend ? Math.max(-Math.min(...h), -rel, act.groundY) : Math.max(-Math.min(...h), -rel); // ...but a foot is never allowed below the floor
-  } else { if (GROUNDED[act.cur]) act.lowHist = null; else want = Math.max(0, want); } // jumps/rolls may leave the floor, never sink
-  const airClip = !STRIDE[act.cur] && !GROUNDED[act.cur]; // jumps/rolls: ease both ways, an instant 0.4m lift on take-off read as a teleport
-  act.groundY = act.gInit ? (want > act.groundY && !airClip ? want : act.groundY + (want - act.groundY) * Math.min(1, dt * (airClip ? 9 : 18))) : want; act.gInit = true; // rise instantly (never sink), settle smoothly
-  model.position.y = act.groundY + 0.02 / rs;
-}
 // Simple cartoon eyes + brows parented to the head bone (the source models have almost no facial features).
 const EYE = { M: { x: 0.0345, y: 0.068, z: 0.102, r: 0.0168 }, W: { x: 0.034, y: 0.072, z: 0.113, r: 0.0166 } }; // round 13: bigger, closer-set eyes
 const HAS_EYES = { W_SciFi: 1, W_Soldier: 1, W_Witch: 1, W_Adventurer: 1 };
@@ -3161,22 +3170,25 @@ function syncPlayer() {
   if (ik < 1) { const e = ik * ik * (3 - 2 * ik), turn = Math.min(1, ik * 3); pp.root.rotation.y = lerp(-0.55 + Math.PI * 2, Math.PI, turn * turn * (3 - 2 * turn)); pp.wrap.position.set(lerp(MENU_POS.x, P.x, e), 0, lerp(MENU_POS.z, 0, e)); a.pose('run', clamp(G.speed / 11.5, 1.0, 2.2), 0.12); a.update(FRAME_DT); followChest(pp); pp.shadow.position.y = 0.003; pp.aura.visible = false; pp.wheels.forEach(w => w.visible = false); return; } // you're the same size as the other students at your school
   pp.wrap.position.set(inMenu ? 0 : P.x + (P.slam || 0), P.y, 0);
   const sliding = P.slide > 0 && !inMenu;
+  const flying = G.scene === 'play' && G.pw.cheat > 0 && !G.dying, sledding = G.scene === 'play' && G.fun === 'sled' && !G.dying && !flying;
+  // exactly ONE pose request per frame (the plane/sled used to ask for run or jump first and then idle, switching clips twice a frame);
+  // the in-air test has a little hysteresis so bumpy floors (stairs, tables, ramps) can't flick jump <-> run every frame
+  const air = P.y - (P.fl || 0), inAir = !inMenu && (air > 0.05 || (a.cur === 'Jump_Loop' && air > 0.015));
   if (G.dying) a.pose('die', 1.3, 0.1);
+  else if (flying || sledding) a.pose('idle', 0.5, 0.15);
   else if (sliding) a.pose('idle', 1, 0.12);
-  else if (P.y - (P.fl || 0) > 0.05 && !inMenu) a.pose(G.trick && G.trick.kind === 'grab' ? 'roll' : 'jump', G.trick && G.trick.kind === 'grab' ? 0.35 : 1, 0.15);
-  else if (G.pushAnim > 0 && G.scene === 'play') a.pose('push', 2.2, 0.06); // shoving through
+  else if (inAir) a.pose(G.trick && G.trick.kind === 'grab' ? 'roll' : 'jump', G.trick && G.trick.kind === 'grab' ? 0.35 : 1, 0.15);
+  else if (G.pushAnim > 0 && G.scene === 'play') a.pose('push', 2.2, 0.14); // shoving through (a softer blend: the 0.06s snap dropped the hips 30cm in ~3 frames)
   else if (G.heely > 0 && G.scene === 'play') a.pose('idle', 0.6, 0.1); // rolling on the heel wheels
   else if (G.scene === 'play' && G.countdown > 0) a.pose('idle');
   else if (G.scene === 'over') a.pose('die');
   else a.pose('run', clamp(G.speed / 11.5, 1.0, 2.2), 0.2);
-  const flying = G.scene === 'play' && G.pw.cheat > 0 && !G.dying, sledding = G.scene === 'play' && G.fun === 'sled' && !G.dying && !flying;
   if (!pp.sled) { pp.sled = grp(null); box(pp.sled, 0.62, 0.06, 1.35, MS('#e63946', 0.4, 0.1), 0, 0.12, 0); const tip = cyl(pp.sled, 0.31, 0.06, MS('#e63946', 0.4, 0.1), 0, 0.2, -0.68); tip.rotation.z = Math.PI / 2; tip.scale.set(0.12, 0.6, 0.12); for (const x of [-0.27, 0.27]) box(pp.sled, 0.04, 0.04, 1.5, MS('#c0c4cc', 0.3, 0.9), x, 0.04, 0); scene.add(pp.sled); }
   pp.sled.visible = sledding; if (sledding) { pp.sled.position.set(P.x, P.y, 0.1); pp.sled.rotation.set(0, 0, clamp((P.x - P.lane * laneW) / laneW, -1, 1) * 0.35); if (Math.random() < 0.5) emit(P.x + rand(-0.3, 0.3), 0.1, 0.6, 1, '#ffffff', 1.6, 0.4, 0.14, 0, false, true); }
   pp.plane.visible = flying || (pp.plane.visible && P.y > 0.3 && G.scene === 'play');
   if (pp.plane.visible) { pp.plane.position.set(P.x, P.y + 0.42, 0.15); pp.plane.rotation.set(0.05 + Math.sin(G.t * 3) * 0.03, 0, clamp((P.x - P.lane * laneW) / laneW, -1, 1) * 0.5 + Math.sin(G.t * 2) * 0.04); }
   const heelRoll = G.heely > 0 && G.scene === 'play' && P.y - (P.fl || 0) <= 0.05 && !sliding && !G.dying;
   a.noGround = sliding || flying || sledding;
-  if (flying || sledding) a.pose('idle', 0.5, 0.15);
   a.post = (flying || sledding) ? (A => { // kneeling on the plane, hands on the wings
       twist(A, 'UpperLegL', 1, 0, 0, -1.25); twist(A, 'UpperLegR', 1, 0, 0, -1.25); twist(A, 'LowerLegL', 1, 0, 0, 1.9); twist(A, 'LowerLegR', 1, 0, 0, 1.9);
       twist(A, 'Chest', 1, 0, 0, 0.25); twist(A, 'UpperArmL', 0, 0, 1, 0.5); twist(A, 'UpperArmR', 0, 0, 1, -0.5); twist(A, 'UpperArmL', 1, 0, 0, -0.5); twist(A, 'UpperArmR', 1, 0, 0, -0.5); })
@@ -3982,7 +3994,7 @@ function declineRevive() { closeRevive(); G.reviving = false; endRun(false); }
 function doRevive() { P.slide = 0; P.slideQ = false; G.pushAnim = 0; G.trick = null;
   // back on your feet and running straight away: clear any slide lean / fall pose and snap to the run animation
   if (player) { const pp = player, a = pp.act; pp.pivot.rotation.set(0, 0, 0); pp.root.rotation.z = 0; pp.wrap.position.y = 0; a.post = null; a.noGround = false;
-    if (a.actions) for (const n in a.actions) a.actions[n].stop(); a.cur = null; a.blend = null; a.pose('run', clamp(G.speed / 11.5, 1.0, 2.2), 0); }
+    if (a.actions) for (const n in a.actions) a.actions[n].stop(); a.cur = null; a.blend = null; a.hold = 0; a.pose('run', clamp(G.speed / 11.5, 1.0, 2.2), 0); }
   closeRevive(); G.reviving = false; G.revives = (G.revives || 0) + 1;
   G.dying = false; G.caught = false; G.stumble = 0; clearChase(); P.fall = 0; P.y = 0; P.vy = 0; P.slide = 0;
   for (let i = G.objs.length - 1; i >= 0; i--) { const o = G.objs[i]; if (o.K.cat === 'obs' && o.z < PZ + 22) killObj(i); }
