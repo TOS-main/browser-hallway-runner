@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#1b1f3b">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="google-adsense-account" content="ca-pub-9841041313313334">
 <title>Hallway Dash</title>
 <style>
 :root{--ink:#1b1f3b;--gold:#ffd60a;--red:#ef476f;--blue:#118ab2;--green:#06a77d;--purple:#7b2cbf;--paper:#fffdf6}
@@ -1087,7 +1088,7 @@ window.PRIVACY_URL = 'https://tos-main.github.io/browser-hallway-runner/privacy.
    publisher ID (looks like ca-pub-1234567890123456). The game then asks Google for a real rewarded ad first and
    only falls back to a house ad if none is available. */
 window.WEB_ADS = {
-  adsenseClient: ''
+  adsenseClient: 'ca-pub-9841041313313334'
 };
 
 </script>
@@ -3506,11 +3507,15 @@ const HOUSE_ADS = [
   ['🎓', '150 stages to graduate', 'Campaign map: Elementary → College', 'linear-gradient(135deg,#2a9d8f,#264653)'],
   ['💾', 'Keep your progress', 'Settings → Save code: copy it to any device', 'linear-gradient(135deg,#8338ec,#3a86ff)']
 ];
-let h5Ready = false;
+let h5Ready = false, h5Loaded = false;
+function syncWebAdPrefs() { if (window.adsbygoogle) adsbygoogle.requestNonPersonalizedAds = PRIV.personalAds() ? 0 : 1; }
 function initWebAds() {
-  const c = window.WEB_ADS && WEB_ADS.adsenseClient; if (!c || window.HallwayAds || save.age === 'child') return;
-  window.adsbygoogle = window.adsbygoogle || []; window.adBreak = window.adConfig = function (o) { adsbygoogle.push(o); };
+  // Ads load only after the age check, never for under-13 players, and stay non-personalized unless the player is 16+ and left personalized ads on.
+  const c = window.WEB_ADS && WEB_ADS.adsenseClient; if (!c || window.HallwayAds || !save.age || save.age === 'child') return;
+  window.adsbygoogle = window.adsbygoogle || []; syncWebAdPrefs();
+  if (h5Loaded) return; h5Loaded = true; window.adBreak = window.adConfig = function (o) { adsbygoogle.push(o); };
   const sc = document.createElement('script'); sc.async = true; sc.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + encodeURIComponent(c);
+  if (save.age === 'teen') sc.setAttribute('data-tag-for-age-treatment', '2');
   sc.setAttribute('data-ad-client', c); sc.setAttribute('data-ad-frequency-hint', '30s'); sc.crossOrigin = 'anonymous';
   sc.onload = () => { h5Ready = true; try { adConfig({ preloadAdBreaks: 'on', sound: save.sfx === false ? 'off' : 'on' }); } catch (e) {} };
   document.head.appendChild(sc);
@@ -4069,6 +4074,7 @@ function applyA11y() { const a = A11Y(); document.body.classList.toggle('hc', !!
 function applyPrivacy() {
   if (!save.age) return;
   try { window.HallwayPrivacy && HallwayPrivacy.setAudience(save.age, PRIV.personalAds()); } catch (e) {}
+  try { initWebAds(); } catch (e) {}
   if (PRIV.analytics()) Analytics.init(); else if (Analytics.on && window.gtag) { try { gtag('consent', 'update', { analytics_storage: 'denied' }); } catch (e) {} Analytics.on = false; }
   if (PRIV.cloud()) Cloud.boot();
 }
