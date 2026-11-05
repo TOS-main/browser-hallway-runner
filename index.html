@@ -588,7 +588,7 @@ body.pwRight #pwSide{left:auto;right:12px}
       <div class="soundRow" style="justify-content:flex-start;flex-wrap:wrap;gap:6px"><button class="chip" id="cloudSignIn">Sign in with Google Play Games</button><button class="chip" id="cloudSaveNow">Save now</button><button class="chip" id="cloudLoadNow">Load from cloud</button></div></div>
     <div class="setRow"><b>🔒 Privacy</b><small>Age group: <b id="privAge"></b></small>
       <div id="privAdult"><label class="volRow"><span>Share anonymous usage stats</span><input type="checkbox" id="privAnalytics"></label><label class="volRow"><span>Personalized ads</span><input type="checkbox" id="privAds"></label></div>
-      <div class="soundRow" style="justify-content:flex-start;flex-wrap:wrap;gap:6px"><button class="chip" id="privOptions">Ad privacy choices</button><button class="chip" id="privPolicy">Privacy policy</button><button class="chip" id="privDelete">Delete all my data</button></div></div>
+      <div class="soundRow" style="justify-content:flex-start;flex-wrap:wrap;gap:6px"><button class="chip" id="privOptions">Ad privacy choices</button><button class="chip" id="privTerms">Terms of Service</button><button class="chip" id="privPolicy">Privacy policy</button><button class="chip" id="privDelete">Delete all my data</button></div></div>
     <button class="btn purple small" id="bTut">Play the tutorial</button>
     <button class="btn gray small" id="bHow2">How to Play</button>
     <button class="btn gray" data-back>Back</button>
@@ -3018,6 +3018,16 @@ const MENU_ROUTINE = [
   ['talk', 3.4],
   ['jump', 0.9, 1.1]
 ];
+// After every pose, lean, slide and offset has been applied: measure the runner's real lowest points (shoe soles from
+// the mesh, plus hips/back/head with a body radius) and lift the whole body if anything is under the floor.
+const _kv = new THREE.Vector3(), KEEP_BONES = [['Hips', 0.13], ['Spine', 0.12], ['Chest', 0.12], ['Head', 0.11], ['LowerLegL', 0.06], ['LowerLegR', 0.06], ['UpperLegL', 0.08], ['UpperLegR', 0.08]];
+function keepAboveFloor(pp, floorY) {
+  if (floorY < -5 || !pp.act || !pp.act.model) return; pp.wrap.updateMatrixWorld(true);
+  let low = 9; const a = pp.act;
+  if (a.sole) for (const sp of a.sole.pts) { _kv.copy(sp.p).applyMatrix4(sp.bone.matrixWorld); if (_kv.y < low) low = _kv.y; }
+  for (const [n, r] of KEEP_BONES) { const b = a.bone(n); if (b) { b.getWorldPosition(_kv); const sc = pp.wrap.scale.x || 1; if (_kv.y - r * sc < low) low = _kv.y - r * sc; } }
+  const gap = low - floorY - 0.008; if (gap < 0) { pp.wrap.position.y -= gap; pp.wrap.updateMatrixWorld(true); }
+}
 function syncPlayer() {
   if (!player) rebuildPlayer();
   const pp = player, a = pp.act, inMenu = G.scene !== 'play';
@@ -3027,7 +3037,7 @@ function syncPlayer() {
     { const R = MENU_ROUTINE, tot = R.reduce((q, r) => q + r[1], 0); let tt = G.t % tot, st = R[0]; for (const r of R) { if (tt < r[1]) { st = r; break; } tt -= r[1]; }
       const env = Math.min(1, tt / 0.45, (st[1] - tt) / 0.45); a.pose(st[0], st[2] || 1, 0.35); a.post = st[3] ? (A => { const tw = window.twist; window.twist = (A2, b, x, y, z, ang) => tw(A2, b, x, y, z, ang * env); try { st[3](A, tt); } finally { window.twist = tw; } }) : null; if (st[0] === 'jump') pp.wrap.position.y = Math.sin(Math.min(1, tt / st[1]) * Math.PI) * 0.45; }
     a.update(FRAME_DT);
-    pp.backpack.scale.setScalar(0.82 + 0.38 * baseWeight()); pp.aura.visible = false; pp.shadow.position.y = 0.003; followChest(pp); return;
+    keepAboveFloor(pp, 0); pp.backpack.scale.setScalar(0.82 + 0.38 * baseWeight()); pp.aura.visible = false; pp.shadow.position.y = 0.003; followChest(pp); return;
   }
   pp.root.rotation.y = Math.PI;
   pp.wrap.scale.setScalar(lerp(pp.wrap.scale.x, runnerScale(), 0.1));
@@ -3080,6 +3090,7 @@ function syncPlayer() {
     else if (T.kind === 'grab') pp.pivot.rotation.z = Math.sin(e * Math.PI) * 0.5;
     else if (T.kind === 'superman') pp.pivot.rotation.x = Math.sin(e * Math.PI) * 1.25;
   } else if (!skating && !sliding) pp.pivot.rotation.set(lerp(pp.pivot.rotation.x, 0, 0.3), 0, 0);
+  keepAboveFloor(pp, flying ? -9 : sledding ? (P.fl || 0) + 0.12 : (P.fl || 0)); // final safety: no part of the runner ever goes below the floor
   pp.backpack.scale.setScalar(0.82 + 0.38 * G.weight);
   followChest(pp);
   // power-ups blink when they're about to run out
@@ -5543,6 +5554,7 @@ $('privAnalytics').onchange = e => { save.privacy = Object.assign({}, save.priva
 $('privAds').onchange = e => { save.privacy = Object.assign({}, save.privacy, { ads: e.target.checked }); persist(); applyPrivacy(); toast('Saved', 'Applies from the next ad', 1000); };
 $('privOptions').onclick = () => { try { HallwayPrivacy.privacyOptions(); } catch (e) {} };
 $('privPolicy').onclick = () => { if (window.PRIVACY_URL) window.open(PRIVACY_URL, '_blank'); };
+$('privTerms').onclick = () => window.open('https://tos-main.github.io/browser-hallway-runner/terms.html', '_blank');
 $('privDelete').onclick = () => { $('delModal').classList.add('show'); };
 $('delYes').onclick = () => { $('delModal').classList.remove('show'); deleteMyData(); };
 $('delNo').onclick = () => $('delModal').classList.remove('show');
