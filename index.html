@@ -1867,7 +1867,7 @@ function makeActor(spec) {
     { // ground contact: every clip has ONE fixed lift (worked out once from the shoe soles over the whole clip), and the body
       // lift is those lifts mixed by the clips' current blend weights. It changes only as smoothly as the animations blend,
       // so landing, bumping or switching clips can never pop the body up or pull it into the floor
-      let wsum = 0, y = 0; for (const k in act.actions) { const o = act.actions[k]; if (!o.isRunning()) continue; const w = o.getEffectiveWeight(); if (w > 0.001) { y += w * soleOffset(spec.key, k); wsum += w; } }
+      let wsum = 0, y = 0; for (const k in act.actions) { const o = act.actions[k]; if (!act.mixer._isActiveAction(o)) continue; const w = o.getEffectiveWeight(); if (w > 0.001) { y += w * soleOffset(spec.key, k, o.time); wsum += w; } } // a finished one-shot (lying on the floor after a fall) still counts
       if (wsum > 0.001) act.liftT = y / wsum; const on = act.noGround ? 0 : 1; act.gK = act.gK === undefined ? on : act.gK + (on - act.gK) * Math.min(1, dt * 10);
       act.groundY = (act.liftT || 0) * act.gK; model.position.y = (act.groundY + 0.02) * (spec.scale || 1); }
     if (act.lids) { act.blinkT -= dt; const k = act.blinkT < 0.12 && act.blinkT > 0 ? 1 - Math.abs(act.blinkT - 0.06) / 0.06 : 0; if (act.blinkT <= 0) act.blinkT = 2 + Math.random() * 4; for (const l of act.lids) { const u = l.userData; l.position.lerpVectors(u.p0, u.p1, k); l.scale.copy(u.s0); l.scale.y *= 1 + k * 0.7; } }
@@ -1893,18 +1893,32 @@ function groundOffset(key, clipName) {
   const off = /Roll|Death|Jump/.test(clipName) ? Math.max(0, restLow - low) : restLow - low;
   return (GROUND[id] = clamp(off, -0.5, 0.5));
 }
-// Fixed per-clip lift from the shoe soles: the lowest sole point over the whole clip is put exactly on the floor
-// (a running stride never dips into the floor; jumps, rolls and falls are only ever lifted, never sunk).
-function soleOffset(key, clipName) {
-  const id = 'S|' + key + '|' + clipName; if (GROUND[id] !== undefined) return GROUND[id];
-  const clip = CH.clips[key[0]][clipName]; if (!clip || !CH.tpl[key]) return (GROUND[id] = 0);
-  solePoints(key, CH.tpl[key]); if (!SOLE[key]) return (GROUND[id] = groundOffset(key, clipName));
+// Floor lift per clip, measured once from the shoe soles AND the body (hips, spine, chest, head, legs, each with its
+// thickness). Looping clips get one fixed lift: the lowest point over the whole loop sits on the floor (a stride never
+// dips in). One-shot clips (falling over, getting bumped, rolls) get a lift curve over time, so a body lying on the
+// floor rests ON it instead of sinking through it, and the feet of a bumped classmate never sink.
+const BODY_PTS = [['Hips', 0.13], ['Spine', 0.12], ['Chest', 0.12], ['Head', 0.11], ['LowerLegL', 0.06], ['LowerLegR', 0.06], ['UpperLegL', 0.08], ['UpperLegR', 0.08], ['HandL', 0.04], ['HandR', 0.04]];
+function soleCurve(key, clipName) {
+  const id = 'C|' + key + '|' + clipName; if (GROUND[id] !== undefined) return GROUND[id];
+  const clip = CH.clips[key[0]][clipName]; if (!clip || !CH.tpl[key]) return (GROUND[id] = null);
+  solePoints(key, CH.tpl[key]);
   const m = THREE.SkeletonUtils.clone(CH.tpl[key]); m.position.set(0, 0, 0); m.rotation.set(0, 0, 0); m.scale.setScalar(1);
-  const sole = mapSole(SOLE[key], m), mx = new THREE.AnimationMixer(m); mx.clipAction(clip).play(); let low = 9; const n = 32;
-  for (let i = 0; i <= n; i++) { mx.setTime(clip.duration * Math.min(i / n, 0.999)); m.updateMatrixWorld(true); for (const s of sole.pts) { _sv.copy(s.p).applyMatrix4(s.bone.matrixWorld); if (_sv.y < low) low = _sv.y; } }
+  const sole = SOLE[key] ? mapSole(SOLE[key], m) : null, bones = []; m.traverse(o => { if (o.isBone) for (const [n, r] of BODY_PTS) if (o.name === n) bones.push([o, r]); });
+  if (!sole) m.traverse(o => { if (o.isBone && (o.name === 'FootL' || o.name === 'FootR')) bones.push([o, 0.03]); });
+  const mx = new THREE.AnimationMixer(m), ac = mx.clipAction(clip); ac.play(); const n = 40, lows = [];
+  for (let i = 0; i <= n; i++) { mx.setTime(clip.duration * Math.min(i / n, 0.9999)); m.updateMatrixWorld(true); let low = 9;
+    if (sole) for (const s of sole.pts) { _sv.copy(s.p).applyMatrix4(s.bone.matrixWorld); if (_sv.y < low) low = _sv.y; }
+    for (const [b, r] of bones) { b.getWorldPosition(_sv); if (_sv.y - r < low) low = _sv.y - r; } lows.push(low); }
   mx.stopAllAction();
-  const off = /Roll|Death|Jump/.test(clipName) ? Math.max(0, -low) : -low;
-  return (GROUND[id] = clamp(off, -0.5, 0.5));
+  const air = /Roll|Jump/.test(clipName); // rolls/jumps may lift off the floor, never sink into it
+  if (ONE_SHOT[clipName]) return (GROUND[id] = { curve: lows.map(l => clamp(air ? Math.max(0, -l) : -l, -0.5, 0.8)), dur: clip.duration });
+  const lo = Math.min(...lows); return (GROUND[id] = { fixed: clamp(air ? Math.max(0, -lo) : -lo, -0.5, 0.8) });
+}
+function soleOffset(key, clipName, t) {
+  const c = soleCurve(key, clipName); if (!c) return groundOffset(key, clipName);
+  if (c.fixed !== undefined) return c.fixed;
+  const n = c.curve.length - 1, f = clamp((t || 0) / c.dur, 0, 1) * n, i = Math.min(n - 1, Math.floor(f)), k = f - i;
+  return c.curve[i] + (c.curve[i + 1] - c.curve[i]) * k;
 }
 // Shoe-sole points: each foot's sole (heel + toe points found on the mesh in its rest pose, stored
 // in the foot bone's space), used by soleOffset() to find each clip's floor lift.
@@ -4600,9 +4614,9 @@ function hoppable(o) { return !!(o && o.K.type === 'block' && o.acts && o.acts.l
 // (before, only short kids were reliably reachable, and adults needed frame-perfect timing and a light backpack).
 function hopAssist(vy) {
   let nx = null; for (const q of G.objs) if (!q.hopped && !q.ignore && hoppable(q) && Math.abs(q.x - P.lane * laneW) < 0.6 && q.z > PZ && (!nx || q.z < nx.z)) nx = q;
-  if (!nx) return vy; const vz = nx.vz !== undefined ? nx.vz : (nx.K.vz || 0), sp = Math.max(4, G.speed - vz), t = (nx.z - PZ) / sp; if (t < 0.12 || t > 0.85) return vy;
+  if (!nx) return vy; const vz = nx.vz !== undefined ? nx.vz : (nx.K.vz || 0), sp = Math.max(4, G.speed - vz), t = (nx.z - PZ) / sp; if (t < 0.12 || t > 1.25) return vy;
   const g = 26 * (cheatOn('moon') ? 0.45 : 1), want = (nx.K.h || 1.75) + 0.08 - (P.fl || 0), need = (want + g * t * t / 2) / t;
-  return clamp(Math.max(vy, need), vy, vy * 1.5);
+  return clamp(Math.max(vy, need), vy, vy * 1.6);
 }
 function jumpV() { return lerp(11.2, 9.0, wN()) * (save.up.helium ? 1.1 : 1) * shoeDef().jump * (charDef().perk === 'jump' ? 1.08 : 1); }
 function onWax() { for (const o of G.objs) if (o.kind === 'wax' && o.z < PZ + 0.3 && o.z + o.len > PZ && Math.abs(o.x - P.x) < laneW * 0.6) return true; return false; }
@@ -4812,6 +4826,7 @@ G.lastQuiz = 0; G.lastShortcut = 0; G.lastLetter = -999; G.tpStart = undefined; 
   G.weight = baseWeight();
   Object.assign(P, { lane: 0, fromLane: 0, x: 0, y: 0, vy: 0, slide: 0, slideQ: false, fall: 0, fl: 0 }); G.highAir = false; G.onPlat = false; G.plat = null;
   G.speed = baseSpeed();
+  if (G.adOpen && !(Ads && Ads.cb)) { G.adOpen = false; $('adModal').classList.remove('show'); } // safety: a run never starts under a stuck promo
   G.scene = 'play'; G.countdown = 0; G.lastCount = 0; G.intro = fromMenu && mode !== 'campaign' ? INTRO : 0; G.caught = false; clearChase(); startChase(null, { role: 'monitor', t: 3.2, warmup: true, line: 'HEY! NO RUNNING!' });
   if (mode !== 'tutorial') { if (cheatOn('flyer')) G.pw.cheat = pwTime('cheat') + 3; if (cheatOn('juiced')) G.pw.energy = pwTime('energy') + 3; }
   G.cheated = unfairCheats(); G.shield = mode !== 'tutorial' && charDef().ab === 'shield' ? 1 : 0; P.dj = false;
@@ -5050,6 +5065,9 @@ window.addEventListener('pointerdown', () => initAudio(), { passive: true });
 window.addEventListener('keydown', e => {
   initAudio();
   if (e.target && e.target.tagName === 'INPUT') return;
+  // while an ad or the between-runs promo is up, game keys do nothing (R during the promo used to start a run
+  // underneath it and leave the game frozen); the promo's own Skip / Continue buttons still work
+  if (G.adOpen || ($('adModal') && $('adModal').classList.contains('show'))) { if (/^(Key|Arrow|Digit|Space|Escape)/.test(e.code)) e.preventDefault(); return; }
   if (hotkey(e)) { e.preventDefault(); return; }
   if (e.code === 'KeyE' || e.code === 'KeyH') { useHeelys(); return; }
   if ((e.code === 'KeyQ' || e.code === 'KeyF') && G.scene === 'play') { doPush(); return; }
@@ -5236,7 +5254,7 @@ function update(dt) {
     if (o.acts && o.acts.length && !o.ybSeen && o.z - PZ < 20 && G.mode !== 'tutorial') { o.ybSeen = true; yearbookSeen(o.kind); }
     if (!o.tipped && o.z - PZ < 32 && o.z > PZ + 6 && G.mode !== 'tutorial' && save.tutDone) { o.tipped = true; firstTip(o); }
     if (o.knocked) { /* lying on the floor */ }
-    if (o.pushed && o.mesh) { o.pushed.t += wdt; const tx = o.pushed.dir * (HW - 0.7); o.x += (tx - o.x) * Math.min(1, wdt * 5); o.mesh.rotation.z = -o.pushed.dir * Math.min(0.25, o.pushed.t * 0.8); }
+    if (o.pushed && o.mesh) { o.pushed.t += wdt; const tx = o.pushed.dir * (HW - 0.7); o.x += (tx - o.x) * Math.min(1, wdt * 5); } // no whole-body tilt: tilting the group around its middle pushed the low-side feet ~8-15 cm into the floor; the bump reaction animation shows the shove
     const ovz = o.vz !== undefined ? o.vz : K.vz;
     if (ovz && !o.vzFix) { o.vzFix = true; const lim = ovz < -2 ? 60 : 40; if (o.z > lim) o.z -= ovz * (o.z - lim) / Math.max(G.speed, 4); } // start them back along their path so they reach you at the same spot as before
     if (ovz && o.z > PZ - 2) o.z += ovz * wdt; // people walk from the moment they appear (they used to stand frozen until you got close)
@@ -5247,11 +5265,17 @@ function update(dt) {
     }
     if (K.sway) o.x = o.lane * laneW + Math.sin(o.t * 1.4 + o.seed * 6) * 0.35;
     // teachers stepping into your lane
-    if (K.steps && !o.stepped && o.z < 30 && o.z > 15) {
+    // Fair version: they decide 1.6-2.8 s before reaching you (it used to be as late as ~0.6 s at top speed, too late to
+    // react, which read as a random "caught running" game over), never while you're mid lane-change, and only when
+    // another lane is open so you can always dodge (or hop on their head).
+    const tReach = (o.z - PZ) / Math.max(4, G.speed);
+    if (K.steps && !o.stepped && tReach < 2.8) {
       o.stepped = true; o.shout = 1.6;
-      const pl = P.lane;
-      if (pl !== o.lane && Math.abs(pl - o.lane) === 1 && Math.random() < 0.6 && !(G.plat && G.objs.includes(G.plat) && G.plat.lane === pl && G.plat.z < o.z + 2 && G.plat.z + G.plat.len > o.z - 2) && !G.objs.some(q => q !== o && q.row === o.row && q.lane === pl && q.K.cat === 'obs')) {
-        o.lane = pl; o.tx = pl * laneW; sfx('whistle');
+      const pl = P.lane, settled = P.fromLane === P.lane || Math.abs(P.x - P.lane * laneW) < 0.2;
+      const laneOpen = L => L >= -1 && L <= 1 && !G.objs.some(q => q !== o && q.K.cat === 'obs' && !q.ignore && Math.abs(q.x - L * laneW) < laneW * 0.6 && q.z > o.z - 9 && q.z < o.z + 4);
+      const escape = [-1, 0, 1].some(L => L !== pl && laneOpen(L));
+      if (tReach > 1.6 && settled && escape && pl !== o.lane && Math.abs(pl - o.lane) === 1 && Math.random() < 0.6 && !(G.plat && G.objs.includes(G.plat) && G.plat.lane === pl && G.plat.z < o.z + 2 && G.plat.z + G.plat.len > o.z - 2) && !G.objs.some(q => q !== o && q.row === o.row && q.lane === pl && q.K.cat === 'obs')) {
+        o.lane = pl; o.tx = pl * laneW; sfx('whistle'); o.say = pick(['NO RUNNING!', 'Walk, please!', 'Slow down!']);
       }
     }
     if (o.tx !== undefined) o.x += clamp(o.tx - o.x, -4.5 * wdt, 4.5 * wdt);
@@ -5274,12 +5298,15 @@ function update(dt) {
       }
     } else if (K.cat === 'obs' && !o.ignore && !(G.pw.cheat > 0 && P.y > 1.0)) {
       const dz = Math.abs(o.z - PZ), dx = Math.abs(o.x - P.x);
-      if (dz < (K.d || 0.5) / 2 + 0.3 && dx < K.hw + 0.3) {
+      // forgiving HEAD HOP box: wider and longer than the person, so a jump that looks like it lands on a head always does
+      const hh = K.h || 1.75, hopZone = hoppable(o) && !o.hopped && P.y - (P.fl || 0) > 0.3 && dz < (K.d || 0.5) / 2 + 0.8 && dx < K.hw + 0.55
+        && P.y > hh * 0.4 && (P.y < hh + 0.3 || (P.vy <= 0 && P.y < hh + 1.1));
+      if ((dz < (K.d || 0.5) / 2 + 0.3 && dx < K.hw + 0.3) || hopZone) {
         let hit = false;
         if (K.type === 'low') hit = P.y < K.h - 0.12;
         else if (K.type === 'high') hit = !sliding || P.y > 0.2;
         else hit = !(G.highAir && P.y > (K.h || 1.8) - 0.1) && !(P.y > (K.h || 1.8) + 0.3); // high enough (spring shoes, a table, a big jump) = you sail right over
-        if (hit && hoppable(o) && P.y - (P.fl || 0) > 0.35 && P.y > (K.h || 1.75) - 0.6 && !o.hopped) { // HEAD HOP: land on their head and bounce off
+        if (hopZone) { // HEAD HOP: land on their head and bounce off
           o.hopped = true; o.ignore = true; P.vy = jumpV() * 0.82;
           { // aim the bounce at the next person in this lane (makes head-to-head chains land)
             let nx = null; for (const q of G.objs) if (q !== o && !q.hopped && !q.ignore && hoppable(q) && Math.abs(q.x - P.x) < 0.6 && q.z > o.z + 2 && q.z - PZ < 16 && (!nx || q.z < nx.z)) nx = q;
@@ -5315,6 +5342,9 @@ function update(dt) {
     if (o.kind === 'wax' && o.mesh) o.mesh.position.x = o.x;
     if (o.dead || o.z + (o.len || 0) < PZ - 14 || (o.kind !== 'finish' && o.z > 200) || Math.abs(o.x) > HW + 4) killObj(i);
   }
+  // The floor moved this frame (ramps and stairs scroll toward you AFTER the runner's floor was read above), so read it
+  // again here: standing on a ramp, the runner used to sit one frame's scroll (10-20 cm on a slow phone) inside it.
+  if (!G.dying && !(G.pw.cheat > 0)) { const fl2 = floorAt(P.x); if (P.vy <= 0 && P.y < fl2 + 0.0001 && P.y > fl2 - 0.6) P.y = fl2; P.fl = fl2; }
 }
 function collect(o) {
   const burstCol = { coin: '#ffd23f', bill: '#7dff9a', pass: '#ffd60a', cheat: '#9bf6ff', energy: '#ff8fab' }[o.kind] || '#ffffff';
