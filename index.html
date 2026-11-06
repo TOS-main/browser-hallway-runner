@@ -7,6 +7,10 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="google-adsense-account" content="ca-pub-9841041313313334">
+<!-- AdSense: the exact tag AdSense asks for on every page. Ad requests start paused and non-personalized; the game un-pauses them only for players 13+ after the age check. -->
+<script>(window.adsbygoogle = window.adsbygoogle || []).pauseAdRequests = 1; window.adsbygoogle.requestNonPersonalizedAds = 1;</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9841041313313334"
+     crossorigin="anonymous"></script>
 <title>Hallway Dash</title>
 <style>
 :root{--ink:#1b1f3b;--gold:#ffd60a;--red:#ef476f;--blue:#118ab2;--green:#06a77d;--purple:#7b2cbf;--paper:#fffdf6}
@@ -403,7 +407,7 @@ body.lefty #pushBtn{left:auto;right:12px}body.lefty #heelyBtn{right:auto;left:12
 .ybook{background:#fff;border:3px solid var(--ink);border-radius:14px;padding:10px;margin-bottom:10px;box-shadow:0 4px 0 var(--ink)}.ybGrid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:8px 0}.ybPic{aspect-ratio:1;display:grid;place-items:center;font-size:22px;border:2px solid var(--ink);border-radius:8px;background:#fff3c4}.ybPic.no{background:#e6e0cc;color:#9a9478;font-family:'Luckiest Guy',sans-serif}
 body.hc .panel,body.hc .mPanel{background:#ffffff!important;background-image:none!important}body.hc .sub,body.hc small{color:#000!important}body.hc .btn{filter:contrast(1.25) saturate(1.2)}body.hc .hudBox{background:#000!important;color:#fff!important}
 body.noflash *{animation:none!important;transition:none!important}
-#finBtn{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(max(18px,env(safe-area-inset-bottom)) + 6px);z-index:7;display:none;flex-direction:column;align-items:center;border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink);border-radius:16px;background:linear-gradient(180deg,#ff2bd6,#8338ec);color:#fff;font-family:'Luckiest Guy',sans-serif;font-size:26px;padding:4px 16px;animation:tutPulse .6s ease-in-out infinite}#finBtn small{font-size:12px}#finBtn.show{display:flex}
+#finBtn{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(max(18px,env(safe-area-inset-bottom)) + 6px);z-index:7;display:none;flex-direction:column;align-items:center;border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink);border-radius:16px;background:linear-gradient(180deg,#ff2bd6,#8338ec);color:#fff;font-family:'Luckiest Guy',sans-serif;font-size:26px;padding:4px 16px;animation:finPulse .6s ease-in-out infinite}@keyframes finPulse{50%{transform:translateX(-50%) scale(1.06)}}#finBtn.placed{animation-name:tutPulse}#finBtn small{font-size:12px}#finBtn.show{display:flex}
 #photoBar{position:fixed;left:50%;transform:translateX(-50%);bottom:20px;z-index:20;display:none;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center;background:rgba(255,253,243,.95);border:3px solid var(--ink);border-radius:16px;padding:8px}#photoBar.show{display:flex}#photoBar .btn{width:auto;margin:0}
 #replayTag{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:20;display:none;font-family:'Luckiest Guy',sans-serif;background:#ff4d6d;color:#fff;border:3px solid var(--ink);border-radius:12px;padding:6px 14px}#replayTag.show{display:block}
 .lockerInside{background:linear-gradient(180deg,#2f5fb3,#1d3f8f);border:4px solid var(--ink);border-radius:14px;padding:12px;color:#fff;grid-column:1/-1}.lockerInside small{display:block;color:#dfe8ff!important}.lockerShelf{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;background:#16306b;border-radius:10px;padding:8px;box-shadow:inset 0 4px 0 rgba(0,0,0,.3)}
@@ -480,15 +484,23 @@ body.pwRight #pwSide{left:auto;right:12px}
 #appTour{position:fixed;inset:0;z-index:95}.tourHole{position:fixed;border-radius:14px;box-shadow:0 0 0 9999px rgba(8,12,34,.72);border:3px solid #ffd60a;transition:all .25s;pointer-events:none}
 .tourCard{position:fixed;left:16px;right:16px;max-width:420px;margin:0 auto;background:#fffdf5;color:#1d2340;border:3px solid #1d2340;border-radius:16px;padding:12px;box-shadow:0 6px 0 #1d2340}.tourCard b{font-family:'Luckiest Guy',sans-serif;font-weight:400;font-size:20px}.tourCard p{margin:4px 0 8px;font-size:15px}.tourCard div{display:flex;gap:8px;justify-content:flex-end}
 #btnEdit{position:fixed;left:12px;right:12px;top:calc(max(12px,env(safe-area-inset-top)) + 8px);z-index:90;background:#fffdf5;color:#1d2340;border:3px solid #1d2340;border-radius:14px;padding:10px;display:flex;justify-content:space-between;align-items:center;gap:8px}
-.editing{outline:3px dashed #ffd60a;outline-offset:4px;animation:tutPulse 1s ease-in-out infinite;touch-action:none;z-index:91!important}
+.editing{outline:3px dashed #ffd60a;outline-offset:4px;animation:tutPulse 1s ease-in-out infinite;touch-action:none;user-select:none;-webkit-user-select:none;z-index:91!important}#finBtn.editing:not(.placed){animation-name:finPulse}.noPulse{animation:none!important}
 #finBtn.editing{display:flex}
 .modal.kb{align-items:flex-start!important;padding-top:6vh!important}
 
 /* ===== Round 16: quick controls, duel, side modes, per-difficulty board, bigger web text ===== */
-#quickCtl{position:fixed;left:50%;transform:translateX(-50%);bottom:max(8px,env(safe-area-inset-bottom));z-index:6;display:none;gap:6px;flex-wrap:wrap;justify-content:center;max-width:calc(100% - 200px);pointer-events:none;transition:opacity .6s}
-#quickCtl.show{display:flex}#quickCtl.dim{opacity:.55}#quickCtl.gone{opacity:0}
-#quickCtl span{background:rgba(15,20,45,.78);color:#fff;border:2px solid rgba(255,255,255,.25);border-radius:10px;padding:3px 7px;font-weight:800;font-size:13px;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
-#quickCtl kbd{background:#fff;color:#1d2340;border-radius:5px;padding:0 6px;font:inherit;font-size:13px;font-weight:900;border-bottom:2px solid #9aa3c0;min-width:20px;text-align:center}
+/* quick controls: a small side panel during runs, hidden with one tap (remembered), reopened from the edge tab */
+#quickCtl{position:fixed;left:8px;top:calc(max(10px,env(safe-area-inset-top)) + 150px);z-index:8;display:none;flex-direction:column;gap:4px;width:max-content;max-width:42vw;background:rgba(15,20,45,.8);color:#fff;border:2px solid rgba(255,255,255,.3);border-radius:14px;padding:6px 7px 7px;touch-action:manipulation}
+#quickCtl.show{display:flex}
+#quickCtl .qcHead{display:flex;align-items:center;justify-content:space-between;gap:8px}#quickCtl .qcHead b{font-size:12px;letter-spacing:.4px;text-transform:uppercase;opacity:.85}
+#qcHide{background:#ef476f;color:#fff;border:2px solid #fff;border-radius:50%;width:26px;height:26px;padding:0;font:900 13px/1 sans-serif;cursor:pointer;flex:none}
+#quickCtl .qcList{display:flex;flex-direction:column;gap:3px}
+#quickCtl .qcList span{font-weight:800;font-size:12px;white-space:nowrap;display:flex;align-items:center;gap:5px}
+#quickCtl kbd{background:#fff;color:#1d2340;border-radius:5px;padding:0 5px;font:inherit;font-size:12px;font-weight:900;border-bottom:2px solid #9aa3c0;min-width:18px;text-align:center}
+#qcTab{position:fixed;left:0;top:calc(max(10px,env(safe-area-inset-top)) + 150px);z-index:8;display:none;flex-direction:column;align-items:center;background:rgba(15,20,45,.8);color:#fff;border:2px solid rgba(255,255,255,.3);border-left:0;border-radius:0 12px 12px 0;padding:5px 6px;font-size:18px;line-height:1;cursor:pointer;opacity:.75}
+#qcTab small{font-size:9px;font-weight:800;margin-top:2px}#qcTab.show{display:flex}
+body.pwRight #quickCtl{left:auto;right:8px}body.pwRight #qcTab{left:auto;right:0;border-left:2px solid rgba(255,255,255,.3);border-right:0;border-radius:12px 0 0 12px}
+body.web #quickCtl .qcList span,body.web #quickCtl kbd{font-size:14px}
 #duelBox{position:fixed;right:10px;top:50%;transform:translateY(-50%);z-index:6;width:170px;background:rgba(15,20,45,.82);color:#fff;border:3px solid #1d2340;box-shadow:0 4px 0 #1d2340;border-radius:16px;padding:10px 12px;pointer-events:none;font-family:'Luckiest Guy',sans-serif}
 #duelBox .dTitle{text-align:center;color:#ffd60a;font-size:18px;letter-spacing:1px}
 #duelBox .dRow{display:flex;justify-content:space-between;align-items:baseline;gap:6px;font-size:15px;margin:4px 0}#duelBox .dRow span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -501,7 +513,8 @@ body.pwRight #duelBox{right:auto;left:10px}
 .duelPanel{width:min(520px,100%)!important;text-align:left}.duelStep{background:#f1f3ff;border:2px solid #1d2340;border-radius:14px;padding:10px;margin:10px 0}.duelStep b{display:block;font-size:17px}.duelStep small{display:block;opacity:.8;margin:2px 0 6px}
 .duelNow{font-weight:800;margin:6px 0;color:#7b2cbf}
 .allBest{background:linear-gradient(135deg,#ffd60a,#ff9f1c);color:#1d2340;border:3px solid #1d2340;border-radius:14px;padding:8px 12px;margin:6px 0;font-weight:900;display:flex;justify-content:space-between;align-items:center;gap:8px}.allBest small{font-weight:800;opacity:.8;display:block}.allBest b{font-size:22px}
-.seg.boardDiff{margin:6px 0}
+.seg.boardDiff{margin:6px 0}.seg.boardPer{margin:0 0 6px}.seg.boardPer button{font-size:13px;padding:6px 4px}
+.toBeat{background:#1d2340;color:#fff;border:3px solid #ffd60a;border-radius:14px;padding:8px 12px;margin:4px 0 6px;display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:800}.toBeat small{display:block;color:#ffd60a;font-weight:900;font-size:11px;letter-spacing:.3px}.toBeat span{font-size:13px}.toBeat b{font-size:22px;color:#ffd60a;white-space:nowrap}.toBeat.mine{border-color:#06d6a0}.toBeat.mine small{color:#06d6a0}
 .volNum{font-style:normal;font-weight:900;min-width:38px;text-align:right}
 .mModes{display:none}
 /* the website: all play modes listed on the side of the menu */
@@ -571,7 +584,7 @@ body.web .playSoon{font-size:13px}
 <div id="tutPrompt"><div class="tutHand" id="tutHand"></div><b id="tutTitle"></b><small id="tutSub"></small></div>
 <div id="popCol"></div><div id="hudStack"><div id="hRival" class="hRival" style="display:none"></div><div id="quizBox"></div><div id="toast"></div></div>
 <div id="countdown"></div>
-<div id="quickCtl" aria-hidden="true"></div>
+<div id="quickCtl"><div class="qcHead"><b>Controls</b><button id="qcHide" aria-label="Hide controls" title="Hide (K)">✕</button></div><div class="qcList" id="qcList"></div></div><button id="qcTab" aria-label="Show controls" title="Show controls (K)">🎮<small>Controls</small></button>
 <div id="duelBox" style="display:none"><div class="dTitle">⚔️ DUEL</div><div class="dRow me"><span>You</span><b id="duelMe">0</b></div><div class="dBar"><i id="duelBar"></i></div><div class="dRow them"><span id="duelName">Friend</span><b id="duelThem">0</b></div><small id="duelNote"></small></div>
 
 <!-- MENU (start screen over the live 3D scene) -->
@@ -658,6 +671,8 @@ body.web .playSoon{font-size:13px}
     <div class="friendBox" id="friendBox"><div>Your friend code: <b id="myCode">------</b></div><div style="margin-top:8px" id="chalNow"></div><div class="frow"><button class="btn green small" id="chalLive">⏱ Race now (same time)</button><button class="btn blue small" id="chalNew">🎲 New challenge hallway</button><button class="btn gold small" id="chalCopy">📋 Copy my code</button></div><small style="display:block;margin:4px 0">Codes work between phones and the browser. A code with a 3rd part (MAYA-5K2-AB3) gives your friend the exact same hallway.</small><div class="frow"><input id="chalIn" maxlength="16" placeholder="e.g. MAYA-5K2" autocomplete="off"><button class="btn gold small" id="chalAdd">Accept</button></div><div class="frow"><input id="friendIn" maxlength="6" placeholder="Friend's code" autocomplete="off"><button class="btn blue small" id="friendAdd">Add</button></div></div>
     <div class="allBest" id="allBest"></div>
     <div class="seg boardDiff" id="boardDiff"><button data-bd="easy">Easy</button><button data-bd="normal">Normal</button><button data-bd="hard">Hard</button><button data-bd="insane">Insane</button></div>
+    <div class="seg boardPer" id="boardPer"><button data-bp="all">All-time</button><button data-bp="month">Month</button><button data-bp="week">Week</button><button data-bp="day">Today</button></div>
+    <div class="toBeat" id="toBeat" style="display:none"></div>
     <div class="sub" id="boardSub">Top Infinite Runs on this phone. Beat your classmates!</div>
     <ol class="board" id="boardList"></ol>
     <button class="btn gold" id="bRanksPlay">Play Infinite Run</button>
@@ -1817,10 +1832,17 @@ function makeActor(spec) {
     const clipName = CLIP_ALIAS[name] || name;
     act.speed = speed;
     if (act.cur === clipName) { if (act.actions[clipName]) act.actions[clipName].timeScale = speed; return; }
+    // a reaction (bumped, head-hopped) plays to the end: the walk/talk loop asking for its clip back the very next
+    // frame used to cut it off after one frame, which read as the character snapping/resetting
+    if (act.hold > 0 && clipName !== 'Death01') return;
     const clip = clips[clipName]; if (!clip) return;
     const a = act.actions[clipName] || (act.actions[clipName] = act.mixer.clipAction(clip));
-    const keepT = !ONE_SHOT[clipName] && act.phase ? act.phase[clipName] || 0 : 0; // looping clips pick up where they left off (stop() rewinds them, so the phase is remembered separately)
-    a.reset(); a.timeScale = speed; a.enabled = true; if (keepT) a.time = keepT;
+    // never rewind a looping clip: if it is still fading out it simply carries on from where it is, otherwise it
+    // picks up from where it stopped (stop() rewinds to 0, so the phase is remembered separately)
+    const live = !ONE_SHOT[clipName] && a.enabled && a.isRunning() && a.getEffectiveWeight() > 0.001, liveT = a.time;
+    const keepT = !ONE_SHOT[clipName] && act.phase ? act.phase[clipName] || 0 : 0;
+    a.reset(); a.timeScale = speed; a.enabled = true; if (live) a.time = liveT; else if (keepT) a.time = keepT;
+    act.hold = clipName === 'Hit_Chest' ? clip.duration / Math.max(0.1, speed) * 0.8 : 0;
     if (ONE_SHOT[clipName]) { a.setLoop(THREE.LoopOnce, 1); a.clampWhenFinished = true; } else a.setLoop(THREE.LoopRepeat, Infinity);
     const prevA = act.cur && act.actions[act.cur];
     // fade out EVERY other clip (not just the last one): quick switches like run -> jump -> slide used to leave an
@@ -1830,22 +1852,27 @@ function makeActor(spec) {
     a.play();
     let fromW = 0; const from = []; if (prevA && fade > 0) for (const k in act.actions) { const o = act.actions[k]; if (o !== a && o.enabled && o.getEffectiveWeight() > 0.001) { from.push([o, o.getEffectiveWeight()]); fromW += o.getEffectiveWeight(); } }
     if (fromW > 0.05) { for (const f of from) f[1] /= fromW; a.setEffectiveWeight(0); act.blend = { to: a, from, t: 0, dur: fade }; } // weights always add up to 1: a gap let the bind pose (arms out, knees locked) flash through
-    else { for (const k in act.actions) { const o = act.actions[k]; if (o !== a) o.stop(); } a.setEffectiveWeight(1); act.blend = null; }
+    else { for (const k in act.actions) { const o = act.actions[k]; if (o !== a) act.stopA(k); } a.setEffectiveWeight(1); act.blend = null; }
     if (!act.cur && !ONE_SHOT[clipName]) a.time = Math.random() * clip.duration; // desync crowds
     act.cur = clipName;
   };
+  act.stopA = k => { const o = act.actions[k]; if (!o) return; if (!ONE_SHOT[k] && o.enabled && o.isRunning()) act.phase[k] = o.time; o.stop(); }; // remember where a loop was before stop() rewinds it
   act.groundY = 0;
   act.phase = {};
   act.update = dt => {
-    if (act.blend) { const B = act.blend; B.t += dt; const k = Math.min(1, B.t / B.dur); B.to.setEffectiveWeight(k); for (const [o, w0] of B.from) { if (k >= 1) o.stop(); else o.setEffectiveWeight(w0 * (1 - k)); } if (k >= 1) { act.blend = null; for (const n in act.actions) if (act.actions[n] !== B.to) act.actions[n].stop(); } }
+    if (act.hold > 0) act.hold -= dt;
+    if (act.blend) { const B = act.blend; B.t += dt; const k = Math.min(1, B.t / B.dur); B.to.setEffectiveWeight(k); for (const [o, w0] of B.from) { if (k < 1) o.setEffectiveWeight(w0 * (1 - k)); } if (k >= 1) { act.blend = null; for (const n in act.actions) if (act.actions[n] !== B.to) act.stopA(n); } }
     act.mixer.update(dt);
     { const ca = act.cur && act.actions[act.cur]; if (ca && !ONE_SHOT[act.cur]) act.phase[act.cur] = ca.time; }
-    if (!act.sole) { const want = act.cur ? groundOffset(spec.key, act.cur) : 0; act.groundY += (want - act.groundY) * Math.min(1, dt * 10); model.position.y = act.groundY * (spec.scale || 1); }
+    { // ground contact: every clip has ONE fixed lift (worked out once from the shoe soles over the whole clip), and the body
+      // lift is those lifts mixed by the clips' current blend weights. It changes only as smoothly as the animations blend,
+      // so landing, bumping or switching clips can never pop the body up or pull it into the floor
+      let wsum = 0, y = 0; for (const k in act.actions) { const o = act.actions[k]; if (!o.isRunning()) continue; const w = o.getEffectiveWeight(); if (w > 0.001) { y += w * soleOffset(spec.key, k); wsum += w; } }
+      if (wsum > 0.001) act.liftT = y / wsum; const on = act.noGround ? 0 : 1; act.gK = act.gK === undefined ? on : act.gK + (on - act.gK) * Math.min(1, dt * 10);
+      act.groundY = (act.liftT || 0) * act.gK; model.position.y = (act.groundY + 0.02) * (spec.scale || 1); }
     if (act.lids) { act.blinkT -= dt; const k = act.blinkT < 0.12 && act.blinkT > 0 ? 1 - Math.abs(act.blinkT - 0.06) / 0.06 : 0; if (act.blinkT <= 0) act.blinkT = 2 + Math.random() * 4; for (const l of act.lids) { const u = l.userData; l.position.lerpVectors(u.p0, u.p1, k); l.scale.copy(u.s0); l.scale.y *= 1 + k * 0.7; } }
     if (act.post) act.post(act);
     if (act.cur === 'Idle_Loop' || act.cur === 'Idle_Talking_Loop' || act.cur === 'Walk_Loop') twist(act, 'Head', 1, 0, 0, -0.22); // chin up, look ahead
-    if (act.sole && !act.noGround) groundFeet(act, dt);
-    else if (act.sole && act.noGround) { act.groundY += (0 - act.groundY) * Math.min(1, dt * 12); model.position.y = act.groundY; } // sliding / plane / sled: settle instead of keeping the last jump's lift
   };
   act.sole = solePoints(spec.key, model);
   return act;
@@ -1866,9 +1893,21 @@ function groundOffset(key, clipName) {
   const off = /Roll|Death|Jump/.test(clipName) ? Math.max(0, restLow - low) : restLow - low;
   return (GROUND[id] = clamp(off, -0.5, 0.5));
 }
-// Per-frame foot planting: each foot's sole (heel + toe points found on the mesh in its rest pose, stored
-// in the foot bone's space) is tracked every frame and the body is lifted/lowered so the lowest sole point
-// sits exactly on the floor. This fixes sinking/floating for every character, size and animation.
+// Fixed per-clip lift from the shoe soles: the lowest sole point over the whole clip is put exactly on the floor
+// (a running stride never dips into the floor; jumps, rolls and falls are only ever lifted, never sunk).
+function soleOffset(key, clipName) {
+  const id = 'S|' + key + '|' + clipName; if (GROUND[id] !== undefined) return GROUND[id];
+  const clip = CH.clips[key[0]][clipName]; if (!clip || !CH.tpl[key]) return (GROUND[id] = 0);
+  solePoints(key, CH.tpl[key]); if (!SOLE[key]) return (GROUND[id] = groundOffset(key, clipName));
+  const m = THREE.SkeletonUtils.clone(CH.tpl[key]); m.position.set(0, 0, 0); m.rotation.set(0, 0, 0); m.scale.setScalar(1);
+  const sole = mapSole(SOLE[key], m), mx = new THREE.AnimationMixer(m); mx.clipAction(clip).play(); let low = 9; const n = 32;
+  for (let i = 0; i <= n; i++) { mx.setTime(clip.duration * Math.min(i / n, 0.999)); m.updateMatrixWorld(true); for (const s of sole.pts) { _sv.copy(s.p).applyMatrix4(s.bone.matrixWorld); if (_sv.y < low) low = _sv.y; } }
+  mx.stopAllAction();
+  const off = /Roll|Death|Jump/.test(clipName) ? Math.max(0, -low) : -low;
+  return (GROUND[id] = clamp(off, -0.5, 0.5));
+}
+// Shoe-sole points: each foot's sole (heel + toe points found on the mesh in its rest pose, stored
+// in the foot bone's space), used by soleOffset() to find each clip's floor lift.
 const SOLE = {}, _sv = new THREE.Vector3(), _rv = new THREE.Vector3();
 const STRIDE = { Sprint_Loop: 1, Jog_Fwd_Loop: 1 };
 const GROUNDED = { Idle_Loop: 1, Idle_Talking_Loop: 1, Walk_Loop: 1, Walk_Formal_Loop: 1, Push_Loop: 1, Dance_Loop: 1, Interact: 1, Hit_Chest: 1 };
@@ -1894,21 +1933,6 @@ function solePoints(key, model) {
 }
 function readV(attr, i, v) { return v.fromBufferAttribute(attr, i); } // three r149 already un-normalises quantised attributes
 function mapSole(sole, model) { if (!sole) return null; const m = { pts: [] }; model.traverse(o => { if (o.isBone && sole[o.name]) for (const p of sole[o.name]) m.pts.push({ bone: o, p }); }); return m.pts.length ? m : null; }
-function groundFeet(act, dt) {
-  const model = act.model, root = act.root; model.position.y = 0; model.updateMatrixWorld(true);
-  root.getWorldPosition(_rv); const rs = root.matrixWorld.elements[5] || 1; // root's vertical scale (roots are never tilted)
-  let low = 9; for (const s of act.sole.pts) { _sv.copy(s.p).applyMatrix4(s.bone.matrixWorld); low = Math.min(low, _sv.y); }
-  const rel = (low - _rv.y) / rs; let want = -rel; // root-space lift that puts the lowest sole on the floor
-  if (STRIDE[act.cur]) { // runs: both feet leave the floor mid-stride, so use the lowest point of the last ~0.7s
-    // the history survives jumps, and blended frames (landing: jump legs still tucked up) are not recorded, so a landing
-    // never pulls the body down into the floor to plant a foot that is still in the air
-    const h = act.lowHist || (act.lowHist = []); if (!act.blend || !h.length) { h.push(rel); if (h.length > 40) h.shift(); }
-    want = act.blend ? Math.max(-Math.min(...h), -rel, act.groundY) : Math.max(-Math.min(...h), -rel); // ...but a foot is never allowed below the floor
-  } else { if (GROUNDED[act.cur]) act.lowHist = null; else want = Math.max(0, want); } // jumps/rolls may leave the floor, never sink
-  const airClip = !STRIDE[act.cur] && !GROUNDED[act.cur]; // jumps/rolls: ease both ways, an instant 0.4m lift on take-off read as a teleport
-  act.groundY = act.gInit ? (want > act.groundY && !airClip ? want : act.groundY + (want - act.groundY) * Math.min(1, dt * (airClip ? 9 : 18))) : want; act.gInit = true; // rise instantly (never sink), settle smoothly
-  model.position.y = act.groundY + 0.02 / rs;
-}
 // Simple cartoon eyes + brows parented to the head bone (the source models have almost no facial features).
 const EYE = { M: { x: 0.0345, y: 0.068, z: 0.102, r: 0.0168 }, W: { x: 0.034, y: 0.072, z: 0.113, r: 0.0166 } }; // round 13: bigger, closer-set eyes
 const HAS_EYES = { W_SciFi: 1, W_Soldier: 1, W_Witch: 1, W_Adventurer: 1 };
@@ -3161,22 +3185,25 @@ function syncPlayer() {
   if (ik < 1) { const e = ik * ik * (3 - 2 * ik), turn = Math.min(1, ik * 3); pp.root.rotation.y = lerp(-0.55 + Math.PI * 2, Math.PI, turn * turn * (3 - 2 * turn)); pp.wrap.position.set(lerp(MENU_POS.x, P.x, e), 0, lerp(MENU_POS.z, 0, e)); a.pose('run', clamp(G.speed / 11.5, 1.0, 2.2), 0.12); a.update(FRAME_DT); followChest(pp); pp.shadow.position.y = 0.003; pp.aura.visible = false; pp.wheels.forEach(w => w.visible = false); return; } // you're the same size as the other students at your school
   pp.wrap.position.set(inMenu ? 0 : P.x + (P.slam || 0), P.y, 0);
   const sliding = P.slide > 0 && !inMenu;
+  const flying = G.scene === 'play' && G.pw.cheat > 0 && !G.dying, sledding = G.scene === 'play' && G.fun === 'sled' && !G.dying && !flying;
+  // exactly ONE pose request per frame (the plane/sled used to ask for run or jump first and then idle, switching clips twice a frame);
+  // the in-air test has a little hysteresis so bumpy floors (stairs, tables, ramps) can't flick jump <-> run every frame
+  const air = P.y - (P.fl || 0), inAir = !inMenu && (air > 0.05 || (a.cur === 'Jump_Loop' && air > 0.015));
   if (G.dying) a.pose('die', 1.3, 0.1);
+  else if (flying || sledding) a.pose('idle', 0.5, 0.15);
   else if (sliding) a.pose('idle', 1, 0.12);
-  else if (P.y - (P.fl || 0) > 0.05 && !inMenu) a.pose(G.trick && G.trick.kind === 'grab' ? 'roll' : 'jump', G.trick && G.trick.kind === 'grab' ? 0.35 : 1, 0.15);
-  else if (G.pushAnim > 0 && G.scene === 'play') a.pose('push', 2.2, 0.06); // shoving through
+  else if (inAir) a.pose(G.trick && G.trick.kind === 'grab' ? 'roll' : 'jump', G.trick && G.trick.kind === 'grab' ? 0.35 : 1, 0.15);
+  else if (G.pushAnim > 0 && G.scene === 'play') a.pose('push', 2.2, 0.14); // shoving through (a softer blend: the 0.06s snap dropped the hips 30cm in ~3 frames)
   else if (G.heely > 0 && G.scene === 'play') a.pose('idle', 0.6, 0.1); // rolling on the heel wheels
   else if (G.scene === 'play' && G.countdown > 0) a.pose('idle');
   else if (G.scene === 'over') a.pose('die');
   else a.pose('run', clamp(G.speed / 11.5, 1.0, 2.2), 0.2);
-  const flying = G.scene === 'play' && G.pw.cheat > 0 && !G.dying, sledding = G.scene === 'play' && G.fun === 'sled' && !G.dying && !flying;
   if (!pp.sled) { pp.sled = grp(null); box(pp.sled, 0.62, 0.06, 1.35, MS('#e63946', 0.4, 0.1), 0, 0.12, 0); const tip = cyl(pp.sled, 0.31, 0.06, MS('#e63946', 0.4, 0.1), 0, 0.2, -0.68); tip.rotation.z = Math.PI / 2; tip.scale.set(0.12, 0.6, 0.12); for (const x of [-0.27, 0.27]) box(pp.sled, 0.04, 0.04, 1.5, MS('#c0c4cc', 0.3, 0.9), x, 0.04, 0); scene.add(pp.sled); }
   pp.sled.visible = sledding; if (sledding) { pp.sled.position.set(P.x, P.y, 0.1); pp.sled.rotation.set(0, 0, clamp((P.x - P.lane * laneW) / laneW, -1, 1) * 0.35); if (Math.random() < 0.5) emit(P.x + rand(-0.3, 0.3), 0.1, 0.6, 1, '#ffffff', 1.6, 0.4, 0.14, 0, false, true); }
   pp.plane.visible = flying || (pp.plane.visible && P.y > 0.3 && G.scene === 'play');
   if (pp.plane.visible) { pp.plane.position.set(P.x, P.y + 0.42, 0.15); pp.plane.rotation.set(0.05 + Math.sin(G.t * 3) * 0.03, 0, clamp((P.x - P.lane * laneW) / laneW, -1, 1) * 0.5 + Math.sin(G.t * 2) * 0.04); }
   const heelRoll = G.heely > 0 && G.scene === 'play' && P.y - (P.fl || 0) <= 0.05 && !sliding && !G.dying;
   a.noGround = sliding || flying || sledding;
-  if (flying || sledding) a.pose('idle', 0.5, 0.15);
   a.post = (flying || sledding) ? (A => { // kneeling on the plane, hands on the wings
       twist(A, 'UpperLegL', 1, 0, 0, -1.25); twist(A, 'UpperLegR', 1, 0, 0, -1.25); twist(A, 'LowerLegL', 1, 0, 0, 1.9); twist(A, 'LowerLegR', 1, 0, 0, 1.9);
       twist(A, 'Chest', 1, 0, 0, 0.25); twist(A, 'UpperArmL', 0, 0, 1, 0.5); twist(A, 'UpperArmR', 0, 0, 1, -0.5); twist(A, 'UpperArmL', 1, 0, 0, -0.5); twist(A, 'UpperArmR', 1, 0, 0, -0.5); })
@@ -3222,7 +3249,7 @@ function syncPlayer() {
 }
 let lastRenderT = performance.now(), baseFov = 60, FRAME_DT = 0.016;
 function render() {
-  const now = performance.now(), rdt = Math.min(0.05, (now - lastRenderT) / 1000); lastRenderT = now; FRAME_DT = rdt; G.frameN = (G.frameN || 0) + 1;
+  const now = performance.now(), rdt = Math.min(0.05, (now - lastRenderT) / 1000); lastRenderT = now; FRAME_DT = rdt; G.frameN = (G.frameN || 0) + 1; if (G.frameN % 12 === 0 && G.scene === 'play' && typeof syncQuickPanel === 'function') syncQuickPanel(); // hide the controls panel while you fall, bring it back on revive
   updParts(rdt);
   if (A11Y().flash) G.shake = 0; if (G.shake > 0) G.shakeX = rand(-1, 1) * G.shake * 0.5; else G.shakeX = 0;
   const menuView = G.scene === 'menu' && curScreen !== 'sLevels';
@@ -3372,7 +3399,7 @@ var CPU_DIFF = { easy: 0.6, normal: 1, hard: 1.6, insane: 2.3 }; // classmates' 
 function boardRows(dk) {
   dk = dk || runDiff(); const me = (save.name || '').trim().toLowerCase(), k = CPU_DIFF[dk] || 1;
   const rows = CLASSMATES.filter(([n]) => n.toLowerCase() !== me).map(([n, s, d]) => ({ n, s: Math.round(s * k / 10) * 10, d, cpu: true }));
-  const b = bestFor(dk); if (b && b.s > 0) rows.push({ n: save.name || 'You', s: b.s, d: b.d || 0, me: true, t: b.t || 0 }); // you appear once, at your best score on this difficulty
+  const per = boardPer(), b = per === 'all' ? bestFor(dk) : { s: myPeriodBest(dk, per) }; if (b && b.s > 0) rows.push({ n: save.name || 'You', s: b.s, d: b.d || 0, me: true, t: b.t || 0 }); // you appear once, at your best score on this difficulty (in the chosen period)
   rows.sort((a, b) => b.s - a.s);
   return rows.slice(0, 10);
 }
@@ -3383,19 +3410,23 @@ function buildBoard(highlightT) {
   $('friendBox').style.display = boardMode === 'friends' ? 'block' : 'none'; $('chalNow').textContent = save.challenge ? 'Current challenge: beat ' + save.challenge.from + '\'s ' + save.challenge.score.toLocaleString() : 'Got a challenge code from a friend\'s score card? Enter it:'; $('myCode').textContent = myCode() || '------';
   if (boardMode === 'friends') {
     const rows = (save.friends || []).map(f => ({ n: f.n, s: f.s || 0, d: f.d })); if (save.best > 0) rows.push({ n: save.name || 'You', s: save.best, me: true });
-    rows.sort((a, b) => b.s - a.s); rows.forEach((r, i) => ol.appendChild(boardRow(r, i)));
+    rows.sort((a, b) => b.s - a.s); rows.forEach((r, i) => ol.appendChild(boardRow(r, i))); showToBeat(null, dk);
     $('boardSub').textContent = (save.friends || []).length ? 'You vs your friends. Their best distance shows up during your runs.' : 'Share your code and add friends by theirs. Their best runs show up as targets while you play.' + (Online.ready() ? '' : ' (Needs the online board: see README.)');
     refreshFriends().then(() => { if (boardMode === 'friends' && curScreen === 'sRanks') { const r2 = (save.friends || []).length; if (r2) { ol.innerHTML = ''; const rr = save.friends.map(f => ({ n: f.n, s: f.s || 0 })); if (save.best > 0) rr.push({ n: save.name || 'You', s: save.best, me: true }); rr.sort((a, b) => b.s - a.s).forEach((r, i) => ol.appendChild(boardRow(r, i))); } } });
     return;
   }
   if (boardMode === 'world') {
-    if (!Online.ready()) { $('boardSub').textContent = 'The world leaderboard isn\'t connected yet. (Setup steps are in the README.)'; return; }
-    $('boardSub').textContent = 'Loading world scores...';
-    Online.top(100).then(all => { if (boardMode !== 'world') return; checkCrown(all); const rows = all.filter(r => (r.diff || 'normal') === dk).slice(0, 25); $('boardSub').textContent = rows.length ? 'Top ' + DIFF[dk].name + ' runs from players everywhere' : 'No ' + DIFF[dk].name + ' runs on the world board yet. Be the first!'; ol.innerHTML = ''; rows.forEach((r, i) => ol.appendChild(boardRow(r, i))); }).catch(() => { $('boardSub').textContent = 'Couldn\'t reach the world leaderboard. Check your connection.'; });
+    if (!Online.ready()) { $('boardSub').textContent = 'The world leaderboard isn\'t connected yet. (Setup steps are in the README.)'; showToBeat(null, dk); return; }
+    const per = boardPer(); $('boardSub').textContent = 'Loading world scores...';
+    if (per === 'all') Online.top(100).then(all => checkCrown(all)).catch(() => {});
+    Online.board(dk, per).then(rows => { if (boardMode !== 'world' || boardDK !== dk && boardDK) return; rows = rows.slice(0, 25);
+      $('boardSub').textContent = rows.length ? 'Top ' + DIFF[dk].name + ' runs from players everywhere · ' + BOARD_PER[per] : 'No ' + DIFF[dk].name + ' runs on the world board ' + (per === 'all' ? 'yet' : BOARD_PER[per].toLowerCase()) + '. Be the first!';
+      ol.innerHTML = ''; rows.forEach((r, i) => ol.appendChild(boardRow(r, i))); showToBeat(rows, dk); })
+      .catch(() => { if (boardMode !== 'world') return; ol.innerHTML = ''; showToBeat(null, dk); $('boardSub').textContent = per === 'all' ? 'Couldn\'t reach the world board. Check your connection and try again.' : BOARD_PER[per] + ' world boards turn on after one quick Firebase rules update (README → Online leaderboard).'; });
     return;
   }
   $('boardSub').textContent = 'Top ' + DIFF[dk].name + ' Infinite Runs on this ' + (IS_WEB ? 'browser' : 'phone') + '. Beat your classmates!';
-  boardRows(dk).forEach((r, i) => ol.appendChild(boardRow(r, i, highlightT)));
+  { const rows = boardRows(dk); rows.forEach((r, i) => ol.appendChild(boardRow(r, i, highlightT))); showToBeat(rows, dk); }
   const bb = bestFor(dk); $('rBest').textContent = DIFF[dk].name + ' best ' + (bb ? bb.s : 0).toLocaleString();
 }
 function boardRow(r, i, highlightT) {
@@ -3514,10 +3545,12 @@ function initWebAds() {
   const c = window.WEB_ADS && WEB_ADS.adsenseClient; if (!c || window.HallwayAds || !save.age || save.age === 'child') return;
   window.adsbygoogle = window.adsbygoogle || []; syncWebAdPrefs();
   if (h5Loaded) return; h5Loaded = true; window.adBreak = window.adConfig = function (o) { adsbygoogle.push(o); };
-  const sc = document.createElement('script'); sc.async = true; sc.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + encodeURIComponent(c);
-  if (save.age === 'teen') sc.setAttribute('data-tag-for-age-treatment', '2');
-  sc.setAttribute('data-ad-client', c); sc.setAttribute('data-ad-frequency-hint', '30s'); sc.crossOrigin = 'anonymous';
-  sc.onload = () => { h5Ready = true; try { adConfig({ preloadAdBreaks: 'on', sound: save.sfx === false ? 'off' : 'on' }); } catch (e) {} };
+  adsbygoogle.pauseAdRequests = 0; // the <head> tag starts paused, so under-13 players never send an ad request
+  const ready = () => { h5Ready = true; try { adConfig({ preloadAdBreaks: 'on', sound: save.sfx === false ? 'off' : 'on' }); } catch (e) {} };
+  let sc = document.querySelector('script[src*="adsbygoogle.js"]');
+  if (sc) { if (adsbygoogle.loaded) ready(); else sc.addEventListener('load', ready); return; }
+  sc = document.createElement('script'); sc.async = true; sc.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + encodeURIComponent(c);
+  sc.setAttribute('data-ad-frequency-hint', '30s'); sc.crossOrigin = 'anonymous'; sc.onload = ready;
   document.head.appendChild(sc);
 }
 function fakeAd(tag) {
@@ -3543,7 +3576,7 @@ function houseAd(tag) {
 
 /* ---------- interstitial ads between runs ----------
    Every 3rd finished run (not in your first 3 runs, never right after you chose to watch a rewarded ad, never in
-   the tutorial), shown when you leave the game-over screen. Android: AdMob interstitial. Browser: 5-second house ad. */
+   the tutorial), shown when you leave the game-over screen. Android: AdMob interstitial. Browser: a Google H5 "next" ad if one is ready (13+ only), otherwise the 5-second house ad. These breaks and the rewarded buttons are the only places ads show. */
 const INTER_EVERY = 3;
 function maybeInterstitial(then) {
   save.runsSinceAd = (save.runsSinceAd || 0) + 1; const total = (save.runsTotal = (save.runsTotal || 0) + 1);
@@ -3555,15 +3588,20 @@ function maybeInterstitial(then) {
   window.onInterstitialDone = () => fin();
   G.adOpen = true; appHidden();
   if (window.HallwayAds && HallwayAds.showInterstitial) { try { HallwayAds.showInterstitial(); setTimeout(fin, 180000); return; } catch (e) {} }
+  if (h5Ready && window.adBreak) { // real Google interstitial; the house ad fills in when Google has none to show
+    try { adBreak({ type: 'next', name: 'between-runs', adBreakDone: info => { if (info && info.breakStatus === 'viewed') fin(); else houseInterstitial(fin); } }); return; } catch (e) {}
+  }
   houseInterstitial(fin);
 }
 function houseInterstitial(fin) {
   const m = $('adModal'), ad = HOUSE_ADS[(save.adN = ((save.adN || 0) + 1)) % HOUSE_ADS.length];
   $('adIco').textContent = ad[0]; $('adHead').textContent = ad[1]; $('adSub').textContent = ad[2]; $('adCard').style.setProperty('--adbg', ad[3]);
-  m.classList.add('show'); $('adClose').style.display = 'none'; const T = 5, t0 = performance.now(); $('adClaim').disabled = true; $('adClaim').textContent = 'Continue in 5…';
-  const iv = setInterval(() => { const el = Math.min(T, (performance.now() - t0) / 1000); $('adBar').style.width = (el / T * 100) + '%'; $('adLeft').textContent = Math.ceil(T - el);
+  m.classList.add('show'); $('adClose').style.display = 'none'; const T = 5, SKIP = 2, t0 = performance.now(); $('adClaim').disabled = true; $('adClaim').textContent = 'Continue in 5…';
+  const closeTxt = $('adClose').textContent; // between-run promos can be skipped after 2 seconds
+  const iv = setInterval(() => { const el = Math.min(T, (performance.now() - t0) / 1000); if (el >= SKIP && $('adClose').style.display === 'none') { $('adClose').textContent = 'Skip ✕'; $('adClose').style.display = ''; } $('adBar').style.width = (el / T * 100) + '%'; $('adLeft').textContent = Math.ceil(T - el);
     if (el >= T && $('adClaim').disabled) { $('adClaim').disabled = false; $('adClaim').textContent = 'Continue ▶'; } else if (el < T) $('adClaim').textContent = 'Continue in ' + Math.ceil(T - el) + '…'; }, 100);
-  $('adClaim').onclick = () => { clearInterval(iv); m.classList.remove('show'); $('adClose').style.display = ''; fin(); };
+  const done = () => { clearInterval(iv); m.classList.remove('show'); $('adClose').style.display = ''; $('adClose').textContent = closeTxt; fin(); };
+  $('adClaim').onclick = done; $('adClose').onclick = done;
 }
 
 
@@ -3635,10 +3673,21 @@ function startAppTour(force) {
 }
 /* ---------- BUTTON LAYOUT: drag Push / Heel Wheels / Finisher where you want them ---------- */
 const BTN_IDS = ['pushBtn', 'heelyBtn', 'finBtn'];
-function applyBtnPos() { const bp = save.btnPos || {}; for (const id of BTN_IDS) { const el = $(id), p = bp[id]; if (!el) continue; if (p) Object.assign(el.style, { left: p.x + '%', top: p.y + '%', right: 'auto', bottom: 'auto', transform: 'translate(-50%,-50%)' }); else Object.assign(el.style, { left: '', top: '', right: '', bottom: '', transform: '' }); } }
+// A moved button is centred with the separate CSS `translate` property, never `transform`: the buttons' pulse animation
+// animates `transform`, and it used to wipe out the centring every half second, so a placed button jumped back and forth.
+const BTN_TRANSLATE = (() => { try { return CSS.supports('translate', '1px'); } catch (e) { return false; } })();
+function applyBtnPos() { const bp = save.btnPos || {}; for (const id of BTN_IDS) { const el = $(id), p = bp[id]; if (!el) continue;
+  el.classList.toggle('placed', !!p); el.classList.toggle('noPulse', !!p && !BTN_TRANSLATE);
+  if (p) Object.assign(el.style, { left: p.x + '%', top: p.y + '%', right: 'auto', bottom: 'auto' }, BTN_TRANSLATE ? { translate: '-50% -50%', transform: 'none' } : { transform: 'translate(-50%,-50%)' });
+  else Object.assign(el.style, { left: '', top: '', right: '', bottom: '', transform: '', translate: '' }); } }
 function editButtons() {
   showScreen(null); const bar = document.createElement('div'); bar.id = 'btnEdit'; bar.innerHTML = '<b>Drag the buttons where you want them</b><div><button class="btn gray small" id="beReset">Reset</button><button class="btn green small" id="beDone">Done</button></div>'; document.body.appendChild(bar);
-  for (const id of BTN_IDS) { const el = $(id); el.classList.add('show', 'editing'); el.onpointerdown = e => { e.preventDefault(); e.stopPropagation(); const mv = ev => { save.btnPos = save.btnPos || {}; save.btnPos[id] = { x: clamp(ev.clientX / innerWidth * 100, 6, 94), y: clamp(ev.clientY / innerHeight * 100, 8, 94) }; applyBtnPos(); }; const up = () => { removeEventListener('pointermove', mv); removeEventListener('pointerup', up); persist(); }; addEventListener('pointermove', mv); addEventListener('pointerup', up); }; }
+  for (const id of BTN_IDS) { const el = $(id); el.classList.add('show', 'editing'); el.onpointerdown = e => { e.preventDefault(); e.stopPropagation();
+      // the button keeps the same spot under your finger (it used to jump so its centre sat on the finger), follows only that finger, and stops cleanly
+      const r = el.getBoundingClientRect(), ox = e.clientX - (r.left + r.width / 2), oy = e.clientY - (r.top + r.height / 2), pid = e.pointerId; try { el.setPointerCapture(pid); } catch (er) {}
+      const mv = ev => { if (ev.pointerId !== pid) return; ev.preventDefault(); save.btnPos = save.btnPos || {}; save.btnPos[id] = { x: clamp((ev.clientX - ox) / innerWidth * 100, 6, 94), y: clamp((ev.clientY - oy) / innerHeight * 100, 8, 94) }; applyBtnPos(); };
+      const up = ev => { if (ev.pointerId !== pid) return; removeEventListener('pointermove', mv); removeEventListener('pointerup', up); removeEventListener('pointercancel', up); persist(); };
+      addEventListener('pointermove', mv, { passive: false }); addEventListener('pointerup', up); addEventListener('pointercancel', up); }; }
   const done = () => { bar.remove(); for (const id of BTN_IDS) { const el = $(id); el.classList.remove('show', 'editing'); el.onpointerdown = null; } persist(); goMenu(); toast('Buttons saved', 'They show up here during every run', 1500); };
   bar.querySelector('#beDone').onclick = done; bar.querySelector('#beReset').onclick = () => { save.btnPos = {}; applyBtnPos(); persist(); };
 }
@@ -3982,7 +4031,7 @@ function declineRevive() { closeRevive(); G.reviving = false; endRun(false); }
 function doRevive() { P.slide = 0; P.slideQ = false; G.pushAnim = 0; G.trick = null;
   // back on your feet and running straight away: clear any slide lean / fall pose and snap to the run animation
   if (player) { const pp = player, a = pp.act; pp.pivot.rotation.set(0, 0, 0); pp.root.rotation.z = 0; pp.wrap.position.y = 0; a.post = null; a.noGround = false;
-    if (a.actions) for (const n in a.actions) a.actions[n].stop(); a.cur = null; a.blend = null; a.pose('run', clamp(G.speed / 11.5, 1.0, 2.2), 0); }
+    if (a.actions) for (const n in a.actions) a.actions[n].stop(); a.cur = null; a.blend = null; a.hold = 0; a.pose('run', clamp(G.speed / 11.5, 1.0, 2.2), 0); }
   closeRevive(); G.reviving = false; G.revives = (G.revives || 0) + 1;
   G.dying = false; G.caught = false; G.stumble = 0; clearChase(); P.fall = 0; P.y = 0; P.vy = 0; P.slide = 0;
   for (let i = G.objs.length - 1; i >= 0; i--) { const o = G.objs[i]; if (o.K.cat === 'obs' && o.z < PZ + 22) killObj(i); }
@@ -4020,7 +4069,8 @@ const Online = {
   },
   async remove() {
     if (!(window.ONLINE_BOARD && ONLINE_BOARD.projectId && ONLINE_BOARD.apiKey) || !save.fbAuth) return true;
-    try { const a = await this.token(); const r = await fetch(this.url('/scores/' + encodeURIComponent(a.uid)), { method: 'DELETE', headers: { Authorization: 'Bearer ' + a.idToken } }); return r.ok; } catch (e) { return false; }
+    try { const a = await this.token(), H = { method: 'DELETE', headers: { Authorization: 'Bearer ' + a.idToken } }; const r = await fetch(this.url('/scores/' + encodeURIComponent(a.uid)), H);
+      await Promise.allSettled(DIFF_KEYS.map(k => fetch(this.url('/runs/' + encodeURIComponent(a.uid + '_' + k)), H))); return r.ok; } catch (e) { return false; }
   },
   async byCode(code) {
     const r = await fetch(this.url(':runQuery'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ structuredQuery: { from: [{ collectionId: 'scores' }], where: { fieldFilter: { field: { fieldPath: 'code' }, op: 'EQUAL', value: { stringValue: code } } }, limit: 1 } }) });
@@ -4028,11 +4078,37 @@ const Online = {
     const d = (await r.json()).find(x => x.document); if (!d) return null; const f = d.document.fields;
     return { n: f.name.stringValue, s: +f.score.integerValue, d: +(f.dist && f.dist.integerValue || 0) };
   },
+  // Per-difficulty rows with all-time, monthly, weekly and daily bests: runs/{uid}_{difficulty}
+  async submitRun(name, dist) {
+    if (!this.ready()) return; const dk = runDiff(), b = bestFor(dk), p = (save.pb || {})[dk]; if (!b || !p) return;
+    try {
+      const a = await this.token(), I = v => ({ integerValue: String(Math.floor(v || 0)) }), S = v => ({ stringValue: String(v || '') });
+      const r = await fetch(this.url('/runs/' + encodeURIComponent(a.uid + '_' + dk)), { method: 'PATCH', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + a.idToken }, body: JSON.stringify({ fields: {
+        uid: S(a.uid), name: S((name || 'Runner').slice(0, 14)), code: S(myCode()), diff: S(dk), best: I(b.s), bestDist: I(b.d),
+        day: S(p.day), dayS: I(p.dayS), week: S(p.week), weekS: I(p.weekS), month: S(p.month), monthS: I(p.monthS), ts: { timestampValue: new Date().toISOString() } } }) });
+      if (r.ok) { p.sent = Date.now(); persist(); }
+    } catch (e) { /* offline or rules not updated yet: ignore */ }
+  },
+  async board(dk, per) {
+    const K = perKeys(), eq = (f, v) => ({ fieldFilter: { field: { fieldPath: f }, op: 'EQUAL', value: { stringValue: v } } });
+    const where = per === 'all' ? eq('diff', dk) : { compositeFilter: { op: 'AND', filters: [eq('diff', dk), eq(per, K[per])] } };
+    const uid = save.fbAuth && save.fbAuth.uid, best = new Map(), add = (id, row) => { const o = best.get(id); if (!o || row.s > o.s) best.set(id, row); };
+    const q = fetch(this.url(':runQuery'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ structuredQuery: { from: [{ collectionId: 'runs' }], where, limit: 300 } }) })
+      .then(async r => { if (!r.ok) throw new Error('HTTP ' + r.status); for (const x of await r.json()) { if (!x.document) continue; const f = x.document.fields, id = f.uid ? f.uid.stringValue : '';
+        const sc = +((per === 'all' ? f.best : f[per + 'S']) || {}).integerValue || 0; if (sc > 0) add(id, { n: f.name.stringValue, s: sc, d: per === 'all' ? +(f.bestDist && f.bestDist.integerValue || 0) : 0, diff: dk, me: !!uid && id === uid }); } return true; });
+    if (per !== 'all') await q; // daily / weekly / monthly come only from the new rows
+    else { // all-time also keeps everyone already on the original board
+      const [a, b] = await Promise.allSettled([q, this.top(100)]);
+      if (b.status === 'fulfilled') for (const r of b.value) if ((r.diff || 'normal') === dk) add(r.uid || r.n + '|' + r.s, r);
+      if (a.status === 'rejected' && b.status === 'rejected') throw a.reason;
+    }
+    return [...best.values()].sort((a, b) => b.s - a.s);
+  },
   async top(n = 25) {
     const r = await fetch(this.url(':runQuery'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ structuredQuery: { from: [{ collectionId: 'scores' }], orderBy: [{ field: { fieldPath: 'score' }, direction: 'DESCENDING' }], limit: n } }) });
     if (!r.ok) throw new Error('HTTP ' + r.status);
     const rows = await r.json();
-    const uid = save.fbAuth && save.fbAuth.uid; return rows.filter(x => x.document).map(x => { const f = x.document.fields; return { n: f.name.stringValue, s: +f.score.integerValue, d: +(f.dist && f.dist.integerValue || 0), diff: (f.diff && f.diff.stringValue) || 'normal', me: !!uid && x.document.name.endsWith('/' + uid) }; });
+    const uid = save.fbAuth && save.fbAuth.uid; return rows.filter(x => x.document).map(x => { const f = x.document.fields; return { n: f.name.stringValue, s: +f.score.integerValue, d: +(f.dist && f.dist.integerValue || 0), diff: (f.diff && f.diff.stringValue) || 'normal', uid: x.document.name.split('/').pop(), me: !!uid && x.document.name.endsWith('/' + uid) }; });
   }
 };
 
@@ -4516,6 +4592,18 @@ const SPEEDS = { chill: { name: 'Chill', mul: 0.88, score: 0.8 }, normal: { name
 const speedMode = () => (G && G.fixed) ? SPEEDS.normal : SPEEDS[save.speedMode] || SPEEDS.normal;
 let SPEED_MAX = 27;
 const wN = () => clamp((G.weight - 0.2) / 0.8, 0, 1);
+// HEAD HOP targets: every person (and person with a cart or umbrella). Only the 3-high cheer pyramid can't be hopped
+// (and a swinging door, which has no head to land on).
+const NO_HOP = { pyramid: 1, doorswing: 1 };
+function hoppable(o) { return !!(o && o.K.type === 'block' && o.acts && o.acts.length && !NO_HOP[o.kind] && !o.knocked); }
+// Jump assist: a ground jump toward a hoppable person in your lane is tuned so you come down right on their head
+// (before, only short kids were reliably reachable, and adults needed frame-perfect timing and a light backpack).
+function hopAssist(vy) {
+  let nx = null; for (const q of G.objs) if (!q.hopped && !q.ignore && hoppable(q) && Math.abs(q.x - P.lane * laneW) < 0.6 && q.z > PZ && (!nx || q.z < nx.z)) nx = q;
+  if (!nx) return vy; const vz = nx.vz !== undefined ? nx.vz : (nx.K.vz || 0), sp = Math.max(4, G.speed - vz), t = (nx.z - PZ) / sp; if (t < 0.12 || t > 0.85) return vy;
+  const g = 26 * (cheatOn('moon') ? 0.45 : 1), want = (nx.K.h || 1.75) + 0.08 - (P.fl || 0), need = (want + g * t * t / 2) / t;
+  return clamp(Math.max(vy, need), vy, vy * 1.5);
+}
 function jumpV() { return lerp(11.2, 9.0, wN()) * (save.up.helium ? 1.1 : 1) * shoeDef().jump * (charDef().perk === 'jump' ? 1.08 : 1); }
 function onWax() { for (const o of G.objs) if (o.kind === 'wax' && o.z < PZ + 0.3 && o.z + o.len > PZ && Math.abs(o.x - P.x) < laneW * 0.6) return true; return false; }
 // height of whatever you're standing over (0 = the hallway floor, or the top / ramp of a platform)
@@ -4830,7 +4918,7 @@ function endRun(win, reason) {
   if (G.mode === 'infinite' && !G.fun && tourOn() && G.dist >= 1000 && save.tourStamp !== tourWeek()) { save.tourStamp = tourWeek(); save.tourStamps = (save.tourStamps || 0) + 1; grant({ cash: 1000, gs: 1 }); setTimeout(() => toast(tourStop().flag + ' TOUR STAMP!', tourStop().name + ' · +$1,000 +1★ (' + save.tourStamps + ' stamps)', 2600), 1600); }
   let newBest = false;
   let placed = null;
-  if (G.mode === 'infinite' && !G.fun) { if (sc > 0) logRunByDiff(sc, Math.floor(G.dist)); duelEnd(sc); if (sc > save.best) { save.best = sc; newBest = true; } save.bestDist = Math.max(save.bestDist, Math.floor(G.dist)); if (sc > 0 && !G.fun) { placed = recordRun(sc, Math.floor(G.dist)); if (sc >= save.best && !G.cheated) Online.submit(save.name || 'Runner', sc, G.dist); } }
+  if (G.mode === 'infinite' && !G.fun) { if (sc > 0) { const nb = logRunByDiff(sc, Math.floor(G.dist)), np = logRunPeriods(sc); if ((nb || np) && !G.cheated) Online.submitRun(save.name || 'Runner', G.dist); } duelEnd(sc); if (sc > save.best) { save.best = sc; newBest = true; } save.bestDist = Math.max(save.bestDist, Math.floor(G.dist)); if (sc > 0 && !G.fun) { placed = recordRun(sc, Math.floor(G.dist)); if (sc >= save.best && !G.cheated) Online.submit(save.name || 'Runner', sc, G.dist); } }
   persist();
   let funLine = '';
   if (G.fun) {
@@ -4935,7 +5023,7 @@ function act(a) {
   else if (a === 'right' && P.lane < 1) { P.fromLane = P.lane; P.lane++; sfx('lane'); G.laneT = G.t; G.tpLane = true; }
   else if ((a === 'left' && P.lane === -1) || (a === 'right' && P.lane === 1)) lockerSlam(a === 'left' ? -1 : 1);
   else if (a === 'jump') {
-    if (P.y <= (P.fl || 0) + 0.001) { P.vy = jumpV() * (G.heely > 0 ? 1.12 : 1) * (G.pw.spring > 0 ? 1.55 : 1); if (G.pw.spring > 0) { emit(P.x, 0.1, 0.2, 14, '#7dff9a', 4, 0.5, 0.2, 0, true, true); sfx('power'); } P.slide = 0; P.slideQ = false; sfx('jump'); if (G.heely > 0) startTrick(); G.lastJumpT = G.t; }
+    if (P.y <= (P.fl || 0) + 0.001) { P.vy = hopAssist(jumpV() * (G.heely > 0 ? 1.12 : 1) * (G.pw.spring > 0 ? 1.55 : 1)); if (G.pw.spring > 0) { emit(P.x, 0.1, 0.2, 14, '#7dff9a', 4, 0.5, 0.2, 0, true, true); sfx('power'); } P.slide = 0; P.slideQ = false; sfx('jump'); if (G.heely > 0) startTrick(); G.lastJumpT = G.t; }
     else if (charDef().ab === 'djump' && !P.dj && P.vy < jumpV() * 0.7) { P.dj = true; P.vy = jumpV() * 0.88; sfx('jump'); popup('DOUBLE JUMP!', '#7bdff2'); emit(P.x, P.y, 0.2, 10, '#ffffff', 2.5, 0.4, 0.15, 0, true, true); }
     else if (G.t - (G.lastJumpT || -9) < 0.7 && !(G.burstCd > 0) && G.mode !== 'tutorial') { G.burstT = 1.8; G.burstCd = 6; P.vy = Math.min(P.vy, 2); popup('SPRINT!', '#ff9f1c'); sfx('whistle'); voice('go_go_go', 8); buzz('power'); } // swipe up twice = sprint burst
   } else if (a === 'slide') {
@@ -5191,10 +5279,10 @@ function update(dt) {
         if (K.type === 'low') hit = P.y < K.h - 0.12;
         else if (K.type === 'high') hit = !sliding || P.y > 0.2;
         else hit = !(G.highAir && P.y > (K.h || 1.8) - 0.1) && !(P.y > (K.h || 1.8) + 0.3); // high enough (spring shoes, a table, a big jump) = you sail right over
-        if (hit && K.type === 'block' && o.acts && o.acts.length && P.y > (K.h || 1.75) - 0.45 && (P.vy <= 0 || P.y > (K.h || 1.75) - 0.1) && !o.hopped) { // HEAD HOP: land on their head and bounce off
+        if (hit && hoppable(o) && P.y - (P.fl || 0) > 0.35 && P.y > (K.h || 1.75) - 0.6 && !o.hopped) { // HEAD HOP: land on their head and bounce off
           o.hopped = true; o.ignore = true; P.vy = jumpV() * 0.82;
           { // aim the bounce at the next person in this lane (makes head-to-head chains land)
-            let nx = null; for (const q of G.objs) if (q !== o && !q.hopped && !q.ignore && q.K.type === 'block' && q.acts && q.acts.length && Math.abs(q.x - P.x) < 0.6 && q.z > o.z + 2 && q.z - PZ < 16 && (!nx || q.z < nx.z)) nx = q;
+            let nx = null; for (const q of G.objs) if (q !== o && !q.hopped && !q.ignore && hoppable(q) && Math.abs(q.x - P.x) < 0.6 && q.z > o.z + 2 && q.z - PZ < 16 && (!nx || q.z < nx.z)) nx = q;
             if (nx) { const t = (nx.z - PZ - 0.45) / Math.max(4, G.speed), want = (nx.K.h || 1.75) - 0.2; if (t > 0.25 && t < 1.0) { const v = (want - P.y + 13 * t * t) / t; if (v > 2 && v < 26 * t) P.vy = v; } } } P.dj = false; G.highAir = true; o.shout = 1.4; o.say = pick(['MY HEAD!', 'Hey!!', 'OW!', 'Watch it!']);
           for (const a2 of o.acts) a2.pose('hit', 1.2, 0.08);
           G.hopN = (G.hopT > 0 ? (G.hopN || 0) : 0) + 1; G.hopT = 1.3; const hn = G.hopN, pts = 75 * hn; // chain: bounce person to person without touching the floor
@@ -5775,7 +5863,7 @@ function setDifficulty(k) { if (!DIFF[k]) return; save.difficulty = k; persist()
 function syncBoardDiff() {
   const dk = boardDK || runDiff();
   document.querySelectorAll('#boardDiff button').forEach(b => b.classList.toggle('on', b.dataset.bd === dk));
-  $('boardDiff').style.display = boardMode === 'friends' ? 'none' : '';
+  $('boardDiff').style.display = boardMode === 'friends' ? 'none' : ''; syncBoardPer();
   const at = allTimeBest();
   $('allBest').innerHTML = '<div><small>🏅 HIGHEST SCORE EVER</small><span></span></div><b></b>';
   $('allBest').querySelector('span').textContent = at ? DIFF[at.k].name + ' · ' + (at.d || 0).toLocaleString() + ' m' + (at.t ? ' · ' + new Date(at.t).toLocaleDateString() : '') : 'Play an Infinite Run to set one';
@@ -5783,6 +5871,25 @@ function syncBoardDiff() {
   return dk;
 }
 document.querySelectorAll('#boardDiff button').forEach(b => b.onclick = () => { sfx('click'); boardDK = b.dataset.bd; buildBoard(); });
+/* ---- leaderboard periods: All-time (default) / This month / This week / Today, plus the run to beat ---- */
+var BOARD_PER = { all: 'All-time', month: 'This month', week: 'This week', day: 'Today' };
+function boardPer() { return BOARD_PER[save.boardPer] ? save.boardPer : 'all'; }
+function perKeys(t) { // UTC, so every player in the world is on the same day / week / month
+  const d = new Date(t || Date.now()), iso = d.toISOString(), mon = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - (d.getUTCDay() + 6) % 7));
+  return { day: iso.slice(0, 10), week: 'W' + mon.toISOString().slice(0, 10), month: iso.slice(0, 7) }; }
+function logRunPeriods(sc) { const dk = runDiff(), K = perKeys(); save.pb = save.pb || {}; const p = save.pb[dk] || (save.pb[dk] = {}); let ch = false;
+  for (const per of ['day', 'week', 'month']) { if (p[per] !== K[per]) { p[per] = K[per]; p[per + 'S'] = sc; ch = true; } else if (sc > (p[per + 'S'] || 0)) { p[per + 'S'] = sc; ch = true; } } return ch; }
+function myPeriodBest(dk, per) { if (per === 'all') { const b = bestFor(dk); return b ? b.s : 0; } const p = (save.pb || {})[dk], K = perKeys(); return p && p[per] === K[per] ? p[per + 'S'] || 0 : 0; }
+function syncBoardPer() { const per = boardPer(); document.querySelectorAll('#boardPer button').forEach(b => b.classList.toggle('on', b.dataset.bp === per)); $('boardPer').style.display = boardMode === 'friends' ? 'none' : ''; return per; }
+document.querySelectorAll('#boardPer button').forEach(b => b.onclick = () => { sfx('click'); save.boardPer = b.dataset.bp; persist(); buildBoard(); });
+function showToBeat(rows, dk) {
+  const el = $('toBeat'); if (!el) return; const per = boardPer(), top = rows && rows[0], mine = myPeriodBest(dk, per);
+  if (!top) { el.style.display = 'none'; return; } el.style.display = '';
+  const where = DIFF[dk].name + ' · ' + BOARD_PER[per] + (boardMode === 'world' ? ' · World' : ' · Classmates');
+  el.innerHTML = '<div><small></small><span></span></div><b></b>'; el.classList.toggle('mine', !!top.me);
+  el.querySelector('small').textContent = top.me ? '👑 YOU\'RE #1 · ' + where : '🎯 RUN TO BEAT · ' + where;
+  el.querySelector('span').textContent = top.me ? 'Keep it! Someone is coming for it.' : top.n + (mine > 0 ? ' · you: ' + mine.toLocaleString() + ' (' + Math.max(1, top.s - mine + 1).toLocaleString() + ' to go)' : ' · play a run to get on the board');
+  el.querySelector('b').textContent = top.s.toLocaleString(); }
 
 /* ---- world record alerts: if you hold #1 on the world board and someone beats it, you hear about it ---- */
 async function checkCrown(rows) {
@@ -5828,16 +5935,23 @@ $('duelIn').addEventListener('keydown', e => { if (e.key === 'Enter') $('duelGo'
 
 /* ---- quick controls: always on screen on the website, a short reminder at the start of each run in the app ---- */
 function quickCtlStart() {
-  const q = $('quickCtl'); if (!q) return; q.className = ''; clearTimeout(q._t); clearTimeout(q._t2);
-  if (save.quickCtl === false || G.mode === 'tutorial') return;
-  q.innerHTML = IS_WEB
-    ? '<span><kbd>←</kbd><kbd>→</kbd> Move</span><span><kbd>↑</kbd> Jump</span><span><kbd>↓</kbd> Slide</span><span><kbd>Q</kbd> Push</span><span><kbd>E</kbd> Heel Wheels ×' + (save.heelys || 0) + '</span><span><kbd>X</kbd> Finisher</span><span><kbd>P</kbd> Pause</span><span><kbd>R</kbd> Restart</span><span><kbd>M</kbd> Menu</span>'
-    : '<span>👈👉 Swipe to move</span><span>👆 Jump</span><span>👇 Slide</span><span>✋ Push</span><span>👟 Wheels ×' + (save.heelys || 0) + '</span>';
-  q.classList.add('show'); q._t = setTimeout(() => q.classList.add(IS_WEB ? 'dim' : 'gone'), 7000); if (!IS_WEB) q._t2 = setTimeout(() => q.classList.remove('show'), 7800);
+  const q = $('quickCtl'), tab = $('qcTab'); if (!q) return; q.classList.remove('show'); tab.classList.remove('show');
+  if (G.mode === 'tutorial') return;
+  $('qcList').innerHTML = IS_WEB
+    ? '<span><kbd>←</kbd><kbd>→</kbd> Move</span><span><kbd>↑</kbd> Jump</span><span><kbd>↓</kbd> Slide</span><span><kbd>Q</kbd> Push</span><span><kbd>E</kbd> Wheels ×' + (save.heelys || 0) + '</span><span><kbd>X</kbd> Finisher</span><span><kbd>P</kbd> Pause</span><span><kbd>R</kbd> Restart</span><span><kbd>M</kbd> Menu</span><span><kbd>K</kbd> Hide this</span>'
+    : '<span>👈👉 Swipe to move</span><span>👆 Swipe up: jump</span><span>👇 Swipe down: slide</span><span>✋ Push button</span><span>👟 Wheels ×' + (save.heelys || 0) + '</span>';
+  syncQuickPanel();
 }
-function hideRunUi() { const q = $('quickCtl'); if (q) q.className = ''; const d = $('duelBox'); if (d) d.style.display = 'none'; }
+function syncQuickPanel() { const on = G.scene === 'play' && G.mode !== 'tutorial' && !G.dying, open = save.quickCtl !== false;
+  $('quickCtl').classList.toggle('show', on && open); $('qcTab').classList.toggle('show', on && !open); }
+function setQuickCtl(open) { save.quickCtl = !!open; persist(); syncQuickPanel(); syncQuickBtn(); sfx('click'); }
+function hideRunUi() { const q = $('quickCtl'); if (q) q.classList.remove('show'); const t = $('qcTab'); if (t) t.classList.remove('show'); const d = $('duelBox'); if (d) d.style.display = 'none'; }
 function syncQuickBtn() { $('bQuickCtl').classList.toggle('off', save.quickCtl === false); }
-$('bQuickCtl').onclick = () => { save.quickCtl = save.quickCtl === false; persist(); syncQuickBtn(); sfx('click'); toast(save.quickCtl ? 'Quick controls on' : 'Quick controls off', 'Shown at the bottom during runs', 1100); };
+$('bQuickCtl').onclick = () => { save.quickCtl = save.quickCtl === false; persist(); syncQuickBtn(); syncQuickPanel(); sfx('click'); toast(save.quickCtl ? 'Controls panel shown' : 'Controls panel hidden', 'Tap the 🎮 tab at the side of the screen to bring it back', 1300); };
+// taps on the panel never reach the game (no accidental jumps or swipes)
+for (const id of ['quickCtl', 'qcTab']) for (const ev of ['touchstart', 'touchend', 'pointerdown', 'mousedown']) $(id).addEventListener(ev, e => e.stopPropagation(), { passive: true });
+$('qcHide').onclick = e => { e.stopPropagation(); setQuickCtl(false); };
+$('qcTab').onclick = e => { e.stopPropagation(); setQuickCtl(true); };
 syncQuickBtn();
 
 /* ---- website menu: every play mode listed on the side, one click to play ---- */
@@ -5864,6 +5978,7 @@ function hotkey(e) {
   const c = e.code, playing = G.scene === 'play', over = G.scene === 'over' || curScreen === 'sOver';
   const ageOpen = $('ageModal') && $('ageModal').classList.contains('show'); if (ageOpen) return false;
   const closeModals = () => document.querySelectorAll('.modal.show').forEach(m => m.classList.remove('show'));
+  if (c === 'KeyK') { if (playing && G.mode !== 'tutorial') { setQuickCtl(save.quickCtl === false); return true; } return false; }
   if (c === 'KeyR') { if ((playing || over) && G.mode !== 'tutorial') { closeModals(); $('bRestart').onclick(); return true; } return false; }
   if (c === 'KeyM') { if (playing || over || (curScreen && curScreen !== 'sMenu')) { closeModals(); sfx('click'); goMenu(); syncMusic(); return true; } return false; }
   if (c === 'KeyN') { toggleMusic(); toast(curTrack() === 'off' ? 'Music off' : 'Music on', '', 900); return true; }
