@@ -1683,6 +1683,8 @@ const wetTex = () => canvasTex('wet', 256, 384, (x, w, h) => {
   fitText(x, 'CAUTION', w / 2, 240, w * 0.85, 46, '#1b1f3b'); fitText(x, 'WET FLOOR', w / 2, 300, w * 0.85, 40, '#1b1f3b');
 });
 const stripeTex = () => canvasTex('stripe', 256, 32, (x, w, h) => { for (let i = 0; i < 8; i++) { x.fillStyle = i % 2 ? '#1b1f3b' : '#fff'; x.fillRect(i * 32, 0, 32, h); } });
+const hurdleTex = () => canvasTex('hurdle', 256, 64, (x, w, h) => { for (let i = 0; i < 8; i++) { x.fillStyle = i % 2 ? '#ffffff' : '#e63946'; x.fillRect(i * 32, 0, 32, h); } x.fillStyle = '#1b1f3b'; x.fillRect(0, 0, w, 5); x.fillRect(0, h - 5, w, 5); });
+function hurdleMat() { return MATS.hurdle || (MATS.hurdle = newMat({ map: hurdleTex(), emissive: '#ffffff', emissiveMap: hurdleTex(), emissiveIntensity: 0.35 })); }
 const checkerTex = () => canvasTex('checker', 256, 32, (x, w, h) => { for (let i = 0; i < 16; i++) for (let j = 0; j < 2; j++) { x.fillStyle = (i + j) % 2 ? '#111' : '#fff'; x.fillRect(i * 16, j * 16, 16, 16); } });
 const signTex = t => canvasTex('sign' + t, 512, 128, (x, w, h) => { x.fillStyle = '#1b1f3b'; x.fillRect(0, 0, w, h); x.strokeStyle = '#ffd60a'; x.lineWidth = 8; x.strokeRect(6, 6, w - 12, h - 12); fitText(x, t, w / 2, h / 2 + 3, w * 0.85, 64, '#ffd60a'); });
 const billTex = () => canvasTex('bill', 256, 128, (x, w, h) => { x.fillStyle = '#2d6a4f'; x.fillRect(0, 0, w, h); x.fillStyle = '#74c69d'; x.fillRect(8, 8, w - 16, h - 16); x.fillStyle = '#2d6a4f'; x.beginPath(); x.arc(w / 2, h / 2, 38, 0, 7); x.fill(); fitText(x, '$5', w / 2, h / 2 + 2, 70, 44, '#d8f3dc'); fitText(x, '5', 30, 30, 40, 24, '#1b4332'); fitText(x, '5', w - 30, h - 30, 40, 24, '#1b4332'); });
@@ -2951,7 +2953,11 @@ const KINDS = {
     build(o) { const g = new THREE.Group(); o.spin = grp(g, 0, 0.36, 0); ball(o.spin, 0.36, '#e76f2a'); const r1 = mesh(GEO.torus, M('#3a1a0a'), o.spin, 0, 0, 0, 0.362, 0.362, 0.362); r1.rotation.y = Math.PI / 2; mesh(GEO.torus, M('#3a1a0a'), o.spin, 0, 0, 0, 0.362, 0.362, 0.362); const r3 = mesh(GEO.torus, M('#3a1a0a'), o.spin, 0, 0, 0, 0.362, 0.362, 0.362); r3.rotation.x = Math.PI / 2; blob(g, 0.42); return g; },
     anim(o, t) { } },
   hurdle: { deep: true, cat: 'obs', type: 'low', h: 0.9, hw: 0.95, d: 0.4, label: 'a track hurdle',
-    build(o) { const g = new THREE.Group(); for (const sx of [-0.9, 0.9]) { box(g, 0.07, 0.85, 0.07, '#dddddd', sx, 0.425, 0); box(g, 0.08, 0.05, 0.6, '#555', sx, 0.025, -0.15); } texBox(g, 1.95, 0.22, 0.04, stripeTex(), 'stripe', '#ffffff', 0, 0.8, 0); blob(g, 1.0); return g; } },
+    // bold red-and-white board with a slight glow of its own so it reads on every floor (light track, grey yard, shadowed
+    // halls) and from far away: the old thin grey posts and small striped bar blended into the white lane lines
+    build(o) { const g = new THREE.Group(); for (const sx of [-0.88, 0.88]) { box(g, 0.1, 0.84, 0.1, '#f1f3f5', sx, 0.42, 0); box(g, 0.12, 0.07, 0.68, '#2b2d42', sx, 0.035, -0.18); }
+      const bar = grp(g, 0, 0.75, 0); box(bar, 1.9, 0.3, 0.06, '#d62828'); for (const zz of [0.034, -0.034]) { const f = mesh(GEO.plane, hurdleMat(), bar, 0, 0, zz, 1.9, 0.3, 1); if (zz < 0) f.rotation.y = Math.PI; }
+      box(g, 1.9, 0.05, 0.08, '#ffffff', 0, 0.92, 0); blob(g, 1.0); return g; } },
   sprinkler: { cat: 'obs', type: 'low', h: 0.65, hw: 0.8, d: 0.5, label: 'a turf sprinkler',
     build(o) { const g = new THREE.Group(); const t = mesh(GEO.circle, M('#3f8f3a'), g, 0, 0.02, 0, 0.9, 0.9, 1); t.rotation.x = -Math.PI / 2; cyl(g, 0.08, 0.3, '#666', 0, 0.15, 0); ball(g, 0.1, '#888', 0, 0.32, 0); o.drops = []; for (let i = 0; i < 12; i++) o.drops.push(ball(g, 0.045, MGlow('#bfe6ff', 0.85))); return g; },
     anim(o, t) { o.drops.forEach((d, i) => { const p = (t * 1.6 + i / 12) % 1, a = -1.4 + (i % 6) * 0.56 + Math.sin(t * 2) * 0.3, r = p * 0.95; d.position.set(Math.sin(a) * r, 0.33 + Math.sin(p * Math.PI) * 0.45, Math.cos(a) * r * (i < 6 ? 1 : -1)); }); } },
