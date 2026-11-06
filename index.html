@@ -3596,10 +3596,12 @@ function maybeInterstitial(then) {
 function houseInterstitial(fin) {
   const m = $('adModal'), ad = HOUSE_ADS[(save.adN = ((save.adN || 0) + 1)) % HOUSE_ADS.length];
   $('adIco').textContent = ad[0]; $('adHead').textContent = ad[1]; $('adSub').textContent = ad[2]; $('adCard').style.setProperty('--adbg', ad[3]);
-  m.classList.add('show'); $('adClose').style.display = 'none'; const T = 5, t0 = performance.now(); $('adClaim').disabled = true; $('adClaim').textContent = 'Continue in 5…';
-  const iv = setInterval(() => { const el = Math.min(T, (performance.now() - t0) / 1000); $('adBar').style.width = (el / T * 100) + '%'; $('adLeft').textContent = Math.ceil(T - el);
+  m.classList.add('show'); $('adClose').style.display = 'none'; const T = 5, SKIP = 2, t0 = performance.now(); $('adClaim').disabled = true; $('adClaim').textContent = 'Continue in 5…';
+  const closeTxt = $('adClose').textContent; // between-run promos can be skipped after 2 seconds
+  const iv = setInterval(() => { const el = Math.min(T, (performance.now() - t0) / 1000); if (el >= SKIP && $('adClose').style.display === 'none') { $('adClose').textContent = 'Skip ✕'; $('adClose').style.display = ''; } $('adBar').style.width = (el / T * 100) + '%'; $('adLeft').textContent = Math.ceil(T - el);
     if (el >= T && $('adClaim').disabled) { $('adClaim').disabled = false; $('adClaim').textContent = 'Continue ▶'; } else if (el < T) $('adClaim').textContent = 'Continue in ' + Math.ceil(T - el) + '…'; }, 100);
-  $('adClaim').onclick = () => { clearInterval(iv); m.classList.remove('show'); $('adClose').style.display = ''; fin(); };
+  const done = () => { clearInterval(iv); m.classList.remove('show'); $('adClose').style.display = ''; $('adClose').textContent = closeTxt; fin(); };
+  $('adClaim').onclick = done; $('adClose').onclick = done;
 }
 
 
