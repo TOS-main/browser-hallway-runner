@@ -11,6 +11,17 @@
 <script>(window.adsbygoogle = window.adsbygoogle || []).pauseAdRequests = 1; window.adsbygoogle.requestNonPersonalizedAds = 1;</script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9841041313313334"
      crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4): counts visits and traffic sources only. No cookies, no saved visitor id, no Google signals or ad features, so no visit is tied to a person.
+     To use a different GA4 property, change the Measurement ID on the next line (it looks like G-XXXXXXXXXX). -->
+<script>window.GA_MEASUREMENT_ID = 'G-8XZRP9PG7J';
+(function (id) {
+  if (!id || location.protocol !== 'https:' || window.HallwayAds || /; wv\)/.test(navigator.userAgent)) return; // website only, never the Android app
+  window.dataLayer = window.dataLayer || []; window.gtag = function () { dataLayer.push(arguments); };
+  gtag('js', new Date());
+  gtag('config', id, { client_storage: 'none', allow_google_signals: false, allow_ad_personalization_signals: false });
+  var s = document.createElement('script'); s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(id); document.head.appendChild(s);
+  window.GA_LOADED = true;
+})(window.GA_MEASUREMENT_ID);</script>
 <title>Hallway Dash</title>
 <style>
 :root{--ink:#1b1f3b;--gold:#ffd60a;--red:#ef476f;--blue:#118ab2;--green:#06a77d;--purple:#7b2cbf;--paper:#fffdf6}
@@ -1168,7 +1179,7 @@ window.ONLINE_BOARD = {
    how many players come back, where they quit, and which levels are too hard.
    Firebase console -> Project settings -> General -> Your apps -> Web app -> measurementId. */
 window.ANALYTICS = {
-  measurementId: 'G-8XZRP9PG7J'
+  measurementId: window.GA_MEASUREMENT_ID || 'G-8XZRP9PG7J' // set once, at the top of <head>
 };
 
 /* ===== Privacy policy link (required by Google Play) =====
@@ -4374,7 +4385,7 @@ const Analytics = {
       gtag('js', new Date());
       // The APK runs from file://, where cookies don't work, so GA gets our own anonymous player id instead.
       gtag('config', id, { client_storage: 'none', client_id: save.pid || undefined, send_page_view: false, app_name: 'Hallway Dash' });
-      const sc = document.createElement('script'); sc.async = true; sc.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(id); document.head.appendChild(sc);
+      if (!window.GA_LOADED) { const sc = document.createElement('script'); sc.async = true; sc.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(id); document.head.appendChild(sc); window.GA_LOADED = true; }
       this.on = true; this.log('app_open', { runs: (save.stats && save.stats.runs) || 0 });
     } catch (e) { this.on = false; }
   },
