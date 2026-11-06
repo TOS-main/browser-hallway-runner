@@ -555,6 +555,13 @@ body.web .tapPlay{font-size:clamp(34px,5vw,64px)}
 @media (max-width:820px){body.web .mModes{display:none}}
 .playSoon{position:fixed;left:12px;bottom:calc(max(10px,env(safe-area-inset-bottom)) + 74px);z-index:2;font-size:12px;font-weight:800;color:#fff;background:rgba(15,20,45,.55);border-radius:999px;padding:3px 10px;pointer-events:none;opacity:.85}
 body.web .playSoon{font-size:13px}
+.schoolBox .sRow,.ownRow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:6px 0;border-bottom:1px solid var(--line)}
+.schoolBox .sRow span,.ownRow span{flex:1;min-width:120px;font-weight:800}.ownRow small{display:block;opacity:.7;font-weight:600}
+.schoolBox .chip,.ownRow .chip{margin:0}.schoolBox input{text-transform:none!important}
+.repBtn{margin-left:4px;border:none;border-radius:10px;background:transparent;font-size:15px;padding:2px 4px;cursor:pointer;flex:none;opacity:.65}
+.repReasons{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0}.repReasons .chip.on{outline:3px solid #ff8a00}
+.ownIn{width:100%;border:2px solid var(--line);border-radius:12px;padding:10px 12px;font:inherit;font-weight:700;margin:4px 0;background:rgba(0,0,0,.25);color:inherit;user-select:text;-webkit-user-select:text}
+.ownList{max-height:52vh;overflow:auto;text-align:left;margin:6px 0}#ownTabs{flex-wrap:wrap}
 </style>
 </head>
 <body>
@@ -662,6 +669,7 @@ body.web .playSoon{font-size:13px}
     <div class="setRow"><b>Battery &amp; voice</b><div class="soundRow" style="justify-content:flex-start;flex-wrap:wrap;gap:6px"><button class="chip off" id="bBattery">🔋 Battery saver</button><button class="chip" id="bVoice">📣 Announcer voice</button></div><small>Battery saver: 30 fps, low graphics, fewer crowds and particles (reloads the game).</small></div>
     <div class="setRow"><b>💾 Your save</b><small>Progress saves automatically in this browser / on this phone (device ID <b id="saveDev"></b>). To move it to another device or browser, copy your save code and load it there.</small><div class="soundRow" style="justify-content:flex-start;flex-wrap:wrap;gap:6px;margin-top:4px"><button class="chip" id="saveCopy">📋 Copy save code</button><button class="chip" id="saveFile">⬇️ Download save</button><button class="chip" id="saveLoad">⬆️ Load save code</button></div></div>
     <div class="setRow"><b>🔑 Secret codes</b><div class="frow"><input id="codeIn" maxlength="24" placeholder="Type a code" autocomplete="off" autocapitalize="characters"><button class="btn gold small" id="codeGo">Enter</button></div><small id="codeState"></small><button class="chip" id="bAdmin" style="display:none">🛠 Admin panel</button></div>
+    <div class="setRow"><b>🚩 Blocked players</b><small id="blockState"></small><div class="soundRow" style="justify-content:flex-start;flex-wrap:wrap;gap:6px"><button class="chip" id="blockClear">Unblock everyone</button><button class="chip" id="bOwner">🛡 Owner sign-in</button></div></div>
     <div class="setRow"><b>Controls</b><button class="chip" onclick="toggleControls(true)" style="margin:4px 0">⌨️ Show all controls</button><button class="chip" id="bQuickCtl" style="margin:4px 0 4px 6px">🎮 Quick controls on screen</button><button class="chip" onclick="showScreen(null);startTutorial()" style="margin:4px 0 4px 6px">🎓 Replay tutorial</button><button class="chip" id="bTourAgain" style="margin:4px 0 4px 6px">🗺 App tour</button><button class="chip" id="bBtnEdit" style="margin:4px 0 4px 6px">✋ Move run buttons</button><button class="chip" id="bQuiz" style="margin:4px 0 4px 6px">➗ Pop quizzes (math)</button><div class="soundRow" style="justify-content:flex-start"><button class="chip off" id="bLefty">🫲 Left-handed buttons</button></div><small>Swipe anywhere, even starting on a button. Buttons only react to taps.</small></div>
     <div class="setRow" id="remindRow"><b>🔔 Daily reminder</b><div class="soundRow" style="justify-content:flex-start"><button class="chip" id="bRemind">🔔 Remind me once a day</button></div><small>Phone app only. One notification a day when your free spin is ready, skipped if you already played.</small></div>
     <div class="setRow"><b>Power-up timers</b><div class="seg" id="pwSideSeg"><button data-ps="left">Left side</button><button data-ps="right">Right side</button></div><small>Where your power-up timers show during a run.</small></div>
@@ -682,7 +690,8 @@ body.web .playSoon{font-size:13px}
 <div class="screen" id="sRanks">
   <div class="panel">
     <div class="topbar"><h2>🏆 Leaderboard</h2><span class="bankPill" id="rBest">0</span></div>
-    <div class="tabs"><button class="tab" data-board="world">World</button><button class="tab" data-board="local">Classmates</button><button class="tab" data-board="friends">Friends</button></div>
+    <div class="tabs"><button class="tab" data-board="world">World</button><button class="tab" data-board="local">Classmates</button><button class="tab" data-board="school">🏫 School</button><button class="tab" data-board="friends">Friends</button></div>
+    <div class="friendBox schoolBox" id="schoolBox"></div>
     <div class="friendBox" id="friendBox"><div>Your friend code: <b id="myCode">------</b></div><div style="margin-top:8px" id="chalNow"></div><div class="frow"><button class="btn green small" id="chalLive">⏱ Race now (same time)</button><button class="btn blue small" id="chalNew">🎲 New challenge hallway</button><button class="btn gold small" id="chalCopy">📋 Copy my code</button></div><small style="display:block;margin:4px 0">Codes work between phones and the browser. A code with a 3rd part (MAYA-5K2-AB3) gives your friend the exact same hallway.</small><div class="frow"><input id="chalIn" maxlength="16" placeholder="e.g. MAYA-5K2" autocomplete="off"><button class="btn gold small" id="chalAdd">Accept</button></div><div class="frow"><input id="friendIn" maxlength="6" placeholder="Friend's code" autocomplete="off"><button class="btn blue small" id="friendAdd">Add</button></div></div>
     <div class="allBest" id="allBest"></div>
     <div class="seg boardDiff" id="boardDiff"><button data-bd="easy">Easy</button><button data-bd="normal">Normal</button><button data-bd="hard">Hard</button><button data-bd="insane">Insane</button></div>
@@ -1038,6 +1047,53 @@ body.web .playSoon{font-size:13px}
     <input id="nameFirst" maxlength="14" placeholder="Your name" autocomplete="off">
     <button class="btn gold" id="nameGo">Save it!</button>
     <button class="linkBtn" id="nameSkip">Skip (show as Runner)</button>
+  </div>
+</div>
+
+
+<!-- REPORT / BLOCK a player or school -->
+<div class="modal" id="reportModal">
+  <div class="mPanel">
+    <h2>🚩 Report</h2>
+    <p id="repWho"></p>
+    <div class="repReasons" id="repReasons"><button class="chip" data-rr="name">Bad or rude name</button><button class="chip" data-rr="bully">Bullying or mean</button><button class="chip" data-rr="personal">Shares personal info</button><button class="chip" data-rr="cheat">Cheating score</button><button class="chip" data-rr="other">Something else</button></div>
+    <label class="volRow"><span>Also block (hide them from my boards)</span><input type="checkbox" id="repBlock" checked></label>
+    <button class="btn red" id="repSend">Send report</button>
+    <button class="btn gray" id="repCancel">Cancel</button>
+    <small>Reports go only to the game's moderator. They don't see your name.</small>
+  </div>
+</div>
+<!-- SCHOOL RULES (shown once before joining or adding a school) -->
+<div class="modal" id="schoolRules">
+  <div class="mPanel">
+    <h2>🏫 School board rules</h2>
+    <p style="text-align:left;font-size:15px">• Use a nickname, never your real name.<br>• Don't share your address, phone, social media or anyone else's info.<br>• School names must be the school's real name. No jokes about people.<br>• No bad words, bullying or hate. Breaking the rules gets you removed.<br>• Tap 🚩 next to anyone who breaks them. A moderator checks every new school before it shows up.</p>
+    <button class="btn green" id="rulesOk">I agree</button>
+    <button class="linkBtn" id="rulesTerms">Read the Terms of Service</button>
+    <button class="btn gray" id="rulesNo">Not now</button>
+  </div>
+</div>
+<!-- OWNER SIGN-IN + MODERATION PANEL (every action is checked by the database rules, not by this page) -->
+<div class="modal" id="ownerLogin">
+  <div class="mPanel">
+    <h2>🛡 Owner sign-in</h2>
+    <p style="font-size:14px">Only the game owner's account can moderate. The database itself checks who you are.</p>
+    <input id="ownEmail" type="email" placeholder="Email" autocomplete="username" class="ownIn">
+    <input id="ownPass" type="password" placeholder="Password" autocomplete="current-password" class="ownIn">
+    <small id="ownErr" style="color:#e63946"></small>
+    <button class="btn gold" id="ownGo">Sign in</button>
+    <button class="btn gray" id="ownCancel">Cancel</button>
+  </div>
+</div>
+<div class="modal" id="ownerModal">
+  <div class="mPanel admPanel ownPanel">
+    <h2>🛡 Moderation</h2>
+    <div class="tabs" id="ownTabs"><button class="tab on" data-own="reports">Reports</button><button class="tab" data-own="requests">New schools</button><button class="tab" data-own="schools">Schools</button><button class="tab" data-own="players">Players</button><button class="tab" data-own="bans">Bans</button><button class="tab" data-own="switches">Switches</button></div>
+    <div class="frow" id="ownFind" style="display:none"><input id="ownQ" class="ownIn" placeholder="Nickname or friend code" autocomplete="off"><button class="btn blue small" id="ownQGo">Find</button></div>
+    <small id="ownSub"></small>
+    <div id="ownList" class="ownList"></div>
+    <button class="btn gray" id="ownClose">Close</button>
+    <button class="linkBtn" id="ownOut">Sign out</button>
   </div>
 </div>
 
@@ -3577,7 +3633,7 @@ function worldRecord(dk) { dk = dk || runBK(); const c = WREC[dk]; if (!Online.r
   return Online.board(dk, 'all').then(rows => { const r = rows[0] || null; WREC[dk] = { r, t: Date.now() }; return r; }).catch(() => (c ? c.r : null)); }
 function syncWorldCard() { const el = $('mWorld'); if (!el) return; const dk = runBK(); el.querySelector('small').textContent = 'World record · ' + DIFF[bkDiff(dk)].name + (bkSpd(dk) !== 'normal' ? ' ' + SPEEDS[bkSpd(dk)].name : ''); worldRecord(dk).then(r => { if (!r) { el.style.display = 'none'; return; } el.style.display = ''; $('mWorldTxt').textContent = r.s.toLocaleString() + ' · ' + (r.me ? 'YOU! 👑' : r.n); }); }
 function buildBoard(highlightT) {
-  if (boardMode === 'world' && !Online.ready()) boardMode = 'local';
+  if ((boardMode === 'world' || boardMode === 'school') && !Online.ready()) boardMode = 'local';
   document.querySelectorAll('[data-board]').forEach(x => x.classList.toggle('on', x.dataset.board === boardMode));
   const ol = $('boardList'); ol.innerHTML = ''; const dk = syncBoardDiff();
   $('friendBox').style.display = boardMode === 'friends' ? 'block' : 'none'; $('chalNow').textContent = save.challenge ? 'Current challenge: beat ' + save.challenge.from + '\'s ' + save.challenge.score.toLocaleString() : 'Got a challenge code from a friend\'s score card? Enter it:'; $('myCode').textContent = myCode() || '------';
@@ -3588,13 +3644,15 @@ function buildBoard(highlightT) {
     refreshFriends().then(() => { if (boardMode === 'friends' && curScreen === 'sRanks') { const r2 = (save.friends || []).length; if (r2) { ol.innerHTML = ''; const rr = save.friends.map(f => ({ n: f.n, s: f.s || 0, d: f.d })); if (save.best > 0) rr.push({ n: save.name || 'You', s: save.best, me: true }); rr.sort((a, b) => b.s - a.s).forEach((r, i) => ol.appendChild(boardRow(r, i))); addGhostBtns(ol, rr); } } });
     return;
   }
+  $('schoolBox').style.display = boardMode === 'school' ? 'block' : 'none';
+  if (boardMode === 'school') { buildSchoolBoard(dk, ol); return; }
   if (boardMode === 'world') {
     if (!Online.ready()) { $('boardSub').textContent = 'The world leaderboard isn\'t connected yet. (Setup steps are in the README.)'; showToBeat(null, dk); return; }
     const per = boardPer(); $('boardSub').textContent = 'Loading world scores...';
     if (per === 'all') Online.top(100).then(all => checkCrown(all)).catch(() => {});
     Online.board(dk, per).then(rows => { if (boardMode !== 'world' || boardDK !== dk && boardDK) return; rows = rows.slice(0, 25);
       $('boardSub').textContent = rows.length ? 'Top ' + bkName(dk) + ' runs from players everywhere · ' + BOARD_PER[per] : 'No ' + bkName(dk) + ' runs on the world board ' + (per === 'all' ? 'yet' : BOARD_PER[per].toLowerCase()) + '. Be the first!';
-      ol.innerHTML = ''; rows.forEach((r, i) => ol.appendChild(boardRow(r, i))); showToBeat(rows, dk); })
+      ol.innerHTML = ''; rows.forEach((r, i) => ol.appendChild(boardRow(r, i))); showToBeat(rows, dk); addReportBtns(ol, rows); })
       .catch(() => { if (boardMode !== 'world') return; ol.innerHTML = ''; showToBeat(null, dk); $('boardSub').textContent = per === 'all' ? 'Couldn\'t reach the world board. Check your connection and try again.' : BOARD_PER[per] + ' world boards turn on after one quick Firebase rules update (README → Online leaderboard).'; });
     return;
   }
@@ -4252,7 +4310,7 @@ const Online = {
     try {
       const a = await this.token();
       const r = await fetch(this.url('/scores/' + encodeURIComponent(a.uid)), { method: 'PATCH', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + a.idToken }, body: JSON.stringify({ fields: {
-        name: { stringValue: (name || 'Runner').slice(0, 14) }, score: { integerValue: String(Math.floor(score)) }, dist: { integerValue: String(Math.floor(dist)) },
+        name: { stringValue: safeName(name) }, score: { integerValue: String(Math.floor(score)) }, dist: { integerValue: String(Math.floor(dist)) },
         code: { stringValue: myCode() }, diff: { stringValue: runDiff() }, ts: { timestampValue: new Date().toISOString() } } }) });
       if (r.ok) { save.onlineBest = score; persist(); }
     } catch (e) { /* offline: ignore */ }
@@ -4260,7 +4318,7 @@ const Online = {
   async remove() {
     if (!(window.ONLINE_BOARD && ONLINE_BOARD.projectId && ONLINE_BOARD.apiKey) || !save.fbAuth) return true;
     try { const a = await this.token(), H = { method: 'DELETE', headers: { Authorization: 'Bearer ' + a.idToken } }; const r = await fetch(this.url('/scores/' + encodeURIComponent(a.uid)), H);
-      await Promise.allSettled(ALL_BK.map(k => fetch(this.url('/runs/' + encodeURIComponent(a.uid + '_' + k)), H))); return r.ok; } catch (e) { return false; }
+      await Promise.allSettled(ALL_BK.map(k => fetch(this.url('/runs/' + encodeURIComponent(a.uid + '_' + k)), H)).concat([fetch(this.url('/schoolRequests/' + encodeURIComponent(a.uid)), H)])); return r.ok; } catch (e) { return false; }
   },
   async byCode(code) {
     const r = await fetch(this.url(':runQuery'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ structuredQuery: { from: [{ collectionId: 'scores' }], where: { fieldFilter: { field: { fieldPath: 'code' }, op: 'EQUAL', value: { stringValue: code } } }, limit: 1 } }) });
@@ -4274,22 +4332,23 @@ const Online = {
     try {
       const a = await this.token(), I = v => ({ integerValue: String(Math.floor(v || 0)) }), S = v => ({ stringValue: String(v || '') });
       const r = await fetch(this.url('/runs/' + encodeURIComponent(a.uid + '_' + dk)), { method: 'PATCH', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + a.idToken }, body: JSON.stringify({ fields: {
-        uid: S(a.uid), name: S((name || 'Runner').slice(0, 14)), code: S(myCode()), diff: S(dk), best: I(b.s), bestDist: I(b.d),
+        uid: S(a.uid), name: S(safeName(name)), code: S(myCode()), school: S(mySchool()), diff: S(dk), best: I(b.s), bestDist: I(b.d),
         day: S(p.day), dayS: I(p.dayS), week: S(p.week), weekS: I(p.weekS), month: S(p.month), monthS: I(p.monthS), ts: { timestampValue: new Date().toISOString() } } }) });
-      if (r.ok) { p.sent = Date.now(); persist(); }
+      if (r.ok) { p.sent = Date.now(); persist(); } else if (r.status === 403 && mySchool() && !this._retry) { await loadSchools(true).catch(() => {}); if (!mySchool()) { this._retry = 1; try { await this.submitRun(name, dist); } finally { this._retry = 0; } } }
     } catch (e) { /* offline or rules not updated yet: ignore */ }
   },
-  async board(dk, per) {
+  async board(dk, per, school) {
     const K = perKeys(), eq = (f, v) => ({ fieldFilter: { field: { fieldPath: f }, op: 'EQUAL', value: { stringValue: v } } });
-    const where = per === 'all' ? eq('diff', dk) : { compositeFilter: { op: 'AND', filters: [eq('diff', dk), eq(per, K[per])] } };
+    const fl = [eq('diff', dk)]; if (per !== 'all') fl.push(eq(per, K[per])); if (school) fl.push(eq('school', school));
+    const where = fl.length === 1 ? fl[0] : { compositeFilter: { op: 'AND', filters: fl } };
     const uid = save.fbAuth && save.fbAuth.uid, best = new Map(), add = (id, row) => { const o = best.get(id); if (!o || row.s > o.s) best.set(id, row); };
     const q = fetch(this.url(':runQuery'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ structuredQuery: { from: [{ collectionId: 'runs' }], where, limit: 300 } }) })
       .then(async r => { if (!r.ok) throw new Error('HTTP ' + r.status); for (const x of await r.json()) { if (!x.document) continue; const f = x.document.fields, id = f.uid ? f.uid.stringValue : '';
-        const sc = +((per === 'all' ? f.best : f[per + 'S']) || {}).integerValue || 0; if (sc > 0) add(id, { n: f.name.stringValue, s: sc, d: per === 'all' ? +(f.bestDist && f.bestDist.integerValue || 0) : 0, diff: dk, me: !!uid && id === uid }); } return true; });
-    if (per !== 'all') await q; // daily / weekly / monthly come only from the new rows
+        const sc = +((per === 'all' ? f.best : f[per + 'S']) || {}).integerValue || 0; if (sc > 0 && !isBlocked(id)) add(id, { n: f.name.stringValue, s: sc, d: per === 'all' ? +(f.bestDist && f.bestDist.integerValue || 0) : 0, diff: dk, uid: id, sch: f.school ? f.school.stringValue : '', me: !!uid && id === uid }); } return true; });
+    if (per !== 'all' || school) await q; // daily / weekly / monthly come only from the new rows
     else { // all-time also keeps everyone already on the original board
       const [a, b] = await Promise.allSettled([q, this.top(100)]);
-      if (b.status === 'fulfilled') for (const r of b.value) if ((r.diff || 'normal') === dk) add(r.uid || r.n + '|' + r.s, r);
+      if (b.status === 'fulfilled') for (const r of b.value) if ((r.diff || 'normal') === dk && !isBlocked(r.uid)) add(r.uid || r.n + '|' + r.s, r);
       if (a.status === 'rejected' && b.status === 'rejected') throw a.reason;
     }
     return [...best.values()].sort((a, b) => b.s - a.s);
@@ -5962,7 +6021,7 @@ function askName(then, record) {
   $('nameHead').textContent = record ? '👑 New world record!' : 'Pick a nickname'; $('nameWhy').textContent = record ? 'You just beat the world record! Pick a nickname for the world board (not your real name). You can change it later in Settings.' : 'Pick a nickname (not your real name). It shows on the leaderboard and you can change it later in Settings.';
   $('nameSkip').onclick = () => { $('nameModal').classList.remove('show'); then(); };
   $('nameModal').classList.add('show'); $('nameFirst').value = ''; setTimeout(() => $('nameFirst').focus(), 50);
-  $('nameGo').onclick = () => { const v = $('nameFirst').value.trim().replace(/[^\w .'-]/g, '').slice(0, 14); if (!v) { $('nameFirst').focus(); return; } save.name = v; persist(); $('nameModal').classList.remove('show'); refreshMenu(); then(); };
+  $('nameGo').onclick = () => { const raw = $('nameFirst').value, v = cleanName(raw); if (!v) { if (raw.trim()) toast('Pick a different nickname', 'No bad words, real names or numbers like phone numbers', 1800); $('nameFirst').focus(); return; } save.name = v; persist(); $('nameModal').classList.remove('show'); refreshMenu(); then(); };
 }
 // click anywhere on the start screen that isn't a button to play (browser and phone)
 $('sMenu').addEventListener('click', e => { if (curScreen !== 'sMenu' || e.target.closest('#tapZone')) return; if (e.target.closest('button,a,input,select,label,.card,.side,.sideSq,.nav,.mWallet,.mTopR,.mCash,.pill,.iconBtn,[data-tab]')) return; $('tapZone').click(); });
@@ -6052,8 +6111,9 @@ document.querySelectorAll('[data-board]').forEach(t => t.onclick = () => { docum
 $('bRanksPlay').onclick = () => { initAudio(); sfx('click'); startRun('infinite'); };
 $('bHow2').onclick = () => { sfx('click'); showScreen('sHow'); };
 document.querySelectorAll('#qSeg button').forEach(b => b.onclick = () => { const q = b.dataset.q; if (q === (save.quality || 'auto')) return; save.quality = q; persist(); sfx('click'); location.reload(); });
-$('nameIn').oninput = () => { save.name = $('nameIn').value.trim().replace(/[^\w .'-]/g, '').slice(0, 14); persist(); save.onlineBest = 0; };
-$('oName').oninput = () => { save.name = $('oName').value.trim().slice(0, 14); persist(); };
+$('nameIn').oninput = () => { save.name = cleanName($('nameIn').value); persist(); save.onlineBest = 0; };
+$('nameIn').onchange = () => { if ($('nameIn').value.trim() && !cleanName($('nameIn').value)) { $('nameIn').value = ''; toast('That nickname isn\'t allowed', 'No bad words, real names or numbers like phone numbers', 1800); } };
+$('oName').oninput = () => { save.name = cleanName($('oName').value); persist(); };
 $('bShop').onclick = () => { initAudio(); sfx('click'); buildShop(); showScreen('sShop'); };
 $('bHow').onclick = () => { initAudio(); sfx('click'); showScreen('sHow'); };
 $('pauseBtn').onclick = () => { initAudio(); togglePause(true); };
@@ -6141,7 +6201,7 @@ document.querySelectorAll('#boardPer button').forEach(b => b.onclick = () => { s
 function showToBeat(rows, dk) {
   const el = $('toBeat'); if (!el) return; const per = boardPer(), top = rows && rows[0], mine = myPeriodBest(dk, per);
   if (!top) { el.style.display = 'none'; return; } el.style.display = '';
-  const where = bkName(dk) + ' · ' + BOARD_PER[per] + (boardMode === 'world' ? ' · World' : ' · Classmates');
+  const where = bkName(dk) + ' · ' + BOARD_PER[per] + (boardMode === 'world' ? ' · World' : boardMode === 'school' ? ' · ' + schoolName(mySchool()) : ' · Classmates');
   el.innerHTML = '<div><small></small><span></span></div><b></b>'; el.classList.toggle('mine', !!top.me);
   el.querySelector('small').textContent = top.me ? '👑 YOU\'RE #1 · ' + where : '🎯 RUN TO BEAT · ' + where;
   el.querySelector('span').textContent = top.me ? 'Keep it! Someone is coming for it.' : top.n + (mine > 0 ? ' · you: ' + mine.toLocaleString() + ' (' + Math.max(1, top.s - mine + 1).toLocaleString() + ' to go)' : ' · play a run to get on the board');
@@ -6272,6 +6332,256 @@ loadCharacters().then(() => {
   const ld = $('loading'); if (ld) { ld.classList.add('done'); setTimeout(() => ld.remove(), 500); }
   requestAnimationFrame(frame);
 });
+
+/* ===================== SCHOOLS + MODERATION =====================
+   School leaderboards: online players (13+) join a school, and NAHS is the first one. A new school is only a request
+   until the owner approves it, so nothing a player types shows up for others before a person has checked it.
+   Player and school names pass a word filter here AND in the Firestore rules (the rules are the part that can't be
+   skipped). Every board row has 🚩 report and block. The owner panel signs in with the owner's Firebase
+   email/password account; the Firestore rules only accept moderation writes from that account's UID, so nothing on
+   this page (or in a hacked copy of it) can unlock moderation. Kid-safe mode (under 13) never sees any of this. */
+var BAD_SUB = ['fuck', 'shit', 'cunt', 'nigger', 'nigga', 'niga', 'faggot', 'fagot', 'bitch', 'biatch', 'whore', 'slut', 'penis', 'vagina', 'porn', 'nazi', 'hitler', 'heil', 'pussy', 'dildo', 'retard', 'rapist', 'molest', 'bastard', 'asshole', 'jizz', 'cocksuck', 'motherf', 'wanker', 'twat', 'boob', 'blowjob', 'handjob', 'orgasm', 'horny', 'sexy', 'nude', 'naked', 'killyourself', 'kkk', 'pedophile', 'onlyfans', 'instagram', 'snapchat', 'tiktok', 'discord'];
+var BAD_WORD = ['ass', 'arse', 'dick', 'dicks', 'cock', 'cocks', 'tit', 'tits', 'hoe', 'hoes', 'sex', 'rape', 'raped', 'cum', 'anal', 'anus', 'kys', 'pedo', 'chink', 'spic', 'kike', 'fag', 'fags', 'piss', 'wank', 'insta', 'snap', 'ig', 'tt', 'xxx', 'milf', 'thot', 'simp', 'stfu', 'wtf', 'gtfo'];
+function isBadText(t) {
+  const raw = String(t || '').toLowerCase();
+  if (/(www|\.com|\.net|\.org|https?)/.test(raw) || /\d{6,}/.test(raw)) return true; // links and phone-number-like numbers are personal info
+  const leet = raw.replace(/[0]/g, 'o').replace(/[1!|]/g, 'i').replace(/3/g, 'e').replace(/[4@]/g, 'a').replace(/[5$]/g, 's').replace(/7/g, 't').replace(/8/g, 'b');
+  const flat = leet.replace(/[^a-z]/g, ''), dedup = flat.replace(/(.)\1+/g, '$1');
+  if (BAD_SUB.some(w => { const d = w.replace(/(.)\1+/g, '$1'); return flat.includes(w) || (d.length >= 4 && d !== 'niger' && dedup.includes(d)); })) return true;
+  const toks = leet.split(/[^a-z]+/).filter(Boolean);
+  return toks.some(w => BAD_WORD.includes(w) || BAD_WORD.includes(w.replace(/(.)\1+/g, '$1'))) || BAD_WORD.includes(flat);
+}
+function cleanName(raw) { const v = String(raw || '').trim().replace(/[^\w .'-]/g, '').replace(/\s+/g, ' ').slice(0, 14).trim(); return !v || isBadText(v) || isBadText(raw) ? '' : v; }
+function safeName(n) { return cleanName(n) || 'Runner'; }
+function cleanSchoolName(raw) { const v = String(raw || '').trim().replace(/[^A-Za-z0-9 .'&-]/g, '').replace(/\s+/g, ' ').slice(0, 40).trim(); return v.length < 3 || isBadText(v) || isBadText(raw) || /\d{5,}/.test(v) ? '' : v; }
+function isBlocked(uid) { return !!uid && (save.blocked || []).includes(uid); }
+function blockUid(uid) { if (!uid || isBlocked(uid)) return; save.blocked = (save.blocked || []).concat([uid]).slice(-300); persist(); }
+
+/* ---- tiny Firestore REST helpers (same project + key as the world board) ---- */
+function fsVal(v) { if (!v) return null; if ('stringValue' in v) return v.stringValue; if ('integerValue' in v) return +v.integerValue; if ('booleanValue' in v) return v.booleanValue; if ('timestampValue' in v) return Date.parse(v.timestampValue); if ('doubleValue' in v) return v.doubleValue; return null; }
+function fsDoc(d) { const o = { id: decodeURIComponent(d.name.split('/').pop()) }; for (const k in d.fields || {}) o[k] = fsVal(d.fields[k]); return o; }
+function fsEnc(o) { const f = {}; for (const k in o) { const v = o[k]; f[k] = typeof v === 'boolean' ? { booleanValue: v } : typeof v === 'number' ? { integerValue: String(Math.floor(v)) } : v instanceof Date ? { timestampValue: v.toISOString() } : { stringValue: String(v == null ? '' : v) }; } return { fields: f }; }
+async function fsReq(method, path, tok, body, query) {
+  const h = { 'Content-Type': 'application/json' }; if (tok) h.Authorization = 'Bearer ' + tok;
+  const r = await fetch(Online.url(path) + (query ? '&' + query : ''), { method, headers: h, body: body ? JSON.stringify(body) : undefined });
+  if (!r.ok) { const e = new Error('HTTP ' + r.status); e.status = r.status; throw e; }
+  return r.status === 204 ? null : r.json();
+}
+async function fsQuery(coll, where, order, limit, tok) {
+  const q = { from: [{ collectionId: coll }], limit: limit || 100 }; if (where) q.where = where; if (order) q.orderBy = [{ field: { fieldPath: order }, direction: 'DESCENDING' }];
+  const rows = await fsReq('POST', ':runQuery', tok, { structuredQuery: q }); return rows.filter(x => x.document).map(x => fsDoc(x.document));
+}
+const fsEq = (f, v) => ({ fieldFilter: { field: { fieldPath: f }, op: 'EQUAL', value: { stringValue: v } } });
+const docPath = (c, id) => '/' + c + '/' + encodeURIComponent(id);
+
+/* ---- schools list + moderator switches (cached) ---- */
+var SCHOOL_SEED = [{ id: 'nahs', name: 'NAHS', status: 'approved' }];
+var SCHOOLS = { list: SCHOOL_SEED.slice(), t: 0 }, APPCFG = { schools: true, requests: true, t: 0 };
+async function loadSchools(force) {
+  if (!force && SCHOOLS.t && Date.now() - SCHOOLS.t < 120000) return SCHOOLS.list;
+  const j = await fsReq('GET', '/schools', null, null, 'pageSize=300'); const all = (j.documents || []).map(fsDoc);
+  const list = all.filter(x => x.status === 'approved'); for (const s of SCHOOL_SEED) if (!all.find(x => x.id === s.id)) list.push(s);
+  list.sort((a, b) => a.id === 'nahs' ? -1 : b.id === 'nahs' ? 1 : a.name.localeCompare(b.name));
+  SCHOOLS = { list, t: Date.now() };
+  if (save.school && !list.find(x => x.id === save.school)) { save.school = ''; persist(); toast('Your school was taken off the boards', 'Pick another one any time', 2200); }
+  return list;
+}
+function APPCFG_LOAD() { return loadAppCfg(); }
+async function loadAppCfg() { if (APPCFG.t && Date.now() - APPCFG.t < 300000) return APPCFG; try { const d = fsDoc(await fsReq('GET', '/config/app')); APPCFG = { schools: d.schools !== false, requests: d.requests !== false, t: Date.now() }; } catch (e) { APPCFG = { schools: true, requests: true, t: e.status === 404 ? Date.now() : 0 }; } return APPCFG; }
+function mySchool() { return save.school || ''; }
+function schoolName(id) { const s = SCHOOLS.list.find(x => x.id === id); return s ? s.name : String(id || '').toUpperCase(); }
+async function retagRuns() { // your existing board rows move to the new school straight away
+  if (!Online.ready() || !save.fbAuth) return;
+  try { const a = await Online.token(); await Promise.allSettled(ALL_BK.filter(k => save.pb && save.pb[k] && save.pb[k].sent).map(k => fsReq('PATCH', docPath('runs', a.uid + '_' + k), a.idToken, fsEnc({ school: mySchool() }), 'updateMask.fieldPaths=school&currentDocument.exists=true'))); } catch (e) {}
+}
+function withSchoolRules(then) {
+  if (save.ugcOK) return then();
+  $('schoolRules').classList.add('show');
+  $('rulesOk').onclick = () => { save.ugcOK = Date.now(); persist(); $('schoolRules').classList.remove('show'); sfx('click'); then(); };
+  $('rulesNo').onclick = () => $('schoolRules').classList.remove('show');
+  $('rulesTerms').onclick = () => { try { $('privTerms').click(); } catch (e) {} };
+}
+function joinSchool(id) { withSchoolRules(async () => { save.school = id; save.schoolView = 'kids'; persist(); $('boardSub').textContent = 'Joining...'; await retagRuns(); toast('🏫 You joined ' + schoolName(id) + '!', 'Your Infinite Runs now count for your school', 2000); Analytics.log('school_join', { school: id }); buildBoard(); }); }
+async function leaveSchool() { save.school = ''; persist(); buildBoard(); await retagRuns(); }
+async function requestSchool(raw) {
+  const name = cleanSchoolName(raw); if (!name) { toast('That school name isn\'t allowed', 'Use the school\'s real name (3+ letters), no bad words or numbers', 2200); return; }
+  if (SCHOOLS.list.some(s => s.name.toLowerCase() === name.toLowerCase())) { toast('That school is already on the list', 'Tap Join next to it', 1600); return; }
+  withSchoolRules(async () => {
+    try { const a = await Online.token(); await fsReq('PATCH', docPath('schoolRequests', a.uid), a.idToken, fsEnc({ name, ts: new Date() })); save.schoolReq = { name, t: Date.now() }; persist(); toast('Sent for approval', name + ' shows up once the moderator approves it', 2400); buildBoard(); }
+    catch (e) { toast('Couldn\'t send it', e.status === 403 ? 'New schools are paused right now, or the name isn\'t allowed' : 'Check your connection', 2000); }
+  });
+}
+async function checkSchoolReq() { // did the moderator approve the school you asked for?
+  if (!save.schoolReq || !save.fbAuth) return; const a = save.fbAuth;
+  try { await fsReq('GET', docPath('schoolRequests', a.uid), (await Online.token()).idToken); }
+  catch (e) { if (e.status !== 404) return; const req = save.schoolReq; save.schoolReq = null; persist();
+    const s = SCHOOLS.list.find(x => x.by === a.uid) || SCHOOLS.list.find(x => x.name.toLowerCase() === req.name.toLowerCase());
+    if (s) { toast('🏫 ' + s.name + ' was approved!', 'You\'re in. Run to put it on the map', 2600); if (!save.school) { save.school = s.id; persist(); retagRuns(); } }
+    else toast('Your school request wasn\'t approved', 'Check the spelling and use the school\'s real name', 2600); }
+}
+
+/* ---- the School tab on the leaderboard ---- */
+function mk(tag, cls, txt) { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+function chipBtn(txt, fn, cls) { const b = mk('button', 'chip' + (cls ? ' ' + cls : ''), txt); b.onclick = e => { e.stopPropagation(); sfx('click'); fn(); }; return b; }
+var SB_GEN = 0;
+async function buildSchoolBoard(dk, ol) {
+  const gen = ++SB_GEN, stale = () => gen !== SB_GEN || boardMode !== 'school';
+  const box = $('schoolBox'); box.innerHTML = ''; $('toBeat').style.display = 'none';
+  if (!Online.ready()) { $('boardSub').textContent = save.age === 'child' ? 'School boards are for players 13 and up.' : 'School boards need the online leaderboard.'; return; }
+  $('boardSub').textContent = 'Loading schools...';
+  const [cfg] = await Promise.all([loadAppCfg(), loadSchools().catch(() => SCHOOLS.list), checkSchoolReq()]);
+  if (stale() || curScreen !== 'sRanks') return;
+  if (!cfg.schools) { box.appendChild(mk('div', '', 'School boards are paused for a little while. Check back soon!')); $('boardSub').textContent = ''; return; }
+  const per = boardPer(), view = save.school && save.schoolView !== 'top' ? 'kids' : 'top';
+  if (save.school) {
+    const top = mk('div', 'sRow'); top.appendChild(mk('span', '', '🏫 Your school: ' + schoolName(save.school)));
+    top.append(chipBtn(view === 'kids' ? '🏆 Top schools' : '👥 My school', () => { save.schoolView = view === 'kids' ? 'top' : 'kids'; persist(); buildBoard(); }),
+      chipBtn('Change', () => { save.schoolPick = 1; leaveSchool(); }), chipBtn('🚩', () => openReport({ kind: 'school', target: save.school, name: schoolName(save.school) })));
+    box.appendChild(top);
+  } else {
+    box.appendChild(mk('div', '', 'Join your school and every Infinite Run you play counts for it. Use a nickname, never your real name.'));
+    const fr = mk('div', 'frow'), q = mk('input'); q.placeholder = 'Search schools'; q.maxLength = 40; q.autocomplete = 'off'; fr.appendChild(q); box.appendChild(fr);
+    const lst = mk('div'); box.appendChild(lst);
+    const draw = () => { lst.innerHTML = ''; const t = q.value.trim().toLowerCase(); SCHOOLS.list.filter(s => !t || s.name.toLowerCase().includes(t)).slice(0, 30).forEach(s => { const r = mk('div', 'sRow'); r.appendChild(mk('span', '', s.name)); r.append(chipBtn('Join', () => joinSchool(s.id)), chipBtn('🚩', () => openReport({ kind: 'school', target: s.id, name: s.name }))); lst.appendChild(r); }); };
+    q.oninput = draw; draw();
+    if (save.schoolReq) box.appendChild(mk('div', '', '⏳ Waiting for approval: ' + save.schoolReq.name));
+    else if (cfg.requests) { const ar = mk('div', 'frow'), ni = mk('input'); ni.placeholder = 'Can\'t find yours? School name'; ni.maxLength = 40; ni.autocomplete = 'off'; const go = mk('button', 'btn gold small', 'Ask to add'); go.onclick = () => requestSchool(ni.value); ar.append(ni, go); box.appendChild(ar); }
+  }
+  $('boardSub').textContent = 'Loading...';
+  try {
+    if (view === 'kids') {
+      const rows = (await Online.board(dk, per, save.school)).slice(0, 50);
+      if (stale()) return; ol.innerHTML = ''; rows.forEach((r, i) => ol.appendChild(boardRow(r, i))); addReportBtns(ol, rows); showToBeat(rows, dk);
+      $('boardSub').textContent = rows.length ? 'Top ' + schoolName(save.school) + ' runners · ' + bkName(dk) + ' · ' + BOARD_PER[per] : 'Nobody from ' + schoolName(save.school) + ' is on this board ' + (per === 'all' ? 'yet' : BOARD_PER[per].toLowerCase()) + '. Be the first!';
+    } else {
+      const rows = await Online.board(dk, per), by = {};
+      for (const r of rows) if (r.sch) (by[r.sch] = by[r.sch] || []).push(r.s);
+      const tops = Object.keys(by).filter(id => SCHOOLS.list.find(s => s.id === id)).map(id => { const sc = by[id].sort((a, b) => b - a); return { id, n: schoolName(id), s: sc.slice(0, 5).reduce((a, b) => a + b, 0), k: sc.length }; }).sort((a, b) => b.s - a.s).slice(0, 25);
+      if (stale()) return; ol.innerHTML = '';
+      tops.forEach((t, i) => { const li = boardRow({ n: t.n, s: t.s }, i); if (t.id === save.school) li.classList.add('me'); li.querySelector('.nm').appendChild(mk('small', '', t.k + ' runner' + (t.k === 1 ? '' : 's'))); ol.appendChild(li); });
+      $('boardSub').textContent = tops.length ? 'School vs school: the top 5 runs from each school added up · ' + bkName(dk) + ' · ' + BOARD_PER[per] : 'No school has a run on this board ' + (per === 'all' ? 'yet' : BOARD_PER[per].toLowerCase()) + '. Join yours and be the first!';
+    }
+  } catch (e) { if (!stale()) $('boardSub').textContent = 'Couldn\'t load the school board. Check your connection and try again.'; }
+}
+
+/* ---- report + block ---- */
+function addReportBtns(ol, rows) { [...ol.children].forEach((li, i) => { const r = rows[i]; if (!r || r.me || !r.uid || r.uid.includes('|')) return; const b = mk('button', 'repBtn', '🚩'); b.title = 'Report or block ' + r.n; b.onclick = e => { e.stopPropagation(); openReport({ kind: 'player', target: r.uid, name: r.n }); }; li.appendChild(b); }); }
+function openReport(t) {
+  const m = $('reportModal'); let reason = '';
+  $('repWho').textContent = (t.kind === 'school' ? 'School: ' : 'Player: ') + t.name; $('repBlock').parentElement.style.display = t.kind === 'player' ? '' : 'none';
+  document.querySelectorAll('#repReasons [data-rr]').forEach(b => { b.classList.remove('on'); b.style.display = t.kind === 'school' && b.dataset.rr === 'cheat' ? 'none' : ''; b.onclick = () => { reason = b.dataset.rr; document.querySelectorAll('#repReasons [data-rr]').forEach(x => x.classList.toggle('on', x === b)); }; });
+  $('repSend').onclick = async () => {
+    if (!reason) { toast('Pick a reason first', '', 1100); return; }
+    m.classList.remove('show'); if (t.kind === 'player' && $('repBlock').checked) blockUid(t.target);
+    try { const a = await Online.token(); await fsReq('PATCH', docPath('reports', a.uid + '_' + t.target), a.idToken, fsEnc({ by: a.uid, kind: t.kind, target: t.target, name: String(t.name || '').slice(0, 40), reason, ts: new Date() }), 'currentDocument.exists=false'); toast('Thanks! Report sent', 'The moderator will check it', 1600); }
+    catch (e) { toast(e.status ? 'You already reported this' : 'Couldn\'t send the report', e.status ? 'The moderator will check it' : 'Check your connection', 1600); }
+    if (curScreen === 'sRanks') buildBoard();
+  };
+  $('repCancel').onclick = () => m.classList.remove('show');
+  m.classList.add('show');
+}
+function syncBlockUi() { const n = (save.blocked || []).length; $('blockState').textContent = n ? n + ' player' + (n === 1 ? '' : 's') + ' blocked. They\'re hidden from your boards.' : 'Tap 🚩 next to a name on a board to report or block someone.'; }
+$('blockClear').onclick = () => { save.blocked = []; persist(); syncBlockUi(); toast('Everyone unblocked', '', 1000); };
+$('bOwner').onclick = () => { sfx('click'); openOwner(); };
+{ const s0 = buildSettings; buildSettings = function () { const r = s0.apply(this, arguments); try { syncBlockUi(); } catch (e) {} return r; }; }
+{ const b0 = buildBoard; buildBoard = function () { const t = document.querySelector('[data-board="school"]'); if (t) t.style.display = Online.ready() ? '' : 'none'; return b0.apply(this, arguments); }; }
+
+/* ===================== OWNER PANEL =====================
+   Sign-in uses Firebase Auth (email + password made in the Firebase console). The token lives only in this tab's
+   memory; it's never put in the save, the save code, or the cloud save. The page then asks the database for the
+   reports list: only the owner UID in the Firestore rules gets an answer, so the panel opens only for the owner. */
+var OWN = null;
+async function ownTok() {
+  if (!OWN) throw new Error('signed out'); if (OWN.exp > Date.now() + 60000) return OWN.idToken;
+  const r = await fetch('https://securetoken.googleapis.com/v1/token?key=' + encodeURIComponent(ONLINE_BOARD.apiKey), { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'grant_type=refresh_token&refresh_token=' + encodeURIComponent(OWN.refresh) });
+  if (!r.ok) { OWN = null; throw new Error('session ended'); } const j = await r.json(); OWN.idToken = j.id_token; OWN.refresh = j.refresh_token; OWN.exp = Date.now() + (+j.expires_in || 3600) * 1000; return OWN.idToken;
+}
+function openOwner() {
+  if (!(window.ONLINE_BOARD && ONLINE_BOARD.projectId && ONLINE_BOARD.apiKey)) { toast('The online board isn\'t set up in this build', '', 1600); return; }
+  if (OWN) { showOwner(); return; }
+  $('ownErr').textContent = ''; $('ownPass').value = ''; $('ownerLogin').classList.add('show');
+  $('ownCancel').onclick = () => $('ownerLogin').classList.remove('show');
+  $('ownGo').onclick = async () => {
+    const email = $('ownEmail').value.trim(), pass = $('ownPass').value; if (!email || !pass) return; $('ownErr').textContent = 'Checking...';
+    try {
+      const r = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + encodeURIComponent(ONLINE_BOARD.apiKey), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password: pass, returnSecureToken: true }) });
+      $('ownPass').value = '';
+      if (!r.ok) { $('ownErr').textContent = 'Wrong email or password.'; return; }
+      const j = await r.json(); const tok = { uid: j.localId, idToken: j.idToken, refresh: j.refreshToken, exp: Date.now() + (+j.expiresIn || 3600) * 1000 };
+      try { await fsQuery('reports', null, null, 1, tok.idToken); }
+      catch (e) { $('ownErr').textContent = e.status === 403 ? 'Signed in, but the database rules don\'t list this account as the owner yet. Put this UID in the rules: ' + tok.uid : 'Couldn\'t reach the database (' + e.message + ').'; return; }
+      OWN = tok; $('ownerLogin').classList.remove('show'); showOwner();
+      fsReq('GET', docPath('schools', 'nahs')).catch(e => { if (e.status === 404) fsReq('PATCH', docPath('schools', 'nahs'), OWN.idToken, fsEnc({ name: 'NAHS', status: 'approved', by: OWN.uid, ts: new Date() }), 'currentDocument.exists=false').then(() => { SCHOOLS.t = 0; }).catch(() => {}); });
+    } catch (e) { $('ownErr').textContent = 'Couldn\'t reach Firebase. Check your connection.'; }
+  };
+}
+var ownTab = 'reports';
+function showOwner() {
+  $('ownerModal').classList.add('show');
+  document.querySelectorAll('#ownTabs [data-own]').forEach(b => { b.classList.toggle('on', b.dataset.own === ownTab); b.onclick = () => { ownTab = b.dataset.own; sfx('click'); showOwner(); }; });
+  $('ownClose').onclick = () => $('ownerModal').classList.remove('show');
+  $('ownOut').onclick = () => { OWN = null; $('ownerModal').classList.remove('show'); toast('Signed out of moderation', '', 1200); };
+  $('ownFind').style.display = ownTab === 'players' ? 'flex' : 'none'; $('ownQGo').onclick = () => ownRender($('ownQ').value.trim()); $('ownQ').onkeydown = e => { if (e.key === 'Enter') ownRender($('ownQ').value.trim()); };
+  ownRender();
+}
+function ownRow(title, sub, btns) { const r = mk('div', 'ownRow'), s = mk('span', '', title); if (sub) s.appendChild(mk('small', '', sub)); r.appendChild(s); for (const b of btns) if (b) r.appendChild(b); return r; }
+const ago = t => { if (!t) return ''; const m = Math.round((Date.now() - t) / 60000); return m < 60 ? m + ' min ago' : m < 2880 ? Math.round(m / 60) + ' h ago' : Math.round(m / 1440) + ' days ago'; };
+async function ownDo(label, fn) { try { await fn(await ownTok()); toast('✓ ' + label, '', 1000); } catch (e) { toast('Didn\'t work: ' + label, e.message || '', 1800); } ownRender(ownRender.q); }
+async function runsOf(uid, tok) { return fsQuery('runs', fsEq('uid', uid), null, 50, tok); }
+async function modRename(uid, tok) { const rs = await runsOf(uid, tok); await Promise.all(rs.map(r => fsReq('PATCH', docPath('runs', r.id), tok, fsEnc({ name: 'Runner' }), 'updateMask.fieldPaths=name&currentDocument.exists=true')).concat([fsReq('PATCH', docPath('scores', uid), tok, fsEnc({ name: 'Runner' }), 'updateMask.fieldPaths=name&currentDocument.exists=true').catch(e => { if (e.status !== 404) throw e; })])); }
+async function modWipe(uid, tok) { const rs = await runsOf(uid, tok); await Promise.all(rs.map(r => fsReq('DELETE', docPath('runs', r.id), tok)).concat([fsReq('DELETE', docPath('scores', uid), tok), fsReq('DELETE', docPath('schoolRequests', uid), tok)])); }
+async function modBan(uid, name, tok) { await fsReq('PATCH', docPath('bans', uid), tok, fsEnc({ name: String(name || '').slice(0, 40), ts: new Date() })); await modWipe(uid, tok); }
+async function modClearReports(target, tok) { const rs = await fsQuery('reports', fsEq('target', target), null, 100, tok); await Promise.all(rs.map(r => fsReq('DELETE', docPath('reports', r.id), tok))); }
+async function modSchool(id, fields, tok) { await fsReq('PATCH', docPath('schools', id), tok, fsEnc(fields), Object.keys(fields).map(k => 'updateMask.fieldPaths=' + k).join('&')); SCHOOLS.t = 0; }
+function slugify(n) { return n.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 24) || 'school'; }
+function playerBtns(uid, name, after) { const then = f => async t => { await f(t); if (after) await after(t); };
+  return [chipBtn('✏️ Rename to Runner', () => ownDo('Renamed', then(t => modRename(uid, t)))), chipBtn('🗑 Remove scores', () => ownDo('Scores removed', then(t => modWipe(uid, t)))), chipBtn('⛔ Ban', () => { if (confirm('Ban ' + name + '? Their scores are removed and they can\'t post again.')) ownDo('Banned', then(t => modBan(uid, name, t))); })]; }
+async function ownRender(q) {
+  ownRender.q = q; const gen = ownRender.gen = (ownRender.gen || 0) + 1, L = $('ownList'), sub = $('ownSub'); L.innerHTML = ''; sub.textContent = 'Loading...';
+  const fsQuery0 = window.fsQuery, fsReq0 = window.fsReq, live = async x => { const v = await x; if (gen !== ownRender.gen) throw { stale: 1 }; return v; };
+  const fsQuery = (...a) => live(fsQuery0(...a)), fsReq = (...a) => live(fsReq0(...a)), loadAppCfg = () => live(APPCFG_LOAD());
+  try {
+    const tok = await ownTok();
+    if (ownTab === 'reports') {
+      const rs = await fsQuery('reports', null, 'ts', 200, tok), by = {};
+      for (const r of rs) (by[r.target] = by[r.target] || { kind: r.kind, name: r.name, target: r.target, n: 0, why: {}, t: r.ts }).n++, by[r.target].why[r.reason] = 1;
+      const g = Object.values(by).sort((a, b) => b.n - a.n || b.t - a.t);
+      sub.textContent = g.length ? g.length + ' reported (most reports first). Dismiss clears the reports; the other buttons also act on the player or school.' : 'No reports. All clear! ✅';
+      for (const r of g) L.appendChild(ownRow((r.kind === 'school' ? '🏫 ' : '🧍 ') + r.name + ' · ' + r.n + ' report' + (r.n === 1 ? '' : 's'), Object.keys(r.why).join(', ') + ' · ' + ago(r.t) + ' · ' + r.target,
+        [chipBtn('✅ Dismiss', () => ownDo('Dismissed', t => modClearReports(r.target, t)))].concat(r.kind === 'school'
+          ? [chipBtn('🙈 Hide school', () => ownDo('School hidden', async t => { await modSchool(r.target, { status: 'hidden' }, t); await modClearReports(r.target, t); }))]
+          : playerBtns(r.target, r.name, t => modClearReports(r.target, t)))));
+    } else if (ownTab === 'requests') {
+      const rs = await fsQuery('schoolRequests', null, 'ts', 100, tok); sub.textContent = rs.length ? 'Fix the spelling if needed, then approve. Reject anything that isn\'t a real school name.' : 'No new school requests.';
+      for (const r of rs) { const inp = mk('input', 'ownIn'); inp.value = r.name; inp.maxLength = 40; const row = ownRow('', 'asked ' + ago(r.ts) + ' · player ' + r.id, [
+        chipBtn('✅ Approve', () => { const nm = cleanSchoolName(inp.value); if (!nm) { toast('Name not allowed', '', 1200); return; } ownDo('Approved ' + nm, async t => { let id = slugify(nm), k = 2; while (true) { try { await fsReq('GET', docPath('schools', id)); id = slugify(nm).slice(0, 21) + '-' + k++; } catch (e) { if (e.status === 404) break; throw e; } } await fsReq('PATCH', docPath('schools', id), t, fsEnc({ name: nm, status: 'approved', by: r.id, ts: new Date() }), 'currentDocument.exists=false'); await fsReq('DELETE', docPath('schoolRequests', r.id), t); SCHOOLS.t = 0; }); }),
+        chipBtn('❌ Reject', () => ownDo('Rejected', t => fsReq('DELETE', docPath('schoolRequests', r.id), t))), chipBtn('⛔ Ban player', () => { if (confirm('Ban the player who sent this?')) ownDo('Banned', t => modBan(r.id, r.name, t)); })]); row.querySelector('span').prepend(inp); L.appendChild(row); }
+    } else if (ownTab === 'schools') {
+      const j = await fsReq('GET', '/schools', null, null, 'pageSize=300'), rs = (j.documents || []).map(fsDoc).sort((a, b) => a.name.localeCompare(b.name));
+      sub.textContent = rs.length + ' schools. Hidden schools vanish from every board and their players are moved out.';
+      const add = mk('input', 'ownIn'); add.placeholder = 'Add a school yourself'; add.maxLength = 40;
+      L.appendChild(ownRow('', '', [add, chipBtn('➕ Add', () => { const nm = cleanSchoolName(add.value); if (!nm) { toast('Name not allowed', '', 1200); return; } ownDo('Added ' + nm, t => fsReq('PATCH', docPath('schools', slugify(nm)), t, fsEnc({ name: nm, status: 'approved', by: OWN.uid, ts: new Date() }), 'currentDocument.exists=false')); })]));
+      for (const r of rs) { const inp = mk('input', 'ownIn'); inp.value = r.name; inp.maxLength = 40; const row = ownRow('', (r.status === 'approved' ? '🟢 shown' : '🙈 hidden') + ' · id ' + r.id, [
+        chipBtn('💾 Save name', () => { const nm = cleanSchoolName(inp.value); if (!nm) { toast('Name not allowed', '', 1200); return; } ownDo('Renamed', t => modSchool(r.id, { name: nm }, t)); }),
+        chipBtn(r.status === 'approved' ? '🙈 Hide' : '👀 Show', () => ownDo(r.status === 'approved' ? 'Hidden' : 'Shown', t => modSchool(r.id, { status: r.status === 'approved' ? 'hidden' : 'approved' }, t))),
+        chipBtn('🗑 Delete', () => { if (confirm('Delete ' + r.name + ' for good?')) ownDo('Deleted', t => fsReq('DELETE', docPath('schools', r.id), t).then(() => { SCHOOLS.t = 0; })); })]); row.querySelector('span').prepend(inp); L.appendChild(row); }
+    } else if (ownTab === 'players') {
+      let rs; if (q) { const [a, b] = await Promise.all([fsQuery('runs', fsEq('name', q), null, 100, tok), fsQuery('runs', fsEq('code', q.toUpperCase()), null, 100, tok)]); rs = a.concat(b); } else rs = await fsQuery('runs', null, 'ts', 80, tok);
+      const by = {}; for (const r of rs) { const o = by[r.uid] = by[r.uid] || { uid: r.uid, name: r.name, code: r.code, school: r.school, best: 0, t: 0 }; o.best = Math.max(o.best, r.best || 0); o.t = Math.max(o.t, r.ts || 0); }
+      const g = Object.values(by).sort((a, b) => b.t - a.t); sub.textContent = q ? g.length + ' found for "' + q + '"' : 'Newest players on the boards. Search by exact nickname or friend code.';
+      for (const p of g) L.appendChild(ownRow(p.name, 'code ' + (p.code || '-') + (p.school ? ' · ' + schoolName(p.school) : '') + ' · best ' + p.best.toLocaleString() + ' · ' + ago(p.t), playerBtns(p.uid, p.name)));
+    } else if (ownTab === 'bans') {
+      const j = await fsReq('GET', '/bans', tok, null, 'pageSize=300'), rs = (j.documents || []).map(fsDoc); sub.textContent = rs.length ? rs.length + ' banned players. Banned players can still play, but nothing they post reaches the boards.' : 'Nobody is banned.';
+      for (const r of rs) L.appendChild(ownRow(r.name || r.id, ago(r.ts) + ' · ' + r.id, [chipBtn('↩️ Unban', () => ownDo('Unbanned', t => fsReq('DELETE', docPath('bans', r.id), t)))]));
+    } else if (ownTab === 'switches') {
+      APPCFG.t = 0; const c = await loadAppCfg(); sub.textContent = 'Emergency switches. They work for every player on the website and the app within a few minutes.';
+      const set = (k, v) => ownDo('Saved', t => fsReq('PATCH', '/config/app', t, fsEnc({ schools: k === 'schools' ? v : c.schools, requests: k === 'requests' ? v : c.requests })).then(() => { APPCFG.t = 0; }));
+      L.appendChild(ownRow('School boards: ' + (c.schools ? 'ON' : 'OFF'), 'Turn off to hide every school board at once.', [chipBtn(c.schools ? 'Turn off' : 'Turn on', () => set('schools', !c.schools))]));
+      L.appendChild(ownRow('New school requests: ' + (c.requests ? 'ON' : 'OFF'), 'Turn off to stop players asking for new schools.', [chipBtn(c.requests ? 'Turn off' : 'Turn on', () => set('requests', !c.requests))]));
+      L.appendChild(ownRow('Your owner UID', OWN.uid, []));
+    }
+  } catch (e) { if (e && e.stale) return; sub.textContent = 'Couldn\'t load: ' + (e.status === 403 ? 'the database said no (check the owner UID in the rules)' : e.message); }
+}
 
 </script>
 </body>
