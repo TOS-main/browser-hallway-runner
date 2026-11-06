@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="google-adsense-account" content="ca-pub-9841041313313334">
-<!-- AdSense: the exact tag AdSense asks for on every page. Ad requests start paused and non-personalized; the game un-pauses them only for players 13+ after the age check. -->
+<!-- AdSense: the exact tag AdSense asks for on every page. Ad requests start paused and non-personalized; they stay paused until the player chooses to watch an ad (never for under-13 players in the app). -->
 <script>(window.adsbygoogle = window.adsbygoogle || []).pauseAdRequests = 1; window.adsbygoogle.requestNonPersonalizedAds = 1;</script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9841041313313334"
      crossorigin="anonymous"></script>
@@ -113,6 +113,13 @@ h2{font-size:24px;font-weight:900;text-transform:uppercase}
 .cTxt small{display:block;font-weight:800;font-size:11px;letter-spacing:1px;text-transform:uppercase;opacity:.75}.cTxt b{display:block;font-weight:900;font-size:22px;line-height:1.05}
 .card.small .cTxt b{font-size:17px}
 .mRight{display:flex;flex-direction:column;align-items:stretch;gap:8px;width:150px}
+#bmTip{display:none;position:fixed;left:50%;top:max(8px,env(safe-area-inset-top));transform:translateX(-50%);z-index:60;align-items:center;gap:8px;max-width:min(92vw,520px);background:#fffbe6;color:#1d2340;border:2px solid #ffc400;border-radius:14px;padding:6px 6px 6px 12px;box-shadow:0 6px 18px rgba(0,0,0,.25);font-size:13px}#bmTip.show{display:flex}#bmTip b{font-weight:800;-webkit-text-stroke:0;color:#1d2340}#bmTip button{border:none;background:#1d2340;color:#fff;border-radius:50%;width:26px;height:26px;flex:none;font:inherit;font-size:13px;cursor:pointer}
+.ghostBtn{margin-left:6px;border:none;border-radius:10px;background:#1d2340;color:#bfe6ff;font:inherit;font-size:12px;font-weight:800;padding:4px 8px;cursor:pointer;flex:none}
+.lyricBox{display:none;position:relative;align-self:flex-end;width:190px;flex:none;box-sizing:border-box;background:rgba(20,22,48,.86);color:#fff;border:2px solid #ffd60a;border-radius:12px;padding:5px 22px 6px 9px;text-align:left;box-shadow:0 4px 14px rgba(0,0,0,.3);pointer-events:auto}
+.lyricBox.show{display:block}.lyricBox small{display:block;font-size:9px;font-weight:900;letter-spacing:.08em;color:#ffd60a}
+.lyricBox b{display:block;font-size:12.5px;line-height:1.2;min-height:15px;color:#fff;-webkit-text-stroke:0;transition:opacity .2s}.lyricBox b.hook{color:#ffe566}
+.lyricBox i{display:block;font-style:normal;font-size:10px;line-height:1.2;color:rgba(255,255,255,.55);margin-top:1px}
+.lyricBox button{position:absolute;top:2px;right:3px;border:none;background:none;color:#fff;opacity:.7;font:inherit;font-size:12px;cursor:pointer;padding:2px 4px}
 .free{display:flex;align-items:center;gap:10px;border:none;background:linear-gradient(160deg,#ffe066,#f4b400);border-radius:18px;padding:10px 14px;font:inherit;color:#5a3a00;cursor:pointer;box-shadow:0 6px 18px rgba(244,180,0,.35),inset 0 -3px 0 rgba(0,0,0,.12)}
 .free b{font-size:20px;font-weight:900;white-space:nowrap}.free .gift{display:grid}
 .free.wait{background:rgba(14,22,52,.62);color:#ffd84d;box-shadow:none;border:1px solid rgba(255,255,255,.16)}.free.wait b{font-size:15px}
@@ -587,6 +594,7 @@ body.web .playSoon{font-size:13px}
 <div id="quickCtl"><div class="qcHead"><b>Controls</b><button id="qcHide" aria-label="Hide controls" title="Hide (K)">✕</button></div><div class="qcList" id="qcList"></div></div><button id="qcTab" aria-label="Show controls" title="Show controls (K)">🎮<small>Controls</small></button>
 <div id="duelBox" style="display:none"><div class="dTitle">⚔️ DUEL</div><div class="dRow me"><span>You</span><b id="duelMe">0</b></div><div class="dBar"><i id="duelBar"></i></div><div class="dRow them"><span id="duelName">Friend</span><b id="duelThem">0</b></div><small id="duelNote"></small></div>
 
+<div id="bmTip" role="note"><span>⭐</span><b id="bmTxt">Bookmark Hallway Dash so it's one click away: press Ctrl+D</b><button id="bmX" aria-label="Close">✕</button></div>
 <!-- MENU (start screen over the live 3D scene) -->
 <div class="screen show menuScreen" id="sMenu">
   <div class="mTop">
@@ -597,12 +605,14 @@ body.web .playSoon{font-size:13px}
   <div class="mRow">
     <div class="mLeft">
       <div class="card"><canvas id="avatar" width="128" height="128"></canvas><div class="cTxt"><small>High Score</small><b id="mBest">0</b></div></div>
+      <button class="card small worldCard" id="mWorld" style="display:none"><div class="ico">🌍</div><div class="cTxt"><small>World record to beat</small><b id="mWorldTxt">–</b></div></button>
       <div class="chipRow"><span class="miniChip" id="mMult">x1</span><span class="miniChip" id="mWord">BELL</span><button class="miniChip" id="bHow">?</button></div>
       <button class="card small lockerCard" id="bMLocker"><div class="ico">🔐</div><div class="cTxt"><small>Mystery Locker</small><b id="mLockTxt">OPEN!</b></div></button>
       <div class="card small"><div class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 22V4M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1"/></svg></div><div class="cTxt"><small>Top Run</small><b id="mTop">0 m</b></div></div>
     </div>
     <div class="mModes" id="mModes"></div>
     <div class="mRight">
+      <div class="lyricBox" id="lyricBox" aria-live="off"><small>♪ HALLWAY RUSH</small><b id="lyricLine">…</b><i id="lyricNext"></i><button id="lyricX" aria-label="Hide lyrics">✕</button></div>
       <button class="free" id="bFree"><span class="gift"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg></span><b id="freeTxt">FREE</b></button>
       <button class="side adStarBtn" id="bAdStar"><span style="font-size:20px;line-height:1">📺→⭐</span><b id="adStarTxt">+1 ★</b></button>
       <button class="side passBtn" id="bPass"><svg class="ic" viewBox="0 0 24 24"><path d="M4 4h16v6a2 2 0 0 0 0 4v6H4v-6a2 2 0 0 0 0-4z"/><path d="M9 4v16"/></svg><b id="passTierTxt">Pass</b><em class="badge" id="passBadge"></em></button>
@@ -641,7 +651,8 @@ body.web .playSoon{font-size:13px}
       <label class="volRow"><span>Music volume</span><input type="range" id="musicVol" min="0" max="100" value="60"><em class="volNum" id="musicVolN"></em></label>
       <label class="volRow"><span>Effects volume</span><input type="range" id="sfxVol" min="0" max="100" value="80"><em class="volNum" id="sfxVolN"></em></label>
       <label class="volRow"><span>Coin sound</span><input type="range" id="coinVol" min="0" max="100" value="45"><em class="volNum" id="coinVolN"></em></label>
-      <label class="volRow"><span>Intro music when a run starts</span><input type="checkbox" id="introMus" checked></label></div>
+      <label class="volRow"><span>Intro music when a run starts</span><input type="checkbox" id="introMus" checked></label>
+      <label class="volRow"><span>Theme song lyrics on the start screen</span><input type="checkbox" id="lyricsOn" checked></label></div>
     <div class="setRow"><b>Accessibility</b><div class="soundRow" style="justify-content:flex-start;flex-wrap:wrap;gap:6px"><button class="chip off" id="a11y_flash">🚫 Reduce flashing &amp; shaking</button><button class="chip off" id="a11y_hc">◐ High contrast</button><button class="chip off" id="a11y_cb">🎨 Colour-blind-safe warnings</button></div><small>Reduce flashing turns off screen shake, flashes, the fire-drill strobe and blinking warnings. Colour-blind-safe makes danger lanes blue instead of red.</small></div>
     <div class="setRow"><b>Your title</b><div class="soundRow" id="titleList" style="justify-content:flex-start;flex-wrap:wrap;gap:6px"></div><small>Shows under your name on leaderboards. Unlock more by playing.</small></div>
     <div class="setRow"><b>Battery &amp; voice</b><div class="soundRow" style="justify-content:flex-start;flex-wrap:wrap;gap:6px"><button class="chip off" id="bBattery">🔋 Battery saver</button><button class="chip" id="bVoice">📣 Announcer voice</button></div><small>Battery saver: 30 fps, low graphics, fewer crowds and particles (reloads the game).</small></div>
@@ -667,7 +678,7 @@ body.web .playSoon{font-size:13px}
 <div class="screen" id="sRanks">
   <div class="panel">
     <div class="topbar"><h2>🏆 Leaderboard</h2><span class="bankPill" id="rBest">0</span></div>
-    <div class="tabs"><button class="tab on" data-board="local">Classmates</button><button class="tab" data-board="friends">Friends</button><button class="tab" data-board="world">World</button></div>
+    <div class="tabs"><button class="tab" data-board="world">World</button><button class="tab" data-board="local">Classmates</button><button class="tab" data-board="friends">Friends</button></div>
     <div class="friendBox" id="friendBox"><div>Your friend code: <b id="myCode">------</b></div><div style="margin-top:8px" id="chalNow"></div><div class="frow"><button class="btn green small" id="chalLive">⏱ Race now (same time)</button><button class="btn blue small" id="chalNew">🎲 New challenge hallway</button><button class="btn gold small" id="chalCopy">📋 Copy my code</button></div><small style="display:block;margin:4px 0">Codes work between phones and the browser. A code with a 3rd part (MAYA-5K2-AB3) gives your friend the exact same hallway.</small><div class="frow"><input id="chalIn" maxlength="16" placeholder="e.g. MAYA-5K2" autocomplete="off"><button class="btn gold small" id="chalAdd">Accept</button></div><div class="frow"><input id="friendIn" maxlength="6" placeholder="Friend's code" autocomplete="off"><button class="btn blue small" id="friendAdd">Add</button></div></div>
     <div class="allBest" id="allBest"></div>
     <div class="seg boardDiff" id="boardDiff"><button data-bd="easy">Easy</button><button data-bd="normal">Normal</button><button data-bd="hard">Hard</button><button data-bd="insane">Insane</button></div>
@@ -870,6 +881,11 @@ body.web .playSoon{font-size:13px}
       <button class="chip" data-adm="stages">🗺 Unlock all stages</button><button class="chip" data-adm="items">🎒 Unlock all items</button>
       <button class="chip" data-adm="upgrades">⬆️ Max all upgrades</button><button class="chip" data-adm="daily">🔄 Reset daily rewards</button>
       <button class="chip" data-adm="tokens">🎟 +50 event tokens</button><button class="chip off" data-adm="god" id="admGod">🛡 God mode</button>
+      <button class="chip" data-adm="everything">💎 Unlock EVERYTHING + max money</button><button class="chip" data-adm="cheatsAll">🎮 All cheats on</button><button class="chip" data-adm="cheatsOff">🚫 All cheats off</button><button class="chip" data-adm="tut">🎓 Replay tutorial + tour</button>
+    </div>
+    <small><b>During a run</b> (open Admin from Pause):</small>
+    <div class="soundRow" style="flex-wrap:wrap;gap:6px;margin:6px 0">
+      <button class="chip" data-adm="boss">👿 Boss hunt now</button><button class="chip" data-adm="plane">✈️ Paper plane</button><button class="chip" data-adm="pass">🎫 Hall pass</button><button class="chip" data-adm="juice">🧃 Juice box</button><button class="chip" data-adm="magnet">🦘 Super sneakers</button><button class="chip" data-adm="dist">⏩ +1000 m</button><button class="chip" data-adm="slowmo">🐢 Slow motion</button>
     </div>
     <small>Admin runs and god mode never go to the online leaderboard or tournament.</small>
     <button class="btn gray" id="admClose">Close</button>
@@ -1012,10 +1028,11 @@ body.web .playSoon{font-size:13px}
 <!-- USERNAME -->
 <div class="modal" id="nameModal">
   <div class="mPanel">
-    <h2>Pick a nickname</h2>
-    <p>Pick a nickname (not your real name). It shows on the leaderboard and you can change it later in Settings.</p>
+    <h2 id="nameHead">Pick a nickname</h2>
+    <p id="nameWhy">Pick a nickname (not your real name). It shows on the leaderboard and you can change it later in Settings.</p>
     <input id="nameFirst" maxlength="14" placeholder="Your name" autocomplete="off">
-    <button class="btn gold" id="nameGo">Let's go!</button>
+    <button class="btn gold" id="nameGo">Save it!</button>
+    <button class="linkBtn" id="nameSkip">Skip (show as Runner)</button>
   </div>
 </div>
 
@@ -1427,6 +1444,12 @@ function MS(c, rough, metal, extra) { const k = 's' + c + rough + metal; return 
 function MB(c) { const k = 'b' + c; return MATS[k] || (MATS[k] = new THREE.MeshBasicMaterial({ color: c })); }
 function ME(c, e) { const k = 'e' + c + e; return MATS[k] || (MATS[k] = newMat({ color: c, emissive: e })); }
 function MT(tex, key, rough, metal) { const k = 't' + key; return MATS[k] || (MATS[k] = Q.std ? new THREE.MeshStandardMaterial({ map: tex, roughness: rough === undefined ? 0.8 : rough, metalness: metal || 0, envMapIntensity: rough !== undefined && rough < 0.3 ? 0.45 : 0.35 }) : new THREE.MeshLambertMaterial({ map: tex })); }
+// every pickup gets a soft gold halo that pulses, so coins and power-ups pop out of the hallway
+let _pickGlowTex = null; const PICK_GLOW = {};
+function pickGlowMat(c) { if (!_pickGlowTex) { const cv = document.createElement('canvas'); cv.width = cv.height = 64; const x = cv.getContext('2d'), gr = x.createRadialGradient(32, 32, 0, 32, 32, 32); gr.addColorStop(0, 'rgba(255,240,170,1)'); gr.addColorStop(0.35, 'rgba(255,200,40,.55)'); gr.addColorStop(1, 'rgba(255,170,0,0)'); x.fillStyle = gr; x.fillRect(0, 0, 64, 64); _pickGlowTex = new THREE.CanvasTexture(cv); }
+  return PICK_GLOW[c] || (PICK_GLOW[c] = new THREE.SpriteMaterial({ map: _pickGlowTex, color: c, transparent: true, opacity: 0.7, depthWrite: false, blending: THREE.AdditiveBlending })); }
+function addPickGlow(o) { if (!o.mesh || o.K.noGlow) return; const big = o.K.power || o.kind === 'gstar', sp = new THREE.Sprite(pickGlowMat(big ? '#ffe28a' : '#ffd24a')); const k = o.kind === 'coin' ? 1.25 : big ? 1.9 : 1.6; sp.scale.set(k, k, 1); sp.renderOrder = 2; o.mesh.add(sp); o.glow = sp; }
+function pulsePickGlow(t) { for (const c in PICK_GLOW) PICK_GLOW[c].opacity = 0.55 + 0.2 * Math.sin(t * 5); }
 function MGlow(c, op) { const k = 'g' + c + op; return MATS[k] || (MATS[k] = new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: op, depthWrite: false })); }
 const matOf = c => (typeof c === 'string' ? M(c) : c);
 function mesh(geo, mat, parent, x = 0, y = 0, z = 0, sx = 1, sy = 1, sz = 1) { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.scale.set(sx, sy, sz); if (parent) parent.add(m); return m; }
@@ -1862,17 +1885,22 @@ function makeActor(spec) {
   act.update = dt => {
     if (act.hold > 0) act.hold -= dt;
     if (act.blend) { const B = act.blend; B.t += dt; const k = Math.min(1, B.t / B.dur); B.to.setEffectiveWeight(k); for (const [o, w0] of B.from) { if (k < 1) o.setEffectiveWeight(w0 * (1 - k)); } if (k >= 1) { act.blend = null; for (const n in act.actions) if (act.actions[n] !== B.to) act.stopA(n); } }
+    if (act._tw && act._tw.size) { for (const [b, q] of act._tw) b.quaternion.copy(q); act._tw.clear(); } // undo last frame's twists
     act.mixer.update(dt);
+    if (act.bones.Head) act.bones.Head.scale.setScalar(cheatOn('bighead') ? 1.9 : 1.12); // BIGHEAD cheat: everyone, not just you
     { const ca = act.cur && act.actions[act.cur]; if (ca && !ONE_SHOT[act.cur]) act.phase[act.cur] = ca.time; }
     { // ground contact: every clip has ONE fixed lift (worked out once from the shoe soles over the whole clip), and the body
       // lift is those lifts mixed by the clips' current blend weights. It changes only as smoothly as the animations blend,
       // so landing, bumping or switching clips can never pop the body up or pull it into the floor
       let wsum = 0, y = 0; for (const k in act.actions) { const o = act.actions[k]; if (!act.mixer._isActiveAction(o)) continue; const w = o.getEffectiveWeight(); if (w > 0.001) { y += w * soleOffset(spec.key, k, o.time); wsum += w; } } // a finished one-shot (lying on the floor after a fall) still counts
       if (wsum > 0.001) act.liftT = y / wsum; const on = act.noGround ? 0 : 1; act.gK = act.gK === undefined ? on : act.gK + (on - act.gK) * Math.min(1, dt * 10);
-      act.groundY = (act.liftT || 0) * act.gK; model.position.y = (act.groundY + 0.02) * (spec.scale || 1); }
+      act.groundY = (act.liftT || 0) * act.gK; model.position.y = (act.groundY + 0.01) * (spec.scale || 1); }
     if (act.lids) { act.blinkT -= dt; const k = act.blinkT < 0.12 && act.blinkT > 0 ? 1 - Math.abs(act.blinkT - 0.06) / 0.06 : 0; if (act.blinkT <= 0) act.blinkT = 2 + Math.random() * 4; for (const l of act.lids) { const u = l.userData; l.position.lerpVectors(u.p0, u.p1, k); l.scale.copy(u.s0); l.scale.y *= 1 + k * 0.7; } }
     if (act.post) act.post(act);
-    if (act.cur === 'Idle_Loop' || act.cur === 'Idle_Talking_Loop' || act.cur === 'Walk_Loop') twist(act, 'Head', 1, 0, 0, -0.22); // chin up, look ahead
+    { // chin up, look ahead in the standing clips: weighted by how much of those clips is playing, so switching to a dance or
+      // a run eases the head down instead of snapping it 13 degrees in one frame (that was the menu "head glitch")
+      let w = 0; for (const k of CHIN_UP) { const o = act.actions[k]; if (o && act.mixer._isActiveAction(o)) w += o.getEffectiveWeight(); }
+      if (w > 0.001) twist(act, 'Head', 1, 0, 0, -0.22 * Math.min(1, w)); }
   };
   act.sole = solePoints(spec.key, model);
   return act;
@@ -1905,13 +1933,15 @@ function soleCurve(key, clipName) {
   const m = THREE.SkeletonUtils.clone(CH.tpl[key]); m.position.set(0, 0, 0); m.rotation.set(0, 0, 0); m.scale.setScalar(1);
   const sole = SOLE[key] ? mapSole(SOLE[key], m) : null, bones = []; m.traverse(o => { if (o.isBone) for (const [n, r] of BODY_PTS) if (o.name === n) bones.push([o, r]); });
   if (!sole) m.traverse(o => { if (o.isBone && (o.name === 'FootL' || o.name === 'FootR')) bones.push([o, 0.03]); });
-  const mx = new THREE.AnimationMixer(m), ac = mx.clipAction(clip); ac.play(); const n = 40, lows = [];
+  const mx = new THREE.AnimationMixer(m), ac = mx.clipAction(clip); ac.play(); const n = PLANTED[clipName] ? Math.max(40, Math.round(clip.duration * 40)) : 40, lows = [];
   for (let i = 0; i <= n; i++) { mx.setTime(clip.duration * Math.min(i / n, 0.9999)); m.updateMatrixWorld(true); let low = 9;
     if (sole) for (const s of sole.pts) { _sv.copy(s.p).applyMatrix4(s.bone.matrixWorld); if (_sv.y < low) low = _sv.y; }
     for (const [b, r] of bones) { b.getWorldPosition(_sv); if (_sv.y - r < low) low = _sv.y - r; } lows.push(low); }
   mx.stopAllAction();
   const air = /Roll|Jump/.test(clipName); // rolls/jumps may lift off the floor, never sink into it
-  if (ONE_SHOT[clipName]) return (GROUND[id] = { curve: lows.map(l => clamp(air ? Math.max(0, -l) : -l, -0.5, 0.8)), dur: clip.duration });
+  // standing / walking loops follow the clip frame by frame too: these clips were made for another skeleton and bob the
+  // whole body (feet included) up and down, so one fixed lift left people floating up to ~10 cm for part of every loop
+  if (ONE_SHOT[clipName] || PLANTED[clipName]) return (GROUND[id] = { curve: lows.map(l => clamp(air ? Math.max(0, -l) : -l, -0.5, 0.8)), dur: clip.duration });
   const lo = Math.min(...lows); return (GROUND[id] = { fixed: clamp(air ? Math.max(0, -lo) : -lo, -0.5, 0.8) });
 }
 function soleOffset(key, clipName, t) {
@@ -1924,6 +1954,7 @@ function soleOffset(key, clipName, t) {
 // in the foot bone's space), used by soleOffset() to find each clip's floor lift.
 const SOLE = {}, _sv = new THREE.Vector3(), _rv = new THREE.Vector3();
 const STRIDE = { Sprint_Loop: 1, Jog_Fwd_Loop: 1 };
+const PLANTED = { Idle_Loop: 1, Idle_Talking_Loop: 1, Walk_Loop: 1, Walk_Formal_Loop: 1, Push_Loop: 1, Interact: 1 };
 const GROUNDED = { Idle_Loop: 1, Idle_Talking_Loop: 1, Walk_Loop: 1, Walk_Formal_Loop: 1, Push_Loop: 1, Dance_Loop: 1, Interact: 1, Hit_Chest: 1 };
 function solePoints(key, model) {
   if (SOLE[key] !== undefined) return mapSole(SOLE[key], model);
@@ -2644,6 +2675,10 @@ const TRACKS = [
   { id: 'lofi', name: 'Lo-fi Study Hall', desc: 'Chill beats to dodge to' },
   { id: 'march', name: 'Marching Band', desc: 'Pep rally energy' },
   { id: 'synth', name: 'Synthwave Bus Ride', desc: 'Retro neon drive' },
+  { id: 'surf', name: 'Recess Surf Rock', desc: 'Twangy beach-day guitar riff' },
+  { id: 'boom', name: 'Locker Room Beats', desc: 'Laid-back boom-bap hip hop' },
+  { id: 'dnb', name: 'Late Bell Breakbeat', desc: 'Super fast drum & bass' },
+  { id: 'bells', name: 'Snow Day Bells', desc: 'Sparkly music-box pop' },
   { id: 'off', name: 'Off', desc: 'No music' }
 ];
 const hasFile = id => !!(window.GAME_ASSETS && GAME_ASSETS.music && GAME_ASSETS.music[id]);
@@ -2696,7 +2731,29 @@ const TRACK_FN = {
     if (i % 2 === 0) mT(root - 12 + (i % 4 === 2 ? 12 : 0), d * 1.6, 'sawtooth', 0.07, t);
     if (i === 0) { mT(root + 12, d * 16, 'sawtooth', 0.025, t); mT(root + 15 + (bar % 2), d * 16, 'sawtooth', 0.02, t); mT(root + 19, d * 16, 'sawtooth', 0.02, t); }
     const mel = { 0: 24, 3: 22, 6: 19, 8: 17, 10: 19, 14: 15 }; if (mel[i] !== undefined && bar % 2 === 1) mT(root + mel[i], d * 2.5, 'triangle', 0.12, t);
-    if (i % 4 === 0) kick(t, 0.6); if (i === 4 || i === 12) snare(t, 0.3); if (i % 4 === 2) hat(t, 0.12); } }
+    if (i % 4 === 0) kick(t, 0.6); if (i === 4 || i === 12) snare(t, 0.3); if (i % 4 === 2) hat(t, 0.12); } },
+  surf: { bpm: 168, div: 2, step(i, bar, t, d) { // original surf-rock pick riff over a galloping bass
+    const root = [52, 52, 57, 59][bar], riff = [0, 0, 12, 0, 10, 0, 7, 0, 0, 0, 12, 0, 15, 14, 12, 10];
+    mT(root + riff[i], d * 0.7, 'sawtooth', 0.05, t); mT(root + riff[i] + 12, d * 0.4, 'square', 0.025, t);
+    if (i % 2 === 0) mT(root - 12 + (i % 4 === 2 ? 7 : 0), d * 1.6, 'triangle', 0.45, t);
+    if (i % 4 === 0) kick(t, 0.6); if (i % 8 === 4) snare(t, 0.32); hat(t, i % 2 ? 0.06 : 0.12); } },
+  boom: { bpm: 88, div: 4, step(i, bar, t, d) { // boom-bap: dusty keys, deep bass, swung hats
+    const root = [45, 45, 41, 43][bar], sw = i % 2 ? d * 0.25 : 0;
+    if (i === 0 || i === 8) [0, 3, 7, 10].forEach((c, k) => mT(root + 12 + c, d * 6, 'triangle', 0.06, t + k * 0.01));
+    const bl = { 0: 0, 3: 0, 6: 7, 10: 5, 11: 3 }; if (bl[i] !== undefined) mT(root - 12 + bl[i], d * 2, 'sine', 0.5, t);
+    if (i === 0 || i === 7 || i === 10) kick(t, 0.7); if (i === 4 || i === 12) snare(t, 0.38, 1400); if (i % 2 === 0 || i === 15) hat(t + sw, 0.09);
+    if (bar === 3 && i === 14) mT(root + 24, d * 2, 'square', 0.04, t); } },
+  dnb: { bpm: 172, div: 4, step(i, bar, t, d) { // fast breakbeat with a rolling reese-style bass
+    const root = [41, 41, 44, 39][bar], br = [1, 0, 0, 0, 2, 0, 0, 1, 0, 0, 1, 0, 2, 0, 0, 0];
+    if (br[i] === 1) kick(t, 0.65); if (br[i] === 2) snare(t, 0.36); if (i % 2) hat(t, 0.07);
+    if (i % 4 === 0) { mT(root - 12, d * 3.6, 'sawtooth', 0.1, t); mT(root - 12.1, d * 3.6, 'sawtooth', 0.08, t); }
+    if (i === 0 && bar % 2 === 0) [12, 15, 19].forEach(c => mT(root + c, d * 30, 'sine', 0.05, t));
+    const mel = { 2: 24, 6: 22, 10: 19, 13: 17 }; if (bar % 2 && mel[i] !== undefined) mT(root + mel[i], d * 1.5, 'triangle', 0.1, t); } },
+  bells: { bpm: 120, div: 4, step(i, bar, t, d) { // music-box sparkle over soft pop drums
+    const root = [60, 55, 57, 53][bar], arp = [0, 7, 12, 16, 12, 7, 0, 7, 4, 7, 12, 19, 12, 7, 4, 7];
+    mT(root + 12 + arp[i], d * 2, 'sine', 0.09, t); if (i % 4 === 0) mT(root + 24 + arp[i], d * 0.5, 'sine', 0.03, t + d * 0.5);
+    if (i % 8 === 0) mT(root - 24, d * 7, 'triangle', 0.4, t);
+    if (i % 8 === 0) kick(t, 0.5); if (i % 8 === 4) snare(t, 0.2, 2500); if (i % 4 === 2) hat(t, 0.06); } }
 };
 // the theme song: a separate ~9.4 s intro that hands off, sample-accurately, into a seamless 60 s loop (Web Audio buffers, so there is no gap)
 const THEMESONG = { LOOP: 60, INTRO: 9.375, bufs: null, loading: false, failed: false, want: 0, src: [], out: null, t0: 0, pos: 0,
@@ -2746,6 +2803,22 @@ const THEMESONG = { LOOP: 60, INTRO: 9.375, bufs: null, loading: false, failed: 
     this.src = [];
   }
 };
+// lyrics for the 60 s theme loop: verse, hook, verse 2, hook; one line every 2 bars (3.75 s at 128 BPM)
+const THEME_LYRICS = ["Seven fifty-nine and I'm late again", "Sneakers squeakin' down the hall", "Backpack bouncin', teacher's callin'", "Here comes the bell, I'm gonna run it all",
+  "Homework's pilin' up to the sky", "Got a test at nine, no time to cry", "Duck the teacher, jump the line", "Run, run... HALLWAY RUSH!",
+  "Lunch trays flyin', mop bucket spill", "Hop the bench and don't stand still", "Locker doors are swingin' wide", "One more period, I'm on the other side",
+  "Homework's pilin' up to the sky", "Got a test at nine, no time to cry", "Duck the teacher, jump the line", "Run, run... HALLWAY RUSH!"];
+let lyricI = -2;
+function syncLyrics() { // the small karaoke box above the free gift, in time with the theme song as it plays
+  const box = $('lyricBox'); if (!box) return;
+  const on = !save.lyricsOff && curScreen === 'sMenu' && G.scene === 'menu' && curTrack() === 'theme' && THEMESONG.playing() && AC && AC.state === 'running';
+  box.classList.toggle('show', !!on); if (!on) { lyricI = -2; return; }
+  const p = AC.currentTime - THEMESONG.t0, L = THEME_LYRICS.length, step = THEMESONG.LOOP / L;
+  const i = p < 0 ? -1 : Math.floor((p % THEMESONG.LOOP) / step) % L; if (i === lyricI) return; lyricI = i;
+  $('lyricLine').textContent = i < 0 ? '♪ ♪ ♪' : THEME_LYRICS[i]; $('lyricLine').classList.toggle('hook', i >= 4 && i < 8 || i >= 12);
+  $('lyricNext').textContent = THEME_LYRICS[(i + 1) % L];
+}
+setInterval(syncLyrics, 120);
 const MUSIC = {
   step: 0, next: 0, timer: null,
   start(fromStart) { const tk = TRACKS.find(t => t.id === curTrack()); if (tk && tk.theme) { if (this.timer) { clearInterval(this.timer); this.timer = null; } FILEMUS.stop(); THEMESONG.start(fromStart); return; } THEMESONG.stop(); if (tk && tk.file) { if (this.timer) { clearInterval(this.timer); this.timer = null; } FILEMUS.play(tk.file, fromStart); return; } FILEMUS.stop(); if (this.timer || !AC || curTrack() === 'off') return; this.step = 0; this.next = AC.currentTime + 0.05; this.timer = setInterval(() => this.tick(), 50); },
@@ -2888,7 +2961,7 @@ const KINDS = {
     init(o) { o.say = pick(['Stay in line!', 'Inside voices!', 'Walking feet!']); },
     build(o) { const g = new THREE.Group(); for (let i = 0; i < 4; i++) actorAt(o, g, 'kid', Math.sin(i * 2.1) * 0.08, 1.2 - i * 0.8, Math.PI); o.teacher = actorAt(o, g, 'teacher', 0, -1.9, Math.PI); return g; },
     anim(o, t) { o.acts.forEach(a => a.pose(a === o.teacher ? 'walkFormal' : 'walk', a === o.teacher ? 0.8 : 1.1)); } },
-  lockerkid: { outer: true, cat: 'obs', type: 'block', h: 1.75, hw: 0.6, d: 0.7, label: 'a student digging in their locker', who: 'lockerkid', chaseLine: 'HEY! You knocked my books!',
+  lockerkid: { outer: true, cat: 'obs', type: 'block', h: 1.75, hw: 0.6, d: 0.7, wallDoor: 0.45, label: 'a student digging in their locker', who: 'lockerkid', chaseLine: 'HEY! You knocked my books!',
     init(o) { o.say = Math.random() < 0.4 ? pick(['Where is my homework?!', 'What\'s my locker code?', 'Found it!']) : ''; },
     build(o) { const g = new THREE.Group(), sd = Math.sign(o.lane) || 1; actorAt(o, g, 'student', sd * 0.2, 0, sd * Math.PI / 2);
       const hinge = grp(g, sd * 1.0, 1.3, 0.45); hinge.rotation.y = sd * -1.15; box(hinge, 0.05, 1.9, 0.62, '#2f4f86', 0, 0, -0.31); for (let v = 0; v < 3; v++) box(hinge, 0.06, 0.03, 0.35, '#1b2f52', 0, 0.6 + v * 0.06, -0.31); bake(hinge, false); return g; },
@@ -2933,14 +3006,14 @@ const KINDS = {
   answer: { cat: 'pick', r: 1.1,
     build(o) { const g = new THREE.Group(); o.spin = grp(g); texBox(o.spin, 1.0, 1.0, 0.08, answerTex(o.val), 'ans' + o.val, '#ffffff'); mesh(GEO.sph, MGlow('#ffe066', 0.22), g, 0, 0, 0, 0.75, 0.75, 0.3); return g; },
     anim(o, t) { o.spin.position.y = Math.sin(t * 3 + o.x) * 0.06; } },
-  doorswing: { cat: 'obs', type: 'block', h: 2.2, hw: 0.75, d: 0.25, label: 'a classroom door swinging open', who: 'door', hazard: true,
+  doorswing: { cat: 'obs', type: 'block', h: 2.2, hw: 0.75, d: 0.25, label: 'a classroom door swinging open', who: 'door', hazard: true, wallDoor: 0.2,
     init(o) { o.ignore = true; o.open = 0; },
     build(o) { const g = new THREE.Group(), sd = o.lane >= 0 ? 1 : -1; o.hinge = grp(g, sd * (laneW * 0.55), 0, 0); box(o.hinge, 0.08, 2.2, 1.25, '#3a86ff', 0, 1.1, -0.62); box(o.hinge, 0.09, 0.5, 0.35, MB('#cfeaff'), 0, 1.6, -0.62); box(o.hinge, 0.1, 0.06, 0.18, '#d9d9d9', 0, 1.05, -1.05);
       o.lamp = mesh(GEO.sph, MGlow('#ff3b30', 0.9), g, sd * (laneW * 0.55), 2.45, -0.6, 0.12, 0.12, 0.12); o.hinge.rotation.y = 0; return g; },
     anim(o, t) { const sd = o.lane >= 0 ? 1 : -1, d = o.z - PZ, warn = G.speed * 2.4, go = G.speed * 1.5; // flashes first, then swings open with 1.5s to react
       o.lamp.visible = d < warn && Math.sin(t * 18) > 0; if (d < warn && !o.creaked) { o.creaked = true; sfx('tick'); }
       if (d < go) { o.open = Math.min(1, o.open + FRAME_DT * 3.5); if (o.open > 0.55) o.ignore = false; } o.hinge.rotation.y = sd * o.open * Math.PI / 2; if (o.acts && o.acts[0]) o.acts[0].pose('talk'); } },
-  lockerpop: { cat: 'obs', type: 'high', hw: 0.75, d: 0.2, label: 'a locker door popping open', who: 'locker', hazard: true,
+  lockerpop: { cat: 'obs', type: 'high', hw: 0.75, d: 0.2, label: 'a locker door popping open', who: 'locker', hazard: true, wallDoor: 0.2,
     init(o) { o.ignore = true; o.open = 0; },
     build(o) { const g = new THREE.Group(), sd = o.lane >= 0 ? 1 : -1; o.hinge = grp(g, sd * (laneW * 0.55), 1.15, 0); box(o.hinge, 0.06, 1.7, 0.9, '#ffb703', 0, 0, -0.45); box(o.hinge, 0.07, 1.6, 0.82, hallPick('lockers').cols[0], 0, 0, -0.45); for (let i = 0; i < 4; i++) box(o.hinge, 0.08, 0.04, 0.55, '#1b1f3b', 0, 0.55 - i * 0.08, -0.45); mesh(GEO.sph, MGlow('#ffd60a', 0.55), o.hinge, 0, 0.95, -0.45, 0.18, 0.18, 0.18);
       actorAt(o, g, 'student', sd * (laneW * 0.55 + 0.45), 0.7, sd > 0 ? -Math.PI / 2 : Math.PI / 2); o.say = pick(['Oops, my locker!', 'Sorry!!', 'Watch the door!']); o.shout = 2; return g; },
@@ -3083,7 +3156,8 @@ const KINDS = {
 
   /* PICKUPS */
   coin: { cat: 'pick', r: 0.8,
-    build(o) { const g = new THREE.Group(); o.spin = grp(g); const c = cyl(o.spin, 0.36, 0.11, MT(coinTex(), 'coin', 0.3, 0.55), 0, 0, 0); c.rotation.x = Math.PI / 2; if (!Q.std) c.material = coinLam(); return g; },
+    build(o) { const g = new THREE.Group(); o.spin = grp(g); const c = cyl(o.spin, 0.36, 0.13, MT(coinTex(), 'coin', 0.3, 0.55), 0, 0, 0); c.rotation.x = Math.PI / 2; if (!Q.std) c.material = coinLam();
+      const rim = mesh(GEO.coinRim || (GEO.coinRim = new THREE.TorusGeometry(0.36, 0.05, 6, 22)), MS('#ffc61a', 0.25, 0.85, { emissive: 0x5a3a00 }), o.spin, 0, 0, 0, 1, 1, 1); return g; }, // a raised gold rim makes it read as a chunky 3D coin
     anim(o, t) { o.spin.rotation.y = t * 4 + o.z * 0.2; } },
   bill: { cat: 'pick', r: 0.9,
     build(o) { const g = new THREE.Group(); o.spin = grp(g); texBox(o.spin, 0.8, 0.4, 0.02, billTex(), 'bill', '#2d6a4f'); mesh(GEO.sph, MGlow('#9cff9c', 0.18), g, 0, 0, 0, 0.6, 0.6, 0.6); return g; },
@@ -3207,8 +3281,13 @@ function wheelFx(w, i) {
 }
 // rotate a bone around an axis given in the character's own space (+z forward, +y up, +x the character's left)
 const _tq1 = new THREE.Quaternion(), _tq2 = new THREE.Quaternion(), _tq3 = new THREE.Quaternion(), _tax = new THREE.Vector3();
+const CHIN_UP = ['Idle_Loop', 'Idle_Talking_Loop', 'Walk_Loop'];
 function twist(act, name, ax, ay, az, ang) {
   const b = act.bone(name); if (!b || !ang) return;
+  // remember the animation's own rotation the first time a bone is twisted this frame; update() puts it back before the
+  // mixer runs. The clips don't key every bone on every frame, so on frames the mixer skipped a bone the old twist was
+  // still there and the new one stacked on top: forearms and heads spun round for a moment (the menu arm/head glitch)
+  const tw = act._tw || (act._tw = new Map()); if (!tw.has(b)) tw.set(b, b.quaternion.clone());
   act.model.getWorldQuaternion(_tq1); _tax.set(ax, ay, az).applyQuaternion(_tq1).normalize();
   b.getWorldQuaternion(_tq2); _tq3.setFromAxisAngle(_tax, ang); _tq2.premultiply(_tq3);
   b.parent.getWorldQuaternion(_tq1); b.quaternion.copy(_tq1.invert().multiply(_tq2)); b.updateMatrixWorld(true);
@@ -3314,6 +3393,7 @@ function syncPlayer() {
 }
 let lastRenderT = performance.now(), baseFov = 60, FRAME_DT = 0.016;
 function render() {
+  pulsePickGlow(G.t);
   const now = performance.now(), rdt = Math.min(0.05, (now - lastRenderT) / 1000); lastRenderT = now; FRAME_DT = rdt; G.frameN = (G.frameN || 0) + 1; if (G.frameN % 12 === 0 && G.scene === 'play' && typeof syncQuickPanel === 'function') syncQuickPanel(); // hide the controls panel while you fall, bring it back on revive
   updParts(rdt);
   if (A11Y().flash) G.shake = 0; if (G.shake > 0) G.shakeX = rand(-1, 1) * G.shake * 0.5; else G.shakeX = 0;
@@ -3355,7 +3435,7 @@ function render() {
 function drawOverlay() {
   ctx = octx;
   ctx.clearRect(0, 0, W, H);
-  if (G.hunt && G.hunt.warn > 0 && G.scene === 'play') { const x0 = G.hunt.lane * laneW - laneW / 2, x1 = x0 + laneW, a = toScreen(x0, 0, PZ - 1), b = toScreen(x1, 0, PZ - 1), c = toScreen(x1, 0, PZ + 10), d = toScreen(x0, 0, PZ + 10);
+  if (G.hunt && G.chase && G.hunt.warn > 0 && G.scene === 'play') { const x0 = G.hunt.lane * laneW - laneW / 2, x1 = x0 + laneW, a = toScreen(x0, 0, PZ - 1), b = toScreen(x1, 0, PZ - 1), c = toScreen(x1, 0, PZ + 10), d = toScreen(x0, 0, PZ + 10);
     ctx.fillStyle = A11Y().cb ? 'rgba(0,120,255,' + (A11Y().flash ? 0.4 : 0.3 + 0.15 * Math.sin(G.t * 30)) + ')' : 'rgba(255,40,60,' + (A11Y().flash ? 0.4 : 0.25 + 0.2 * Math.sin(G.t * 30)) + ')'; ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.lineTo(c[0], c[1]); ctx.lineTo(d[0], d[1]); ctx.fill();
     ctx.font = '900 30px "Luckiest Guy",sans-serif'; ctx.textAlign = 'center'; ctx.fillStyle = '#fff'; ctx.strokeStyle = '#1b1f3b'; ctx.lineWidth = 6; ctx.strokeText('MOVE!', (a[0] + c[0]) / 2, (a[1] + c[1]) / 2); ctx.fillText('MOVE!', (a[0] + c[0]) / 2, (a[1] + c[1]) / 2); }
   if (G.scene === 'play' && (G.burstT > 0 || G.pw.cheat > 0 || G.pw.energy > 0 || G.headTo)) { const n = save.battery ? 10 : 22; ctx.strokeStyle = 'rgba(255,255,255,.5)'; ctx.lineWidth = 2; ctx.beginPath();
@@ -3469,15 +3549,21 @@ function boardRows(dk) {
   return rows.slice(0, 10);
 }
 function myRank() { const r = boardRows(); const i = r.findIndex(x => x.me); return i < 0 ? 0 : i + 1; }
-let boardMode = 'local';
+let boardMode = 'world'; // the world record is the default record to beat
+const WREC = {}; // world record per difficulty, cached for a few minutes
+function worldRecord(dk) { dk = dk || runDiff(); const c = WREC[dk]; if (!Online.ready()) return Promise.resolve(null); if (c && Date.now() - c.t < 180000) return Promise.resolve(c.r);
+  return Online.board(dk, 'all').then(rows => { const r = rows[0] || null; WREC[dk] = { r, t: Date.now() }; return r; }).catch(() => (c ? c.r : null)); }
+function syncWorldCard() { const el = $('mWorld'); if (!el) return; const dk = runDiff(); worldRecord(dk).then(r => { if (!r) { el.style.display = 'none'; return; } el.style.display = ''; $('mWorldTxt').textContent = r.s.toLocaleString() + ' · ' + (r.me ? 'YOU! 👑' : r.n); }); }
 function buildBoard(highlightT) {
+  if (boardMode === 'world' && !Online.ready()) boardMode = 'local';
+  document.querySelectorAll('[data-board]').forEach(x => x.classList.toggle('on', x.dataset.board === boardMode));
   const ol = $('boardList'); ol.innerHTML = ''; const dk = syncBoardDiff();
   $('friendBox').style.display = boardMode === 'friends' ? 'block' : 'none'; $('chalNow').textContent = save.challenge ? 'Current challenge: beat ' + save.challenge.from + '\'s ' + save.challenge.score.toLocaleString() : 'Got a challenge code from a friend\'s score card? Enter it:'; $('myCode').textContent = myCode() || '------';
   if (boardMode === 'friends') {
     const rows = (save.friends || []).map(f => ({ n: f.n, s: f.s || 0, d: f.d })); if (save.best > 0) rows.push({ n: save.name || 'You', s: save.best, me: true });
-    rows.sort((a, b) => b.s - a.s); rows.forEach((r, i) => ol.appendChild(boardRow(r, i))); showToBeat(null, dk);
+    rows.sort((a, b) => b.s - a.s); rows.forEach((r, i) => ol.appendChild(boardRow(r, i))); showToBeat(null, dk); addGhostBtns(ol, rows);
     $('boardSub').textContent = (save.friends || []).length ? 'You vs your friends. Their best distance shows up during your runs.' : 'Share your code and add friends by theirs. Their best runs show up as targets while you play.' + (Online.ready() ? '' : ' (Needs the online board: see README.)');
-    refreshFriends().then(() => { if (boardMode === 'friends' && curScreen === 'sRanks') { const r2 = (save.friends || []).length; if (r2) { ol.innerHTML = ''; const rr = save.friends.map(f => ({ n: f.n, s: f.s || 0 })); if (save.best > 0) rr.push({ n: save.name || 'You', s: save.best, me: true }); rr.sort((a, b) => b.s - a.s).forEach((r, i) => ol.appendChild(boardRow(r, i))); } } });
+    refreshFriends().then(() => { if (boardMode === 'friends' && curScreen === 'sRanks') { const r2 = (save.friends || []).length; if (r2) { ol.innerHTML = ''; const rr = save.friends.map(f => ({ n: f.n, s: f.s || 0, d: f.d })); if (save.best > 0) rr.push({ n: save.name || 'You', s: save.best, me: true }); rr.sort((a, b) => b.s - a.s).forEach((r, i) => ol.appendChild(boardRow(r, i))); addGhostBtns(ol, rr); } } });
     return;
   }
   if (boardMode === 'world') {
@@ -3494,6 +3580,7 @@ function buildBoard(highlightT) {
   { const rows = boardRows(dk); rows.forEach((r, i) => ol.appendChild(boardRow(r, i, highlightT))); showToBeat(rows, dk); }
   const bb = bestFor(dk); $('rBest').textContent = DIFF[dk].name + ' best ' + (bb ? bb.s : 0).toLocaleString();
 }
+function addGhostBtns(ol, rows) { [...ol.children].forEach((li, i) => { const r = rows[i]; if (!r || r.me || !(r.d > 0)) return; const b = document.createElement('button'); b.className = 'ghostBtn'; b.textContent = '👻 Race'; b.title = 'Race ' + r.n + '\'s ghost'; b.onclick = e => { e.stopPropagation(); ghostRace(r); }; li.appendChild(b); }); }
 function boardRow(r, i, highlightT) {
   {
     const li = document.createElement('li'); if (r.me) li.className = 'me';
@@ -3610,7 +3697,7 @@ function initWebAds() {
   const c = window.WEB_ADS && WEB_ADS.adsenseClient; if (!c || window.HallwayAds || !save.age || save.age === 'child') return;
   window.adsbygoogle = window.adsbygoogle || []; syncWebAdPrefs();
   if (h5Loaded) return; h5Loaded = true; window.adBreak = window.adConfig = function (o) { adsbygoogle.push(o); };
-  adsbygoogle.pauseAdRequests = 0; // the <head> tag starts paused, so under-13 players never send an ad request
+  // the <head> tag starts paused, and stays paused until the player taps a "watch an ad" button (no ads they didn't pick)
   const ready = () => { h5Ready = true; try { adConfig({ preloadAdBreaks: 'on', sound: save.sfx === false ? 'off' : 'on' }); } catch (e) {} };
   let sc = document.querySelector('script[src*="adsbygoogle.js"]');
   if (sc) { if (adsbygoogle.loaded) ready(); else sc.addEventListener('load', ready); return; }
@@ -3618,7 +3705,9 @@ function initWebAds() {
   sc.setAttribute('data-ad-frequency-hint', '30s'); sc.crossOrigin = 'anonymous'; sc.onload = ready;
   document.head.appendChild(sc);
 }
+function webAdsWake() { if (window.adsbygoogle && adsbygoogle.pauseAdRequests) { adsbygoogle.pauseAdRequests = 0; return true; } return false; }
 function fakeAd(tag) {
+  if (h5Ready && window.adBreak && webAdsWake()) { setTimeout(() => fakeAd(tag), 1500); return; } // first ad the player asked for: let Google fetch one
   if (h5Ready && window.adBreak) { // real rewarded ad from Google; fall back to a house ad if none is ready
     let shown = false, done = false;
     try { adBreak({ type: 'reward', name: tag || 'reward', beforeReward: showAdFn => { shown = true; showAdFn(); }, adDismissed: () => { done = true; Ads.finish(false); }, adViewed: () => { done = true; Ads.finish(true); }, adBreakDone: () => { if (!shown && !done) houseAd(tag); } }); return; } catch (e) {}
@@ -3642,10 +3731,11 @@ function houseAd(tag) {
 /* ---------- interstitial ads between runs ----------
    Every 3rd finished run (not in your first 3 runs, never right after you chose to watch a rewarded ad, never in
    the tutorial), shown when you leave the game-over screen. Android: AdMob interstitial. Browser: a Google H5 "next" ad if one is ready (13+ only), otherwise the 5-second house ad. These breaks and the rewarded buttons are the only places ads show. */
-const INTER_EVERY = 3;
+const INTER_EVERY = 3, ADS_BETWEEN_RUNS = false; // for now ads only ever show when the player picks one (revive, double coins, free star...)
 function maybeInterstitial(then) {
   save.runsSinceAd = (save.runsSinceAd || 0) + 1; const total = (save.runsTotal = (save.runsTotal || 0) + 1);
   if (total === 2 && save.remind !== false && window.HallwayNotify) { try { HallwayNotify.requestPermission(); } catch (e) {} }
+  if (!ADS_BETWEEN_RUNS) { persist(); then(); return; }
   const recentReward = Date.now() - (save.lastRewardAd || 0) < 90000;
   if (total <= 3 || save.runsSinceAd < INTER_EVERY || recentReward || G.mode === 'tutorial' || save.noAds) { persist(); then(); return; }
   save.runsSinceAd = 0; persist();
@@ -3775,11 +3865,12 @@ const CHEATS = {
   MOONBOOTS: { tog: 'moon', t: 'Moon jumps (low gravity)', unfair: true },
   FREQUENTFLYER: { tog: 'flyer', t: 'Every run starts on a paper plane', unfair: true },
   JUICED: { tog: 'juiced', t: 'Every run starts with a Juice Box', unfair: true },
-  LITTLETEACHER: { tog: 'moore', t: 'Ms. Moore patrols a lot more' },
+  LITTLETEACHER: { tog: 'moore', t: 'Ms. Moore (the little teacher) patrols a lot more' },
+  ILAN: { once: true, t: '+10 Heel Wheels', f: () => grant({ heelys: 10 }) },
   NOCHEATS: { t: 'All toggle cheats off', f: () => { save.cheats = {}; } }
 };
 // the admin code is never stored in the game, only this salted hash of it
-const ADMIN_HASH = '3417a415';
+const ADMIN_HASH = '1f2e3e65';
 function hashCode(str) { let h = 0x811c9dc5; for (const ch of 'hd$alt:' + str) { h ^= ch.charCodeAt(0); h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16).padStart(8, '0'); }
 const cheatOn = k => !!(save.cheats && save.cheats[k]);
 const unfairCheats = () => (save.admin && save.adminGod) || Object.keys(CHEATS).some(c => CHEATS[c].unfair && cheatOn(CHEATS[c].tog));
@@ -3787,7 +3878,7 @@ function enterCode(raw) {
   const code = String(raw || '').trim().toUpperCase().replace(/[^A-Z0-9-]/g, ''); if (!code) return;
   if (hashCode(code) === ADMIN_HASH) { save.admin = true; persist(); sfx('win'); toast('ADMIN MODE ON', 'Admin panel unlocked in Settings and Pause', 2200); refreshCodesUI(); openAdmin(); return; }
   const C = CHEATS[code];
-  if (!C) { if (/^[A-Z]{1,8}-[0-9A-Z]+(-[0-9A-Z]{1,4})?$/.test(code)) { acceptChallenge(code); return; } sfx('deny'); toast('Unknown code', 'Check the spelling', 1300); return; }
+  if (!C) { if (/^[A-Z]{1,8}-[0-9A-Z]+(-[0-9A-Z]{1,4}){0,2}$/.test(code)) { acceptChallenge(code); return; } sfx('deny'); toast('Unknown code', 'Check the spelling', 1300); return; }
   save.cheats = save.cheats || {}; save.redeemed = save.redeemed || {};
   if (C.once) { if (save.redeemed[code]) { sfx('deny'); toast('Already used', 'That code works once per device', 1500); return; } save.redeemed[code] = 1; C.f(); sfx('buy'); toast('CODE ACCEPTED', C.t, 1800); }
   else if (C.tog) { save.cheats[C.tog] = !save.cheats[C.tog]; sfx('click'); toast(C.t, save.cheats[C.tog] ? 'ON' + (C.unfair ? ' · online scores paused' : '') : 'OFF', 1800); }
@@ -3820,6 +3911,18 @@ function adminDo(what) {
   if (what === 'daily') { save.spinDay = ''; save.spinAds = 0; save.mlocker = 0; if (save.dc) save.dc.done = 0; if (save.tp) save.tp.done = 0; if (save.starDay) save.starDay.n = 0; }
   if (what === 'tokens') { const e = eventSave(); e.tokens = (e.tokens || 0) + 50; }
   if (what === 'god') { save.adminGod = !save.adminGod; G.cheated = G.cheated || save.adminGod; }
+  if (what === 'everything') { adminDo.quiet = 1; for (const k of ['stages', 'items', 'upgrades']) adminDo(k); adminDo.quiet = 0; save.bank = Math.max(save.bank, 999999); save.gs = Math.max(save.gs || 0, 999); save.heelys = Math.max(save.heelys || 0, 99); save.otok = Math.max(save.otok || 0, 99); }
+  if (what === 'cheatsAll') { save.cheats = save.cheats || {}; for (const c in CHEATS) if (CHEATS[c].tog) save.cheats[CHEATS[c].tog] = 1; }
+  if (what === 'cheatsOff') save.cheats = {};
+  if (what === 'tut') { save.tutDone = 0; save.tourDone = 0; }
+  const inRun = G.scene === 'play' && !G.dying;
+  if (/^(boss|plane|pass|juice|magnet|dist|slowmo)$/.test(what)) { G.cheated = true; if (!inRun) { toast('Start a run first', 'Run tools work during a run (open Admin from Pause)', 1600); return; } }
+  if (what === 'boss') { if (!G.hunt) startHunt(); }
+  if (what === 'plane') G.pw.cheat = pwTime('cheat'); if (what === 'pass') G.pw.pass = pwTime('pass'); if (what === 'juice') G.pw.energy = pwTime('energy');
+  if (what === 'magnet') G.pw.spring = 10;
+  if (what === 'dist') { G.dist += 1000; G.score += 1000; }
+  if (what === 'slowmo') { G.adminSlow = !G.adminSlow; toast('Slow motion ' + (G.adminSlow ? 'ON' : 'OFF'), '', 900); }
+  if (adminDo.quiet) return;
   if (what === 'off') { save.admin = false; save.adminGod = false; $('adminModal').classList.remove('show'); toast('Admin mode off', '', 1200); }
   persist(); refreshCodesUI(); if (what !== 'off') openAdmin(); refreshMenuSoft && refreshMenuSoft(); if (what !== 'god' && what !== 'off') toast('Done', '', 900);
 }
@@ -4098,7 +4201,7 @@ function doRevive() { P.slide = 0; P.slideQ = false; G.pushAnim = 0; G.trick = n
   if (player) { const pp = player, a = pp.act; pp.pivot.rotation.set(0, 0, 0); pp.root.rotation.z = 0; pp.wrap.position.y = 0; a.post = null; a.noGround = false;
     if (a.actions) for (const n in a.actions) a.actions[n].stop(); a.cur = null; a.blend = null; a.hold = 0; a.pose('run', clamp(G.speed / 11.5, 1.0, 2.2), 0); }
   closeRevive(); G.reviving = false; G.revives = (G.revives || 0) + 1;
-  G.dying = false; G.caught = false; G.stumble = 0; clearChase(); P.fall = 0; P.y = 0; P.vy = 0; P.slide = 0;
+  G.dying = false; G.caught = false; G.stumble = 0; G.hunt = null; G.nextHunt = G.dist + 1500 + Math.random() * 700; G.bossMoveT = 99; clearChase(); P.fall = 0; P.y = 0; P.vy = 0; P.slide = 0;
   for (let i = G.objs.length - 1; i >= 0; i--) { const o = G.objs[i]; if (o.K.cat === 'obs' && o.z < PZ + 22) killObj(i); }
   G.pw.pass = Math.max(G.pw.pass, 3); sfx('power'); toast('BACK IN THE RACE!', 'Invincible for 3 seconds', 1500); vibrate(60);
 }
@@ -4229,7 +4332,7 @@ function openAgeGate(then) {
     save.age = v < 13 ? 'child' : v < 16 ? 'teen' : 'adult'; persist(); m.classList.remove('show');
     applyPrivacy(); sfx('click');
     if (save.age === 'child') toast('Kid-safe mode on', 'No data collection, online features off', 2200);
-    if (then) then(); else askName(() => { if (!save.tutDone) startTutorial(); else startRun('infinite'); });
+    if (then) then(); else { if (!save.tutDone) startTutorial(); else startRun('infinite'); }
   };
 }
 async function deleteMyData() {
@@ -4511,7 +4614,7 @@ async function addFriend(code) {
 }
 async function refreshFriends() { if (!Online.ready() || !(save.friends || []).length) return; for (const f of save.friends) { try { const r = await Online.byCode(f.code); if (r) Object.assign(f, { n: r.n, s: r.s, d: r.d }); } catch (e) {} } persist(); }
 // next person to beat on this run (friends first, then the classmates board), shown on the HUD
-function rivals() { const out = []; for (const f of save.friends || []) if (f.d) out.push({ n: f.n, d: f.d, friend: 1 }); for (const r of boardRows()) if (!r.me && r.d) out.push({ n: r.n, d: r.d }); if (save.bestDist) out.push({ n: 'Your best', d: save.bestDist, me: 1 }); return out.sort((a, b) => a.d - b.d); }
+function rivals() { const out = []; for (const f of save.friends || []) if (f.d) out.push({ n: f.n, d: f.d, friend: 1 }); for (const r of boardRows()) if (!r.me && r.d) out.push({ n: r.n, d: r.d }); if (save.bestDist) out.push({ n: 'Your best', d: save.bestDist, me: 1 }); { const w = WREC[runDiff()]; if (w && w.r && w.r.d > 0 && !w.r.me) out.push({ n: '🌍 ' + w.r.n + ' (world record)', d: w.r.d, world: 1 }); } return out.sort((a, b) => a.d - b.d); }
 function nextRival() { if (!G.rivals) return null; while (G.rivals.length && G.rivals[0].d <= G.dist) { const r = G.rivals.shift(); if (G.dist > 30) { popup((r.me ? 'NEW BEST DISTANCE!' : 'PASSED ' + r.n.toUpperCase() + '!'), r.friend ? '#ff9f1c' : '#7dff9a'); sfx('bill'); } } return G.rivals[0] || null; }
 
 /* ---------- starter pack (Google Play Billing via the HallwayBilling bridge) ---------- */
@@ -4693,7 +4796,7 @@ function addObj(kind, lane, z, extra) {
   const o = Object.assign({ kind, K, lane, x: lane * laneW, z, y: 0, row: G.rowId, seed: Math.random(), t: rand(0, 5), shout: 0 }, extra || {});
   if (K.init) K.init(o);
   const seeded = Math.random; if (G.fixed) Math.random = REAL_RANDOM; // looks are random for everyone; only the layout follows the weekly seed
-  try { if (K.build) { o.mesh = K.build(o); if (K.power && o.spin) { const ring = mesh(GEO.torusP || (GEO.torusP = new THREE.TorusGeometry(0.62, 0.045, 6, 28)), MGlow('#ffffff', 0.85), o.mesh, 0, 0, 0, 1, 1, 1); o.ring = ring; } bake(o.mesh, !!K.deep, o.bell ? new Set([o.bell]) : null); for (const sub of [o.spin, o.sw, o.handle]) if (sub) bake(sub, true); if (K.cat === 'obs') { setShadow(o.mesh, true, false); if ((K.type === 'low' || K.type === 'high') && !K.cross) floorMark(o); } objLayer.add(o.mesh); } } finally { Math.random = seeded; }
+  try { if (K.build) { o.mesh = K.build(o); if (K.power && o.spin) { const ring = mesh(GEO.torusP || (GEO.torusP = new THREE.TorusGeometry(0.62, 0.045, 6, 28)), MGlow('#ffffff', 0.85), o.mesh, 0, 0, 0, 1, 1, 1); o.ring = ring; } bake(o.mesh, !!K.deep, o.bell ? new Set([o.bell]) : null); for (const sub of [o.spin, o.sw, o.handle]) if (sub) bake(sub, true); if (K.cat === 'pick') addPickGlow(o); if (K.cat === 'obs') { setShadow(o.mesh, true, false); if ((K.type === 'low' || K.type === 'high') && !K.cross) floorMark(o); } objLayer.add(o.mesh); } } finally { Math.random = seeded; }
   G.objs.push(o); return o;
 }
 function killObj(i) { const o = G.objs[i]; if (o.mesh) { objLayer.remove(o.mesh); disposeMerged(o.mesh); } G.objs.splice(i, 1); }
@@ -4710,11 +4813,11 @@ const CAFE_POOL = [['group', 4], ['walkers', 3], ['tray', 4], ['lunchtable', 3],
 const YARD_POOL = [['kid', 3], ['basketball', 3], ['cone', 2], ['kidline', 2], ['sprinkler', 2], ['group', 2], ['walkers', 2], ['hurdle', 1], ['coach', 1]];
 function currentPool(zone) {
   if (zone === 'cafe') return CAFE_POOL; if (zone === 'yard') return YARD_POOL;
-  if (G.mode === 'campaign') return LEVELS[G.levelIdx].pool.concat([[currentEvent().obs, 1], ['moore', cheatOn('moore') ? 6 : 0.6]]);
+  if (G.mode === 'campaign') return LEVELS[G.levelIdx].pool.concat([[currentEvent().obs, 1], ['moore', cheatOn('moore') ? 12 : 0.6]]);
   const idx = { elem: 0, middle: 1, high: 2, college: 3, gym: 4 }[G.themeKey];
   if (G.fun === 'sled') return [['snowman', 5], ['trash', 2], ['cone', 2], ['walkers', 2], ['group', 2], ['puddle', 2], ['umbrellas', 1]];
   if (G.rain && G.mode !== 'campaign') return BASE_LEVELS[3].pool.concat([['puddle', 3], ['umbrellas', 2], [currentEvent().obs, 2]]);
-  return (idx === undefined ? (BASE_LEVELS.find(b => b.theme === G.themeKey) || BASE_LEVELS[2]) : BASE_LEVELS[idx]).pool.concat([[currentEvent().obs, 2], ['moore', cheatOn('moore') ? 8 : 1]]);
+  return (idx === undefined ? (BASE_LEVELS.find(b => b.theme === G.themeKey) || BASE_LEVELS[2]) : BASE_LEVELS[idx]).pool.concat([[currentEvent().obs, 2], ['moore', cheatOn('moore') ? 14 : 1]]);
 }
 function coinLine(lane, z0, z1) { for (let z = z0; z < z1; z += 1.7) addObj('coin', lane, z, { y: 0.6 }); }
 function coinArc(lane, zc) { for (let i = -3; i <= 3; i++) { const dz = i * 1.1; addObj('coin', lane, zc + dz, { y: 1.6 + 0.9 * (1 - (dz / 3.6) * (dz / 3.6)) }); } } // high arc: clearly above whatever you jump
@@ -4868,7 +4971,7 @@ function startRun(mode, idx) {
   G.pw = { pass: 0, cheat: 0, energy: 0, spring: 0 };
   G.fetchT = 25; G.juiced = false; G.foxSaved = false; G.loadoutDone = false; G.replayBuf = [];
 G.lastQuiz = 0; G.lastShortcut = 0; G.lastLetter = -999; G.tpStart = undefined; G.tpPushed = G.tpLane = G.tpBump = false;
-  G.chain = 0; G.chainT = 0; G.bestChain = 0; G.comboBonus = 0; G.hunt = null; G.nextHunt = 1400 + Math.random() * 600;
+  G.adminSlow = false; G.chain = 0; G.chainT = 0; G.bestChain = 0; G.comboBonus = 0; G.hunt = null; G.nextHunt = 1400 + Math.random() * 600;
   G.runT = 0; if (save.ghost) { delete save.ghost; }
   G.pushCd = 0; G.pushAnim = 0; G.padsT = 0; G.burstT = 0; G.burstCd = 0; G.lastJumpT = -9; G.shortcut = null;
   Object.assign(G, { revives: 0, adRevived: false, reviving: false, heely: 0, run: { jumps: 0, slides: 0, power: 0, dodges: 0, escapes: 0 }, pendingBoxes: 0, speedStage: 0, coinFrac: 0, boxTaken: false, score2: false, coins2: false, headTo: 0, trick: null, combo: 0, tricksLanded: 0 });
@@ -4888,6 +4991,7 @@ G.lastQuiz = 0; G.lastShortcut = 0; G.lastLetter = -999; G.tpStart = undefined; 
   setDark(G.fun === 'dark' || (mode === 'campaign' && !!LEVELS[G.levelIdx].night));
   G.rain = (mode === 'campaign' && !!LEVELS[G.levelIdx].rain) || (mode === 'infinite' && G.themeKey === 'college' && Math.random() < 0.35);
   if (G.rival) { scene.remove(G.rival.act.root); G.rival = null; }
+  endGhost(); if (mode === 'infinite' && G.ghostNext) startGhost(G.ghostNext); G.ghostNext = null;
   G.quiz = null; $('quizBox').classList.remove('show');
   G.rivals = mode === 'infinite' && !G.fun ? rivals() : null; G.cc = 0; G.slowT = 0;
   if (G.daily) toast('DAILY CHALLENGE', 'Beat ' + dailyChallenge().target.toLocaleString() + ' points' + (G.fun ? ' · ' + FUN[G.fun].name : '') + ' for 3★', 2400); else if (G.trip) toast(currentTrip().name.toUpperCase(), 'Collect ' + currentTrip().item + '!', 2200); else if (G.fun) toast(FUN[G.fun].name.toUpperCase(), FUN[G.fun].desc, 2200); else if (mode !== 'tutorial') toast(mode === 'campaign' ? LEVELS[G.levelIdx].name : 'INFINITE RUN', mode === 'campaign' ? 'Get to ' + LEVELS[G.levelIdx].dest + ' before the bell!' : THEME().name, 2200);
@@ -4913,15 +5017,17 @@ function crash(o, msg) {
 }
 // challenge codes work on any platform with no server: NAME-SCORE or NAME-SCORE-HALLWAY (base 36). With the hallway
 // part your friend runs the exact same layout you did, so it's a fair race.
-const challengeCode = (sc, seed) => ((save.name || 'Runner').replace(/[^A-Za-z]/g, '').slice(0, 8).toUpperCase() || 'RUNNER') + '-' + Math.floor(sc).toString(36).toUpperCase() + ((seed === undefined ? G.seedRun : seed) ? '-' + (seed === undefined ? G.seedRun : seed).toString(36).toUpperCase() : '');
+const challengeCode = (sc, seed, dist) => { const sd = seed === undefined ? G.seedRun : seed, d = dist === undefined ? (seed === undefined ? Math.floor(G.dist || 0) : 0) : dist;
+  return ((save.name || 'Runner').replace(/[^A-Za-z]/g, '').slice(0, 8).toUpperCase() || 'RUNNER') + '-' + Math.floor(sc).toString(36).toUpperCase() + (sd ? '-' + sd.toString(36).toUpperCase() + (d > 0 ? '-' + Math.floor(d).toString(36).toUpperCase() : '') : ''); }; // NAME-SCORE[-HALLWAY[-DISTANCE]]
 const newSeed = () => 1296 + Math.floor(Math.random() * 45000);
 function startChallengeRun(seed) { G.seedNext = seed || newSeed(); G.funNext = null; startRun('infinite'); toast(seed ? 'CHALLENGE RUN' : 'NEW CHALLENGE HALLWAY', seed ? 'Same hallway as ' + ((save.challenge && save.challenge.from) || 'your friend') : 'Finish, then share your code', 2000); }
 function acceptChallenge(code) {
   { const rc = String(code || '').trim().toUpperCase().replace(/\s+/g, '').match(/^RACE-([0-9A-Z]{1,4})-([0-9A-Z]{1,4})$/); if (rc) { joinLiveRace(parseInt(rc[1], 36), parseInt(rc[2], 36)); return; } }
-  const m = String(code || '').trim().toUpperCase().replace(/\s+/g, '').match(/^([A-Z]{1,8})-([0-9A-Z]+)(?:-([0-9A-Z]{1,4}))?$/); if (!m) { toast('That challenge code doesn\'t look right', 'It looks like MAYA-5K2 or MAYA-5K2-AB3', 1600); return; }
+  const m = String(code || '').trim().toUpperCase().replace(/\s+/g, '').match(/^([A-Z]{1,8})-([0-9A-Z]+)(?:-([0-9A-Z]{1,4})(?:-([0-9A-Z]{1,4}))?)?$/); if (!m) { toast('That challenge code doesn\'t look right', 'It looks like MAYA-5K2 or MAYA-5K2-AB3', 1600); return; }
   const score = parseInt(m[2], 36), seed = m[3] ? parseInt(m[3], 36) : 0; if (!(score > 0)) return;
-  save.challenge = { from: m[1][0] + m[1].slice(1).toLowerCase(), score, seed }; persist(); sfx('buy'); buildBoard();
-  if (seed) { toast('Challenge accepted!', 'Same hallway as ' + save.challenge.from + ': beat ' + score.toLocaleString(), 2000); setTimeout(() => startChallengeRun(seed), 900); }
+  const dist = m[4] ? parseInt(m[4], 36) : 0;
+  save.challenge = { from: m[1][0] + m[1].slice(1).toLowerCase(), score, seed, dist }; persist(); sfx('buy'); buildBoard();
+  if (seed) { toast('Challenge accepted!', 'Same hallway as ' + save.challenge.from + ': beat ' + score.toLocaleString() + (dist ? ' · race their ghost 👻' : ''), 2000); setTimeout(() => { if (dist) G.ghostNext = { n: save.challenge.from, d: dist }; startChallengeRun(seed); }, 900); }
   else toast('Challenge accepted!', 'Beat ' + save.challenge.from + '\'s ' + score.toLocaleString() + ' in Infinite Run', 2000);
 }
 function shareCard() {
@@ -4984,7 +5090,10 @@ function endRun(win, reason) {
   if (G.mode === 'infinite' && !G.fun && tourOn() && G.dist >= 1000 && save.tourStamp !== tourWeek()) { save.tourStamp = tourWeek(); save.tourStamps = (save.tourStamps || 0) + 1; grant({ cash: 1000, gs: 1 }); setTimeout(() => toast(tourStop().flag + ' TOUR STAMP!', tourStop().name + ' · +$1,000 +1★ (' + save.tourStamps + ' stamps)', 2600), 1600); }
   let newBest = false;
   let placed = null;
-  if (G.mode === 'infinite' && !G.fun) { if (sc > 0) { const nb = logRunByDiff(sc, Math.floor(G.dist)), np = logRunPeriods(sc); if ((nb || np) && !G.cheated) Online.submitRun(save.name || 'Runner', G.dist); } duelEnd(sc); if (sc > save.best) { save.best = sc; newBest = true; } save.bestDist = Math.max(save.bestDist, Math.floor(G.dist)); if (sc > 0 && !G.fun) { placed = recordRun(sc, Math.floor(G.dist)); if (sc >= save.best && !G.cheated) Online.submit(save.name || 'Runner', sc, G.dist); } }
+  if (G.mode === 'infinite' && !G.fun) { if (sc > 0) { const nb = logRunByDiff(sc, Math.floor(G.dist)), np = logRunPeriods(sc); if ((nb || np) && !G.cheated) { const dd = G.dist, w = WREC[runDiff()], wr = Online.ready() && w && (!w.r || sc > w.r.s);
+      if (wr) { WREC[runDiff()] = { r: { n: save.name || 'You', s: sc, d: Math.floor(dd), me: true }, t: Date.now() }; }
+      if (wr && !save.name) setTimeout(() => askName(() => { Online.submitRun(save.name || 'Runner', dd); toast('👑 WORLD RECORD!', (save.name || 'Runner') + ' is #1 in the world', 2400); }, true), 1200); // no nickname yet: ask for one for the record
+      else { Online.submitRun(save.name || 'Runner', dd); if (wr) setTimeout(() => toast('👑 NEW WORLD RECORD!', 'You\'re #1 on the world board', 2400), 1200); } } } duelEnd(sc); if (sc > save.best) { save.best = sc; newBest = true; } save.bestDist = Math.max(save.bestDist, Math.floor(G.dist)); if (sc > 0 && !G.fun) { placed = recordRun(sc, Math.floor(G.dist)); if (sc >= save.best && !G.cheated) Online.submit(save.name || 'Runner', sc, G.dist); } }
   persist();
   let funLine = '';
   if (G.fun) {
@@ -5041,6 +5150,31 @@ function vibrate(ms) { buzz(ms >= 150 ? 'crash' : ms >= 50 ? 'bump' : ms >= 30 ?
 /* ---------------- INPUT ---------------- */
 function shortcutDone() { const sc = G.shortcut; if (sc && !sc.done && sc.z + sc.len < PZ && P.lane === sc.lane) { sc.done = true; addChain(3); const pts = Math.round(500 * scoreMult()); G.score += pts; popup('SECRET PATH! +' + pts, '#ffc400'); sfx('win'); } }
 const HUNTERS = { principal: { role: 'vp', line: 'NO RUNNING IN MY HALLS!', name: 'The Principal' }, scooter: { role: 'monitor', scooter: true, line: 'HALL PASS. NOW.', name: 'The hall monitor' }, bully: { role: 'student', big: true, line: 'GET BACK HERE!', name: 'The bully' } };
+/* ---------- GHOST 1v1: race a friend's best run as a see-through runner beside you ----------
+   From a friend's challenge code (same hallway + where they crashed) or from the Friends board (their best distance).
+   The ghost runs your pace in the next lane and drops out exactly where your friend's run ended. */
+function startGhost(g) {
+  const a = makeActor(roleSpec('student')); a.root.rotation.y = Math.PI; scene.add(a.root);
+  a.model.traverse(m => { if (!m.isMesh) return; const mats = Array.isArray(m.material) ? m.material : [m.material]; const nm = mats.map(x => { const c = x.clone(); c.transparent = true; c.opacity = 0.42; c.depthWrite = false; if (c.color) c.color.lerp(new THREE.Color('#9fd8ff'), 0.55); if (c.emissive) c.emissive.set('#1d4a8a'); return c; }); m.material = Array.isArray(m.material) ? nm : nm[0]; m.castShadow = false; m.renderOrder = 3; });
+  const tag = makeTag('👻 ' + g.n); tag.position.set(0, 2.25, 0); a.root.add(tag);
+  G.ghost = { act: a, n: g.n, d: g.d, lane: P.lane === 1 ? 0 : P.lane + 1, x: 0, z: -1.2, done: false, swT: 3 }; G.ghost.x = G.ghost.lane * laneW;
+  toast('👻 GHOST RACE vs ' + g.n.toUpperCase(), 'Their best: ' + Math.floor(g.d).toLocaleString() + ' m. Pass their ghost!', 2200);
+}
+function makeTag(txt) { const c = document.createElement('canvas'); c.width = 256; c.height = 64; const x = c.getContext('2d'); x.font = 'bold 34px system-ui,sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.lineWidth = 7; x.strokeStyle = '#1d2340'; x.strokeText(txt, 128, 32); x.fillStyle = '#bfe6ff'; x.fillText(txt, 128, 32);
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false })); sp.scale.set(1.6, 0.4, 1); return sp; }
+function endGhost() { if (!G.ghost) return; scene.remove(G.ghost.act.root); disposeActor(G.ghost.act); G.ghost = null; const h = $('hRival'); if (h && !G.rival) h.style.display = 'none'; }
+function updGhost(dt) {
+  const g = G.ghost; if (!g) return; const a = g.act;
+  if (!g.done) {
+    if ((g.swT -= dt) <= 0) { g.swT = rand(2, 4); const opts = [-1, 0, 1].filter(l => l !== P.lane); g.lane = pick(opts); }
+    g.x = lerp(g.x, g.lane * laneW, Math.min(1, dt * 4)); g.z = lerp(g.z, -1.2 + Math.sin(G.t * 0.5) * 0.8, Math.min(1, dt * 2));
+    a.pose('run', clamp(G.speed / 11.5, 1, 2.2)); a.root.position.set(g.x, P.fl || 0, g.z);
+    if (G.dist >= g.d) { g.done = true; g.at = G.dist; a.pose('die', 1.2, 0.08); popup('YOU PASSED ' + g.n.toUpperCase() + '\'S GHOST! 👻', '#7dff9a'); sfx('win'); addChain(2); buzz && buzz('close'); }
+  } else { a.root.position.z += G.speed * dt; if (a.root.position.z > 30) a.root.visible = false; }
+  a.update(dt);
+  const h = $('hRival'); if (h && !G.rival && (G.paused || G.dying || G.intro > 0 || curScreen)) h.style.display = 'none'; else if (h && !G.rival) { h.style.display = 'block'; setText('hRival', g.done ? '👻 You beat ' + g.n + '\'s ' + Math.floor(g.d).toLocaleString() + ' m!' : '👻 ' + g.n + '\'s ghost · ' + Math.max(0, Math.ceil(g.d - G.dist)).toLocaleString() + ' m to pass them'); }
+}
+function ghostRace(f) { if (!f || !(f.d > 0)) { toast('No run to race yet', f ? f.n + ' needs to finish a run first' : '', 1500); return; } sfx('click'); G.ghostNext = { n: f.n, d: f.d }; G.funNext = null; startRun('infinite'); }
 function startRival() {
   const name = pick(['Jordan', 'Maya', 'Leo', 'Ava', 'Kai', 'Zoe']); const a = makeActor(roleSpec('student')); a.root.rotation.y = Math.PI; scene.add(a.root);
   G.rival = { act: a, d: 0, lane: P.lane === 1 ? 0 : P.lane + 1, x: 0, name, swT: 2, pace: rand(0.97, 1.02) }; toast('RACE TO CLASS', 'Beat ' + name + ' 1000m to the classroom!', 2000);
@@ -5053,25 +5187,25 @@ function updRival(dt) {
 }
 function startHunt() {
   const type = pick(Object.keys(HUNTERS)), H = HUNTERS[type]; G.bossMoveT = 2.5;
-  startChase(null, Object.assign({ t: 26, boss: true }, H)); G.hunt = { type, t: 25, next: 2.4, warn: 0, lane: 0, lungeT: 0, dodged: 0, name: H.name };
+  startChase(null, Object.assign({ t: 26, boss: true }, H)); G.hunt = { type, t: 20, next: 3.2, warn: 0, lane: 0, lungeT: 0, dodged: 0, name: H.name };
   toast(H.name.toUpperCase() + ' IS HUNTING YOU!', 'Watch for the red lane and get out of it!', 2400); sfx('whistle'); buzz('bump');
 }
 function bossMoves(dt, type) {
   G.bossMoveT = (G.bossMoveT === undefined ? 2.5 : G.bossMoveT) - dt; if (G.bossMoveT > 0 || G.dying) return;
-  const d = G.speed * 1.7 + 3; // always ~1.7s of warning
-  if (type === 'bully') { const l = Math.random() < 0.6 ? P.lane : pick([-1, 0, 1]); addObj('basketball', l, PZ + d, { dodge: true }); popup('BALL IN THE HALL!', '#ff7b00'); sfx('whistle'); G.bossMoveT = 3.2; }
-  else if (type === 'principal') { const l = pick([-1, 0, 1]); addObj('tape', l, PZ + d + 6); popup('WHISTLE! Lane closed!', '#ffd60a'); sfx('whistle'); G.bossMoveT = 4.2; }
+  const d = G.speed * 2.2 + 4; // always ~2.2s of warning
+  if (type === 'bully') { const l = Math.random() < 0.6 ? P.lane : pick([-1, 0, 1]); addObj('basketball', l, PZ + d, { dodge: true }); popup('BALL IN THE HALL!', '#ff7b00'); sfx('whistle'); G.bossMoveT = 4.2; }
+  else if (type === 'principal') { const l = pick([-1, 0, 1]); addObj('tape', l, PZ + d + 6); popup('WHISTLE! Lane closed!', '#ffd60a'); sfx('whistle'); G.bossMoveT = 5.2; }
   else G.bossMoveT = 99;
 }
 function updHunt(dt) {
-  const h = G.hunt; if (G.dying) return; h.t -= dt; bossMoves(dt, h.type);
+  const h = G.hunt; if (G.dying) return; if (!G.chase || !G.chase.boss) { G.hunt = null; return; } h.t -= dt; bossMoves(dt, h.type);
   if (h.lungeT > 0) { h.lungeT -= dt; }
   if (h.warn > 0) { h.warn -= dt; if (h.warn <= 0) { // the lunge lands
       h.lungeT = 0.45; sfx('clang');
-      if (P.lane === h.lane && Math.abs(P.x - h.lane * laneW) < laneW * 0.6 && !(G.pw.pass > 0)) { G.caught = true; crash(null, h.name + ' grabbed you! Get out of the red lane next time.'); return; }
-      h.dodged++; popup('DODGED!', '#06d6a0'); addChain(2); buzz('close'); h.next = Math.max(1.3, 2.6 - h.dodged * 0.2);
+      if (P.lane === h.lane && Math.abs(P.x - h.lane * laneW) < laneW * 0.45 && !(G.pw.pass > 0)) { G.caught = true; crash(null, h.name + ' grabbed you! Get out of the red lane next time.'); return; }
+      h.dodged++; popup('DODGED!', '#06d6a0'); addChain(2); buzz('close'); h.next = Math.max(2.0, 3.2 - h.dodged * 0.15);
     } }
-  else if ((h.next -= dt) <= 0 && h.t > 1) { h.next = h.type === 'scooter' ? 0 : 1.5; h.warn = 0.85; h.lane = P.lane; sfx('tick'); voice('look_out', 4); }
+  else if ((h.next -= dt) <= 0 && h.t > 1) { h.next = h.type === 'scooter' ? 0.6 : 1.8; h.warn = 1.35; h.lane = P.lane; sfx('tick'); voice('look_out', 4); }
   if (h.t <= 0) { const pts = Math.round(1000 * scoreMult()); G.score += pts; G.coins += 20; popup('YOU ESCAPED! +' + pts, '#06d6a0'); sfx('win'); addChain(3); clearChase(); G.hunt = null; G.nextHunt = G.dist + 1700 + Math.random() * 900; stats().hunts = (stats().hunts || 0) + 1; }
 }
 const TIP_EXTRA = { shortcut: ['SHORTCUT!', 'Run through the classroom door: coins, no obstacles'], answer: ['POP QUIZ!', 'Run through the lane with the right answer'], cheat: ['PAPER PLANE', 'Grab it to fly over the whole hallway'], pass: ['HALL PASS', 'Grab it: smash through everything'], energy: ['JUICE BOX', 'Grab it: speed + coin magnet'], heelyPick: ['HEEL WHEELS', 'A free pair of Heel Wheels'], gstar: ['GOLD STAR', 'Rare! Spend them on revives and premium stuff'], otok: ['OUTFIT TOKEN', 'Buys outfits for your runner'] };
@@ -5183,6 +5317,7 @@ function graceResume() { if (G.scene !== 'play' || !G.autoPaused || G.reviving |
 /* ---------------- UPDATE ---------------- */
 function update(dt) {
   if (G.adOpen && G.scene === 'play') return; // never run underneath an ad
+  if (G.adminSlow && G.scene === 'play') dt *= 0.5; // admin slow motion
   G.t += dt;
   if (G.shake > 0) G.shake -= dt; if (G.flash > 0) G.flash -= dt;
   for (let i = G.popups.length - 1; i >= 0; i--) { const p = G.popups[i]; p.life -= dt; p.y -= 40 * dt; if (p.life <= 0) G.popups.splice(i, 1); }
@@ -5227,6 +5362,7 @@ function update(dt) {
 
   if (G.fun === 'coinrush') { G.timeLeft -= wdt; if (G.timeLeft <= 0) { G.timeLeft = 0; sfx('bell'); endRun(true, 'coinrush'); return; } }
   if (G.fun === 'trial') { G.trialT += dt; if (G.dist >= 1000) { sfx('bell'); endRun(true, 'trial'); return; } }
+  if (G.ghost) updGhost(dt);
   if (G.fun === 'race') { if (!G.rival) startRival(); updRival(dt); if (G.dist >= 1000) { sfx('bell'); endRun(true, 'race'); return; } if (G.rival.d >= 1000) { G.deathMsg = G.rival.name + ' got to class first!'; sfx('deny'); endRun(false, 'race'); return; } }
   // infinite theme progression
   if (G.mode === 'infinite') {
@@ -5352,7 +5488,10 @@ function update(dt) {
       // forgiving HEAD HOP box: wider and longer than the person, so a jump that looks like it lands on a head always does
       const hh = K.h || 1.75, hopZone = hoppable(o) && !o.hopped && P.y - (P.fl || 0) > 0.3 && dz < (K.d || 0.5) / 2 + 0.8 && dx < K.hw + 0.55
         && P.y > hh * 0.4 && (P.y < hh + 0.3 || (P.vy <= 0 && P.y < hh + 1.1));
-      if ((dz < (K.d || 0.5) / 2 + 0.3 && dx < K.hw + 0.3) || hopZone) {
+      // doors open from the wall side only: once you've moved toward the middle of the hall you're clear (the box used
+      // to reach 1 m past the door into the empty side, so a door 'hit' you after you had already switched lanes)
+      const pastDoor = K.wallDoor && o.lane && (P.x - o.x) * Math.sign(o.lane) < -K.wallDoor;
+      if (((dz < (K.d || 0.5) / 2 + 0.3 && dx < K.hw + 0.3) || hopZone) && !pastDoor) {
         let hit = false;
         if (K.type === 'low') hit = P.y < K.h - 0.12;
         else if (K.type === 'high') hit = !sliding || P.y > 0.2;
@@ -5441,7 +5580,7 @@ function popup(text, color) {
 let hudCache = {};
 function setText(id, v) { if (hudCache[id] !== v) { hudCache[id] = v; $(id).textContent = v; } }
 function updateRival() {
-  if (G.fun === 'race') return;
+  if (G.fun === 'race' || G.ghost) return;
   const r = G.mode === 'infinite' && G.scene === 'play' ? nextRival() : null, el = $('hRival');
   // only while you're actually closing in on someone (last 80m), never paused, crashing, in the menu or on the plane
   const near = r && r.d - G.dist < 80 && !G.paused && !G.dying && !(G.pw.cheat > 0);
@@ -5513,7 +5652,7 @@ function showScreen(id) {
   if (id === 'sMenu') requestAnimationFrame(fitMenu);
 }
 function goMenu() { $('tutSkip').classList.remove('show'); $('pwSide').classList.remove('show');
-  G.scene = 'menu'; G.dist = 0; G.intro = 0; G.fun = null; if (darkOn) setDark(false); G.decorSeed = 1 + Math.floor(Math.random() * 997); for (const sg of segs) sg.userData.k = null; if (menuSet) menuSet.position.set(0, 0, 0); clearObjs(); clearChase(); G.paused = false; G.tut = null; G.tutHold = false; $('heelyBtn').classList.remove('show'); $('pushBtn').classList.remove('show'); $('tutPrompt').classList.remove('show'); $('boostBar').classList.remove('show'); $('hud').classList.remove('show'); $('countdown').style.display = 'none';
+  G.scene = 'menu'; G.dist = 0; G.intro = 0; G.fun = null; if (darkOn) setDark(false); G.decorSeed = 1 + Math.floor(Math.random() * 997); for (const sg of segs) sg.userData.k = null; if (menuSet) menuSet.position.set(0, 0, 0); clearObjs(); clearChase(); endGhost(); G.paused = false; G.tut = null; G.tutHold = false; $('heelyBtn').classList.remove('show'); $('pushBtn').classList.remove('show'); $('tutPrompt').classList.remove('show'); $('boostBar').classList.remove('show'); $('hud').classList.remove('show'); $('countdown').style.display = 'none';
   if (G.mode !== 'campaign') G.themeKey = hallPick('locations').theme;
   laneW = 2.1 * LANE_SCALE; setCamera(); Object.assign(P, { x: 0, y: 0, vy: 0, slide: 0, fall: 0, lane: 0 }); rebuildPlayer();
   refreshMenu(); showScreen('sMenu'); checkCrown();
@@ -5526,7 +5665,7 @@ function refreshMenu() {
   $('mMult').textContent = '×' + scoreMult(); $('mWord').textContent = wordShown().replace(/ /g, '');
   ['lBank', 'sBank'].forEach(id => $(id).textContent = '$' + save.bank); $('sStars').textContent = '★ ' + (save.gs || 0);
   $('mBest').textContent = save.best.toLocaleString();
-  $('mTop').textContent = save.bestDist.toLocaleString() + ' m';
+  $('mTop').textContent = save.bestDist.toLocaleString() + ' m'; try { syncWorldCard(); } catch (e) {}
   const rk = myRank(); $('mRankTxt').textContent = rk ? '#' + rk : '–'; try { buildSideModes(); } catch (e) {}
   const stS = streakState(); $('freeTxt').textContent = stS.can ? 'FREE' : 'Day ' + stS.day + ' ✓'; $('bFree').classList.toggle('wait', !stS.can);
   $('campTxt').textContent = 'Stage ' + Math.min(save.unlocked, LEVELS.length) + '/' + LEVELS.length;
@@ -5783,7 +5922,8 @@ function buildShop() {
 document.querySelectorAll('.tab').forEach(t => t.onclick = () => { document.querySelectorAll('.tab').forEach(x => x.classList.remove('on')); t.classList.add('on'); shopTab = t.dataset.tab; sfx('click'); buildShop(); });
 document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => { sfx('click'); goMenu(); });
 const openCampaign = () => { initAudio(); sfx('click'); buildLevels(); refreshMenu(); showScreen('sLevels'); };
-const openRanks = () => { initAudio(); sfx('click'); boardDK = runDiff(); buildBoard(); showScreen('sRanks'); };
+const openRanks = () => { initAudio(); sfx('click'); boardDK = runDiff(); if (!openRanks.done) { openRanks.done = 1; boardMode = Online.ready() ? 'world' : 'local'; } buildBoard(); showScreen('sRanks'); };
+$('mWorld').onclick = e => { e.stopPropagation(); boardMode = 'world'; openRanks.done = 1; openRanks(); };
 const openSettings = () => { initAudio(); sfx('click'); buildSettings(); showScreen('sSettings'); };
 $('bSideCamp').onclick = openCampaign;
 $('bRanks').onclick = openRanks; $('mRankPill').onclick = openRanks;
@@ -5795,15 +5935,17 @@ function adStarLeft() { if (!save.adStar || save.adStar.d !== todayKey()) save.a
 function syncAdStar() { const n = adStarLeft(); $('adStarTxt').textContent = n > 0 ? '+1 ★ (' + n + ')' : 'Tomorrow'; $('bAdStar').classList.toggle('wait', n <= 0); $('bAdStar').style.display = save.age === 'child' ? '' : ''; }
 $('bAdStar').onclick = async e => { e.stopPropagation(); initAudio(); sfx('click'); if (adStarLeft() <= 0) { toast('Come back tomorrow', '3 free Gold Stars a day', 1400); return; } const ok = await Ads.show('adstar'); if (ok) { save.adStar.n++; addStars(1); persist(); toast('+1 GOLD STAR', adStarLeft() + ' left today', 1400); syncAdStar(); refreshMenuSoft(); } };
 syncAdStar();
-function askName(then) {
+function askName(then, record) {
   if (save.name) { then(); return; }
+  $('nameHead').textContent = record ? '👑 New world record!' : 'Pick a nickname'; $('nameWhy').textContent = record ? 'You just beat the world record! Pick a nickname for the world board (not your real name). You can change it later in Settings.' : 'Pick a nickname (not your real name). It shows on the leaderboard and you can change it later in Settings.';
+  $('nameSkip').onclick = () => { $('nameModal').classList.remove('show'); then(); };
   $('nameModal').classList.add('show'); $('nameFirst').value = ''; setTimeout(() => $('nameFirst').focus(), 50);
   $('nameGo').onclick = () => { const v = $('nameFirst').value.trim().replace(/[^\w .'-]/g, '').slice(0, 14); if (!v) { $('nameFirst').focus(); return; } save.name = v; persist(); $('nameModal').classList.remove('show'); refreshMenu(); then(); };
 }
 // click anywhere on the start screen that isn't a button to play (browser and phone)
 $('sMenu').addEventListener('click', e => { if (curScreen !== 'sMenu' || e.target.closest('#tapZone')) return; if (e.target.closest('button,a,input,select,label,.card,.side,.sideSq,.nav,.mWallet,.mTopR,.mCash,.pill,.iconBtn,[data-tab]')) return; $('tapZone').click(); });
 glCanvas.addEventListener('click', () => { if (G.scene === 'menu' && curScreen === 'sMenu') $('tapZone').click(); });
-$('tapZone').onclick = () => { initAudio(); sfx('click'); if (!save.age) { openAgeGate(); return; } askName(() => { if (!save.tutDone) startTutorial(); else startRun('infinite'); }); };
+$('tapZone').onclick = () => { initAudio(); sfx('click'); if (!save.age) { openAgeGate(); return; } if (!save.tutDone) startTutorial(); else startRun('infinite'); }; // a nickname is optional: you're asked for one if you set a world record
 $('bTut').onclick = () => { sfx('click'); startTutorial(); };
 const LOCKER_MS = 4 * 3600000;
 const lockerLeft = () => Math.max(0, (save.mlocker || 0) + LOCKER_MS - Date.now());
@@ -5908,12 +6050,14 @@ function toggleMusic() { setTrack(curTrack() === 'off' ? (save.lastTrack || 'the
 function buildMusicList() {
   const box = $('musicList'); if (!box) return; box.innerHTML = '';
   for (const t of TRACKS) { if (!trackOk(t)) continue; const b = document.createElement('button'); b.className = 'trackBtn' + (curTrack() === t.id ? ' on' : ''); b.innerHTML = '<b></b><small></small>'; b.firstChild.textContent = t.name; b.lastChild.textContent = t.desc; b.onclick = () => { sfx('click'); setTrack(t.id); }; box.appendChild(b); }
-  $('musicVol').value = Math.round((save.musicVol === undefined ? 0.6 : save.musicVol) * 100); $('sfxVol').value = Math.round(sfxVol() * 100); $('coinVol').value = Math.round(coinVol() * 100); $('introMus').checked = save.introMusic !== false; syncVolNums();
+  $('musicVol').value = Math.round((save.musicVol === undefined ? 0.6 : save.musicVol) * 100); $('sfxVol').value = Math.round(sfxVol() * 100); $('coinVol').value = Math.round(coinVol() * 100); $('introMus').checked = save.introMusic !== false; $('lyricsOn').checked = !save.lyricsOff; syncVolNums();
 }
 $('musicVol').oninput = () => { save.musicVol = $('musicVol').value / 100; persist(); initAudio(); applyAudioSettings(); syncVolNums(); };
 $('sfxVol').oninput = () => { save.sfxVol = $('sfxVol').value / 100; persist(); initAudio(); applyAudioSettings(); syncVolNums(); sfx('click'); };
 $('coinVol').oninput = () => { save.coinVol = $('coinVol').value / 100; persist(); initAudio(); syncVolNums(); SFX_LAST.coin = 0; sfx('coin'); };
 $('introMus').onchange = () => { save.introMusic = $('introMus').checked; persist(); };
+$('lyricsOn').onchange = () => { save.lyricsOff = !$('lyricsOn').checked; persist(); syncLyrics(); };
+$('lyricX').onclick = e => { e.stopPropagation(); save.lyricsOff = true; persist(); syncLyrics(); toast('Lyrics hidden', 'Turn them back on in Settings → Sound', 1600); };
 function syncVolNums() { $('musicVolN').textContent = $('musicVol').value + '%'; $('sfxVolN').textContent = $('sfxVol').value + '%'; $('coinVolN').textContent = $('coinVol').value + '%'; }
 $('bSfx').onclick = toggleSound; $('bSfx2').onclick = toggleSound; $('bMusic2').onclick = toggleMusic;
 setInterval(() => { if (curScreen === 'sMenu') { const stS = streakState(); $('freeTxt').textContent = stS.can ? 'FREE' : 'Day ' + stS.day + ' ✓'; $('bFree').classList.toggle('wait', !stS.can); $('mTipTxt').textContent = TIPS[Math.floor(Date.now() / 8000) % TIPS.length]; } }, 4000);
@@ -6082,7 +6226,15 @@ try { G.themeKey = hallPick('locations').theme; } catch (e) {}
 loadCharacters().then(() => {
   rebuildPlayer(); refreshMenu(); try { initWebAds(); } catch (e) {}
   requestAnimationFrame(() => { fitMenu(); requestAnimationFrame(fitMenu); }); setTimeout(fitMenu, 250); if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitMenu);
-  if (!save.age) setTimeout(() => openAgeGate(), 300); // the age check comes first, as soon as the game loads
+  if (IS_WEB && !save.bmTipOff) setTimeout(() => { // the "bookmark us" tip (browser only), easy to close for good
+    const mob = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent), mac = /Mac/i.test(navigator.platform || navigator.userAgent);
+    $('bmTxt').textContent = mob ? (/iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'Tip: tap Share → Add to Home Screen to keep Hallway Dash one tap away' : 'Tip: tap ⋮ → Add to Home screen (or ☆ bookmark) to keep Hallway Dash one tap away') : 'Tip: press ' + (mac ? '⌘+D' : 'Ctrl+D') + ' to bookmark Hallway Dash (tick "Bookmarks bar" to keep it one click away)';
+    const syncBm = () => $('bmTip').classList.toggle('show', !save.bmTipOff && G.scene === 'menu' && curScreen === 'sMenu'); syncBm(); const iv = setInterval(() => { if (save.bmTipOff) { clearInterval(iv); $('bmTip').classList.remove('show'); } else syncBm(); }, 600);
+    $('bmX').onclick = e => { e.stopPropagation(); save.bmTipOff = 1; persist(); $('bmTip').classList.remove('show'); };
+    addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && (e.key === 'd' || e.key === 'D')) { save.bmTipOff = 1; persist(); } });
+  }, 4000);
+  if (!save.age && IS_WEB) { save.age = 'teen'; save.webNoGate = 1; persist(); applyPrivacy(); } // browser: no age screen; safe defaults (no analytics, non-personalised ads, ads only when picked)
+  if (!save.age) setTimeout(() => openAgeGate(), 300); // the app: the age check comes first, as soon as the game loads
   applyBtnPos();
   fitMenu(); setInterval(() => { if (curScreen === 'sMenu' || $('sMenu').classList.contains('show')) fitMenu(); }, 1200);
   if (tourOn() && save.tutDone && save.tourSeen !== tourWeek()) { save.tourSeen = tourWeek(); persist(); setTimeout(() => toast('🌍 WORLD TOUR: ' + tourStop().name.toUpperCase(), tourStop().flag + ' New school this week · run 1000m for a Tour Stamp', 3200), 1200); }
