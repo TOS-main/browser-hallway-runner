@@ -1198,7 +1198,7 @@ window.ANALYTICS = {
 
 /* ===== Privacy policy link (required by Google Play) =====
    Host PRIVACY_POLICY.md somewhere public (GitHub Pages, Google Sites...) and paste the link. */
-window.PRIVACY_URL = 'https://tos-main.github.io/browser-hallway-runner/privacy.html';
+window.PRIVACY_URL = 'https://hallwaydash.org/browser-hallway-runner/privacy.html';
 
 /* ===== Browser ads (optional) =====
    With this empty, the web version shows its own 5-second "house ads" (promos for game features) before a reward.
@@ -6177,7 +6177,7 @@ $('privAnalytics').onchange = e => { save.privacy = Object.assign({}, save.priva
 $('privAds').onchange = e => { save.privacy = Object.assign({}, save.privacy, { ads: e.target.checked }); persist(); applyPrivacy(); toast('Saved', 'Applies from the next ad', 1000); };
 $('privOptions').onclick = () => { try { HallwayPrivacy.privacyOptions(); } catch (e) {} };
 $('privPolicy').onclick = () => { if (window.PRIVACY_URL) window.open(PRIVACY_URL, '_blank'); };
-$('privTerms').onclick = () => window.open('https://tos-main.github.io/browser-hallway-runner/terms.html', '_blank');
+$('privTerms').onclick = () => window.open('https://hallwaydash.org/browser-hallway-runner/terms.html', '_blank');
 $('privDelete').onclick = () => { $('delModal').classList.add('show'); };
 $('delYes').onclick = () => { $('delModal').classList.remove('show'); deleteMyData(); };
 $('delNo').onclick = () => $('delModal').classList.remove('show');
