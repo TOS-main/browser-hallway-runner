@@ -1,6 +1,6 @@
 # Hallway Dash: browser version 🎒🏃
 
-**Play:** https://hallwaydash.org/browser-hallway-runner/
+**Play:** https://hallwaydash.org/
 
 A 3D school-hallway endless runner. Dodge crowds, teachers and bosses on the way to class. It runs in any modern browser on phone or computer. Swipe on a phone, or use the arrow keys / WASD on a computer (Q push, E heel wheels, X combo finisher, P pause, R restart, M menu, L leaderboard, O modes, U duel a friend, 1-4 difficulty, N music, V sound effects).
 

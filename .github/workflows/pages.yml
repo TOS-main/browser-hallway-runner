@@ -1,6 +1,6 @@
 name: Publish Hallway Dash (GitHub Pages)
 
-# Puts the game online at https://hallwaydash.org/browser-hallway-runner/ (custom domain is set on the tos-main.github.io repo)
+# Backup copy of the game at https://tos-main.github.io/browser-hallway-runner/ (the main site, hallwaydash.org, is on Cloudflare Pages)
 # One-time setup: Settings -> Pages -> Build and deployment -> Source: "GitHub Actions".
 on:
   push:
