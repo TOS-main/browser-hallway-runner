@@ -568,7 +568,7 @@ body.web .tapPlay{font-size:clamp(34px,5vw,64px)}
 body.web .playSoon{font-size:13px}
 .schoolBox .sRow,.ownRow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:6px 0;border-bottom:1px solid var(--line)}
 .schoolBox .sRow span,.ownRow span{flex:1;min-width:120px;font-weight:800}.ownRow small{display:block;opacity:.7;font-weight:600}
-.schoolBox .chip,.ownRow .chip{margin:0}.schoolBox input{text-transform:none!important}
+.schoolBox .chip,.ownRow .chip{margin:0}#schoolIntro .frow{display:flex;gap:8px;margin:6px 0}#schoolIntro input{flex:1;min-width:0}#schoolIntro .btn.small{width:auto;margin:0}.schoolBox input{text-transform:none!important}
 .repBtn{margin-left:4px;border:none;border-radius:10px;background:transparent;font-size:15px;padding:2px 4px;cursor:pointer;flex:none;opacity:.65}
 .repReasons{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0}.repReasons .chip.on{outline:3px solid #ff8a00}
 .ownIn{width:100%;border:2px solid var(--line);border-radius:12px;padding:10px 12px;font:inherit;font-weight:700;margin:4px 0;background:rgba(0,0,0,.25);color:inherit;user-select:text;-webkit-user-select:text}
@@ -628,6 +628,7 @@ body.web .playSoon{font-size:13px}
     <div class="mLeft">
       <div class="card"><canvas id="avatar" width="128" height="128"></canvas><div class="cTxt"><small>High Score</small><b id="mBest">0</b></div></div>
       <button class="card small worldCard" id="mWorld" style="display:none"><div class="ico">🌍</div><div class="cTxt"><small>World record to beat</small><b id="mWorldTxt">–</b></div></button>
+      <button class="card small worldCard" id="mSchool" style="display:none"><div class="ico">🏫</div><div class="cTxt"><small id="mSchoolSub">Your school</small><b id="mSchoolTxt">–</b></div></button>
       <div class="chipRow"><span class="miniChip" id="mMult">x1</span><span class="miniChip" id="mWord">BELL</span><button class="miniChip" id="bHow">?</button></div>
       <button class="card small lockerCard" id="bMLocker"><div class="ico">🔐</div><div class="cTxt"><small>Mystery Locker</small><b id="mLockTxt">OPEN!</b></div></button>
       <div class="card small"><div class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 22V4M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1"/></svg></div><div class="cTxt"><small>Top Run</small><b id="mTop">0 m</b></div></div>
@@ -1075,6 +1076,18 @@ body.web .playSoon{font-size:13px}
   </div>
 </div>
 <!-- SCHOOL RULES (shown once before joining or adding a school) -->
+<!-- INTRO STEP: add your school (online players 13+ only) -->
+<div class="modal" id="schoolIntro">
+  <div class="mPanel schoolBox">
+    <h2>🏫 Add your school</h2>
+    <p style="font-size:15px;margin:4px 0 8px">Your runs count for your school, and you get a school record to chase. Use a nickname, never your real name.</p>
+    <div class="frow"><input id="siSearch" placeholder="Search schools" maxlength="40" autocomplete="off"></div>
+    <div id="siList" style="max-height:34vh;overflow-y:auto"></div>
+    <div class="frow" id="siAskRow"><input id="siAsk" placeholder="Can't find yours? School name" maxlength="40" autocomplete="off"><button class="btn gold small" id="siAskGo">Ask to add</button></div>
+    <div id="siWait" style="display:none;font-size:14px;margin-top:6px"></div>
+    <button class="btn gray" id="siSkip">Skip for now</button>
+  </div>
+</div>
 <div class="modal" id="schoolRules">
   <div class="mPanel">
     <h2>🏫 School board rules</h2>
@@ -3164,7 +3177,7 @@ const KINDS = {
     build(o) { const g = new THREE.Group(); actorAt(o, g, 'student', 0, 0, o.same ? Math.PI : 0); return g; }, anim(o, t) { o.acts[0].pose('jog', 1.3); } },
   student: { cat: 'obs', type: 'block', h: 1.75, hw: 0.4, d: 0.5, label: 'a student texting while walking', who: 'student', chaseLine: 'You made me drop my PHONE!',
     init(o) { if (fireDrill()) { o.same = true; o.vz = rand(3.2, 4.4); o.fast = true; o.say = 'GO GO GO'; return; } o.same = Math.random() < 0.45; o.vz = o.same ? rand(1, 1.8) : -rand(1.2, 1.9); o.say = Math.random() < 0.3 ? pick(['*texting*', 'Ugh, Mondays', 'Where is room 12?']) : ''; },
-    build(o) { const g = new THREE.Group(); const a = actorAt(o, g, 'student', 0, 0, o.queue ? Math.PI : o.same ? Math.PI : 0); if (!o.queue) a.post = a2 => { const h = a2.bone('Head'); if (h) h.rotation.x += 0.35; }; return g; }, anim(o, t) { if (o.queue) { o.acts[0].pose('idle', 1); return; } o.acts[0].pose(o.fast ? 'jog' : 'walk', o.fast ? 1.2 : 0.85); } },
+    build(o) { const g = new THREE.Group(); const a = actorAt(o, g, 'student', 0, 0, o.queue ? Math.PI : o.same ? Math.PI : 0); if (!o.queue) a.post = a2 => nod(a2, 'Head', 0.35); return g; }, anim(o, t) { if (o.queue) { o.acts[0].pose('idle', 1); return; } o.acts[0].pose(o.fast ? 'jog' : 'walk', o.fast ? 1.2 : 0.85); } },
   group: { cat: 'obs', type: 'block', h: 1.75, hw: 0.95, d: 0.9, label: 'a group of chatting students', who: 'group', chaseLine: 'GET BACK HERE!!',
     init(o) { o.n = pick([2, 3, 3, 4]); o.say = pick(CHAT); },
     build(o) { const g = new THREE.Group(); const n = o.n; const xs = n === 2 ? [-0.4, 0.4] : n === 3 ? [-0.5, 0.05, 0.5] : [-0.52, -0.15, 0.2, 0.55], zs = n === 2 ? [0, 0] : n === 3 ? [0.15, -0.3, 0.12] : [0.1, -0.35, 0.3, -0.1];
@@ -3237,7 +3250,7 @@ const KINDS = {
     anim(o, t) { const mv = o.tx !== undefined && Math.abs(o.tx - o.x) > 0.05; o.acts[0].pose(mv ? 'walkFormal' : o.shout > 0 ? 'talk' : 'idle', mv ? 1.6 : 1); } },
   sleepy: { cat: 'obs', type: 'block', h: 1.75, hw: 0.4, d: 0.5, sway: true, label: 'a sleep-deprived student', who: 'sleepy', chaseLine: 'I WAS NAPPING!',
     init(o) { o.say = 'zzz...'; },
-    build(o) { const g = new THREE.Group(); const a = actorAt(o, g, 'student', 0, 0, 0); a.post = a2 => { const h = a2.bone('Head'); if (h) h.rotation.x += 0.5; }; return g; }, anim(o, t) { o.acts[0].pose('idle', 0.5); } },
+    build(o) { const g = new THREE.Group(); const a = actorAt(o, g, 'student', 0, 0, 0); a.post = a2 => nod(a2, 'Head', 0.5); return g; }, anim(o, t) { o.acts[0].pose('idle', 0.5); } },
   coach: { cat: 'obs', type: 'block', h: 1.85, hw: 0.45, d: 0.5, steps: true, label: 'the coach', who: 'coach', chaseLine: 'DROP AND GIMME 50!',
     init(o) { o.say = pick(['HUSTLE!', 'Pick up the pace!', 'Gimme 10 laps!']); },
     build(o) { const g = new THREE.Group(); actorAt(o, g, 'coach', 0, 0, 0); return g; },
@@ -3381,6 +3394,14 @@ function twist(act, name, ax, ay, az, ang) {
   b.getWorldQuaternion(_tq2); _tq3.setFromAxisAngle(_tax, ang); _tq2.premultiply(_tq3);
   b.parent.getWorldQuaternion(_tq1); b.quaternion.copy(_tq1.invert().multiply(_tq2)); b.updateMatrixWorld(true);
 }
+// tip a bone forward in its own space (looking down at a phone, dozing off). Like twist(), the animation's own rotation is
+// saved first and put back before the next mixer update: adding to rotation.x every frame stacked on the frames the
+// mixer left that bone alone, so these classmates' heads spun round (the 'some characters still glitch' report)
+function nod(act, name, ang) {
+  const b = act.bone(name); if (!b || !ang) return;
+  const tw = act._tw || (act._tw = new Map()); if (!tw.has(b)) tw.set(b, b.quaternion.clone());
+  b.rotation.x += ang;
+}
 // the runner keeps busy on the start screen (like waiting for the bell): checks their phone, dances, warms up, stretches
 const MENU_ROUTINE = [
   ['idle', 3.5],
@@ -3437,14 +3458,23 @@ function syncPlayer() {
   if (pp.plane.visible) { pp.plane.position.set(P.x, P.y + 0.42, 0.15); pp.plane.rotation.set(0.05 + Math.sin(G.t * 3) * 0.03, 0, clamp((P.x - P.lane * laneW) / laneW, -1, 1) * 0.5 + Math.sin(G.t * 2) * 0.04); }
   const heelRoll = G.heely > 0 && G.scene === 'play' && P.y - (P.fl || 0) <= 0.05 && !sliding && !G.dying;
   a.noGround = sliding || flying || sledding;
-  a.post = (flying || sledding) ? (A => { // kneeling on the plane, hands on the wings
-      twist(A, 'UpperLegL', 1, 0, 0, -1.25); twist(A, 'UpperLegR', 1, 0, 0, -1.25); twist(A, 'LowerLegL', 1, 0, 0, 1.9); twist(A, 'LowerLegR', 1, 0, 0, 1.9);
-      twist(A, 'Chest', 1, 0, 0, 0.25); twist(A, 'UpperArmL', 0, 0, 1, 0.5); twist(A, 'UpperArmR', 0, 0, 1, -0.5); twist(A, 'UpperArmL', 1, 0, 0, -0.5); twist(A, 'UpperArmR', 1, 0, 0, -0.5); })
-    : heelRoll ? (A => { const sw = Math.sin(G.t * 2.4); // heels down, toes up, one foot ahead, arms out for balance
-      twist(A, 'UpperLegL', 1, 0, 0, -0.38 - sw * 0.04); twist(A, 'UpperLegR', 1, 0, 0, -0.12 + sw * 0.04); twist(A, 'LowerLegL', 1, 0, 0, 0.1); twist(A, 'LowerLegR', 1, 0, 0, 0.1);
-      twist(A, 'FootL', 1, 0, 0, -0.75); twist(A, 'FootR', 1, 0, 0, -0.65);
-      twist(A, 'Chest', 1, 0, 0, -0.12); twist(A, 'UpperArmL', 0, 0, 1, 1.15 + sw * 0.12); twist(A, 'UpperArmR', 0, 0, 1, -1.15 + sw * 0.12); })
-    : sliding ? (A => { twist(A, 'UpperArmR', 1, 0, 0, -2.2); twist(A, 'UpperArmL', 0, 0, 1, 0.6); twist(A, 'UpperLegL', 1, 0, 0, -0.35); twist(A, 'LowerLegL', 1, 0, 0, 0.9); }) : null;
+  { // trick poses (plane / sled kneel, heel roll, slide arm) fade in and out instead of switching on in one frame: the
+    // slide's raised arm used to snap 130-150 degrees the moment a slide started or ended (the runner's arm glitch)
+    const W = pp.trickW || (pp.trickW = { kneel: 0, heel: 0, slide: 0 }), kneel = flying || sledding;
+    const slideK = sliding ? clamp(Math.min(P.slide, slideDur() - P.slide) * 8, 0, 1) : 0;
+    const tgt = { kneel: kneel ? 1 : 0, heel: heelRoll && !kneel ? 1 : 0, slide: sliding && !kneel && !heelRoll ? slideK : 0 }, step = G.paused ? 0 : FRAME_DT * 8;
+    for (const k in W) W[k] = k === 'slide' && tgt.slide > W.slide ? tgt.slide : W[k] + clamp(tgt[k] - W[k], -step, step);
+    a.post = W.kneel + W.heel + W.slide < 0.001 ? null : (A => {
+      if (W.kneel > 0.001) { const w = W.kneel; // kneeling on the plane, hands on the wings
+        twist(A, 'UpperLegL', 1, 0, 0, -1.25 * w); twist(A, 'UpperLegR', 1, 0, 0, -1.25 * w); twist(A, 'LowerLegL', 1, 0, 0, 1.9 * w); twist(A, 'LowerLegR', 1, 0, 0, 1.9 * w);
+        twist(A, 'Chest', 1, 0, 0, 0.25 * w); twist(A, 'UpperArmL', 0, 0, 1, 0.5 * w); twist(A, 'UpperArmR', 0, 0, 1, -0.5 * w); twist(A, 'UpperArmL', 1, 0, 0, -0.5 * w); twist(A, 'UpperArmR', 1, 0, 0, -0.5 * w); }
+      if (W.heel > 0.001) { const w = W.heel, sw = Math.sin(G.t * 2.4); // heels down, toes up, one foot ahead, arms out for balance
+        twist(A, 'UpperLegL', 1, 0, 0, (-0.38 - sw * 0.04) * w); twist(A, 'UpperLegR', 1, 0, 0, (-0.12 + sw * 0.04) * w); twist(A, 'LowerLegL', 1, 0, 0, 0.1 * w); twist(A, 'LowerLegR', 1, 0, 0, 0.1 * w);
+        twist(A, 'FootL', 1, 0, 0, -0.75 * w); twist(A, 'FootR', 1, 0, 0, -0.65 * w);
+        twist(A, 'Chest', 1, 0, 0, -0.12 * w); twist(A, 'UpperArmL', 0, 0, 1, (1.15 + sw * 0.12) * w); twist(A, 'UpperArmR', 0, 0, 1, (-1.15 + sw * 0.12) * w); }
+      if (W.slide > 0.001) { const w = W.slide; twist(A, 'UpperArmR', 1, 0, 0, -2.2 * w); twist(A, 'UpperArmL', 0, 0, 1, 0.6 * w); twist(A, 'UpperLegL', 1, 0, 0, -0.35 * w); twist(A, 'LowerLegL', 1, 0, 0, 0.9 * w); }
+    });
+  }
   a.update(G.paused ? 0 : FRAME_DT);
   if (a.bones.Head) a.bones.Head.scale.setScalar(cheatOn('bighead') ? 1.9 : 1.12);
   if (flying) pp.wrap.position.y = P.y - 0.5; if (sledding) pp.wrap.position.y = P.y - 0.42;
@@ -3643,6 +3673,47 @@ const WREC = {}; // world record per difficulty, cached for a few minutes
 function worldRecord(dk) { dk = dk || runBK(); const c = WREC[dk]; if (!Online.ready()) return Promise.resolve(null); if (c && Date.now() - c.t < 180000) return Promise.resolve(c.r);
   return Online.board(dk, 'all').then(rows => { const r = rows[0] || null; WREC[dk] = { r, t: Date.now() }; return r; }).catch(() => (c ? c.r : null)); }
 function syncWorldCard() { const el = $('mWorld'); if (!el) return; const dk = runBK(); el.querySelector('small').textContent = 'World record · ' + DIFF[bkDiff(dk)].name + (bkSpd(dk) !== 'normal' ? ' ' + SPEEDS[bkSpd(dk)].name : ''); worldRecord(dk).then(r => { if (!r) { el.style.display = 'none'; return; } el.style.display = ''; $('mWorldTxt').textContent = r.s.toLocaleString() + ' · ' + (r.me ? 'YOU! 👑' : r.n); }); }
+// ---- your school's record: the target on the menu card and in each run's intro ----
+const SREC = {}; // school record per school + board, cached for a couple of minutes
+function schoolsOn() { return Online.ready() && save.age !== 'child' && APPCFG.schools !== false; }
+function schoolRecord(dk) { dk = dk || runBK(); if (!schoolsOn() || !save.school) return Promise.resolve(undefined); const k = save.school + '|' + dk, c = SREC[k];
+  if (c && Date.now() - c.t < 120000) return Promise.resolve(c.r);
+  return Online.board(dk, 'all', save.school).then(rows => { const r = rows[0] || null; SREC[k] = { r, t: Date.now() }; return r; }).catch(() => (c ? c.r : undefined)); }
+function syncSchoolCard() { const el = $('mSchool'); if (!el) return;
+  if (!schoolsOn()) { el.style.display = 'none'; return; } el.style.display = '';
+  if (!save.school) { $('mSchoolSub').textContent = 'Your school'; $('mSchoolTxt').textContent = 'Add your school +'; return; }
+  const sn = schoolName(save.school); schoolRecord().then(r => { if (r === undefined) { $('mSchoolSub').textContent = sn; $('mSchoolTxt').textContent = 'School record'; return; }
+    if (!r) { $('mSchoolSub').textContent = sn; $('mSchoolTxt').textContent = 'Set your school record!'; }
+    else if (r.me) { $('mSchoolSub').textContent = sn + ' record'; $('mSchoolTxt').textContent = r.s.toLocaleString() + ' · YOU! 👑'; }
+    else { $('mSchoolSub').textContent = 'Break your classmates\' record'; $('mSchoolTxt').textContent = r.s.toLocaleString() + ' · ' + r.n; } }); }
+function schoolIntroToast() { // shown as each Infinite Run starts: set the record, or the classmate's record to break
+  if (!save.school || !schoolsOn() || G.mode !== 'infinite' || G.fun || G.fixed || (G.duel && G.duel.on)) return; const t0 = G.runStart = Date.now(), dk = runBK(), sn = schoolName(save.school);
+  schoolRecord(dk).then(r => { if (r === undefined || G.runStart !== t0 || G.scene !== 'play') return; setTimeout(() => { if (G.runStart !== t0 || G.scene !== 'play' || G.dying) return;
+    if (!r) toast('🏫 SET YOUR SCHOOL RECORD!', 'Nobody from ' + sn + ' has a run on ' + bkName(dk) + ' yet. Be the first!', 2800);
+    else if (r.me) toast('🏫 YOU HOLD THE ' + sn.toUpperCase() + ' RECORD', r.s.toLocaleString() + ' on ' + bkName(dk) + '. Beat your own record!', 2800);
+    else toast('🏫 BREAK YOUR CLASSMATES\' RECORD', r.n + ' has ' + r.s.toLocaleString() + ' for ' + sn + '. Score ' + (r.s + 1).toLocaleString() + ' to take it!', 3200); }, 1300); }); }
+function schoolRecordAfterRun(sc, dk, delay) { // called once the run is sent to the board
+  if (!save.school || !schoolsOn()) return; const k = save.school + '|' + dk, c = SREC[k]; if (!c || c.r === undefined) return;
+  if (c.r && sc <= c.r.s) return; const had = c.r && !c.r.me;
+  SREC[k] = { r: { n: save.name || 'You', s: sc, me: true }, t: Date.now() };
+  setTimeout(() => toast('🏫 NEW SCHOOL RECORD!', had ? 'You beat ' + c.r.n + '\'s ' + c.r.s.toLocaleString() + ' for ' + schoolName(save.school) : 'You set the ' + schoolName(save.school) + ' record: ' + sc.toLocaleString(), 2600), delay); }
+// the "add your school" step of the intro: once, after the tutorial (or on the menu for players who already did it)
+function openSchoolIntro(then) {
+  const done = () => { $('schoolIntro').classList.remove('show'); if (then) then(); };
+  if (!schoolsOn() || save.school || save.schoolAsked) return done();
+  save.schoolAsked = 1; persist(); const m = $('schoolIntro'); m.classList.add('show');
+  const q = $('siSearch'), lst = $('siList'); q.value = ''; $('siAsk').value = '';
+  const draw = () => { lst.innerHTML = ''; const t = q.value.trim().toLowerCase(), hits = SCHOOLS.list.filter(s => !t || s.name.toLowerCase().includes(t)).slice(0, 40);
+    hits.forEach(s => { const r = mk('div', 'sRow'); r.appendChild(mk('span', '', s.name)); r.append(chipBtn('Join', () => withSchoolRules(async () => {
+      save.school = s.id; save.schoolView = 'kids'; persist(); m.classList.remove('show'); Analytics.log('school_join', { school: s.id }); retagRuns(); syncSchoolCard();
+      const r2 = await schoolRecord(); toast('🏫 You joined ' + s.name + '!', r2 ? 'Break your classmates\' record: ' + r2.s.toLocaleString() + ' by ' + (r2.me ? 'you' : r2.n) : 'Set your school record!', 2600); if (then) setTimeout(then, 300); }))); lst.appendChild(r); });
+    if (!hits.length) lst.appendChild(mk('div', '', t ? 'No school called that yet. Ask to add it below.' : 'Loading schools...')); };
+  q.oninput = draw; draw();
+  const syncAsk = () => { const w = save.schoolReq; $('siWait').style.display = w ? '' : 'none'; $('siWait').textContent = w ? '⏳ Waiting for approval: ' + w.name + '. It shows up here once the moderator says yes.' : ''; $('siAskRow').style.display = w || APPCFG.requests === false ? 'none' : 'flex'; };
+  syncAsk(); $('siAskGo').onclick = async () => { await requestSchool($('siAsk').value); syncAsk(); };
+  $('siSkip').onclick = () => { sfx('click'); toast('No problem', 'Add your school any time from the menu', 1600); done(); };
+  Promise.all([loadSchools().catch(() => SCHOOLS.list), loadAppCfg()]).then(([, cfg]) => { if (!cfg.schools) return done(); if (m.classList.contains('show')) { draw(); syncAsk(); } });
+}
 function buildBoard(highlightT) {
   if ((boardMode === 'world' || boardMode === 'school') && !Online.ready()) boardMode = 'local';
   document.querySelectorAll('[data-board]').forEach(x => x.classList.toggle('on', x.dataset.board === boardMode));
@@ -4784,7 +4855,7 @@ function tutNext() {
   const T = G.tut; T.i++; T.target = null; G.tutSlow = 1; T.acted = false;
   if (T.i >= TUT_STEPS.length) {
     save.tutDone = 1; save.bank += 100; save.heelys = (save.heelys || 0) + 1; persist();
-    tutCard('done', () => { $('tutPrompt').classList.remove('show'); goMenu(); startRun('infinite'); });
+    tutCard('done', () => { $('tutPrompt').classList.remove('show'); goMenu(); openSchoolIntro(() => startRun('infinite')); });
     return;
   }
   const step = TUT_STEPS[T.i]; tutPrompt(step); T.target = step.spawn(); T.startT = G.t;
@@ -5073,7 +5144,7 @@ G.lastQuiz = 0; G.lastShortcut = 0; G.lastLetter = -999; G.tpStart = undefined; 
   Object.assign(P, { lane: 0, fromLane: 0, x: 0, y: 0, vy: 0, slide: 0, slideQ: false, fall: 0, fl: 0 }); G.highAir = false; G.onPlat = false; G.plat = null;
   G.speed = baseSpeed();
   if (G.adOpen && !(Ads && Ads.cb)) { G.adOpen = false; $('adModal').classList.remove('show'); } // safety: a run never starts under a stuck promo
-  G.scene = 'play'; G.countdown = 0; G.lastCount = 0; G.intro = fromMenu && mode !== 'campaign' ? INTRO : 0; G.caught = false; clearChase(); startChase(null, { role: 'monitor', t: 3.2, warmup: true, line: 'HEY! NO RUNNING!' });
+  G.scene = 'play'; G.countdown = 0; G.lastCount = 0; G.intro = fromMenu && mode !== 'campaign' ? INTRO : 0; G.caught = false; clearChase(); startChase(null, { role: 'monitor', t: 3.2, warmup: true, line: 'HEY! NO RUNNING!' }); try { schoolIntroToast(); } catch (e) {}
   if (mode !== 'tutorial') { if (cheatOn('flyer')) G.pw.cheat = pwTime('cheat') + 3; if (cheatOn('juiced')) G.pw.energy = pwTime('energy') + 3; }
   G.cheated = unfairCheats(); G.shield = mode !== 'tutorial' && charDef().ab === 'shield' ? 1 : 0; P.dj = false;
   dayBest(); setText('hTop', (save.best || 0).toLocaleString()); setText('hToday', (save.dayBest.s || 0).toLocaleString()); $('hBadges').style.display = G.mode === 'infinite' && !G.fun ? '' : 'none';
@@ -5185,7 +5256,7 @@ function endRun(win, reason) {
   if (G.mode === 'infinite' && !G.fun) { if (sc > 0) { const nb = logRunByDiff(sc, Math.floor(G.dist)), np = logRunPeriods(sc); if ((nb || np) && !G.cheated) { const dd = G.dist, w = WREC[runBK()], wr = Online.ready() && w && (!w.r || sc > w.r.s);
       if (wr) { WREC[runBK()] = { r: { n: save.name || 'You', s: sc, d: Math.floor(dd), me: true }, t: Date.now() }; }
       if (wr && !save.name) setTimeout(() => askName(() => { Online.submitRun(save.name || 'Runner', dd); toast('👑 WORLD RECORD!', (save.name || 'Runner') + ' is #1 in the world', 2400); }, true), 1200); // no nickname yet: ask for one for the record
-      else { Online.submitRun(save.name || 'Runner', dd); if (wr) setTimeout(() => toast('👑 NEW WORLD RECORD!', 'You\'re #1 on the world board', 2400), 1200); } } } duelEnd(sc); if (sc > save.best) { save.best = sc; newBest = true; } save.bestDist = Math.max(save.bestDist, Math.floor(G.dist)); if (sc > 0 && !G.fun) { placed = recordRun(sc, Math.floor(G.dist)); if (sc >= save.best && !G.cheated) Online.submit(save.name || 'Runner', sc, G.dist); } }
+      else { Online.submitRun(save.name || 'Runner', dd); if (wr) setTimeout(() => toast('👑 NEW WORLD RECORD!', 'You\'re #1 on the world board', 2400), 1200); } schoolRecordAfterRun(sc, runBK(), wr ? 4000 : 1200); } } duelEnd(sc); if (sc > save.best) { save.best = sc; newBest = true; } save.bestDist = Math.max(save.bestDist, Math.floor(G.dist)); if (sc > 0 && !G.fun) { placed = recordRun(sc, Math.floor(G.dist)); if (sc >= save.best && !G.cheated) Online.submit(save.name || 'Runner', sc, G.dist); } }
   persist();
   let funLine = '';
   if (G.fun) {
@@ -5757,7 +5828,7 @@ function refreshMenu() {
   $('mMult').textContent = '×' + scoreMult(); $('mWord').textContent = wordShown().replace(/ /g, '');
   ['lBank', 'sBank'].forEach(id => $(id).textContent = '$' + save.bank); $('sStars').textContent = '★ ' + (save.gs || 0);
   $('mBest').textContent = save.best.toLocaleString();
-  $('mTop').textContent = save.bestDist.toLocaleString() + ' m'; try { syncWorldCard(); } catch (e) {}
+  $('mTop').textContent = save.bestDist.toLocaleString() + ' m'; try { syncWorldCard(); } catch (e) {} try { syncSchoolCard(); } catch (e) {}
   const rk = myRank(); $('mRankTxt').textContent = rk ? '#' + rk : '–'; try { buildSideModes(); } catch (e) {}
   const stS = streakState(); $('freeTxt').textContent = stS.can ? 'FREE' : 'Day ' + stS.day + ' ✓'; $('bFree').classList.toggle('wait', !stS.can);
   $('campTxt').textContent = 'Stage ' + Math.min(save.unlocked, LEVELS.length) + '/' + LEVELS.length;
@@ -6016,6 +6087,7 @@ document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => { sfx('c
 const openCampaign = () => { initAudio(); sfx('click'); buildLevels(); refreshMenu(); showScreen('sLevels'); };
 const openRanks = () => { initAudio(); sfx('click'); boardDK = runBK(); if (!openRanks.done) { openRanks.done = 1; boardMode = Online.ready() ? 'world' : 'local'; } buildBoard(); showScreen('sRanks'); };
 $('mWorld').onclick = e => { e.stopPropagation(); boardMode = 'world'; openRanks.done = 1; openRanks(); };
+$('mSchool').onclick = e => { e.stopPropagation(); sfx('click'); if (!save.school) { save.schoolAsked = 0; openSchoolIntro(() => refreshMenu()); return; } boardMode = 'school'; save.schoolView = 'kids'; openRanks.done = 1; openRanks(); };
 const openSettings = () => { initAudio(); sfx('click'); buildSettings(); showScreen('sSettings'); };
 $('bSideCamp').onclick = openCampaign;
 $('bRanks').onclick = openRanks; $('mRankPill').onclick = openRanks;
@@ -6339,6 +6411,7 @@ loadCharacters().then(() => {
   if (!save.age) setTimeout(() => openAgeGate(), 300); // the app: the age check comes first, as soon as the game loads
   applyBtnPos();
   fitMenu(); setInterval(() => { if (curScreen === 'sMenu' || $('sMenu').classList.contains('show')) fitMenu(); }, 1200);
+  if (save.tutDone && !save.school && !save.schoolAsked) setTimeout(() => { if (G.scene === 'menu' && curScreen === 'sMenu' && !document.querySelector('.modal.show')) openSchoolIntro(() => refreshMenu()); }, 2500); // the new school step, once
   if (tourOn() && save.tutDone && save.tourSeen !== tourWeek()) { save.tourSeen = tourWeek(); persist(); setTimeout(() => toast('🌍 WORLD TOUR: ' + tourStop().name.toUpperCase(), tourStop().flag + ' New school this week · run 1000m for a Tour Stamp', 3200), 1200); }
   const ld = $('loading'); if (ld) { ld.classList.add('done'); setTimeout(() => ld.remove(), 500); }
   requestAnimationFrame(frame);
