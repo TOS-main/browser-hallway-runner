@@ -568,6 +568,7 @@ body.web .tapPlay{font-size:clamp(34px,5vw,64px)}
 body.web .playSoon{font-size:13px}
 .schoolBox .sRow,.ownRow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:6px 0;border-bottom:1px solid var(--line)}
 .schoolBox .sRow span,.ownRow span{flex:1;min-width:120px;font-weight:800}.ownRow small{display:block;opacity:.7;font-weight:600}
+.worldCard .cTxt{min-width:0;overflow:hidden}.worldCard .cTxt small,.worldCard .cTxt b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tipLine{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:94vw}
 .schoolBox .chip,.ownRow .chip{margin:0}#schoolIntro .frow{display:flex;gap:8px;margin:6px 0}#schoolIntro input{flex:1;min-width:0}#schoolIntro .btn.small{width:auto;margin:0}.schoolBox input{text-transform:none!important}
 .repBtn{margin-left:4px;border:none;border-radius:10px;background:transparent;font-size:15px;padding:2px 4px;cursor:pointer;flex:none;opacity:.65}
 .repReasons{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0}.repReasons .chip.on{outline:3px solid #ff8a00}
@@ -2659,15 +2660,24 @@ function resize() {
   W = window.innerWidth; H = window.innerHeight;
   renderer.setPixelRatio(Math.min(DPR, curPr)); renderer.setSize(W, H, false);
   ovCanvas.width = Math.round(W * DPR); ovCanvas.height = Math.round(H * DPR); octx.setTransform(DPR, 0, 0, DPR, 0, 0);
-  setCamera(); fitMenu();
+  setCamera(); fitMenu(true);
 }
 // the start screen always fits the window (short laptop screens and small phones used to cut off the bottom bar)
-function fitMenu() {
+// The home screen is scaled down to fit short screens. It is measured from the layout itself (offsetTop/offsetHeight,
+// which ignore the pulsing button animations), the scale moves in 2% steps, and a re-check only changes it when the
+// content really grew or there is clearly room to grow back: the 1.2 s re-check used to land on a slightly different
+// scale each time (pulsing badges, cards and tips loading in), so the app's home screen kept reframing and shifting
+let _menuSc = 1;
+function fitMenu(force) {
   const el = $('sMenu'); if (!el || !el.classList.contains('show')) return;
   const apply = sc => Object.assign(el.style, sc >= 0.995 ? { transform: '', width: '', height: '', right: '', bottom: '', transformOrigin: '' } : { transformOrigin: '0 0', transform: 'scale(' + sc + ')', width: (window.innerWidth / sc) + 'px', height: (window.innerHeight / sc) + 'px', right: 'auto', bottom: 'auto' });
-  apply(1); let sc = 1;
-  const bottom = () => { let b = 0; for (const c of el.querySelectorAll('#sMenu > *, #mNav *, .mRow *')) { if (c.classList.contains('ctrlChip') || !c.offsetParent || c.closest('.mModes')) continue; b = Math.max(b, c.getBoundingClientRect().bottom); } return b; };
-  for (let k = 0; k < 6; k++) { const b = bottom(), lim = window.innerHeight - 8; if (b <= lim) break; sc = Math.max(0.45, sc * lim / b); apply(sc); }
+  const bottom = sc => { let b = 0; for (const c of el.querySelectorAll('#sMenu > *, .mNav *, .mRow *')) { if (c.classList.contains('ctrlChip') || !c.offsetParent || c.closest('.mModes')) continue;
+    let y = 0, n = c; while (n && n !== el) { y += n.offsetTop; n = n.offsetParent; } if (n !== el) continue; b = Math.max(b, y + c.offsetHeight); } return b * sc; };
+  const want = () => { let sc = 1; apply(1); for (let k = 0; k < 8; k++) { const b = bottom(sc), lim = window.innerHeight - 8; if (b <= lim) break; sc = Math.max(0.45, Math.floor(sc * lim / b * 50) / 50); apply(sc); } return sc; };
+  const old = _menuSc, sc = want();
+  // keep the current scale unless the menu no longer fits at it, or it could grow by more than 4% (or a resize asked)
+  const keep = !force && sc !== old && sc < old + 0.04 && (apply(old), bottom(old) <= window.innerHeight - 8);
+  if (keep) return; _menuSc = sc; apply(sc);
 }
 let PITCH = 0.3;
 function setCamera() {
@@ -3672,7 +3682,7 @@ let boardMode = 'world'; // the world record is the default record to beat
 const WREC = {}; // world record per difficulty, cached for a few minutes
 function worldRecord(dk) { dk = dk || runBK(); const c = WREC[dk]; if (!Online.ready()) return Promise.resolve(null); if (c && Date.now() - c.t < 180000) return Promise.resolve(c.r);
   return Online.board(dk, 'all').then(rows => { const r = rows[0] || null; WREC[dk] = { r, t: Date.now() }; return r; }).catch(() => (c ? c.r : null)); }
-function syncWorldCard() { const el = $('mWorld'); if (!el) return; const dk = runBK(); el.querySelector('small').textContent = 'World record · ' + DIFF[bkDiff(dk)].name + (bkSpd(dk) !== 'normal' ? ' ' + SPEEDS[bkSpd(dk)].name : ''); worldRecord(dk).then(r => { if (!r) { el.style.display = 'none'; return; } el.style.display = ''; $('mWorldTxt').textContent = r.s.toLocaleString() + ' · ' + (r.me ? 'YOU! 👑' : r.n); }); }
+function syncWorldCard() { const el = $('mWorld'); if (!el) return; const dk = runBK(); el.querySelector('small').textContent = 'World record · ' + DIFF[bkDiff(dk)].name + (bkSpd(dk) !== 'normal' ? ' ' + SPEEDS[bkSpd(dk)].name : ''); if (!Online.ready()) { el.style.display = 'none'; return; } el.style.display = ''; worldRecord(dk).then(r => { if (!r) { $('mWorldTxt').textContent = 'Be the first!'; return; } $('mWorldTxt').textContent = r.s.toLocaleString() + ' · ' + (r.me ? 'YOU! 👑' : r.n); }); }
 // ---- your school's record: the target on the menu card and in each run's intro ----
 const SREC = {}; // school record per school + board, cached for a couple of minutes
 function schoolsOn() { return Online.ready() && save.age !== 'child' && APPCFG.schools !== false; }
@@ -3682,10 +3692,10 @@ function schoolRecord(dk) { dk = dk || runBK(); if (!schoolsOn() || !save.school
 function syncSchoolCard() { const el = $('mSchool'); if (!el) return;
   if (!schoolsOn()) { el.style.display = 'none'; return; } el.style.display = '';
   if (!save.school) { $('mSchoolSub').textContent = 'Your school'; $('mSchoolTxt').textContent = 'Add your school +'; return; }
-  const sn = schoolName(save.school); schoolRecord().then(r => { if (r === undefined) { $('mSchoolSub').textContent = sn; $('mSchoolTxt').textContent = 'School record'; return; }
+  const sn = schoolName(save.school); if ($('mSchoolTxt').textContent === '–') { $('mSchoolSub').textContent = sn; $('mSchoolTxt').textContent = 'School record'; } schoolRecord().then(r => { if (r === undefined) return;
     if (!r) { $('mSchoolSub').textContent = sn; $('mSchoolTxt').textContent = 'Set your school record!'; }
     else if (r.me) { $('mSchoolSub').textContent = sn + ' record'; $('mSchoolTxt').textContent = r.s.toLocaleString() + ' · YOU! 👑'; }
-    else { $('mSchoolSub').textContent = 'Break your classmates\' record'; $('mSchoolTxt').textContent = r.s.toLocaleString() + ' · ' + r.n; } }); }
+    else { $('mSchoolSub').textContent = 'Classmates\' record'; $('mSchoolTxt').textContent = r.s.toLocaleString() + ' · ' + r.n; } }); }
 function schoolIntroToast() { // shown as each Infinite Run starts: set the record, or the classmate's record to break
   if (!save.school || !schoolsOn() || G.mode !== 'infinite' || G.fun || G.fixed || (G.duel && G.duel.on)) return; const t0 = G.runStart = Date.now(), dk = runBK(), sn = schoolName(save.school);
   schoolRecord(dk).then(r => { if (r === undefined || G.runStart !== t0 || G.scene !== 'play') return; setTimeout(() => { if (G.runStart !== t0 || G.scene !== 'play' || G.dying) return;
