@@ -7,15 +7,17 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="google-adsense-account" content="ca-pub-9841041313313334">
-<!-- AdSense: the exact tag AdSense asks for on every page. Ad requests start paused and non-personalized; they stay paused until the player chooses to watch an ad (never for under-13 players in the app). -->
+<!-- AdSense: the site is verified by the meta tag above. The ad script itself is only loaded by the game AFTER the age
+     check, and never for players under 13. Ad requests start paused and non-personalized, and stay paused until the
+     player chooses to watch an ad; personalized ads only for 16+ players who leave them on. -->
 <script>(window.adsbygoogle = window.adsbygoogle || []).pauseAdRequests = 1; window.adsbygoogle.requestNonPersonalizedAds = 1;</script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9841041313313334"
-     crossorigin="anonymous"></script>
 <!-- Google Analytics (GA4): counts visits and traffic sources only. No cookies, no saved visitor id, no Google signals or ad features, so no visit is tied to a person.
-     To use a different GA4 property, change the Measurement ID on the next line (it looks like G-XXXXXXXXXX). -->
-<script>window.GA_MEASUREMENT_ID = 'G-8XZRP9PG7J';
+     It only starts for players who told the game's age check they're 16+ (and left usage stats on). To use a different GA4 property, change the Measurement ID on the next line. -->
+<script>window.HALLWAY_WEB_PAGE = true; window.GA_MEASUREMENT_ID = 'G-8XZRP9PG7J';
 (function (id) {
   if (!id || location.protocol !== 'https:' || window.HallwayAds || /; wv\)/.test(navigator.userAgent)) return; // website only, never the Android app
+  var sv = null; try { sv = JSON.parse(localStorage.getItem('hallwayRush.save.v1') || 'null'); } catch (e) {}
+  if (!sv || sv.age !== 'adult' || (sv.privacy && sv.privacy.analytics === false)) return; // only players who said they're 16+ and left usage stats on
   window.dataLayer = window.dataLayer || []; window.gtag = function () { dataLayer.push(arguments); };
   gtag('js', new Date());
   gtag('config', id, { client_storage: 'none', allow_google_signals: false, allow_ad_personalization_signals: false });
@@ -730,7 +732,7 @@ body.web .simpleHome .nav{font-size:19px!important}
       <textarea id="svOut" readonly rows="3" spellcheck="false"></textarea>
       <button class="btn green" id="svCopy">📋 Copy my code</button></div>
     <div class="svBox"><b>Resume on any browser</b><small>Paste a save code here to pick up where you left off.</small>
-      <textarea id="svIn" rows="3" spellcheck="false" placeholder="Paste your code here (it starts with HD)"></textarea>
+      <textarea id="svIn" rows="3" spellcheck="false" placeholder="Paste your code here (it starts with HD3.)"></textarea>
       <button class="btn gold" id="svLoad">▶ Resume my progress</button></div>
     <button class="btn gray" data-back>Back</button>
   </div>
@@ -1326,6 +1328,10 @@ function loadSave() {
   return d;
 }
 let save = loadSave();
+// the website asks for the age group too (it used to skip it and treat everyone as 13-15): Google Analytics and the
+// AdSense script only load once the player says how old they are, never for under-13s, and analytics only for 16+.
+// Website players who were set to 13-15 without being asked are asked once.
+if (save.webNoGate && !window.HallwayAds && !/; wv\)/.test(navigator.userAgent)) { delete save.age; delete save.webNoGate; }
 const AWAY_MS = save.lastSeen ? Date.now() - save.lastSeen : 0; // how long since you last played (for the comeback gift)
 if (!save.pid) { save.pid = Math.random().toString(36).slice(2) + Date.now().toString(36); }
 if (save.music === 0 && !save.track) save.track = 'off';
@@ -2006,6 +2012,7 @@ function roleSpec(role, extra) {
 // 2. Smooth hips: the hip height was rounded to 3 decimals, but the skeleton's Root bone scales it by 100, so the hips
 //    could only sit on 10 cm steps: twice every stride the whole upper body dropped 10 cm in one frame (the chest seemed
 //    to sink into the waist, and every runner and classmate shook). The hip track is smoothed back into a gentle bob.
+const LEG_FREE = 35 * Math.PI / 180, _lq = new THREE.Quaternion();
 function smoothHips(c) { if (!c.tracks) return; const loop = /_Loop$/.test(c.name);
   if (loop) for (const t of c.tracks) { const n = t.times.length, st = t.type === 'quaternion' ? 4 : t.type === 'vector' ? 3 : 0; if (!st || n < 2 || t.values.length !== n * st || t.times[n - 1] >= c.duration - 1e-3) continue; // already ends on the loop's end
     t.times = Array.from({ length: n + 1 }, (_, i) => c.duration * i / n); const v = Array.from(t.values), f = v.slice(0, st);
@@ -2050,6 +2057,10 @@ function makeActor(spec) {
   model.traverse(m => { if (m.isSkinnedMesh) m.frustumCulled = false; }); // animated limbs used to vanish when their rest-pose bounds left the screen
   if (spec.outline) addOutline(model); // only the runner gets a (thin) outline so you can always spot yourself; crowds look natural
   act.bone = n => act.bones[n];
+  // The women's models are skinned so the hips and seat follow the thigh: in a sprint's high knee lift the whole pelvis
+  // bulged up into the waist (the glitch only the women had). Their thigh swing is kept the same up to 35 degrees from
+  // standing and eased beyond that, so standing legs (and the feet on the floor) are untouched.
+  if (spec.key[0] === 'W') act.legCap = ['UpperLegL', 'UpperLegR'].filter(n => act.bones[n]).map(n => [act.bones[n], act.bones[n].quaternion.clone()]);
   const clips = CH.clips[spec.key[0]];
   act.pose = (name, speed = 1, fade = 0.2) => {
     const clipName = CLIP_ALIAS[name] || name;
@@ -2087,6 +2098,8 @@ function makeActor(spec) {
     if (act.blend) { const B = act.blend; B.t += dt; const k = Math.min(1, B.t / B.dur); B.to.setEffectiveWeight(k); for (const [o, w0] of B.from) { if (k < 1) o.setEffectiveWeight(w0 * (1 - k)); } if (k >= 1) { act.blend = null; for (const n in act.actions) if (act.actions[n] !== B.to) act.stopA(n); } }
     if (act._tw && act._tw.size) { for (const [b, q] of act._tw) b.quaternion.copy(q); act._tw.clear(); } // undo last frame's twists
     act.mixer.update(dt);
+    if (act.legCap) for (const [b, r] of act.legCap) { // women: a high knee lift pulled the hips and seat up into the waist
+      const ang = 2 * Math.acos(Math.min(1, Math.abs(b.quaternion.dot(r)))); if (ang > LEG_FREE) b.quaternion.copy(r).slerp(_lq.copy(b.quaternion), (LEG_FREE + (ang - LEG_FREE) * 0.45) / ang); }
     if (act.bones.Head) act.bones.Head.scale.setScalar(cheatOn('bighead') ? 1.9 : 1.12); // BIGHEAD cheat: everyone, not just you
     { const ca = act.cur && act.actions[act.cur]; if (ca && !ONE_SHOT[act.cur]) act.phase[act.cur] = ca.time; }
     { // ground contact: every clip has ONE fixed lift (worked out once from the shoe soles over the whole clip), and the body
@@ -4564,8 +4577,8 @@ const Analytics = {
       window.dataLayer = window.dataLayer || []; window.gtag = function () { dataLayer.push(arguments); };
       gtag('js', new Date());
       // The APK runs from file://, where cookies don't work, so GA gets our own anonymous player id instead.
-      gtag('config', id, { client_storage: 'none', client_id: save.pid || undefined, send_page_view: false, app_name: 'Hallway Dash' });
-      if (!window.GA_LOADED) { const sc = document.createElement('script'); sc.async = true; sc.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(id); document.head.appendChild(sc); window.GA_LOADED = true; }
+      gtag('config', id, { client_storage: 'none', client_id: save.pid || undefined, send_page_view: !!(window.HALLWAY_WEB_PAGE && !window.GA_LOADED), app_name: 'Hallway Dash' }); // website: count this visit if the page's own tag didn't (it waits for the age check)
+      if (!window.GA_LOADED) { const sc = document.createElement('script'); sc.async = true; sc.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(id); document.head.appendChild(sc); }
       this.on = true; this.log('app_open', { runs: (save.stats && save.stats.runs) || 0 });
     } catch (e) { this.on = false; }
   },
@@ -5381,7 +5394,7 @@ function endRun(win, reason) {
   $('oCombo').textContent = G.comboBonus > 50 ? 'Combo bonus +' + Math.round(G.comboBonus).toLocaleString() + ' · best combo ' + (G.bestChain || 0) : ''; 
   G.earned = earned; $('bDouble').style.display = earned >= 20 && G.mode !== 'tutorial' ? 'block' : 'none'; $('bDouble').disabled = false; $('bDouble').textContent = '▶ Watch ad: double cash (+$' + earned + ')';
   if (G.mode !== 'tutorial' && !save.starterBought && stats().runs >= 3 && (save.starterSeen || 0) < 1 + Math.floor(stats().runs / 15)) setTimeout(() => { if (G.scene === 'over') openStarter(); }, 1200);
-  $('oTitle').textContent = G.fun === 'race' ? (win ? 'YOU WON!' : 'TOO SLOW!') : G.fun === 'coinrush' ? "TIME'S UP!" : G.fun === 'trial' && win ? 'FINISHED!' : win ? 'MADE IT!' : (reason === 'late' ? 'LATE!' : 'CAUGHT!');
+  $('oTitle').textContent = G.fun === 'race' ? (win ? 'YOU WON!' : 'TOO SLOW!') : G.fun === 'coinrush' ? "TIME'S UP!" : G.fun === 'trial' && win ? 'FINISHED!' : win ? 'MADE IT!' : (reason === 'late' ? 'LATE!' : G.caught ? 'CAUGHT!' : 'OUCH!');
   $('oTitle').classList.toggle('win', !!win);
   const tokLine = G.runTok ? ' · +' + G.runTok + ' ' + currentEvent().token : '';
   $('oReason').textContent = (tokLine && !G.fun && !G.trip && !dcLine) ? (win ? 'You made it!' : G.deathMsg) + tokLine : dcLine ? dcLine + (win ? '' : ' · ' + G.deathMsg) : G.trip ? currentTrip().item + ' this run: ' + (G.run.souv || 0) + ' · total ' + tripSave().got + (win ? '' : ' · ' + G.deathMsg) : G.fun ? funLine + (win ? '' : ' · ' + G.deathMsg) : win && G.mode === 'campaign' ? 'You reached ' + L.dest + ' with ' + Math.ceil(G.timeLeft) + 's to spare! (+$' + bonus + ')' + (L.goal && L.goal.t !== 'boss' ? (G.goalOk ? ' · Goal done ★' : ' · Goal missed: ' + goalText(L)) : '') : win ? 'You made it!' : (reason === 'late' ? 'The bell rang before you reached ' + L.dest + '. Tardy slip!' : G.deathMsg);
@@ -5763,7 +5776,11 @@ function update(dt) {
       // doors open from the wall side only: once you've moved toward the middle of the hall you're clear (the box used
       // to reach 1 m past the door into the empty side, so a door 'hit' you after you had already switched lanes)
       const pastDoor = K.wallDoor && o.lane && (P.x - o.x) * Math.sign(o.lane) < -K.wallDoor;
-      if (((dz < (K.d || 0.5) / 2 + 0.3 && dx < K.hw + 0.3) || hopZone) && !pastDoor) {
+      // hit box: the same 0.3 m margin ahead (so a fast frame can't skip through it), but only 0.1 m once it's behind
+      // the runner's middle and 0.22 m to the sides (about half a runner's width): landing a jump just past a tray, or
+      // brushing past a classmate, used to count as hitting something you visibly didn't touch
+      const zIn = o.z >= PZ ? dz < (K.d || 0.5) / 2 + 0.3 : dz < (K.d || 0.5) / 2 + 0.1;
+      if (((zIn && dx < K.hw + 0.22) || hopZone) && !pastDoor) {
         let hit = false;
         if (K.type === 'low') hit = P.y < K.h - 0.12;
         else if (K.type === 'high') hit = !sliding || P.y > 0.2;
@@ -5791,9 +5808,9 @@ function update(dt) {
             if (G.stumble > 0 || (G.chase && G.chase.boss)) { G.caught = true; crash(o, (G.chase ? G.chase.name[0].toUpperCase() + G.chase.name.slice(1) : 'They') + ' caught you!'); }
             else { breakChain(); G.tpBump = true; G.stumble = chaseTime(); G.shake = 0.25; sfx('bump'); vibrate(60); popup('BUMPED! RUN!', '#ef476f'); startChase(o); }
           } else {
-            const msgs = { robot: 'CLANK! The robotics club robot ran you over. Switch lanes!', pie: 'SPLAT! A pie to the face. Slide under flying pies!', door: 'A classroom door swung open right into you! Watch for the flashing light.', locker: 'BONK! A locker door popped open. Slide under next time!', tape: 'You ran into the Principal\'s caution tape!', puddle: 'SPLASH! You slipped in a puddle. Jump it!', tray: 'You slipped on a spilled lunch tray! Jump it next time!', chair: 'A runaway rolling chair took you out! Jump it!', volcano: 'You crashed into the science fair volcano. Jump over it!', walkers: 'You crashed into two students walking to class!', kidline: 'You plowed through a whole class walking in line!', lockerkid: 'You slammed into a kid at their locker!', cart: "You crashed into the janitor's cart!", teacher: 'A teacher caught you running. Detention!', professor: 'The professor caught you. Expect a pop quiz!', monitor: 'The hall monitor wrote you up!', coach: 'The coach caught you. Laps for days!', group: 'You plowed right into a group of chatting students!', kid: 'You bumped into a little kid. Off to the principal!', student: 'You ran smack into another student!', sleepy: 'You woke up a sleepy student the hard way!' };
+            const msgs = { robot: 'CLANK! The robotics club robot ran you over. Switch lanes!', pie: 'SPLAT! A pie to the face. Slide under flying pies!', door: 'A classroom door swung open right into you! Watch for the flashing light.', locker: 'BONK! A locker door popped open. Slide under next time!', tape: 'You ran into the Principal\'s caution tape!', puddle: 'SPLASH! You slipped in a puddle. Jump it!', tray: 'You slipped on a spilled lunch tray! Jump it next time!', chair: 'A runaway rolling chair took you out! Jump it!', volcano: 'You crashed into the science fair volcano. Jump over it!', walkers: 'You crashed into two students walking to class!', kidline: 'You plowed through a whole class walking in line!', lockerkid: 'You slammed into a kid at their locker!', cart: "You crashed into the janitor's cart!", teacher: 'You ran right into a teacher! Switch lanes next time.', professor: 'You ran right into the professor! Switch lanes next time.', monitor: 'You ran right into the hall monitor! Switch lanes next time.', coach: 'You ran right into the coach! Switch lanes next time.', group: 'You plowed right into a group of chatting students!', kid: 'You bumped into a little kid. Off to the principal!', student: 'You ran smack into another student!', sleepy: 'You woke up a sleepy student the hard way!' };
             if (K.who === 'tray') sfx('tray');
-    crash(o, msgs[K.who] || (K.type === 'high' ? 'Bonk! You ran into ' + K.label + '. Slide under next time!' : 'You tripped over ' + K.label + '. Jump next time!'));
+    crash(o, (K.type === 'block' || !/^(teacher|professor|monitor|coach)$/.test(K.who) ? msgs[K.who] : null) || (K.type === 'high' ? 'Bonk! You ran into ' + K.label + '. Slide under next time!' : 'You tripped over ' + K.label + '. Jump next time!'));
             return;
           }
         }
@@ -5909,7 +5926,7 @@ function layoutStack(force) {
 }
 let toastTimer = null;
 function toast(title, sub, ms) {
-  if (save.msgsOff && G.scene === 'play' && !/REVIVE|BACK IN|PAUSED|GO!|FINISH|LATE/i.test(title)) return; // in-run messages muted (🔔 button)
+  if (save.msgsOff && G.scene === 'play' && !/REVIVE|BACK IN|PAUSED|GO!|FINISH|LATE|HUNTING/i.test(title)) return; // in-run messages muted (🔔 button)
   layoutStack(true); const el = $('toast'); el.innerHTML = ''; el.appendChild(document.createTextNode(title));
   if (sub) { const s = document.createElement('small'); s.textContent = sub; el.appendChild(s); }
   el.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('show'), ms || 1500);
@@ -6242,7 +6259,7 @@ $('bLeague').onclick = () => { initAudio(); sfx('click'); buildLeague(); $('lgPt
 $('bLgPlay').onclick = () => { sfx('click'); startRun('infinite'); };
 $('bTrophies').onclick = () => { initAudio(); sfx('click'); buildTrophies(); $('trCount').textContent = TROPHIES.reduce((a, t) => a + trophyTier(t), 0) + ' / ' + TROPHIES.length * 4; showScreen('sTrophies'); };
 $('saveCopy').onclick = async () => { const ok = await copyText(saveCode()); toast(ok ? 'Save code copied!' : 'Could not copy', 'Paste it on your other device: Settings → Load save code', 2200); };
-$('saveFile').onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([saveCode()], { type: 'text/plain' })); a.download = 'hallway-dash-save.txt'; document.body.appendChild(a); a.click(); a.remove(); };
+$('saveFile').onclick = async () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([await packSave()], { type: 'text/plain' })); a.download = 'hallway-dash-save.txt'; document.body.appendChild(a); a.click(); a.remove(); };
 $('saveLoad').onclick = () => { $('saveIn').value = ''; $('saveModal').classList.add('show'); };
 $('saveCancel').onclick = () => $('saveModal').classList.remove('show');
 $('saveDo').onclick = () => { if (loadSaveCode($('saveIn').value)) { toast('Save loaded!', 'Restarting…', 1200); setTimeout(() => location.reload(), 900); } else { sfx('deny'); toast('That save code didn\'t work', 'Copy the whole code (it starts with HD1.)', 2000); } };
@@ -6537,28 +6554,43 @@ document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => { sfx('c
 { const _ss = showScreen; showScreen = function (id) { if (id === 'sMenu' || id === null) moreReturn = false; _ss(id); if (id === 'sMenu') try { syncMore(); } catch (e) {} }; }
 
 // Save code (website only): copy it, paste it in any browser to carry on where you left off
-async function packSave() { // HD2. = the save squeezed with gzip (about 4x shorter); HD1. (plain) still loads everywhere
-  const raw = JSON.parse(JSON.stringify(save)); delete raw.admin; delete raw.adminGod; const j = JSON.stringify(raw);
-  try { if (!window.CompressionStream) throw 0; const buf = await new Response(new Blob([j]).stream().pipeThrough(new CompressionStream('gzip'))).arrayBuffer();
-    let bin = ''; const u = new Uint8Array(buf); for (let i = 0; i < u.length; i += 8192) bin += String.fromCharCode.apply(null, u.subarray(i, i + 8192));
-    return 'HD2.' + btoa(bin); } catch (e) { return saveCode(); } }
-async function unpackSave(code) { const t = String(code || '').trim().replace(/\s+/g, '');
-  if (t.startsWith('HD1.')) return loadSaveCode(t);
-  if (!t.startsWith('HD2.') || !window.DecompressionStream) return false;
-  try { const bin = atob(t.slice(4)), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
-    const j = await new Response(new Blob([u]).stream().pipeThrough(new DecompressionStream('gzip'))).text();
-    return loadSaveCode('HD1.' + btoa(unescape(encodeURIComponent(j)))); } catch (e) { return false; } }
+// HD3 save codes: the save (minus admin flags and the short-lived login token) is gzipped and encrypted with AES-GCM.
+// The code looks like random letters, and changing even one letter makes it fail to load (the GCM tag no longer
+// matches), so a decoded and edited code is refused. The key ships inside the game, so a determined person who digs
+// through the page's code could still find it; making codes impossible to forge needs a server to sign them.
+// Old HD1 (plain base64) and HD2 (gzip only) codes are refused: anyone could edit those.
+const SAVE_KEY_PARTS = ['hallway', 'Dash', '#r0und17', 'n0-ch3ating', '2026'];
+let _saveKey = null;
+async function saveCryptoKey() { if (_saveKey) return _saveKey; const raw = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(SAVE_KEY_PARTS.join('|') + '|' + SAVE_KEY));
+  return (_saveKey = await crypto.subtle.importKey('raw', raw, 'AES-GCM', false, ['encrypt', 'decrypt'])); }
+const b64u = u => { let bin = ''; for (let i = 0; i < u.length; i += 8192) bin += String.fromCharCode.apply(null, u.subarray(i, i + 8192)); return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); };
+const unb64u = t => { const bin = atob(t.replace(/-/g, '+').replace(/_/g, '/')), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return u; };
+const gz = async (u, dir) => new Uint8Array(await new Response(new Blob([u]).stream().pipeThrough(dir ? new CompressionStream('gzip') : new DecompressionStream('gzip'))).arrayBuffer());
+async function packSave() {
+  const raw = JSON.parse(JSON.stringify(save)); delete raw.admin; delete raw.adminGod;
+  // keep who you are online (your player id and leaderboard login) but not the one-hour access token: the new browser
+  // swaps the long-lived login for a fresh token, so your scores, school and friend code stay yours
+  if (raw.fbAuth) raw.fbAuth = { uid: raw.fbAuth.uid, refresh: raw.fbAuth.refresh, exp: 0 };
+  raw.codeT = Date.now();
+  const iv = crypto.getRandomValues(new Uint8Array(12)), data = await gz(new TextEncoder().encode(JSON.stringify(raw)), true);
+  const ct = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv, additionalData: new TextEncoder().encode('HD3') }, await saveCryptoKey(), data));
+  const out = new Uint8Array(12 + ct.length); out.set(iv); out.set(ct, 12); return 'HD3.' + b64u(out); }
+async function unpackSave(code) { const t = String(code || '').trim().replace(/\s+/g, ''); if (!t.startsWith('HD3.')) return false;
+  try { const u = unb64u(t.slice(4)); if (u.length < 30) return false;
+    const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: u.subarray(0, 12), additionalData: new TextEncoder().encode('HD3') }, await saveCryptoKey(), u.subarray(12));
+    const d = JSON.parse(new TextDecoder().decode(await gz(new Uint8Array(pt), false)));
+    return loadSaveCode('HD1.' + btoa(unescape(encodeURIComponent(JSON.stringify(d))))); } catch (e) { return false; } }
 async function openSaveCode() { initAudio(); sfx('click'); $('svIn').value = ''; $('svOut').value = '…'; showScreen('sSave'); $('svOut').value = await packSave(); }
 $('bSaveHome').onclick = e => { e.stopPropagation(); openSaveCode(); };
 $('svOut').onclick = () => $('svOut').select();
 $('svCopy').onclick = async () => { const c = $('svOut').value.length > 8 ? $('svOut').value : await packSave(); const ok = await copyText(c); sfx(ok ? 'coin' : 'deny');
   toast(ok ? 'Code copied!' : 'Select the code and copy it', ok ? 'Keep it safe. Paste it here any time to resume.' : '', 2200); if (!ok) $('svOut').select(); };
-$('svLoad').onclick = async () => { const v = $('svIn').value; if (!v.trim()) { sfx('deny'); toast('Paste your save code first', 'It starts with HD', 1600); $('svIn').focus(); return; }
+$('svLoad').onclick = async () => { const v = $('svIn').value; if (!v.trim()) { sfx('deny'); toast('Paste your save code first', 'It starts with HD3.', 1600); $('svIn').focus(); return; }
   const had = save.best > 0 || save.bank > 0; if (had && !confirm('Load this save? It replaces the progress in this browser.')) return;
   if (await unpackSave(v)) { toast('Welcome back!', 'Loading your progress…', 1200); setTimeout(() => location.reload(), 900); }
-  else { sfx('deny'); toast('That code didn\'t work', 'Copy the whole code (it starts with HD)', 2200); } };
+  else { sfx('deny'); toast('That code didn\'t work', 'Copy the whole code, exactly as it was (it starts with HD3.)', 2400); } };
 if ($('saveCopy')) $('saveCopy').onclick = async () => { const ok = await copyText(await packSave()); toast(ok ? 'Save code copied!' : 'Could not copy', 'Paste it on your other device: Settings → Load save code', 2200); };
-if ($('saveDo')) $('saveDo').onclick = async () => { if (await unpackSave($('saveIn').value)) { toast('Save loaded!', 'Restarting…', 1200); setTimeout(() => location.reload(), 900); } else { sfx('deny'); toast('That save code didn\'t work', 'Copy the whole code (it starts with HD)', 2000); } };
+if ($('saveDo')) $('saveDo').onclick = async () => { if (await unpackSave($('saveIn').value)) { toast('Save loaded!', 'Restarting…', 1200); setTimeout(() => location.reload(), 900); } else { sfx('deny'); toast('That save code didn\'t work', 'Copy the whole code, exactly as it was (it starts with HD3.)', 2400); } };
 addEventListener('keydown', e => { if (G.scene === 'menu' && curScreen === 'sMenu' && !e.ctrlKey && !e.metaKey && !document.querySelector('.modal.show') && !/INPUT|TEXTAREA/.test((document.activeElement || {}).tagName || '')) {
   if (e.code === 'KeyB' && IS_WEB) { e.preventDefault(); openSaveCode(); } } });
 setTimeout(() => checkCrown(), 4000);
@@ -6578,7 +6610,6 @@ loadCharacters().then(() => {
     $('bmX').onclick = e => { e.stopPropagation(); save.bmTipOff = 1; persist(); $('bmTip').classList.remove('show'); };
     addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && (e.key === 'd' || e.key === 'D')) { save.bmTipOff = 1; persist(); } });
   }, 4000);
-  if (!save.age && IS_WEB) { save.age = 'teen'; save.webNoGate = 1; persist(); applyPrivacy(); } // browser: no age screen; safe defaults (no analytics, non-personalised ads, ads only when picked)
   if (!save.age) setTimeout(() => openAgeGate(), 300); // the app: the age check comes first, as soon as the game loads
   applyBtnPos();
   fitMenu(); setInterval(() => { if (curScreen === 'sMenu' || $('sMenu').classList.contains('show')) fitMenu(); }, 1200);

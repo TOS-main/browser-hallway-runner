@@ -1,9 +1,10 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hallway Dash Terms of Service</title><meta name="google-adsense-account" content="ca-pub-9841041313313334"><script>(window.adsbygoogle = window.adsbygoogle || []).pauseAdRequests = 1; window.adsbygoogle.requestNonPersonalizedAds = 1;</script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9841041313313334" crossorigin="anonymous"></script>
-<!-- Google Analytics (GA4): counts visits and traffic sources only. No cookies, no saved visitor id, no Google signals or ad features, so no visit is tied to a person.
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hallway Dash Terms of Service</title><meta name="google-adsense-account" content="ca-pub-9841041313313334"><script>(window.adsbygoogle = window.adsbygoogle || []).pauseAdRequests = 1; window.adsbygoogle.requestNonPersonalizedAds = 1;</script><!-- Google Analytics (GA4): counts visits and traffic sources only. No cookies, no saved visitor id, no Google signals or ad features, so no visit is tied to a person.
      To use a different GA4 property, change the Measurement ID on the next line (it looks like G-XXXXXXXXXX). -->
 <script>window.GA_MEASUREMENT_ID = 'G-8XZRP9PG7J';
 (function (id) {
   if (!id || location.protocol !== 'https:' || window.HallwayAds || /; wv\)/.test(navigator.userAgent)) return; // website only, never the Android app
+  var sv = null; try { sv = JSON.parse(localStorage.getItem('hallwayRush.save.v1') || 'null'); } catch (e) {}
+  if (!sv || sv.age !== 'adult' || (sv.privacy && sv.privacy.analytics === false)) return; // only players who said they're 16+ and left usage stats on
   window.dataLayer = window.dataLayer || []; window.gtag = function () { dataLayer.push(arguments); };
   gtag('js', new Date());
   gtag('config', id, { client_storage: 'none', allow_google_signals: false, allow_ad_personalization_signals: false });

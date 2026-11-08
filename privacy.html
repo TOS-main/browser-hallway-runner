@@ -1,9 +1,10 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hallway Dash Privacy Policy</title><meta name="google-adsense-account" content="ca-pub-9841041313313334"><script>(window.adsbygoogle = window.adsbygoogle || []).pauseAdRequests = 1; window.adsbygoogle.requestNonPersonalizedAds = 1;</script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9841041313313334" crossorigin="anonymous"></script>
-<!-- Google Analytics (GA4): counts visits and traffic sources only. No cookies, no saved visitor id, no Google signals or ad features, so no visit is tied to a person.
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hallway Dash Privacy Policy</title><meta name="google-adsense-account" content="ca-pub-9841041313313334"><script>(window.adsbygoogle = window.adsbygoogle || []).pauseAdRequests = 1; window.adsbygoogle.requestNonPersonalizedAds = 1;</script><!-- Google Analytics (GA4): counts visits and traffic sources only. No cookies, no saved visitor id, no Google signals or ad features, so no visit is tied to a person.
      To use a different GA4 property, change the Measurement ID on the next line (it looks like G-XXXXXXXXXX). -->
 <script>window.GA_MEASUREMENT_ID = 'G-8XZRP9PG7J';
 (function (id) {
   if (!id || location.protocol !== 'https:' || window.HallwayAds || /; wv\)/.test(navigator.userAgent)) return; // website only, never the Android app
+  var sv = null; try { sv = JSON.parse(localStorage.getItem('hallwayRush.save.v1') || 'null'); } catch (e) {}
+  if (!sv || sv.age !== 'adult' || (sv.privacy && sv.privacy.analytics === false)) return; // only players who said they're 16+ and left usage stats on
   window.dataLayer = window.dataLayer || []; window.gtag = function () { dataLayer.push(arguments); };
   gtag('js', new Date());
   gtag('config', id, { client_storage: 'none', allow_google_signals: false, allow_ad_personalization_signals: false });
@@ -14,7 +15,7 @@
 <p>Hallway Dash (&quot;the game&quot;) is made by the Hallway Dash developer (&quot;we&quot;). Contact: <a href="mailto:ibweintraub@gmail.com">ibweintraub@gmail.com</a>.</p>
 <h2 id="summary">Summary</h2>
 <li>In the Android app we ask your age with a neutral slider and keep only your age group (under 13, 13–15, 16+). We never store your exact age.</li>
-<li><b>On the website</b> there is no age question. Every browser player gets the safe 13–15 settings: no in-game usage tracking, non-personalized ads, and ads only appear when you choose to watch one (for a revive or a reward). The website pages use Google Analytics only to count visits (see below).</li>
+<li><b>On the website</b> you're asked your age the first time you play, the same as in the app. Google Analytics and the AdSense ad script only load after that: never for players under 13, analytics only for players 16+ who leave usage stats on, and ads are non-personalized unless you're 16+ and leave personalized ads on. Ads only appear when you choose to watch one (for a revive or a reward). On the game page, Google Analytics only counts visits from players 16+ (see below).</li>
 <li><b>Players under 13:</b> we do not collect personal information. No analytics, no online leaderboard, no friends, no cloud sign-in, and ads are child-directed and non-personalized.</li>
 <li>You can delete all your data at any time: Settings → Privacy → Delete all my data.</li>
 <h2 id="what-we-collect-and-why">What we collect and why</h2>
