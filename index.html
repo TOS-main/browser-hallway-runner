@@ -630,6 +630,24 @@ body.web .simpleHome .nav{font-size:19px!important}
 .hudBadges,.hudBox.wbox{display:none!important}
 @media (pointer:coarse){#quickCtl,#qcTab{display:none!important}}
 @media (max-width:640px){#bmTip{display:none!important}}
+
+/* ===== round 18: chase bar, power-up flash, game-over motion, locked More tiles ===== */
+#chaseMeter{position:fixed;left:50%;top:max(64px,calc(env(safe-area-inset-top) + 56px));transform:translate(-50%,-12px);z-index:6;display:flex;align-items:center;gap:6px;padding:4px 10px;border:3px solid var(--ink);border-radius:14px;background:#ff4d6d;color:#fff;box-shadow:0 3px 0 var(--ink);font-family:'Luckiest Guy',sans-serif;font-size:13px;letter-spacing:1px;pointer-events:none;opacity:0;transition:opacity .15s,transform .15s}
+#chaseMeter.show{opacity:1;transform:translate(-50%,0);animation:chaseShake .5s ease-in-out infinite}
+#chaseMeter .cm{width:84px;height:9px;border-radius:6px;background:rgba(0,0,0,.35);overflow:hidden}#chaseMeter .cm i{display:block;height:100%;background:#ffe066;border-radius:6px}
+@keyframes chaseShake{0%,100%{rotate:0deg}25%{rotate:-2deg}75%{rotate:2deg}}
+#pwFlash{position:fixed;inset:0;z-index:4;pointer-events:none;opacity:0;--c:255,255,255;background:radial-gradient(ellipse at center,rgba(var(--c),0) 40%,rgba(var(--c),.75) 100%)}
+#pwFlash.go{animation:pwFlash .55s ease-out}
+@keyframes pwFlash{0%{opacity:1}100%{opacity:0}}
+#sOver.show .panel,#sOver.active .panel{animation:overIn .38s cubic-bezier(.2,1.5,.4,1)}
+@keyframes overIn{0%{transform:translateY(40px) scale(.9);opacity:0}100%{transform:none;opacity:1}}
+#sOver .overTitle{animation:overTitle .5s cubic-bezier(.2,1.6,.4,1) .05s both}
+@keyframes overTitle{0%{transform:scale(2.2) rotate(-8deg);opacity:0}100%{transform:none;opacity:1}}
+.btn.bigAgain{display:block;width:100%;font-size:clamp(22px,6.5vw,30px);padding:14px 10px;margin:8px 0 6px;animation:againPulse 1.1s ease-in-out .6s infinite}
+@keyframes againPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+.mTile.locked{filter:grayscale(.9);opacity:.6}
+@media (prefers-reduced-motion:reduce){#chaseMeter.show,.btn.bigAgain,#sOver .overTitle,#sOver .panel{animation:none!important}}
+body.a11yFlash #pwFlash{display:none}
 </style>
 </head>
 <body>
@@ -659,6 +677,8 @@ body.web .simpleHome .nav{font-size:19px!important}
     </div>
   </div>
 </div>
+<div id="chaseMeter" aria-hidden="true"><span>🚨</span><b>HALL MONITOR</b><div class="cm"><i id="chaseFill"></i></div></div>
+<div id="pwFlash"></div>
 <div id="pwSide"><div id="hPw"></div></div>
 <div id="boostBar"></div>
 <button id="finBtn" aria-label="Combo finisher">💥<small>FINISHER</small></button>
@@ -966,7 +986,7 @@ body.web .simpleHome .nav{font-size:19px!important}
       </div>
       <div><h3>👆 Touch / mouse</h3>
         <p>Swipe (or drag) left / right: switch lanes</p>
-        <p>Swipe up: jump · twice fast: sprint burst</p>
+        <p>Swipe up: jump (swipe a moment before you land and you jump again right away)</p>
         <p>Swipe down: slide</p>
         <p>✋ button: push · 👟 button or double-tap: heel wheels</p>
         <p>💥 button: finisher (at x3 combo)</p>
@@ -1233,14 +1253,15 @@ body.web .simpleHome .nav{font-size:19px!important}
     <div class="overTitle" id="oTitle">CAUGHT!</div>
     <div class="reason" id="oReason"></div>
     <div class="bigStars" id="oStars"></div>
+    <div class="overScore"><small>SCORE</small><b id="oScore">0</b><span><span id="oBestL">Best</span> <span id="oBest">0</span></span></div>
+    <button class="btn green" id="bNext" style="display:none">Next Stage ▶</button>
+    <button class="btn gold bigAgain" id="bAgain">▶ PLAY AGAIN</button>
+    <div class="oHook" id="oHook" style="display:none"></div>
+    <div class="overMini"><span>📏 <b id="oDist">0m</b></span><span>💵 <b id="oCoins">$0</b></span></div>
+    <div class="oCombo" id="oCombo"></div>
     <div class="rankNote" id="oRank" style="display:none"></div>
     <div class="rankNote" id="oXp" style="display:none"></div>
     <div id="oNameBox" style="display:none;margin-top:8px"><input id="oName" maxlength="14" placeholder="Type your name" autocomplete="off"></div>
-    <div class="overScore"><small>SCORE</small><b id="oScore">0</b><span><span id="oBestL">Best</span> <span id="oBest">0</span></span></div>
-    <div class="overMini"><span>📏 <b id="oDist">0m</b></span><span>💵 <b id="oCoins">$0</b></span></div>
-    <div class="oHook" id="oHook" style="display:none"></div><div class="oCombo" id="oCombo"></div>
-    <button class="btn green" id="bNext" style="display:none">Next Stage ▶</button>
-    <button class="btn gold" id="bAgain">Play Again</button>
     <div class="overExtras"><button class="btn blue small" id="bDouble" style="display:none">▶ 2× cash</button><div class="boxOffer" id="boxOffer"><span class="boxMini">🎁</span><button class="btn blue small" id="boxAd">▶ Box</button><button class="btn gold small" id="boxStars">★ 2</button></div></div>
     <div class="row"><button class="btn blue small" id="bShare">📤 Share / challenge</button><button class="btn purple small" id="bReplay">🎬 Replay</button></div>
     <div class="row"><button class="btn purple small" id="bOverShop">Locker Room</button><button class="btn gray small" id="bOverMenu">Menu</button></div>
@@ -1328,6 +1349,14 @@ function loadSave() {
   return d;
 }
 let save = loadSave();
+// day the player first opened the game (players from before round 18 count as long-time players)
+if (!save.born) { save.born = (save.runsTotal || 0) > 0 || save.tutDone ? 1 : Date.now(); } // saved with the next persist()
+const playDays = () => Math.floor((Date.now() - (save.born || 1)) / 86400000);
+const pushUnlocked = () => (save.runsTotal || 0) >= 3; // PUSH shows up from your 4th run, so the first runs are swipes only
+// little bounce on a HUD number (coins, multiplier) when it goes up
+function bumpEl(id, k) { const el = document.getElementById(id); if (!el || !el.animate || (typeof A11Y === 'function' && A11Y().flash)) return; try { el.animate([{ transform: 'scale(1)' }, { transform: 'scale(' + (k || 1.2) + ')', offset: 0.35 }, { transform: 'scale(1)' }], { duration: 260, easing: 'ease-out' }); } catch (e) {} }
+// power-up pickup: a coloured flash from the edges of the screen and a quick zoom punch
+function pwBurst(kind) { G.fovKick = 1; const col = { pass: '255,214,10', cheat: '155,246,255', energy: '255,143,171', spring: '125,255,154' }[kind] || '255,255,255'; const el = document.getElementById('pwFlash'); if (!el || (typeof A11Y === 'function' && A11Y().flash)) return; el.style.setProperty('--c', col); el.classList.remove('go'); void el.offsetWidth; el.classList.add('go'); }
 // the website asks for the age group too (it used to skip it and treat everyone as 13-15): Google Analytics and the
 // AdSense script only load once the player says how old they are, never for under-13s, and analytics only for 16+.
 // Website players who were set to 13-15 without being asked are asked once.
@@ -1365,7 +1394,6 @@ const SHOP = {
     { id: 'lvPush', name: 'Push Power', icon: '✋', lv: 'push', desc: 'PUSH recharges faster: {now}s → {next}s' },
     { id: 'lvScore', name: 'Score Booster', icon: '📈', lv: 'score', desc: 'Permanent score bonus: +{now}% → +{next}%' },
     { id: 'lvLuck', name: 'Piggy Bank', icon: '🐷', lv: 'luck', desc: 'Extra cash from every coin: +{now}% → +{next}%' },
-    { id: 'straps', name: 'Ergonomic Padded Straps', price: 250, icon: '🧷', desc: 'Permanently cuts base backpack load by 20%.' },
     { id: 'helium', name: 'Spring Insoles', price: 300, icon: '👟', desc: 'Slightly higher jumps and softer landings.' }
   ],
   boost: [
@@ -1374,7 +1402,7 @@ const SHOP = {
     { id: 'score2', name: 'Score Doubler', price: 400, icon: '✖2', desc: 'Double score for one run.' },
     { id: 'coins2', name: 'Coin Doubler', price: 350, icon: '💰', desc: 'Double coins for one run.' },
     { id: 'shield', name: 'Hall Pass Start', price: 250, icon: '🛡', desc: 'Start a run with 10s of invincibility.' },
-    { id: 'pads', name: 'Football Pads', price: 300, icon: '🏈', desc: '15s of running straight through people (they get shoved aside), and PUSH recharges instantly.' }
+    { id: 'pads', name: 'Football Pads', price: 300, icon: '🏈', desc: 'A 12s Hall Pass the moment you start: smash through anything.' }
   ],
   pack: [
     { id: 'classic', name: 'Classic Bookbag', price: 0, color: '#3a6fd8', trim: '#1d3f8f', w: 0, desc: 'Standard issue. Heavy.' },
@@ -1488,9 +1516,9 @@ const baseWeight = () => clamp(1 - (save.up.straps ? 0.2 : 0) + packDef().w - (c
 function hex(c) { const n = parseInt(c.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; }
 function mixc(a, b, t) { return 'rgb(' + ((a[0] + (b[0] - a[0]) * t) | 0) + ',' + ((a[1] + (b[1] - a[1]) * t) | 0) + ',' + ((a[2] + (b[2] - a[2]) * t) | 0) + ')'; }
 const THEMES = {
-  elem: { name: 'Elementary School', floorA: '#fff3c4', floorB: '#ffd6e0', wall: '#7bdff2', wallUp: '#d4f8ff', doors: ['#ff6b6b', '#4d96ff', '#6bcb77', '#ffd93d'], accent: '#ff6b6b', lockers: ['#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff'], ceil: '#fff6e0', light: '#fffde8', fog: '#e4f4fb', trim: '#ff9f1c', door: '#c47f3d', line: '#ffffff' },
-  middle: { name: 'Middle School', floorA: '#f1f1f1', floorB: '#ffcf56', wall: '#ff9f43', wallUp: '#ffe0a3', lockers: ['#2ec4b6', '#8338ec', '#2ec4b6', '#ff006e'], ceil: '#fff6e5', light: '#ffffff', fog: '#ffe9cc', trim: '#5f0f40', door: '#3a86ff', doors: ['#3a86ff', '#ff006e', '#06d6a0', '#8338ec'], accent: '#8338ec', line: '#ffffff' },
-  high: { name: 'High School', floorA: '#e9eef5', floorB: '#cfd9e8', wall: '#4cc9f0', wallUp: '#f7f3e3', lockers: ['#e63946', '#e63946', '#1d3557', '#ffb703'], ceil: '#f4f6fa', light: '#fffbea', fog: '#dff3fb', trim: '#e63946', door: '#ffb703', doors: ['#ffb703', '#e63946', '#2a9d8f', '#3a86ff'], accent: '#e63946', line: '#ffffff' },
+  elem: { name: 'Elementary School', floorA: '#ffb04a', floorB: '#ff9a3a', wall: '#7bdff2', wallUp: '#d4f8ff', doors: ['#ff6b6b', '#4d96ff', '#6bcb77', '#ffd93d'], accent: '#ff6b6b', lockers: ['#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff'], ceil: '#fff6e0', light: '#fffde8', fog: '#ffe7b8', trim: '#ff9f1c', door: '#c47f3d', line: '#ffffff' },
+  middle: { name: 'Middle School', floorA: '#3cb6a6', floorB: '#33a394', wall: '#ff9f43', wallUp: '#ffe0a3', lockers: ['#2ec4b6', '#8338ec', '#2ec4b6', '#ff006e'], ceil: '#fff6e5', light: '#ffffff', fog: '#ffd9a6', trim: '#5f0f40', door: '#3a86ff', doors: ['#3a86ff', '#ff006e', '#06d6a0', '#8338ec'], accent: '#8338ec', line: '#ffffff' },
+  high: { name: 'High School', floorA: '#5d7fd8', floorB: '#4f70c8', wall: '#4cc9f0', wallUp: '#f7f3e3', lockers: ['#e63946', '#e63946', '#1d3557', '#ffb703'], ceil: '#f4f6fa', light: '#fffbea', fog: '#ffdcae', trim: '#e63946', door: '#ffb703', doors: ['#ffb703', '#e63946', '#2a9d8f', '#3a86ff'], accent: '#e63946', line: '#ffffff' },
   college: { name: 'College Campus', outdoor: true, floorA: '#bdb4a4', floorB: '#ada392', grassA: '#62ad4c', grassB: '#57a043', sky1: '#3d9bff', sky2: '#cdeaff', fog: '#cdeaff', floorA: '#e8d5b5', floorB: '#d9bf98', trim: '#8b1e3f', line: '#ffffff' },
   gym: { name: 'After-School Athletics', gym: true, floorA: '#f0b866', floorB: '#e6a957', wall: '#1d4ed8', wallUp: '#2b63ff', lockers: ['#ffd60a', '#ffffff'], accent: '#ffd60a', ceil: '#2b3147', light: '#fff7d6', fog: '#8a93ad', trim: '#ffd60a', door: '#444', line: '#ffffff' },
   // field-trip locations (rotate every 3 weeks)
@@ -1800,8 +1828,9 @@ function floorTexTheme(key) {
       x.fillStyle = 'rgba(255,255,255,.18)'; for (let i = 0; i < 40; i++) x.fillRect((i * 137) % w, (i * 251) % h, 3, 3);
     }
     if (th.accent && !th.outdoor) { const edge = w * (0.6 / (2 * HW)); x.fillStyle = th.accent; x.fillRect(0, 0, edge, h); x.fillRect(w - edge, 0, edge, h); x.globalAlpha = 0.85; x.fillRect(0, h * 0.94, w, h * 0.03); x.globalAlpha = 1; }
-    x.fillStyle = 'rgba(255,255,255,.6)';
-    for (const lx of [-laneW / 2, laneW / 2]) { const u = (lx + HW) / (2 * HW) * w; for (let j = 0; j < 4; j++) x.fillRect(u - 3, j * 128 + 20, 6, 70); }
+    if (!th.outdoor && !th.gym) { x.fillStyle = 'rgba(10,20,60,.10)'; for (const lc of [-laneW, 0, laneW]) { const u = (lc + HW) / (2 * HW) * w, bw = laneW * 0.62 / (2 * HW) * w; x.fillRect(u - bw / 2, 0, bw, h); } }
+    x.fillStyle = 'rgba(255,255,255,.92)';
+    for (const lx of [-laneW / 2, laneW / 2]) { const u = (lx + HW) / (2 * HW) * w; for (let j = 0; j < 4; j++) x.fillRect(u - 4, j * 128 + 14, 8, 96); }
   });
 }
 function lockerTex(key) {
@@ -2746,8 +2775,8 @@ function rebuildWorld() {
     mesh(GEO.box, fm('#d8c3a5'), farLayer, 12, 22, -180, 8, 44, 8); const roof = mesh(GEO.cone, fm('#8b1e3f'), farLayer, 12, 48, -180, 6.5, 8, 6.5); roof.rotation.y = Math.PI / 4;
     mesh(GEO.circle, fm('#fff'), farLayer, 12, 36, -175.9, 2.4, 2.4, 1);
   } else {
-    scene.background = new THREE.Color(th.fog); scene.fog.color.set(th.fog); scene.fog.far = Math.min(92, Q.view + 10); scene.fog.near = scene.fog.far * 0.45;
-    hemi.intensity = Q.std ? 0.4 : (th.gym ? 0.55 : 0.6); sun.intensity = Q.std ? 0.7 : 0.6;
+    scene.background = new THREE.Color(th.fog); scene.fog.color.set(th.fog); scene.fog.far = Math.min(92, Q.view + 10); scene.fog.near = scene.fog.far * 0.66;
+    hemi.intensity = Q.std ? 0.46 : (th.gym ? 0.6 : 0.68); sun.intensity = Q.std ? 0.8 : 0.72;
   }
   scene.environment = envFor(G.themeKey);
   segKey = G.themeKey + '|' + laneW + '|' + hallKey();
@@ -3555,14 +3584,14 @@ function syncPlayer() {
   const pp = player, a = pp.act, inMenu = G.scene !== 'play';
   const menuView = G.scene === 'menu' && curScreen !== 'sLevels';
   if (menuView) {
-    pp.root.rotation.set(0, -0.55, 0); pp.wrap.scale.setScalar(1); pp.wrap.position.set(MENU_POS.x, 0, MENU_POS.z);
+    pp.root.rotation.set(0, -0.55, 0); pp.wrap.scale.setScalar(1); pp.wrap.rotation.set(0, 0, 0); pp.wrap.position.set(MENU_POS.x, 0, MENU_POS.z);
     { const R = MENU_ROUTINE, tot = R.reduce((q, r) => q + r[1], 0); let tt = G.t % tot, st = R[0]; for (const r of R) { if (tt < r[1]) { st = r; break; } tt -= r[1]; }
       const env = Math.min(1, tt / 0.45, (st[1] - tt) / 0.45); a.pose(st[0], st[2] || 1, 0.35); a.post = st[3] ? (A => { const tw = window.twist; window.twist = (A2, b, x, y, z, ang) => tw(A2, b, x, y, z, ang * env); try { st[3](A, tt); } finally { window.twist = tw; } }) : null; if (st[0] === 'jump') pp.wrap.position.y = Math.sin(Math.min(1, tt / st[1]) * Math.PI) * 0.45; }
     a.update(FRAME_DT);
     keepAboveFloor(pp, 0); pp.backpack.scale.setScalar(0.82 + 0.38 * baseWeight()); pp.aura.visible = false; pp.shadow.position.y = 0.003; followChest(pp); return;
   }
   pp.root.rotation.y = Math.PI;
-  pp.wrap.scale.setScalar(lerp(pp.wrap.scale.x, runnerScale(), 0.1));
+  pp.baseSc = lerp(pp.baseSc || runnerScale(), runnerScale(), 0.1); pp.wrap.scale.setScalar(pp.baseSc); pp.wrap.rotation.set(0, 0, 0);
   const ik = G.scene === 'play' && G.intro > 0 ? 1 - G.intro / INTRO : 1;
   if (ik < 1) { const e = ik * ik * (3 - 2 * ik), turn = Math.min(1, ik * 3); pp.root.rotation.y = lerp(-0.55 + Math.PI * 2, Math.PI, turn * turn * (3 - 2 * turn)); pp.wrap.position.set(lerp(MENU_POS.x, P.x, e), 0, lerp(MENU_POS.z, 0, e)); a.pose('run', clamp(G.speed / 11.5, 1.0, 2.2), 0.12); a.update(FRAME_DT); followChest(pp); pp.shadow.position.y = 0.003; pp.aura.visible = false; pp.wheels.forEach(w => w.visible = false); return; } // you're the same size as the other students at your school
   pp.wrap.position.set(inMenu ? 0 : P.x + (P.slam || 0), P.y, 0);
@@ -3573,7 +3602,7 @@ function syncPlayer() {
   const air = P.y - (P.fl || 0), inAir = !inMenu && (air > 0.05 || (a.cur === 'Jump_Loop' && air > 0.015));
   if (G.dying) a.pose('die', 1.3, 0.1);
   else if (flying || sledding) a.pose('idle', 0.5, 0.15);
-  else if (sliding) a.pose('idle', 1, 0.12);
+  else if (sliding) { if (P.rollT > 0) a.pose('roll', 1.5, 0.08); else a.pose('idle', 1, 0.12); } // swipe down in the air = tuck and roll
   else if (inAir) a.pose(G.trick && G.trick.kind === 'grab' ? 'roll' : 'jump', G.trick && G.trick.kind === 'grab' ? 0.35 : 1, 0.15);
   else if (G.pushAnim > 0 && G.scene === 'play') a.pose('push', 2.2, 0.14); // shoving through (a softer blend: the 0.06s snap dropped the hips 30cm in ~3 frames)
   else if (G.heely > 0 && G.scene === 'play') a.pose('idle', 0.6, 0.1); // rolling on the heel wheels
@@ -3590,7 +3619,7 @@ function syncPlayer() {
     // slide's raised arm used to snap 130-150 degrees the moment a slide started or ended (the runner's arm glitch)
     const W = pp.trickW || (pp.trickW = { kneel: 0, heel: 0, slide: 0 }), kneel = flying || sledding;
     const slideK = sliding ? clamp(Math.min(P.slide, slideDur() - P.slide) * 8, 0, 1) : 0;
-    const tgt = { kneel: kneel ? 1 : 0, heel: heelRoll && !kneel ? 1 : 0, slide: sliding && !kneel && !heelRoll ? slideK : 0 }, step = G.paused ? 0 : FRAME_DT * 8;
+    const tgt = { kneel: kneel ? 1 : 0, heel: heelRoll && !kneel ? 1 : 0, slide: sliding && !kneel && !heelRoll && !(P.rollT > 0) ? slideK : 0 }, step = G.paused ? 0 : FRAME_DT * 8;
     for (const k in W) W[k] = k === 'slide' && tgt.slide > W.slide ? tgt.slide : W[k] + clamp(tgt[k] - W[k], -step, step);
     a.post = W.kneel + W.heel + W.slide < 0.001 ? null : (A => {
       if (W.kneel > 0.001) { const w = W.kneel; // kneeling on the plane, hands on the wings
@@ -3607,10 +3636,10 @@ function syncPlayer() {
   if (a.bones.Head) a.bones.Head.scale.setScalar(cheatOn('bighead') ? 1.9 : 1.12);
   if (flying) pp.wrap.position.y = P.y - 0.5; if (sledding) pp.wrap.position.y = P.y - 0.42;
   if (sliding) { // feet-first slide: lean way back with the hips near the floor
-    const k = clamp(Math.min(P.slide, slideDur() - P.slide) * 8, 0, 1); pp.pivot.rotation.x = lerp(0, 1.12, k); pp.wrap.position.y = P.y - 0.5 * k;
+    const k = P.rollT > 0 ? 0 : clamp(Math.min(P.slide, slideDur() - P.slide) * 8, 0, 1); pp.pivot.rotation.x = lerp(0, 1.12, k); pp.wrap.position.y = P.y - 0.5 * k;
     if (Math.random() < 0.6) emit(P.x + rand(-0.3, 0.3), 0.08, -0.2, 1, '#d9d4c7', 2.2, 0.35, 0.18, 0, false, true);
   }
-  pp.root.rotation.z = inMenu ? 0 : clamp((P.lane * laneW - P.x) / laneW, -1, 1) * 0.18;
+  pp.root.rotation.z = inMenu ? 0 : clamp((P.lane * laneW - P.x) / laneW, -1, 1) * 0.26;
   // skating: push side to side and lean forward
   const skating = heelRoll;
   if (skating) { const ph = G.t * 2.4; pp.root.rotation.z += Math.sin(ph) * 0.05; pp.root.rotation.y = Math.PI + Math.sin(ph * 0.5) * 0.12; }
@@ -3624,6 +3653,21 @@ function syncPlayer() {
     else if (T.kind === 'grab') pp.pivot.rotation.z = Math.sin(e * Math.PI) * 0.5;
     else if (T.kind === 'superman') pp.pivot.rotation.x = Math.sin(e * Math.PI) * 1.25;
   } else if (!skating && !sliding) pp.pivot.rotation.set(lerp(pp.pivot.rotation.x, 0, 0.3), 0, 0);
+  { // round 18 animation layer: squash and stretch on jumps and landings, lean + twist + little hop on lane changes,
+    // a forward stumble when you get bumped. All of it rides on the wrap (feet at its origin), so the feet stay planted.
+    const dt = G.paused ? 0 : FRAME_DT, play = G.scene === 'play' && !G.dying && !flying && !sledding, air = P.y - (P.fl || 0);
+    if (play && !pp.wasAir && air > 0.05 && P.vy > 0) P.takeT = 0.16; pp.wasAir = air > 0.05;
+    if (P.rollT > 0) P.rollT = Math.max(0, P.rollT - dt);
+    let sx = 1, sy = 1;
+    if (P.takeT > 0) { P.takeT = Math.max(0, P.takeT - dt); const k = P.takeT / 0.16; sy += 0.13 * k; sx -= 0.06 * k; }
+    if (P.landT > 0) { P.landT = Math.max(0, P.landT - dt); const e = Math.sin(P.landT / 0.2 * Math.PI); sy -= 0.15 * e; sx += 0.09 * e; }
+    if (!play) { P.takeT = 0; P.landT = 0; sx = sy = 1; }
+    const b = pp.baseSc || 1; pp.wrap.scale.set(b * sx, b * sy, b * sx);
+    const off = play ? clamp((P.lane * laneW - P.x) / laneW, -1, 1) : 0, prog = Math.abs(off);
+    pp.wrap.rotation.y = -off * 0.3;
+    if (play && prog > 0.02 && air < 0.05 && !sliding) pp.wrap.position.y += Math.sin((1 - prog) * Math.PI) * 0.1 * Math.min(1, prog * 4);
+    if (P.stumbleT > 0 && G.scene === 'play') { P.stumbleT = Math.max(0, P.stumbleT - dt); const k = P.stumbleT / 0.45; pp.wrap.rotation.x = -Math.sin(k * Math.PI) * 0.3; pp.wrap.rotation.z = Math.sin(k * Math.PI * 4) * 0.14 * k; }
+  }
   keepAboveFloor(pp, flying ? -9 : sledding ? (P.fl || 0) + 0.12 : (P.fl || 0)); // final safety: no part of the runner ever goes below the floor
   pp.backpack.scale.setScalar(0.82 + 0.38 * G.weight);
   followChest(pp);
@@ -3668,8 +3712,9 @@ function render() {
     renderer.render(scene, camera); drawOverlay(); updateHUD(); return;
   }
   // speed feel: widen the view a little when boosting
-  if (camera.fov < baseFov - 8 || camera.fov > baseFov + 20) { camera.fov = baseFov; camera.updateProjectionMatrix(); }
-  const wantFov = baseFov + (G.pw.energy > 0 ? 7 : 0) + (G.burstT > 0 ? 9 : 0) + (G.scene === 'play' ? clamp((G.speed - 12) * 0.25, 0, 5) : 0);
+  if (camera.fov < baseFov - 16 || camera.fov > baseFov + 22) { camera.fov = baseFov; camera.updateProjectionMatrix(); }
+  if (G.fovKick > 0) G.fovKick = Math.max(0, G.fovKick - rdt * 2.5);
+  const wantFov = baseFov + (G.pw.energy > 0 ? 7 : 0) + (G.burstT > 0 ? 9 : 0) + (G.scene === 'play' ? clamp((G.speed - 12) * 0.25, 0, 5) : 0) + (G.fovKick || 0) * 9 - (G.scene === 'play' && G.dying ? (G.caught ? 12 : 6) * clamp(1 - G.dyingT / 1.3, 0, 1) : 0);
   if (Math.abs(camera.fov - wantFov) > 0.05) { camera.fov = lerp(camera.fov, wantFov, Math.min(1, rdt * 4)); camera.updateProjectionMatrix(); }
   // the shadow-casting light follows the runner
   const px = G.scene === 'play' ? P.x : 0;
@@ -3891,6 +3936,11 @@ function recordRun(score, dist) {
 
 /* ---------------- CHASE: whatever you bump chases you ---------------- */
 const CHASE_TIME = 10;
+// round 18: every stumble brings the same chaser, the hall monitor, so the rule is easy to learn: stumble once and he's
+// on your heels (the bar at the top shows how long), stumble again before he gives up and you're caught. The people you
+// bumped still react (they fall over), they just don't chase you any more.
+const MONITOR_CHASE = { role: 'monitor', line: 'NO RUNNING IN THE HALLS!', name: 'the hall monitor' };
+function knockAside(o) { if (o && o.acts && o.acts.length) o.acts.forEach((a, i) => setTimeout(() => { try { a.pose('die', 1.4, 0.06); } catch (e) {} }, i * 60)); }
 const chaseTime = () => Math.max(4, (charDef().perk === 'chase' ? 7 : CHASE_TIME) - (petDef().help === 'calm' ? 3 : 0));
 const chaseLayer = new THREE.Group(); scene.add(chaseLayer);
 const CHASER_ROLE = { robot: 'teacher', lunchtable: 'monitor', paintladder: 'janitor', cone: 'janitor', bucket: 'janitor', trash: 'janitor', backpack: 'student', banner: 'janitor', mop: 'janitor', basketball: 'coach', hurdle: 'coach', sprinkler: 'coach' };
@@ -4019,15 +4069,15 @@ function houseAd(tag) {
 
 
 /* ---------- interstitial ads between runs ----------
-   Every 3rd finished run (not in your first 3 runs, never right after you chose to watch a rewarded ad, never in
+   Every 5th finished run (not in your first 3 runs or on your first day, never right after you chose to watch a rewarded ad, never in
    the tutorial), shown when you leave the game-over screen. Android: AdMob interstitial. Browser: a Google H5 "next" ad if one is ready (13+ only), otherwise the 5-second house ad. These breaks and the rewarded buttons are the only places ads show. */
-const INTER_EVERY = 3, ADS_BETWEEN_RUNS = false; // for now ads only ever show when the player picks one (revive, double coins, free star...)
+const INTER_EVERY = 5, ADS_BETWEEN_RUNS = false; // for now ads only ever show when the player picks one (revive, double coins, free star...)
 function maybeInterstitial(then) {
   save.runsSinceAd = (save.runsSinceAd || 0) + 1; const total = (save.runsTotal = (save.runsTotal || 0) + 1);
   if (total === 2 && save.remind !== false && window.HallwayNotify) { try { HallwayNotify.requestPermission(); } catch (e) {} }
   if (!ADS_BETWEEN_RUNS) { persist(); then(); return; }
   const recentReward = Date.now() - (save.lastRewardAd || 0) < 90000;
-  if (total <= 3 || save.runsSinceAd < INTER_EVERY || recentReward || G.mode === 'tutorial' || save.noAds) { persist(); then(); return; }
+  if (total <= 3 || playDays() < 1 || save.runsSinceAd < INTER_EVERY || recentReward || G.mode === 'tutorial' || save.noAds) { persist(); then(); return; }
   save.runsSinceAd = 0; persist();
   let done = false; const fin = () => { if (done) return; done = true; G.adOpen = false; appShown(); then(); };
   window.onInterstitialDone = () => fin();
@@ -4414,7 +4464,7 @@ function useBoost(id) {
   else if (id === 'score2') { G.score2 = true; toast('SCORE x2!', 'For this whole run', 1300); }
   else if (id === 'coins2') { G.coins2 = true; toast('COINS x2!', 'For this whole run', 1300); }
   else if (id === 'shield') { G.pw.pass = Math.max(G.pw.pass, 10); toast('HALL PASS!', '10s invincible', 1300); }
-  else if (id === 'pads') { G.padsT = 15; G.pushCd = 0; toast('FOOTBALL PADS!', 'Run right through people for 15s', 1400); }
+  else if (id === 'pads') { G.pw.pass = Math.max(G.pw.pass, 12); G.pushCd = 0; pwBurst('pass'); toast('FOOTBALL PADS!', 'Hall Pass for 12s: smash through anything', 1400); }
 }
 const TRICKS = [{ kind: 'spin', name: '360 SPIN', pts: 150 }, { kind: 'flip', name: 'BACKFLIP', pts: 250 }, { kind: 'cork', name: 'CORK 540', pts: 350 }, { kind: 'grab', name: 'TOE GRAB', pts: 120 }, { kind: 'superman', name: 'SUPERMAN', pts: 200 }];
 function startTrick() {
@@ -4617,7 +4667,7 @@ function openAgeGate(then) {
     save.age = v < 13 ? 'child' : v < 16 ? 'teen' : 'adult'; persist(); m.classList.remove('show');
     applyPrivacy(); sfx('click');
     if (save.age === 'child') toast('Kid-safe mode on', 'No data collection, online features off', 2200);
-    if (then) then(); else { if (!save.tutDone) startTutorial(); else startRun('infinite'); }
+    if (then) then(); else startRun('infinite'); // straight into a real run: the first one shows swipe hints as things come up
   };
 }
 async function deleteMyData() {
@@ -4961,7 +5011,7 @@ function startTutorial() {
 }
 function skipTutorial() {
   if (G.mode !== 'tutorial') return; save.tutDone = 1; persist(); $('tutCard').classList.remove('show'); $('tutPrompt').classList.remove('show'); $('tutSkip').classList.remove('show'); G.tutHold = false;
-  goMenu(); setTimeout(() => startAppTour(), 400); toast('TUTORIAL SKIPPED', 'Settings → Replay tutorial any time', 1600);
+  goMenu(); toast('TUTORIAL SKIPPED', 'Settings → Replay tutorial any time', 1600);
 }
 function tutCard(key, then) {
   const [t, b] = TUT_CARDS[key]; G.tutHold = true;
@@ -5012,6 +5062,26 @@ function tutUpdate() {
   else if (o && !G.objs.includes(o) && !G.dying && o.K.cat === 'pick') tutNext();
 }
 
+/* ---------- FIRST RUN: hints built into a real run (round 18) ----------
+   No separate tutorial and no menu before your first run. The first time a jump, a slide or a lane change is needed in
+   your lane, the game slows right down and shows which way to swipe; it speeds back up the moment you do it. */
+const FR_HINTS = { low: ['Swipe UP to JUMP', 'over low stuff on the floor', 'up'], high: ['Swipe DOWN to SLIDE', 'under things hanging down', 'down'], block: ['Swipe LEFT or RIGHT', 'to get around people', 'side'] };
+function frPrompt(t, sub, hand) { $('tutTitle').textContent = t; $('tutSub').textContent = sub; $('tutHand').className = 'tutHand h-' + hand; $('tutPrompt').classList.add('show'); }
+function firstRunHints() {
+  const F = G.fr || (G.fr = { done: {}, cur: null, introT: 2.6 });
+  if (G.intro > 0 || G.dying) { G.tutSlow = 1; return; }
+  if (F.introT > 0) { if (F.introT === 2.6) frPrompt('Swipe LEFT and RIGHT', 'to change lanes and grab coins', 'left'); F.introT -= FRAME_DT; if (F.introT <= 0 || G.tpLane) { F.introT = 0; if (!F.cur) $('tutPrompt').classList.remove('show'); } }
+  if (F.cur) {
+    const o = F.cur.o, d = o.z - PZ, k = F.cur.k;
+    const ok = k === 'low' ? P.y > 0.25 : k === 'high' ? P.slide > 0 : Math.abs(P.lane * laneW - o.x) > laneW * 0.5;
+    if (ok || d < -1 || !G.objs.includes(o)) { F.done[k] = 1; F.cur = null; G.tutSlow = 1; $('tutPrompt').classList.remove('show', 'frozen'); if (ok) { popup('NICE!', '#7dff9a'); sfx('coin'); } if (F.done.low && F.done.high && F.done.block) { G.firstRun = false; setTimeout(() => { if (G.scene === 'play') toast('YOU\'VE GOT IT!', 'Now run as far as you can', 1600); }, 500); } }
+    else { G.tutSlow = d < 10 ? 0.22 : 0.65; $('tutPrompt').classList.toggle('frozen', d < 10); }
+    return;
+  }
+  for (const o of G.objs) { if (o.K.cat !== 'obs' || o.ignore || o.K.cross) continue; const k = o.K.type; if (!FR_HINTS[k] || F.done[k]) continue; const d = o.z - PZ; if (d > 24 || d < 5) continue; if (Math.abs(o.x - P.lane * laneW) > laneW * 0.5) continue;
+    F.cur = { o, k }; F.introT = 0; frPrompt(...FR_HINTS[k]); break; }
+}
+
 /* ---------------- GAME STATE ---------------- */
 const G = {
   scene: 'menu', mode: 'infinite', levelIdx: 0, cfg: INF_CFG, paused: false, t: 0,
@@ -5031,7 +5101,7 @@ function baseSpeed() {
   // gets faster the longer you survive, capped where it's still playable
   SPEED_MAX = diff().max * sm;
   if (G.fun === 'hardcore') return Math.min(SPEED_MAX + 3, (diff().start + 6) * sm + G.dist * diff().ramp);
-  return Math.min(SPEED_MAX, diff().start * sm + G.dist * diff().ramp);
+  return Math.min(SPEED_MAX, diff().start * sm + G.dist * diff().ramp) * (G.easyRun ? 0.88 : 1);
 }
 const DIFF = {
   easy: { name: 'Easy', dens: -0.16, safe: -0.12, start: 13, max: 25, ramp: 0.0028, camp: 0.9, gap: 1.2, score: 1 },
@@ -5044,7 +5114,9 @@ const diff = () => (G && G.fixed) ? DIFF.normal : DIFF[save.difficulty] || DIFF.
 const SPEEDS = { chill: { name: 'Chill', mul: 0.88, score: 0.8 }, normal: { name: 'Normal', mul: 1, score: 1 }, fast: { name: 'Fast', mul: 1.15, score: 1.25 }, turbo: { name: 'Turbo', mul: 1.3, score: 1.6 } };
 const speedMode = () => (G && G.fixed) ? SPEEDS.normal : SPEEDS[save.speedMode] || SPEEDS.normal;
 let SPEED_MAX = 27;
-const wN = () => clamp((G.weight - 0.2) / 0.8, 0, 1);
+// Round 18: every runner gets the same quick, light controls. The backpack load used to slow lane changes, lower jumps and
+// lengthen slides, so brand-new players (full pack) got the worst handling. It is now only how the backpack looks.
+const wN = () => 0;
 // HEAD HOP targets: every person (and person with a cart or umbrella). Only the 3-high cheer pyramid can't be hopped
 // (and a swinging door, which has no head to land on).
 const NO_HOP = { pyramid: 1, doorswing: 1 };
@@ -5249,7 +5321,10 @@ function startRun(mode, idx) {
   G.daily = mode === 'infinite' && !!G.dailyNext; G.dailyNext = false; G.trip = mode === 'infinite' && !G.daily ? (G.tripNext || null) : null; G.tripNext = null; G.lockTheme = null;
   if (mode === 'campaign') { const L = LEVELS[G.levelIdx]; G.cfg = L; G.themeKey = L.theme; laneW = L.laneW * LANE_SCALE; const sk = diff().camp * speedMode().mul * 1.12; G.timeLeft = Math.round(L.time / Math.min(1, sk) * (sk < 1 ? 1.12 : 1)); }
   else { G.cfg = INF_CFG; G.themeKey = G.fun === 'sled' ? 'snowquad' : G.fixed ? 'high' : hallPick('locations').theme; laneW = INF_CFG.laneW * LANE_SCALE; G.infStage = 0; if (G.daily) G.lockTheme = dailyChallenge().theme; if (G.trip) G.lockTheme = 'trip_' + G.trip; if (G.lockTheme) G.themeKey = G.lockTheme; }
-  G.tut = null; G.tutHold = false; G.tutSlow = 1; $('tutPrompt').classList.remove('show');
+  G.tut = null; G.tutHold = false; G.tutSlow = 1; $('tutPrompt').classList.remove('show', 'frozen');
+  // first ever run: a real Infinite Run, a little slower, with swipe hints (and slow motion) the first time each kind of obstacle comes at you
+  G.firstRun = mode === 'infinite' && !save.tutDone && !G.fun && !G.funNext; G.easyRun = G.firstRun; G.fr = null; G.frSaved = false;
+  if (G.firstRun) { save.tutDone = 1; persist(); }
   if (!fromMenu) { G.decorSeed = 1 + Math.floor(Math.random() * 997); for (const sg of segs) sg.userData.k = null; } // new hallway layout every run (the menu already picked one)
   clearObjs(); setCamera(); rebuildPlayer();
   Object.assign(G, { dist: 0, score: 0, coins: 0, nextRow: 30, rowId: 0, rowCount: 0, prevSafe: 0, lastPower: 0, stumble: 0, dying: false, finishSpawned: false, popups: [], lastStarD: -9999, zoneNow: 'hall', cafeT: undefined, shake: 0, flash: 0, paused: false, bellWarned: false, smashed: 0, endT: 0 });
@@ -5270,7 +5345,8 @@ G.lastQuiz = 0; G.lastShortcut = 0; G.lastLetter = -999; G.tpStart = undefined; 
   if (mode !== 'tutorial') { if (cheatOn('flyer')) G.pw.cheat = pwTime('cheat') + 3; if (cheatOn('juiced')) G.pw.energy = pwTime('energy') + 3; }
   G.cheated = unfairCheats(); G.shield = mode !== 'tutorial' && charDef().ab === 'shield' ? 1 : 0; P.dj = false;
   dayBest(); setText('hTop', (save.best || 0).toLocaleString()); setText('hToday', (save.dayBest.s || 0).toLocaleString()); $('hBadges').style.display = G.mode === 'infinite' && !G.fun ? '' : 'none';
-  showScreen(null); $('popCol').innerHTML = ''; if (mode !== 'tutorial') $('tutSkip').classList.remove('show'); $('hud').classList.add('show'); $('heelyBtn').classList.toggle('show', true); $('pushBtn').classList.toggle('show', mode !== 'tutorial');
+  showScreen(null); $('popCol').innerHTML = ''; if (mode !== 'tutorial') $('tutSkip').classList.remove('show'); $('hud').classList.add('show'); $('heelyBtn').classList.toggle('show', mode === 'tutorial' || (save.heelys || 0) > 0); $('pushBtn').classList.toggle('show', mode !== 'tutorial' && pushUnlocked());
+  if (mode !== 'tutorial' && pushUnlocked() && !save.pushIntro) { save.pushIntro = 1; persist(); setTimeout(() => { if (G.scene === 'play') toast('NEW: ✋ PUSH', 'Tap it to shove people out of your lane', 2200); }, 2600); }
   if (G.fun === 'coinrush') G.timeLeft = 60;
   $('hCamp').style.visibility = mode === 'campaign' || G.fun === 'coinrush' || G.fun === 'trial' ? 'visible' : 'hidden';
   setDark(G.fun === 'dark' || (mode === 'campaign' && !!LEVELS[G.levelIdx].night));
@@ -5290,11 +5366,12 @@ function crash(o, msg) {
   if (save.admin && save.adminGod && G.mode !== 'tutorial') { if (o) o.ignore = true; return; } // admin god mode
   if (G.shield && G.mode !== 'tutorial') { G.shield = 0; if (o) o.ignore = true; G.pw.pass = Math.max(G.pw.pass, 1.5); G.caught = false; popup('🛡 SHIELD SAVED YOU!', '#7bdff2'); sfx('smash'); G.shake = 0.3; return; }
   if (petDef().help === 'guard' && !G.foxSaved && G.mode !== 'tutorial') { G.foxSaved = true; if (o) o.ignore = true; G.pw.pass = Math.max(G.pw.pass, 1.5); G.caught = false; popup('🦊 FOX TO THE RESCUE!', '#ff9f1c'); sfx('power'); clearChase(); G.stumble = 0; return; }
+  if (G.easyRun && !G.frSaved && G.dist < 900) { G.frSaved = true; if (o) o.ignore = true; G.pw.pass = Math.max(G.pw.pass, 1.5); G.caught = false; G.stumble = 0; clearChase(); G.shake = 0.25; sfx('bump'); popup('OOPS! FREE SAVE', '#ffd60a'); toast('First run bonus', 'Your first crash is on us. Next one counts!', 1800); return; }
   if (G.mode !== 'tutorial') breakChain(true);
   if (heelySave(o)) { if (G.tut) G.tut.saved = true; return; }
   if (G.mode === 'tutorial') { sfx('crash'); G.shake = 0.4; const k = G.caught || G.stumble > 0 ? 'caught' : (o && o.K.type) || 'block'; tutRetry(k === 'block' || k === 'low' || k === 'high' || k === 'caught' ? k : 'block'); return; }
   G.dying = true; G.dyingT = 1.3; G.shake = 0.5; G.flash = 0.6; P.fall = 0.001; P.slide = 0; P.slideQ = false; // a crash always ends the slide (no lying-down lean mixed into the fall)
-  G.deathMsg = msg; sfx('crash'); vibrate(200);
+  G.deathMsg = msg; sfx('crash'); vibrate(200); if (G.caught) { G.dyingT = 1.6; popup('CAUGHT!', '#ef476f'); }
   emit(P.x, 1.6, 0, 16, '#ffe066', 3.5, 0.9, 0.4, 3, true);
   if (o && o.K.say !== undefined) o.shout = 2;
   if (o && o.acts && o.acts.length) { o.knocked = true; o.vz = 0; o.acts.forEach((a, i) => setTimeout(() => a.pose('die', 1.3 + i * 0.1, 0.06), i * 60)); }
@@ -5347,7 +5424,7 @@ function oneMoreRun(sc) {
 }
 function endRun(win, reason) {
   if (G.scene !== 'play') return;
-  G.scene = 'over'; $('hud').classList.remove('show'); $('pwSide').classList.remove('show'); $('pushBtn').classList.remove('show');
+  G.scene = 'over'; $('hud').classList.remove('show'); $('pwSide').classList.remove('show'); $('pushBtn').classList.remove('show'); $('heelyBtn').classList.remove('show'); $('chaseMeter').classList.remove('show');
   const L = LEVELS[G.levelIdx];
   let bonus = 0, stars = 0;
   if (win && G.mode === 'campaign') {
@@ -5400,7 +5477,7 @@ function endRun(win, reason) {
   $('oReason').textContent = (tokLine && !G.fun && !G.trip && !dcLine) ? (win ? 'You made it!' : G.deathMsg) + tokLine : dcLine ? dcLine + (win ? '' : ' · ' + G.deathMsg) : G.trip ? currentTrip().item + ' this run: ' + (G.run.souv || 0) + ' · total ' + tripSave().got + (win ? '' : ' · ' + G.deathMsg) : G.fun ? funLine + (win ? '' : ' · ' + G.deathMsg) : win && G.mode === 'campaign' ? 'You reached ' + L.dest + ' with ' + Math.ceil(G.timeLeft) + 's to spare! (+$' + bonus + ')' + (L.goal && L.goal.t !== 'boss' ? (G.goalOk ? ' · Goal done ★' : ' · Goal missed: ' + goalText(L)) : '') : win ? 'You made it!' : (reason === 'late' ? 'The bell rang before you reached ' + L.dest + '. Tardy slip!' : G.deathMsg);
   $('oStars').textContent = win && G.mode === 'campaign' ? '★'.repeat(stars) + '☆'.repeat(3 - stars) : '';
   $('oStars').style.display = win && G.mode === 'campaign' ? 'block' : 'none';
-  $('oScore').textContent = sc.toLocaleString();
+  $('oScore').textContent = '0'; { const el = $('oScore'), t0 = performance.now(), dur = clamp(sc / 4000, 0.5, 1.2) * 1000; const step = now => { const k = clamp((now - t0) / dur, 0, 1), e = 1 - Math.pow(1 - k, 3); el.textContent = Math.round(sc * e).toLocaleString(); if (k < 1 && G.scene === 'over') requestAnimationFrame(step); else el.textContent = sc.toLocaleString(); }; setTimeout(() => requestAnimationFrame(step), 250); }
   $('oDist').textContent = Math.floor(G.dist) + 'm';
   $('oCoins').textContent = '$' + earned;
   if (G.mode === 'infinite') { $('oBestL').textContent = newBest ? '★ New best!' : 'Best score'; $('oBest').textContent = save.best.toLocaleString(); }
@@ -5510,9 +5587,9 @@ function act(a) {
   else if (a === 'jump') {
     if (P.y <= (P.fl || 0) + 0.001) { P.vy = hopAssist(jumpV() * (G.heely > 0 ? 1.12 : 1) * (G.pw.spring > 0 ? 1.55 : 1)); if (G.pw.spring > 0) { emit(P.x, 0.1, 0.2, 14, '#7dff9a', 4, 0.5, 0.2, 0, true, true); sfx('power'); } P.slide = 0; P.slideQ = false; sfx('jump'); if (G.heely > 0) startTrick(); G.lastJumpT = G.t; }
     else if (charDef().ab === 'djump' && !P.dj && P.vy < jumpV() * 0.7) { P.dj = true; P.vy = jumpV() * 0.88; sfx('jump'); popup('DOUBLE JUMP!', '#7bdff2'); emit(P.x, P.y, 0.2, 10, '#ffffff', 2.5, 0.4, 0.15, 0, true, true); }
-    else if (G.t - (G.lastJumpT || -9) < 0.7 && !(G.burstCd > 0) && G.mode !== 'tutorial') { G.burstT = 1.8; G.burstCd = 6; P.vy = Math.min(P.vy, 2); popup('SPRINT!', '#ff9f1c'); sfx('whistle'); voice('go_go_go', 8); buzz('power'); } // swipe up twice = sprint burst
+    else if (P.vy <= 0) P.jumpBuf = G.t; // swiped up a moment before landing: jump the instant your feet touch down
   } else if (a === 'slide') {
-    if (P.y > (P.fl || 0) + 0.001) { P.vy = Math.min(P.vy, -22); P.slideQ = true; }
+    if (P.y > (P.fl || 0) + 0.001) { P.vy = Math.min(P.vy, -22); P.slideQ = true; P.rollQ = true; }
     else if (P.slide <= 0.1) { P.slide = slideDur(); sfx('slide'); }
   }
 }
@@ -5527,7 +5604,7 @@ function lockerSlam(dir) {
   if (G.mode === 'tutorial') { popup('CLANG!', '#ef476f'); return; }
   if (G.stumble > 0 || G.fun === 'hardcore') { G.caught = true; crash(null, (G.chase ? G.chase.name[0].toUpperCase() + G.chase.name.slice(1) : 'They') + ' caught you after you slammed into the lockers!'); return; }
   G.stumble = chaseTime(); popup('CLANG!', '#ef476f');
-  startChase(null, { role: 'student', line: "HEY, THAT'S MY LOCKER!", name: 'the kid whose locker you slammed' });
+  P.stumbleT = 0.45; startChase(null, Object.assign({}, MONITOR_CHASE, { line: 'HEY! NO SLAMMING LOCKERS!' }));
 }
 let lastTap = 0;
 const KEYMAP = { ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'right', ArrowUp: 'jump', KeyW: 'jump', Space: 'jump', ArrowDown: 'slide', KeyS: 'slide' };
@@ -5675,7 +5752,7 @@ function update(dt) {
   } else if (P.y > P.fl + 0.0001 || P.vy > 0) {
     const g = 26 * (save.up.helium && P.vy < 0 ? 0.72 : 1) * (cheatOn('moon') ? 0.45 : 1) * (charDef().ab === 'glide' && P.vy < 0 ? 0.55 : 1);
     P.vy -= g * dt; P.y += P.vy * dt;
-    if (P.y <= P.fl) { P.y = P.fl; P.dj = false; if (G.hopN > 1 && P.fl < 0.3) { G.hopT = 0; } G.hopN = P.fl < 0.3 ? 0 : G.hopN; P.vy = 0; sfx('land'); if (G.trick) landTrick(); emit(P.x, 0.1, 0.2, 6, '#cfc6b4', 1.8, 0.4, 0.25, 2, false, true); if (P.slideQ) { P.slideQ = false; P.slide = slideDur(); sfx('slide'); } }
+    if (P.y <= P.fl) { P.y = P.fl; P.dj = false; if (G.hopN > 1 && P.fl < 0.3) { G.hopT = 0; } G.hopN = P.fl < 0.3 ? 0 : G.hopN; P.vy = 0; sfx('land'); if (G.trick) landTrick(); emit(P.x, 0.1, 0.2, 10, '#e8e0cc', 2.4, 0.45, 0.28, 2, false, true); P.landT = 0.2; if (P.slideQ) { P.slideQ = false; P.slide = slideDur(); sfx('slide'); if (P.rollQ) P.rollT = Math.min(0.5, P.slide); } else if (P.jumpBuf && G.t - P.jumpBuf < 0.22) { P.jumpBuf = 0; act('jump'); } P.rollQ = false; }
   }
   else if (P.y < P.fl) P.y = P.fl; // walking up a ramp
   if (P.fl > 0.5) G.highAir = true; else if (P.y <= 0.01) G.highAir = false; // jumped from a table
@@ -5707,6 +5784,7 @@ function update(dt) {
   const lvl = G.mode === 'campaign' ? LEVELS[G.levelIdx] : null;
   G.nextRow -= move;
   if (G.mode === 'tutorial') { G.nextRow = 1e9; tutUpdate(); }
+  if (G.firstRun) firstRunHints();
   while (G.nextRow < SPAWN_Z) {
     if (lvl && G.dist + G.nextRow - PZ > lvl.target - 18) {
       if (!G.finishSpawned) { G.finishSpawned = true; addObj('finish', 0, lvl.target - G.dist + PZ, { dest: lvl.dest.toUpperCase() }); }
@@ -5806,7 +5884,7 @@ function update(dt) {
           if (G.fun !== 'hardcore' && moving && P.fromLane !== P.lane && Math.abs(o.x - P.lane * laneW) < Math.abs(o.x - P.fromLane * laneW)) {
             o.ignore = true; o.bumped = true; P.lane = P.fromLane;
             if (G.stumble > 0 || (G.chase && G.chase.boss)) { G.caught = true; crash(o, (G.chase ? G.chase.name[0].toUpperCase() + G.chase.name.slice(1) : 'They') + ' caught you!'); }
-            else { breakChain(); G.tpBump = true; G.stumble = chaseTime(); G.shake = 0.25; sfx('bump'); vibrate(60); popup('BUMPED! RUN!', '#ef476f'); startChase(o); }
+            else { breakChain(); G.tpBump = true; G.stumble = chaseTime(); G.shake = 0.25; sfx('bump'); vibrate(60); popup('BUMPED! RUN!', '#ef476f'); P.stumbleT = 0.45; knockAside(o); startChase(null, MONITOR_CHASE); }
           } else {
             const msgs = { robot: 'CLANK! The robotics club robot ran you over. Switch lanes!', pie: 'SPLAT! A pie to the face. Slide under flying pies!', door: 'A classroom door swung open right into you! Watch for the flashing light.', locker: 'BONK! A locker door popped open. Slide under next time!', tape: 'You ran into the Principal\'s caution tape!', puddle: 'SPLASH! You slipped in a puddle. Jump it!', tray: 'You slipped on a spilled lunch tray! Jump it next time!', chair: 'A runaway rolling chair took you out! Jump it!', volcano: 'You crashed into the science fair volcano. Jump over it!', walkers: 'You crashed into two students walking to class!', kidline: 'You plowed through a whole class walking in line!', lockerkid: 'You slammed into a kid at their locker!', cart: "You crashed into the janitor's cart!", teacher: 'You ran right into a teacher! Switch lanes next time.', professor: 'You ran right into the professor! Switch lanes next time.', monitor: 'You ran right into the hall monitor! Switch lanes next time.', coach: 'You ran right into the coach! Switch lanes next time.', group: 'You plowed right into a group of chatting students!', kid: 'You bumped into a little kid. Off to the principal!', student: 'You ran smack into another student!', sleepy: 'You woke up a sleepy student the hard way!' };
             if (K.who === 'tray') sfx('tray');
@@ -5851,7 +5929,7 @@ function collect(o) {
     G.run.power++; mission('powerups', 1); voice('power_up', 6);
     G.pw[o.kind] = dur[o.kind];
     const before = G.weight; G.weight = Math.max(0.2, G.weight - 0.1);
-    toast(names[o.kind][0], names[o.kind][1] + (G.weight < before ? ' · Backpack -10%' : ''), 1400);
+    toast(names[o.kind][0], names[o.kind][1], 1400); pwBurst(o.kind);
     sfx('power'); vibrate(40); G.score += 100;
   }
 }
@@ -5882,8 +5960,10 @@ function updateHUD() {
   setText('hScore', Math.floor(G.score).toLocaleString());
   { const cb = $('hCombo'), on = (G.chain || 0) > 0; cb.style.display = on ? 'block' : 'none'; if (on) { setText('hComboT', 'COMBO x' + comboMul() + ' · ' + G.chain); $('hComboBar').style.width = clamp(G.chainT / COMBO_TIME * 100, 0, 100) + '%'; cb.classList.toggle('hot', comboMul() >= 3); } }
   setText('hDist', Math.floor(G.dist) + ' m'); setText('hMult', 'x' + scoreMult());
-  setText('heelyCount', String(save.heelys || 0)); $('heelyBtn').classList.toggle('on', G.heely > 0);
-  setText('hCoins', '$' + G.coins);
+  setText('heelyCount', String(save.heelys || 0)); $('heelyBtn').classList.toggle('on', G.heely > 0); $('heelyBtn').classList.toggle('show', G.scene === 'play' && (G.mode === 'tutorial' || (save.heelys || 0) > 0 || G.heely > 0));
+  { const on = G.scene === 'play' && G.stumble > 0 && !G.dying; $('chaseMeter').classList.toggle('show', on); if (on) $('chaseFill').style.width = clamp(G.stumble / chaseTime() * 100, 0, 100) + '%'; }
+  { const m = scoreMult(); if (hudCache.mult !== m) { if (hudCache.mult !== undefined && G.scene === 'play') bumpEl('hMult', 1.5); hudCache.mult = m; } }
+  setText('hCoins', '$' + G.coins); if (hudCache.coins !== G.coins) { if (G.coins > (hudCache.coins || 0) && G.scene === 'play') bumpEl('hCoins', 1.22); hudCache.coins = G.coins; }
   $('finBtn').classList.toggle('show', G.scene === 'play' && comboMul() >= 3);
   { const pb = $('pushBtn'), cd = G.pushCd || 0; pb.classList.toggle('cool', cd > 0); pb.style.setProperty('--p', (1 - cd / pushCD()) * 360 + 'deg'); pb.classList.toggle('pads', G.padsT > 0); }
   const showTok = G.mode === 'infinite' && !G.trip && (G.eventRun || G.runTok > 0); $('hTok').style.display = showTok ? 'block' : 'none'; if (showTok) setText('hTok', (EV_ICON[currentEvent().id] || '🎟') + ' ' + G.runTok + ' · ' + eventSave().tokens + '/' + EVENT_TRACK[EVENT_TRACK.length - 1][0]);
@@ -5903,7 +5983,7 @@ function updateHUD() {
   if (G.heely > 0) html += '<div class="hudBox pw' + (G.heely < 3 ? ' low' : '') + '">👟<div class="pbar"><i style="width:' + (G.heely / (G.heelyMax || HEELY_TIME) * 100).toFixed(0) + '%;background:#ffb703"></i></div></div>';
   for (const [k, ic, col, d] of pws) if (G.pw[k] > 0) html += '<div class="hudBox pw' + (G.pw[k] < 2 ? ' low' : '') + '">' + ic + '<div class="pbar"><i style="width:' + (G.pw[k] / d * 100).toFixed(0) + '%;background:' + col + '"></i></div></div>';
   if (G.shield) html += '<div class="hudBox pw">🛡 Shield</div>';
-  if (G.stumble > 0) html += '<div class="hudBox pw chaseBox"><span>Being chased! ' + Math.ceil(G.stumble) + 's</span><div class="pbar"><i style="width:' + (G.stumble / CHASE_TIME * 100).toFixed(0) + '%;background:#ef476f"></i></div></div>';
+  // being chased now shows as the HALL MONITOR bar at the top of the screen (round 18)
   if (hudCache.pw !== html) { hudCache.pw = html; $('hPw').innerHTML = html; $('pwSide').classList.toggle('show', !!html); }
   layoutStack();
 }
@@ -5945,8 +6025,9 @@ function goMenu() { $('tutSkip').classList.remove('show'); $('pwSide').classList
   if (G.mode !== 'campaign') G.themeKey = hallPick('locations').theme;
   laneW = 2.1 * LANE_SCALE; setCamera(); Object.assign(P, { x: 0, y: 0, vy: 0, slide: 0, fall: 0, lane: 0 }); rebuildPlayer();
   refreshMenu(); showScreen('sMenu'); checkCrown();
+  if (!save.appTour && (save.runsTotal || 0) >= 1) setTimeout(() => { if (G.scene === 'menu' && curScreen === 'sMenu' && !document.querySelector('.modal.show')) startAppTour(); }, 700);
 }
-const TIPS = ['Time your jump to land on someone\'s head: HEAD HOP!', 'Jump onto a row of lunch tables and run along the top!', 'Swipe UP twice for a SPRINT burst!', 'Duck into a SHORTCUT classroom for free coins!', 'Tap PUSH to shove people out of your lane!', 'Swipe ↓ to slide under banners!', 'Grab a Hall Pass to go invincible!', 'Lighter backpack = higher jumps!', 'Claim your FREE reward daily!', 'Beat Maya on the leaderboard!', 'Bump something and it chases you for 10s!', 'Slam the lockers and their owner comes after you!'];
+const TIPS = ['Time your jump to land on someone\'s head: HEAD HOP!', 'Jump onto a row of lunch tables and run along the top!', 'Duck into a SHORTCUT classroom for free coins!', 'Tap PUSH to shove people out of your lane!', 'Swipe ↓ to slide under banners!', 'Grab a Hall Pass to go invincible!', 'Claim your FREE reward daily!', 'Beat Maya on the leaderboard!', 'Bump something and it chases you for 10s!', 'Slam the lockers and their owner comes after you!'];
 function refreshMenu() {
   $('mBank').textContent = save.bank.toLocaleString(); $('mStars').textContent = (save.gs || 0).toLocaleString();
   ensureMissions(); const md = save.missions.filter(m => m.done).length; $('missBadge').textContent = missionsAllDone() ? '!' : md + '/3'; $('missBadge').classList.add('on');
@@ -6236,15 +6317,15 @@ function askName(then, record) {
 // click anywhere on the start screen that isn't a button to play (browser and phone)
 $('sMenu').addEventListener('click', e => { if (curScreen !== 'sMenu' || e.target.closest('#tapZone')) return; if (e.target.closest('button,a,input,select,label,.card,.side,.sideSq,.nav,.mWallet,.mTopR,.mCash,.pill,.iconBtn,[data-tab]')) return; $('tapZone').click(); });
 glCanvas.addEventListener('click', () => { if (G.scene === 'menu' && curScreen === 'sMenu') $('tapZone').click(); });
-$('tapZone').onclick = () => { initAudio(); sfx('click'); if (!save.age) { openAgeGate(); return; } if (!save.tutDone) startTutorial(); else startRun('infinite'); }; // a nickname is optional: you're asked for one if you set a world record
+$('tapZone').onclick = () => { initAudio(); sfx('click'); if (!save.age) { openAgeGate(); return; } startRun('infinite'); }; // a nickname is optional: you're asked for one if you set a world record
 $('bTut').onclick = () => { sfx('click'); startTutorial(); };
 const LOCKER_MS = 4 * 3600000;
 const lockerLeft = () => Math.max(0, (save.mlocker || 0) + LOCKER_MS - Date.now());
 $('bMLocker').onclick = () => { initAudio(); if (lockerLeft() > 0) { sfx('deny'); toast('Mystery Locker', 'Opens again in ' + fmtLeft(lockerLeft()), 1300); return; }
   save.mlocker = Date.now(); const r = Math.random(), rw = r < 0.1 ? { gs: 1 } : r < 0.25 ? { heelys: 1 } : r < 0.35 ? { otok: 1 } : { cash: pick([80, 120, 150, 200, 300]) }; grant(rw); sfx('locker'); setTimeout(() => sfx('win'), 250); toast('MYSTERY LOCKER!', rewardText(rw), 1800); refreshMenu(); };
-$('bTourney').onclick = () => { initAudio(); sfx('click'); buildTourney(); showScreen('sTourney'); };
+$('bTourney').onclick = () => { initAudio(); sfx('click'); { const lk = moreLocked('bLeague'); if (lk) { sfx('deny'); toast('🔒 Weekly Tournament', 'Unlocks after ' + lk + ' more run' + (lk > 1 ? 's' : ''), 1600); return; } } buildTourney(); showScreen('sTourney'); };
 $('bTrnPlay').onclick = () => { sfx('click'); G.tourneyNext = true; startRun('infinite'); };
-$('bClubs').onclick = () => { initAudio(); sfx('click'); buildClubs(); showScreen('sClubs'); };
+$('bClubs').onclick = () => { initAudio(); sfx('click'); { const lk = moreLocked('bLeague'); if (lk) { sfx('deny'); toast('🔒 Clubs', 'Unlocks after ' + lk + ' more run' + (lk > 1 ? 's' : ''), 1600); return; } } buildClubs(); showScreen('sClubs'); };
 $('bReplay').onclick = () => { sfx('click'); startReplay(); };
 $('replayTag').onclick = () => stopReplay();
 $('bPhoto').onclick = () => { sfx('click'); startPhoto(); };
@@ -6533,18 +6614,23 @@ const MORE_TILES = [ // [icon, label, button it presses, element with its live s
   ['❓', 'How to Play', 'bHow', null, null, null],
   ['⌨️', 'Controls', 'bCtrlMenu', null, null, null, 'web']
 ];
+// round 18: a brand-new player sees the free gift, missions, Mystery Locker and how-to-play first; the rest unlocks after a
+// few days or a number of runs (whichever comes first), so the More screen grows with you instead of all at once
+const MORE_UNLOCK = { bSpin: [2, 8], bEvents: [2, 8], bTrophies: [2, 10], bPass: [3, 15], bLeague: [3, 15] };
+function moreLocked(btn) { const u = MORE_UNLOCK[btn]; if (!u) return 0; const runs = save.runsTotal || 0; return playDays() >= u[0] || runs >= u[1] ? 0 : u[1] - runs; }
 let moreReturn = false; // Back on a screen opened from More goes back to More
 function buildMore() { const g = $('moreGrid'); if (!g) return; g.innerHTML = '';
   for (const [icon, label, btn, sub, badge, hot, only] of MORE_TILES) { if (only === 'web' && !IS_WEB) continue; if (!$(btn)) continue;
     const t = document.createElement('button'); t.className = 'mTile'; t.dataset.btn = btn; t.innerHTML = '<i></i><b></b><small></small><em class="badge"></em>';
     t.querySelector('i').textContent = icon; t.querySelector('b').textContent = label;
-    t.onclick = e => { e.stopPropagation(); $(btn).click(); if (curScreen && curScreen !== 'sMenu' && curScreen !== 'sMore') moreReturn = true; setTimeout(syncMore, 50); };
+    t.onclick = e => { e.stopPropagation(); const lk = moreLocked(btn); if (lk) { sfx('deny'); toast('🔒 ' + label, 'Unlocks after ' + lk + ' more run' + (lk > 1 ? 's' : '') + ' (or come back tomorrow)', 1600); return; } $(btn).click(); if (curScreen && curScreen !== 'sMenu' && curScreen !== 'sMore') moreReturn = true; setTimeout(syncMore, 50); };
     g.appendChild(t); }
   syncMore(); }
-function moreHot() { let n = 0; for (const tl of MORE_TILES) { try { if (tl[5] && tl[5]()) n++; } catch (e) {} } return n; }
+function moreHot() { let n = 0; for (const tl of MORE_TILES) { if (moreLocked(tl[2])) continue; try { if (tl[5] && tl[5]()) n++; } catch (e) {} } return n; }
 function syncMore() { const n = moreHot(), b = $('moreBadge'); if (b) { b.textContent = n ? String(n) : ''; b.classList.toggle('on', n > 0); }
   const g = $('moreGrid'); if (!g) return;
   for (const t of g.children) { const tl = MORE_TILES.find(x => x[2] === t.dataset.btn); if (!tl) continue;
+    { const lk = moreLocked(tl[2]); t.classList.toggle('locked', !!lk); if (lk) { t.querySelector('small').textContent = '🔒 ' + lk + ' more run' + (lk > 1 ? 's' : ''); const tb = t.querySelector('.badge'); tb.textContent = ''; tb.classList.remove('on'); t.classList.remove('hot'); continue; } }
     const sub = tl[3] && $(tl[3]); t.querySelector('small').textContent = sub ? sub.textContent : '';
     const bd = tl[4] && $(tl[4]), tb = t.querySelector('.badge'); const on = !!(bd && bd.classList.contains('on') && bd.textContent); tb.textContent = on ? bd.textContent : ''; tb.classList.toggle('on', on);
     let h = false; try { h = !!(tl[5] && tl[5]()); } catch (e) {} t.classList.toggle('hot', h); } }
