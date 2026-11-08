@@ -7,15 +7,17 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="google-adsense-account" content="ca-pub-9841041313313334">
-<!-- AdSense: the exact tag AdSense asks for on every page. Ad requests start paused and non-personalized; they stay paused until the player chooses to watch an ad (never for under-13 players in the app). -->
+<!-- AdSense: the site is verified by the meta tag above. The ad script itself is only loaded by the game AFTER the age
+     check, and never for players under 13. Ad requests start paused and non-personalized, and stay paused until the
+     player chooses to watch an ad; personalized ads only for 16+ players who leave them on. -->
 <script>(window.adsbygoogle = window.adsbygoogle || []).pauseAdRequests = 1; window.adsbygoogle.requestNonPersonalizedAds = 1;</script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9841041313313334"
-     crossorigin="anonymous"></script>
 <!-- Google Analytics (GA4): counts visits and traffic sources only. No cookies, no saved visitor id, no Google signals or ad features, so no visit is tied to a person.
-     To use a different GA4 property, change the Measurement ID on the next line (it looks like G-XXXXXXXXXX). -->
-<script>window.GA_MEASUREMENT_ID = 'G-8XZRP9PG7J';
+     It only starts for players who told the game's age check they're 16+ (and left usage stats on). To use a different GA4 property, change the Measurement ID on the next line. -->
+<script>window.HALLWAY_WEB_PAGE = true; window.GA_MEASUREMENT_ID = 'G-8XZRP9PG7J';
 (function (id) {
   if (!id || location.protocol !== 'https:' || window.HallwayAds || /; wv\)/.test(navigator.userAgent)) return; // website only, never the Android app
+  var sv = null; try { sv = JSON.parse(localStorage.getItem('hallwayRush.save.v1') || 'null'); } catch (e) {}
+  if (!sv || sv.age !== 'adult' || (sv.privacy && sv.privacy.analytics === false)) return; // only players who said they're 16+ and left usage stats on
   window.dataLayer = window.dataLayer || []; window.gtag = function () { dataLayer.push(arguments); };
   gtag('js', new Date());
   gtag('config', id, { client_storage: 'none', allow_google_signals: false, allow_ad_personalization_signals: false });
@@ -574,6 +576,60 @@ body.web .playSoon{font-size:13px}
 .repReasons{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0}.repReasons .chip.on{outline:3px solid #ff8a00}
 .ownIn{width:100%;border:2px solid var(--line);border-radius:12px;padding:10px 12px;font:inherit;font-weight:700;margin:4px 0;background:rgba(0,0,0,.25);color:inherit;user-select:text;-webkit-user-select:text}
 .ownList{max-height:52vh;overflow:auto;text-align:left;margin:6px 0}#ownTabs{flex-wrap:wrap}
+/* ================= SIMPLE HOME (round 16): one big TAP TO PLAY, four big buttons, nothing else to read ================= */
+.simpleHome{justify-content:flex-start;gap:6px}
+.simpleHome .mTop{align-items:flex-start}
+.simpleHome .mTopR{gap:8px}
+.simpleHome .mTopR .fsChip{position:static;font-size:13px!important;padding:6px 10px!important;align-self:center}
+.simpleHome .iconBtn{width:52px;height:52px;border-radius:16px;background:#fff!important;color:var(--ink);border:3px solid var(--ink)!important;box-shadow:0 4px 0 var(--ink)!important}
+.simpleHome .iconBtn .ic{width:28px;height:28px;color:var(--ink)}
+.savePill{display:none;height:52px;box-sizing:border-box;padding:0 16px!important;background:#3ccf6e!important;color:#fff!important;font-size:18px!important;gap:6px}
+.savePill span:last-child{-webkit-text-stroke:.6px var(--ink)}
+body.web .savePill{display:flex}
+.simpleHome .wordmark{margin:2px 0 0}
+.hGoal{display:flex;flex-direction:column;align-items:center;gap:6px;width:100%;pointer-events:none}
+.hGoal>*{pointer-events:auto}
+.hBest{display:flex;align-items:baseline;gap:8px;background:rgba(14,22,52,.6);color:#fff;border:3px solid var(--ink);border-radius:999px;padding:3px 16px;box-shadow:0 4px 0 var(--ink);font-family:'Luckiest Guy',sans-serif}
+.hBest small{font-size:14px;letter-spacing:1px;color:#ffd60a}.hBest b{font-size:22px;font-weight:400;letter-spacing:1px}
+.hGoal .worldCard{width:auto;max-width:min(86vw,360px);padding:3px 12px 3px 4px!important;gap:6px;background:#fff!important;color:var(--ink)}
+.hGoal .worldCard .ico{width:30px;height:30px;font-size:18px}
+.hGoal .worldCard .cTxt small{font-size:11px}.hGoal .worldCard .cTxt b{font-size:15px}
+#mSchool:not([style*="none"]) ~ #mWorld{display:none!important}
+.simpleHome .tapZone{justify-content:flex-end;padding-bottom:4px;gap:4px}
+.simpleHome .tapPlay{font-size:clamp(46px,13vw,84px);line-height:1}
+.tapHint{font-family:'Patrick Hand',sans-serif;font-size:17px;color:#fff;background:rgba(27,31,59,.72);border-radius:999px;padding:2px 14px;letter-spacing:.5px}
+.simpleHome .tipLine{display:none}
+@media (max-width:640px){.simpleHome .playSoon{display:none!important}}
+.simpleHome .mNav{grid-template-columns:repeat(4,1fr)!important;gap:10px!important;max-width:720px;margin:0 auto}
+.simpleHome .nav{font-size:15px!important;padding:12px 2px 10px!important;border-radius:20px!important;gap:6px!important}
+.simpleHome .nav .ic{width:34px!important;height:34px!important}
+body.web .simpleHome .nav{font-size:19px!important}
+.simpleHome .nav .badge{top:-8px;right:-6px}
+.simpleHome .playSoon{bottom:calc(max(10px,env(safe-area-inset-bottom)) + 92px)}
+#bmTip{top:auto!important;bottom:calc(max(12px,env(safe-area-inset-bottom)) + 96px);font-size:13px;max-width:min(92vw,460px);padding:5px 8px!important}#bmTip b{font-size:13px;line-height:1.2}
+/* More: big tiles in a grid */
+.morePanel h2,.savePanel h2{text-align:center}
+.moreGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0 4px}
+@media (max-width:420px){.moreGrid{grid-template-columns:repeat(2,1fr)}}
+.mTile{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:96px;padding:10px 4px;border:3px solid var(--ink);border-radius:18px;box-shadow:0 4px 0 var(--ink);background:#fff;color:var(--ink);font:inherit;cursor:pointer;text-align:center}
+.mTile:active{transform:translateY(2px);box-shadow:0 2px 0 var(--ink)}
+.mTile i{font-style:normal;font-size:34px;line-height:1}
+.mTile b{font-family:'Luckiest Guy',sans-serif;font-weight:400;font-size:16px;letter-spacing:.5px;line-height:1.05}
+.mTile small{font-size:12px;font-weight:800;opacity:.7;line-height:1.1;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mTile.hot{background:linear-gradient(180deg,#fff6c2,#ffd60a)}
+.mTile .badge{display:none}.mTile .badge.on{display:grid}
+/* Save code (website) */
+.svBox{display:flex;flex-direction:column;gap:6px;background:#fff;border:3px solid var(--ink);border-radius:16px;padding:12px;margin:10px 0;text-align:left}
+.svBox b{font-size:18px;color:var(--ink)}.svBox small{font-size:14px;opacity:.8;color:var(--ink)}
+.svBox textarea{width:100%;box-sizing:border-box;font:13px/1.3 ui-monospace,Menlo,Consolas,monospace;border:3px solid var(--ink);border-radius:12px;padding:8px;resize:none;background:#fff;color:var(--ink);word-break:break-all}
+.svBox .btn{margin:4px 0 0}
+/* Settings: the everyday settings first, the rest folded away */
+.advSet{margin:8px 0}.advSet>summary{cursor:pointer;list-style:none;font-family:'Luckiest Guy',sans-serif;font-size:18px;letter-spacing:.5px;padding:12px;border-radius:14px;background:#fff;border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink);text-align:center;color:var(--ink)}
+.advSet>summary::-webkit-details-marker{display:none}.advSet[open]>summary{margin-bottom:6px}
+/* Run screen: fewer things on screen */
+.hudBadges,.hudBox.wbox{display:none!important}
+@media (pointer:coarse){#quickCtl,#qcTab{display:none!important}}
+@media (max-width:640px){#bmTip{display:none!important}}
 </style>
 </head>
 <body>
@@ -619,43 +675,66 @@ body.web .playSoon{font-size:13px}
 
 <div id="bmTip" role="note"><span>⭐</span><b id="bmTxt">Bookmark Hallway Dash so it's one click away: press Ctrl+D</b><button id="bmX" aria-label="Close">✕</button></div>
 <!-- MENU (start screen over the live 3D scene) -->
-<div class="screen show menuScreen" id="sMenu">
+<div class="screen show menuScreen simpleHome" id="sMenu">
+  <!-- Simple home: wallet + Save + Settings on top, the name, your best, one big TAP TO PLAY and four big buttons.
+       Everything else (missions, events, gifts, pass, spin, league, trophies...) lives on the More screen. -->
   <div class="mTop">
     <div class="mWallet"><div class="mCash"><span class="coinIco">$</span><b id="mBank">0</b><button class="plusBtn" data-store="cash" aria-label="Get cash">+</button></div><div class="mCash star"><span class="starIco">★</span><b id="mStars">0</b><button class="plusBtn" data-store="stars" aria-label="Get Gold Stars">+</button></div></div>
-    <div class="mTopR"><button class="pill" id="mRankPill"><svg class="ic sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg><span id="mRankTxt">–</span></button><button class="iconBtn" id="bGear" aria-label="Settings"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+    <div class="mTopR"><button class="chip ctrlChip fsChip" id="bFull" onclick="event.stopPropagation();toggleFullscreen()">⛶ Full screen (F)</button><button class="pill savePill webOnly" id="bSaveHome" aria-label="Save code"><span aria-hidden="true">💾</span><span>Save</span></button><button class="iconBtn" id="bGear" aria-label="Settings"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
   </div>
   <div class="wordmark"><span>HALLWAY</span><b>DASH</b><small>Don't be late for class.</small></div>
-  <div class="mRow">
-    <div class="mLeft">
-      <div class="card"><canvas id="avatar" width="128" height="128"></canvas><div class="cTxt"><small>High Score</small><b id="mBest">0</b></div></div>
-      <button class="card small worldCard" id="mWorld" style="display:none"><div class="ico">🌍</div><div class="cTxt"><small>World record to beat</small><b id="mWorldTxt">–</b></div></button>
-      <button class="card small worldCard" id="mSchool" style="display:none"><div class="ico">🏫</div><div class="cTxt"><small id="mSchoolSub">Your school</small><b id="mSchoolTxt">–</b></div></button>
-      <div class="chipRow"><span class="miniChip" id="mMult">x1</span><span class="miniChip" id="mWord">BELL</span><button class="miniChip" id="bHow">?</button></div>
-      <button class="card small lockerCard" id="bMLocker"><div class="ico">🔐</div><div class="cTxt"><small>Mystery Locker</small><b id="mLockTxt">OPEN!</b></div></button>
-      <div class="card small"><div class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 22V4M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1"/></svg></div><div class="cTxt"><small>Top Run</small><b id="mTop">0 m</b></div></div>
-    </div>
-    <div class="mModes" id="mModes"></div>
-    <div class="mRight">
-      <div class="lyricBox" id="lyricBox" aria-live="off"><small>♪ HALLWAY RUSH</small><b id="lyricLine">…</b><i id="lyricNext"></i><button id="lyricX" aria-label="Hide lyrics">✕</button></div>
-      <button class="free" id="bFree"><span class="gift"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg></span><b id="freeTxt">FREE</b></button>
-      <button class="side adStarBtn" id="bAdStar"><span style="font-size:20px;line-height:1">📺→⭐</span><b id="adStarTxt">+1 ★</b></button>
-      <button class="side passBtn" id="bPass"><svg class="ic" viewBox="0 0 24 24"><path d="M4 4h16v6a2 2 0 0 0 0 4v6H4v-6a2 2 0 0 0 0-4z"/><path d="M9 4v16"/></svg><b id="passTierTxt">Pass</b><em class="badge" id="passBadge"></em></button>
-      <button class="side" id="bSpin"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6 5.6 18.4"/></svg><b>Spin</b><em class="badge" id="spinBadge"></em></button>
-      <button class="side" id="bLeague"><svg class="ic" viewBox="0 0 24 24"><path d="M12 2 4 5v6c0 5 3.4 9.3 8 11 4.6-1.7 8-6 8-11V5l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg><b id="lgBtnTxt">League</b></button>
-      <button class="side" id="bTrophies"><svg class="ic" viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4Z"/></svg><b>Trophies</b><em class="badge" id="trBadge"></em></button>
-      <button class="side" id="bModes"><svg class="ic" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="4"/><path d="M6 12h4M8 10v4M15 11h.01M18 13h.01"/></svg><b>Modes</b></button>
-      <button class="side" id="bSideCamp"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 8l10 5 10-5-10-5Z"/><path d="M6 10.5V16c0 1.7 2.7 3 6 3s6-1.3 6-3v-5.5"/><path d="M22 8v6"/></svg><b id="campTxt">Stage 1/5</b></button>
-      
-    </div>
-  </div>
-  <button class="chip ctrlChip" id="bCtrlMenu">⌨️ Controls (C)</button><div class="playSoon" id="bGetApp" style="display:none">▶ Coming soon to Google Play</div><button class="chip ctrlChip fsChip" id="bFull" onclick="event.stopPropagation();toggleFullscreen()">⛶ Full screen (F)</button>
-  <div class="tapZone" id="tapZone"><div class="tipLine" id="mTipTxt"></div><div class="tapPlay">Tap to Play</div></div>
+  <div class="hGoal"><div class="hBest"><small>Best</small><b id="mBest">0</b></div><button class="card small worldCard" id="mSchool" style="display:none"><div class="ico">🏫</div><div class="cTxt"><small id="mSchoolSub">Your school</small><b id="mSchoolTxt">–</b></div></button><button class="card small worldCard" id="mWorld" style="display:none"><div class="ico">🌍</div><div class="cTxt"><small>World record to beat</small><b id="mWorldTxt">–</b></div></button></div>
+  <div class="tapZone" id="tapZone"><div class="tipLine" id="mTipTxt"></div><div class="tapPlay">Tap to Play</div><div class="tapHint">Swipe to dodge · jump · slide</div></div>
   <div class="mNav">
+    <button class="nav" id="bShop"><svg class="ic" viewBox="0 0 24 24"><path d="M8 6V5a4 4 0 0 1 8 0v1"/><rect x="5" y="6" width="14" height="15" rx="4"/><path d="M9 14h6v4H9z"/></svg><span>Locker</span><em class="badge" id="shopBadge"></em></button>
+    <button class="nav" id="bModes"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="4"/><path d="M6 12h4M8 10v4M15 11h.01M18 13h.01"/></svg><span>Modes</span></button>
+    <button class="nav" id="bRanks"><svg class="ic" viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg><span>Ranks</span></button>
+    <button class="nav" id="bMore"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg><span>More</span><em class="badge" id="moreBadge"></em></button>
+  </div>
+  <div class="playSoon" id="bGetApp" style="display:none">▶ Coming soon to Google Play</div>
+  <!-- kept for the game code, never shown on the simple home (their actions are on the More screen) -->
+  <div id="mStash" hidden>
+    <button class="pill" id="mRankPill"><svg class="ic sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg><span id="mRankTxt">–</span></button>
+    <div class="card"><canvas id="avatar" width="128" height="128"></canvas></div>
+    <div class="chipRow"><span class="miniChip" id="mMult">x1</span><span class="miniChip" id="mWord">BELL</span><button class="miniChip" id="bHow">?</button></div>
+    <button class="card small lockerCard" id="bMLocker"><div class="ico">🔐</div><div class="cTxt"><small>Mystery Locker</small><b id="mLockTxt">OPEN!</b></div></button>
+    <div class="card small"><div class="ico"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 22V4M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1"/></svg></div><div class="cTxt"><small>Top Run</small><b id="mTop">0 m</b></div></div>
+    <div class="lyricBox" id="lyricBox" aria-live="off"><small>♪ HALLWAY RUSH</small><b id="lyricLine">…</b><i id="lyricNext"></i><button id="lyricX" aria-label="Hide lyrics">✕</button></div>
+    <button class="free" id="bFree"><span class="gift"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg></span><b id="freeTxt">FREE</b></button>
+    <button class="side adStarBtn" id="bAdStar"><span style="font-size:20px;line-height:1">📺→⭐</span><b id="adStarTxt">+1 ★</b></button>
+    <button class="side passBtn" id="bPass"><svg class="ic" viewBox="0 0 24 24"><path d="M4 4h16v6a2 2 0 0 0 0 4v6H4v-6a2 2 0 0 0 0-4z"/><path d="M9 4v16"/></svg><b id="passTierTxt">Pass</b><em class="badge" id="passBadge"></em></button>
+    <button class="side" id="bSpin"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6 5.6 18.4"/></svg><b>Spin</b><em class="badge" id="spinBadge"></em></button>
+    <button class="side" id="bLeague"><svg class="ic" viewBox="0 0 24 24"><path d="M12 2 4 5v6c0 5 3.4 9.3 8 11 4.6-1.7 8-6 8-11V5l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg><b id="lgBtnTxt">League</b></button>
+    <button class="side" id="bTrophies"><svg class="ic" viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4Z"/></svg><b>Trophies</b><em class="badge" id="trBadge"></em></button>
+    <button class="side" id="bSideCamp"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 8l10 5 10-5-10-5Z"/><path d="M6 10.5V16c0 1.7 2.7 3 6 3s6-1.3 6-3v-5.5"/><path d="M22 8v6"/></svg><b id="campTxt">Stage 1/5</b></button>
+    <button class="chip ctrlChip" id="bCtrlMenu">⌨️ Controls (C)</button>
     <button class="nav" id="bMissions"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><span>Missions</span><em class="badge" id="missBadge"></em></button>
     <button class="nav" id="bEvents"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5.8 11.3 2 22l10.7-3.8"/><path d="M4 3h.01M22 8h.01M15 2h.01M22 20h.01M22 2l-2.24.75a2.9 2.9 0 0 0-1.96 3.12c.1.86-.57 1.63-1.45 1.63h-.38c-.86 0-1.6.6-1.76 1.44L14 10"/><path d="m22 13-.82-.33c-.86-.34-1.82.2-1.98 1.11-.11.7-.72 1.22-1.43 1.22H17"/><path d="m11 2 .33.82c.34.86-.2 1.82-1.11 1.98-.7.1-1.22.72-1.22 1.43V7"/><path d="M11 13c1.93 1.93 2.83 4.17 2 5-.83.83-3.07-.07-5-2-1.93-1.93-2.83-4.17-2-5 .83-.83 3.07.07 5 2Z"/></svg><span>Event</span></button>
-    <button class="nav" id="bShop"><svg class="ic" viewBox="0 0 24 24"><path d="M8 6V5a4 4 0 0 1 8 0v1"/><rect x="5" y="6" width="14" height="15" rx="4"/><path d="M9 14h6v4H9z"/></svg><span>Locker</span><em class="badge" id="shopBadge"></em></button>
-    <button class="nav" id="bRanks"><svg class="ic" viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg><span>Ranks</span></button>
     <button class="nav" id="bSettings"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Settings</span></button>
+    <div class="mModes" id="mModes"></div>
+  </div>
+</div>
+
+<!-- MORE: every extra in one simple grid of big tiles -->
+<div class="screen" id="sMore">
+  <div class="panel morePanel">
+    <h2>More</h2>
+    <div class="moreGrid" id="moreGrid"></div>
+    <button class="btn gray" data-back>Back</button>
+  </div>
+</div>
+
+<!-- SAVE CODE (website only): copy your code, paste it anywhere to resume -->
+<div class="screen" id="sSave">
+  <div class="panel savePanel">
+    <h2>💾 Save code</h2>
+    <div class="svBox"><b>Keep your progress</b><small>Copy this code and keep it somewhere safe (notes, email to yourself). It has your coins, stars, runners and records.</small>
+      <textarea id="svOut" readonly rows="3" spellcheck="false"></textarea>
+      <button class="btn green" id="svCopy">📋 Copy my code</button></div>
+    <div class="svBox"><b>Resume on any browser</b><small>Paste a save code here to pick up where you left off.</small>
+      <textarea id="svIn" rows="3" spellcheck="false" placeholder="Paste your code here (it starts with HD3.)"></textarea>
+      <button class="btn gold" id="svLoad">▶ Resume my progress</button></div>
+    <button class="btn gray" data-back>Back</button>
   </div>
 </div>
 
@@ -663,20 +742,24 @@ body.web .playSoon{font-size:13px}
 <div class="screen" id="sSettings">
   <div class="panel">
     <h2>Settings</h2>
+    <div class="setRow"><b>Difficulty</b>
+      <div class="seg" id="diffSeg2"><button data-d="easy">Easy</button><button data-d="normal">Normal</button><button data-d="hard">Hard</button><button data-d="insane">Insane</button></div></div>
+    <div class="setRow"><b>Speed</b><div class="seg spdSeg"><button data-sp="chill">Chill</button><button data-sp="normal">Normal</button><button data-sp="fast">Fast</button><button data-sp="turbo">Turbo</button></div></div>
+    <div class="setRow"><b>Volume</b>
+      <label class="volRow"><span>Music volume</span><input type="range" id="musicVol" min="0" max="100" value="60"><em class="volNum" id="musicVolN"></em></label>
+      <label class="volRow"><span>Effects volume</span><input type="range" id="sfxVol" min="0" max="100" value="80"><em class="volNum" id="sfxVolN"></em></label>
+    </div>
+    <div class="setRow"><b>Sound effects</b><div class="soundRow" style="justify-content:flex-start"><button class="chip" id="bSfx">🔊 Sound effects</button></div></div>
+    <div class="setRow"><b>Nickname (for the leaderboard, not your real name)</b><input id="nameIn" maxlength="14" placeholder="Nickname" autocomplete="off"></div>
+    <details class="advSet"><summary>More settings ▾</summary>
+    <div class="setRow"><b>Music</b><div class="trackList" id="musicList"></div>
+      <label class="volRow"><span>Coin sound</span><input type="range" id="coinVol" min="0" max="100" value="45"><em class="volNum" id="coinVolN"></em></label>
+      <label class="volRow"><span>Intro music when a run starts</span><input type="checkbox" id="introMus" checked></label>
+      <label class="volRow"><span>Theme song lyrics on the start screen</span><input type="checkbox" id="lyricsOn" checked></label></div>
     <div class="setRow"><b>Graphics quality</b>
       <div class="seg" id="qSeg"><button data-q="auto">Auto</button><button data-q="low">Low</button><button data-q="med">Medium</button><button data-q="high">High</button></div>
       <small id="qNote"></small>
     </div>
-    <div class="setRow"><b>Difficulty</b>
-      <div class="seg" id="diffSeg2"><button data-d="easy">Easy</button><button data-d="normal">Normal</button><button data-d="hard">Hard</button><button data-d="insane">Insane</button></div></div>
-    <div class="setRow"><b>Speed</b><div class="seg spdSeg"><button data-sp="chill">Chill</button><button data-sp="normal">Normal</button><button data-sp="fast">Fast</button><button data-sp="turbo">Turbo</button></div></div>
-    <div class="setRow"><b>Nickname (for the leaderboard, not your real name)</b><input id="nameIn" maxlength="14" placeholder="Nickname" autocomplete="off"></div>
-    <div class="setRow"><b>Music</b><div class="trackList" id="musicList"></div>
-      <label class="volRow"><span>Music volume</span><input type="range" id="musicVol" min="0" max="100" value="60"><em class="volNum" id="musicVolN"></em></label>
-      <label class="volRow"><span>Effects volume</span><input type="range" id="sfxVol" min="0" max="100" value="80"><em class="volNum" id="sfxVolN"></em></label>
-      <label class="volRow"><span>Coin sound</span><input type="range" id="coinVol" min="0" max="100" value="45"><em class="volNum" id="coinVolN"></em></label>
-      <label class="volRow"><span>Intro music when a run starts</span><input type="checkbox" id="introMus" checked></label>
-      <label class="volRow"><span>Theme song lyrics on the start screen</span><input type="checkbox" id="lyricsOn" checked></label></div>
     <div class="setRow"><b>Accessibility</b><div class="soundRow" style="justify-content:flex-start;flex-wrap:wrap;gap:6px"><button class="chip off" id="a11y_flash">🚫 Reduce flashing &amp; shaking</button><button class="chip off" id="a11y_hc">◐ High contrast</button><button class="chip off" id="a11y_cb">🎨 Colour-blind-safe warnings</button></div><small>Reduce flashing turns off screen shake, flashes, the fire-drill strobe and blinking warnings. Colour-blind-safe makes danger lanes blue instead of red.</small></div>
     <div class="setRow"><b>Your title</b><div class="soundRow" id="titleList" style="justify-content:flex-start;flex-wrap:wrap;gap:6px"></div><small>Shows under your name on leaderboards. Unlock more by playing.</small></div>
     <div class="setRow"><b>Battery &amp; voice</b><div class="soundRow" style="justify-content:flex-start;flex-wrap:wrap;gap:6px"><button class="chip off" id="bBattery">🔋 Battery saver</button><button class="chip" id="bVoice">📣 Announcer voice</button></div><small>Battery saver: 30 fps, low graphics, fewer crowds and particles (reloads the game).</small></div>
@@ -687,12 +770,12 @@ body.web .playSoon{font-size:13px}
     <div class="setRow" id="remindRow"><b>🔔 Daily reminder</b><div class="soundRow" style="justify-content:flex-start"><button class="chip" id="bRemind">🔔 Remind me once a day</button></div><small>Phone app only. One notification a day when your free spin is ready, skipped if you already played.</small></div>
     <div class="setRow"><b>Power-up timers</b><div class="seg" id="pwSideSeg"><button data-ps="left">Left side</button><button data-ps="right">Right side</button></div><small>Where your power-up timers show during a run.</small></div>
     <div class="setRow"><b>Vibration</b><div class="seg" id="vibeSeg"><button data-v="off">Off</button><button data-v="light">Light</button><button data-v="full">Full</button></div><small>Light = only crashes, bumps and pushes.</small></div>
-    <div class="setRow"><b>Sound effects</b><div class="soundRow" style="justify-content:flex-start"><button class="chip" id="bSfx">🔊 Sound effects</button></div></div>
     <div class="setRow" id="cloudRow"><b>☁️ Cloud save (Google account)</b><small id="cloudState"></small>
       <div class="soundRow" style="justify-content:flex-start;flex-wrap:wrap;gap:6px"><button class="chip" id="cloudSignIn">Sign in with Google Play Games</button><button class="chip" id="cloudSaveNow">Save now</button><button class="chip" id="cloudLoadNow">Load from cloud</button></div></div>
     <div class="setRow"><b>🔒 Privacy</b><small>Age group: <b id="privAge"></b></small>
       <div id="privAdult"><label class="volRow"><span>Share anonymous usage stats</span><input type="checkbox" id="privAnalytics"></label><label class="volRow"><span>Personalized ads</span><input type="checkbox" id="privAds"></label></div>
       <div class="soundRow" style="justify-content:flex-start;flex-wrap:wrap;gap:6px"><button class="chip" id="privOptions">Ad privacy choices</button><button class="chip" id="privTerms">Terms of Service</button><button class="chip" id="privPolicy">Privacy policy</button><button class="chip" id="privDelete">Delete all my data</button></div></div>
+    </details>
     <button class="btn purple small" id="bTut">Play the tutorial</button>
     <button class="btn gray small" id="bHow2">How to Play</button>
     <button class="btn gray" data-back>Back</button>
@@ -1245,12 +1328,17 @@ function loadSave() {
   return d;
 }
 let save = loadSave();
+// the website asks for the age group too (it used to skip it and treat everyone as 13-15): Google Analytics and the
+// AdSense script only load once the player says how old they are, never for under-13s, and analytics only for 16+.
+// Website players who were set to 13-15 without being asked are asked once.
+if (save.webNoGate && !window.HallwayAds && !/; wv\)/.test(navigator.userAgent)) { delete save.age; delete save.webNoGate; }
 const AWAY_MS = save.lastSeen ? Date.now() - save.lastSeen : 0; // how long since you last played (for the comeback gift)
 if (!save.pid) { save.pid = Math.random().toString(36).slice(2) + Date.now().toString(36); }
 if (save.music === 0 && !save.track) save.track = 'off';
-function persist() { save.lastSeen = Date.now(); let j = ''; try { j = JSON.stringify(save); } catch (e) { return; } try { localStorage.setItem(SAVE_KEY, j); } catch (e) {} mirrorSave(j); }
+let saveSwapped = false; // a pasted save code was just loaded: never write the old progress back over it before the reload
+function persist() { if (saveSwapped) return; save.lastSeen = Date.now(); let j = ''; try { j = JSON.stringify(save); } catch (e) { return; } try { localStorage.setItem(SAVE_KEY, j); } catch (e) {} mirrorSave(j); }
 // saves happen on their own: after every change, every 15 seconds, and when the tab is hidden or closed (all three copies right away)
-function flushSave() { try { persist(); clearTimeout(mirrorT); const j = JSON.stringify(save); idb(st => st.put(j, SAVE_KEY)); cookieSave.write(j); } catch (e) {} }
+function flushSave() { if (saveSwapped) return; try { persist(); clearTimeout(mirrorT); const j = JSON.stringify(save); idb(st => st.put(j, SAVE_KEY)); cookieSave.write(j); } catch (e) {} }
 setInterval(flushSave, 15000); addEventListener('pagehide', flushSave); addEventListener('beforeunload', flushSave); document.addEventListener('visibilitychange', () => { if (document.hidden) flushSave(); });
 // Browser saves: progress lives in this browser on this device (no account needed). We also ask the browser to keep
 // it permanently, keep a second copy in IndexedDB (restored if localStorage gets wiped), and offer a save code you
@@ -1264,7 +1352,7 @@ function saveCode() { const c = JSON.parse(JSON.stringify(save)); delete c.admin
 function loadSaveCode(code) {
   try { const t = String(code || '').trim().replace(/\s+/g, ''); if (!t.startsWith('HD1.')) throw 0; const d = JSON.parse(decodeURIComponent(escape(atob(t.slice(4)))));
     if (!d || typeof d !== 'object' || typeof d.bank !== 'number' || !d.owned) throw 0; delete d.admin; delete d.adminGod;
-    localStorage.setItem(SAVE_KEY, JSON.stringify(d)); idb(st => st.put(JSON.stringify(d), SAVE_KEY)); return true; } catch (e) { return false; }
+    saveSwapped = true; clearTimeout(mirrorT); const j = JSON.stringify(d); localStorage.setItem(SAVE_KEY, j); idb(st => st.put(j, SAVE_KEY)); cookieSave.write(j); return true; } catch (e) { return false; }
 }
 
 /* ---------------- SHOP DATA ---------------- */
@@ -1884,7 +1972,7 @@ async function loadCharacters() {
     }, rej))));
     // every clip needs its own id: three.js caches one action per clip id, and the packed clips all had a blank id,
     // so every character got stuck on whichever animation it played first
-    for (const g of ['M', 'W']) for (const c of JSON.parse(A.clips[g])) { const clip = THREE.AnimationClip.parse(c); clip.uuid = THREE.MathUtils.generateUUID(); CH.clips[g][c.name] = clip; }
+    for (const g of ['M', 'W']) for (const c of JSON.parse(A.clips[g])) { smoothHips(c); const clip = THREE.AnimationClip.parse(c); clip.uuid = THREE.MathUtils.generateUUID(); CH.clips[g][c.name] = clip; }
     CH.pets = {};
     await Promise.all(Object.keys(A.pets || {}).map(key => new Promise(res => loader.parse(b64buf(A.pets[key]), '', g => {
       g.scene.traverse(m => { if (!m.isMesh) return; const src = m.material; const mat = Q.std ? new THREE.MeshStandardMaterial({ color: src.color, map: src.map || null, roughness: 0.8, metalness: 0, envMapIntensity: 0.4 }) : new THREE.MeshLambertMaterial({ color: src.color, map: src.map || null }); addRim(mat); m.material = mat; m.castShadow = !!Q.shadows; });
@@ -1917,6 +2005,26 @@ function roleSpec(role, extra) {
   if (role === 'vp') Object.assign(spec.colors, { suit: '#3d405b', top: '#8b1e3f', hair: '#555555' });
   return Object.assign(spec, extra || {});
 }
+// Two fixes to the packed animation clips, done once as they load:
+// 1. Seamless loops: a loop's keys were sampled every 0.05 s from 0, so the last key sat a fraction of a frame before
+//    the loop's end and the pose froze there, then jumped back to the first key: a small hitch every stride. Loop keys
+//    are now spread evenly over the loop with the first pose repeated at the end, so each cycle flows into the next.
+// 2. Smooth hips: the hip height was rounded to 3 decimals, but the skeleton's Root bone scales it by 100, so the hips
+//    could only sit on 10 cm steps: twice every stride the whole upper body dropped 10 cm in one frame (the chest seemed
+//    to sink into the waist, and every runner and classmate shook). The hip track is smoothed back into a gentle bob.
+const LEG_FREE = 35 * Math.PI / 180, _lq = new THREE.Quaternion();
+function smoothHips(c) { if (!c.tracks) return; const loop = /_Loop$/.test(c.name);
+  if (loop) for (const t of c.tracks) { const n = t.times.length, st = t.type === 'quaternion' ? 4 : t.type === 'vector' ? 3 : 0; if (!st || n < 2 || t.values.length !== n * st || t.times[n - 1] >= c.duration - 1e-3) continue; // already ends on the loop's end
+    t.times = Array.from({ length: n + 1 }, (_, i) => c.duration * i / n); const v = Array.from(t.values), f = v.slice(0, st);
+    if (st === 4) { let d = 0; for (let k = 0; k < 4; k++) d += f[k] * v[(n - 1) * 4 + k]; if (d < 0) for (let k = 0; k < 4; k++) f[k] = -f[k]; } // same hemisphere: no spin
+    t.values = v.concat(f); }
+  const t = c.tracks.find(k => /^Hips\.position$/.test(k.name)); if (!t || t.times.length < 3) return;
+  const n = loop && t.times[t.times.length - 1] >= c.duration - 1e-3 ? t.times.length - 1 : t.times.length, v = t.values, R = 4, sig = 1.6, out = Array.from(v);
+  for (let i = 0; i < n; i++) for (let d = 0; d < 3; d++) { let sum = 0, ws = 0;
+    for (let k = -R; k <= R; k++) { let j = i + k; if (loop) j = (j % n + n) % n; else if (j < 0 || j >= n) continue; const w = Math.exp(-(k * k) / (2 * sig * sig)); sum += w * v[j * 3 + d]; ws += w; }
+    out[i * 3 + d] = sum / ws; }
+  if (n < t.times.length) for (let d = 0; d < 3; d++) out[n * 3 + d] = out[d];
+  t.values = out; }
 function makeActor(spec) {
   const root = new THREE.Group();
   const act = { root, spec, cur: null, speed: 1, actions: {} };
@@ -1949,6 +2057,10 @@ function makeActor(spec) {
   model.traverse(m => { if (m.isSkinnedMesh) m.frustumCulled = false; }); // animated limbs used to vanish when their rest-pose bounds left the screen
   if (spec.outline) addOutline(model); // only the runner gets a (thin) outline so you can always spot yourself; crowds look natural
   act.bone = n => act.bones[n];
+  // The women's models are skinned so the hips and seat follow the thigh: in a sprint's high knee lift the whole pelvis
+  // bulged up into the waist (the glitch only the women had). Their thigh swing is kept the same up to 35 degrees from
+  // standing and eased beyond that, so standing legs (and the feet on the floor) are untouched.
+  if (spec.key[0] === 'W') act.legCap = ['UpperLegL', 'UpperLegR'].filter(n => act.bones[n]).map(n => [act.bones[n], act.bones[n].quaternion.clone()]);
   const clips = CH.clips[spec.key[0]];
   act.pose = (name, speed = 1, fade = 0.2) => {
     const clipName = CLIP_ALIAS[name] || name;
@@ -1986,6 +2098,8 @@ function makeActor(spec) {
     if (act.blend) { const B = act.blend; B.t += dt; const k = Math.min(1, B.t / B.dur); B.to.setEffectiveWeight(k); for (const [o, w0] of B.from) { if (k < 1) o.setEffectiveWeight(w0 * (1 - k)); } if (k >= 1) { act.blend = null; for (const n in act.actions) if (act.actions[n] !== B.to) act.stopA(n); } }
     if (act._tw && act._tw.size) { for (const [b, q] of act._tw) b.quaternion.copy(q); act._tw.clear(); } // undo last frame's twists
     act.mixer.update(dt);
+    if (act.legCap) for (const [b, r] of act.legCap) { // women: a high knee lift pulled the hips and seat up into the waist
+      const ang = 2 * Math.acos(Math.min(1, Math.abs(b.quaternion.dot(r)))); if (ang > LEG_FREE) b.quaternion.copy(r).slerp(_lq.copy(b.quaternion), (LEG_FREE + (ang - LEG_FREE) * 0.45) / ang); }
     if (act.bones.Head) act.bones.Head.scale.setScalar(cheatOn('bighead') ? 1.9 : 1.12); // BIGHEAD cheat: everyone, not just you
     { const ca = act.cur && act.actions[act.cur]; if (ca && !ONE_SHOT[act.cur]) act.phase[act.cur] = ca.time; }
     { // ground contact: every clip has ONE fixed lift (worked out once from the shoe soles over the whole clip), and the body
@@ -3430,7 +3544,11 @@ function keepAboveFloor(pp, floorY) {
   let low = 9; const a = pp.act;
   if (a.sole) for (const sp of a.sole.pts) { _kv.copy(sp.p).applyMatrix4(sp.bone.matrixWorld); if (_kv.y < low) low = _kv.y; }
   for (const [n, r] of KEEP_BONES) { const b = a.bone(n); if (b) { b.getWorldPosition(_kv); const sc = pp.wrap.scale.x || 1; if (_kv.y - r * sc < low) low = _kv.y - r * sc; } }
-  const gap = low - floorY - 0.008; if (gap < 0) { pp.wrap.position.y -= gap; pp.wrap.updateMatrixWorld(true); }
+  // the lift rises at once (nothing may sink) but lets go gently: dropping back to 0 in one frame made a little jolt
+  // every time a foot stopped touching the floor (the start-screen warm-up jog jiggled)
+  const need = Math.max(0, floorY + 0.008 - low), dt = FRAME_DT || 1 / 60, prev = pp._lift || 0;
+  const lift = need >= prev ? need : Math.max(need, prev - dt * 0.5); pp._lift = lift;
+  if (lift > 0) { pp.wrap.position.y += lift; pp.wrap.updateMatrixWorld(true); }
 }
 function syncPlayer() {
   if (!player) rebuildPlayer();
@@ -3976,19 +4094,13 @@ function closeStore() { $('storeModal').classList.remove('show'); }
 
 
 /* ---------- APP TOUR: a quick tour of every menu button (after the run tutorial; Skip any time) ---------- */
-const TOUR_STEPS = [
-  ['bMissions', 'Missions', 'Finish 3 missions to raise your score multiplier (up to x30).'],
-  ['bEvents', 'Events', 'A new event every week, with its own tokens and prizes.'],
-  ['bShop', 'Locker Room', 'Runners, outfits, hats, Heel Wheels, pets and upgrades.'],
-  ['bRanks', 'Leaderboard', 'Classmates, friends (race them with a code) and the world.'],
-  ['bFree', 'Daily gift', 'Free reward every day. Do not break your streak!'],
-  ['bAdStar', 'Free Gold Stars', 'Watch a short ad for a Gold Star, 3 times a day.'],
-  ['bPass', 'School Year Pass', '100 tiers of rewards. Each tier takes a bit more XP.'],
-  ['bSpin', 'Daily spin', 'One free spin a day.'],
-  ['bLeague', 'Leagues', 'Weekly league: finish top 3 to move up.'],
-  ['bModes', 'Modes', 'Fun modes, the daily challenge, field trips and the tournament.'],
-  ['bSideCamp', 'Campaign', '150 stages from elementary school to college.'],
-  ['tapZone', 'Ready?', 'Tap anywhere to run. Swipe to dodge, jump and slide!']
+const TOUR_STEPS = [ // the simple home has only a few buttons, so the tour is short
+  ['tapZone', 'Tap to play', 'Tap anywhere to run. Swipe left, right, up and down to dodge, jump and slide!'],
+  ['bShop', 'Locker', 'Pick your runner, outfits, pets and upgrades.'],
+  ['bModes', 'Modes', 'The campaign, daily challenge, duels and fun modes.'],
+  ['bRanks', 'Ranks', 'Beat your school, your friends and the world.'],
+  ['bMore', 'More', 'Free gift, missions, spin, pass and more. A number means something is waiting for you.'],
+  ['bSaveHome', 'Save code', 'Copy your code to keep your progress, or paste one to carry on in any browser.']
 ];
 function startAppTour(force) {
   if (!force && save.appTour) return; save.appTour = 1; persist(); let i = 0;
@@ -4465,8 +4577,8 @@ const Analytics = {
       window.dataLayer = window.dataLayer || []; window.gtag = function () { dataLayer.push(arguments); };
       gtag('js', new Date());
       // The APK runs from file://, where cookies don't work, so GA gets our own anonymous player id instead.
-      gtag('config', id, { client_storage: 'none', client_id: save.pid || undefined, send_page_view: false, app_name: 'Hallway Dash' });
-      if (!window.GA_LOADED) { const sc = document.createElement('script'); sc.async = true; sc.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(id); document.head.appendChild(sc); window.GA_LOADED = true; }
+      gtag('config', id, { client_storage: 'none', client_id: save.pid || undefined, send_page_view: !!(window.HALLWAY_WEB_PAGE && !window.GA_LOADED), app_name: 'Hallway Dash' }); // website: count this visit if the page's own tag didn't (it waits for the age check)
+      if (!window.GA_LOADED) { const sc = document.createElement('script'); sc.async = true; sc.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(id); document.head.appendChild(sc); }
       this.on = true; this.log('app_open', { runs: (save.stats && save.stats.runs) || 0 });
     } catch (e) { this.on = false; }
   },
@@ -5282,7 +5394,7 @@ function endRun(win, reason) {
   $('oCombo').textContent = G.comboBonus > 50 ? 'Combo bonus +' + Math.round(G.comboBonus).toLocaleString() + ' · best combo ' + (G.bestChain || 0) : ''; 
   G.earned = earned; $('bDouble').style.display = earned >= 20 && G.mode !== 'tutorial' ? 'block' : 'none'; $('bDouble').disabled = false; $('bDouble').textContent = '▶ Watch ad: double cash (+$' + earned + ')';
   if (G.mode !== 'tutorial' && !save.starterBought && stats().runs >= 3 && (save.starterSeen || 0) < 1 + Math.floor(stats().runs / 15)) setTimeout(() => { if (G.scene === 'over') openStarter(); }, 1200);
-  $('oTitle').textContent = G.fun === 'race' ? (win ? 'YOU WON!' : 'TOO SLOW!') : G.fun === 'coinrush' ? "TIME'S UP!" : G.fun === 'trial' && win ? 'FINISHED!' : win ? 'MADE IT!' : (reason === 'late' ? 'LATE!' : 'CAUGHT!');
+  $('oTitle').textContent = G.fun === 'race' ? (win ? 'YOU WON!' : 'TOO SLOW!') : G.fun === 'coinrush' ? "TIME'S UP!" : G.fun === 'trial' && win ? 'FINISHED!' : win ? 'MADE IT!' : (reason === 'late' ? 'LATE!' : G.caught ? 'CAUGHT!' : 'OUCH!');
   $('oTitle').classList.toggle('win', !!win);
   const tokLine = G.runTok ? ' · +' + G.runTok + ' ' + currentEvent().token : '';
   $('oReason').textContent = (tokLine && !G.fun && !G.trip && !dcLine) ? (win ? 'You made it!' : G.deathMsg) + tokLine : dcLine ? dcLine + (win ? '' : ' · ' + G.deathMsg) : G.trip ? currentTrip().item + ' this run: ' + (G.run.souv || 0) + ' · total ' + tripSave().got + (win ? '' : ' · ' + G.deathMsg) : G.fun ? funLine + (win ? '' : ' · ' + G.deathMsg) : win && G.mode === 'campaign' ? 'You reached ' + L.dest + ' with ' + Math.ceil(G.timeLeft) + 's to spare! (+$' + bonus + ')' + (L.goal && L.goal.t !== 'boss' ? (G.goalOk ? ' · Goal done ★' : ' · Goal missed: ' + goalText(L)) : '') : win ? 'You made it!' : (reason === 'late' ? 'The bell rang before you reached ' + L.dest + '. Tardy slip!' : G.deathMsg);
@@ -5478,7 +5590,7 @@ function togglePause(force) {
 // Android back button hook (called from native wrapper)
 window.onAndroidBack = function () {
   if (G.scene === 'play') { if (G.paused) togglePause(false); else togglePause(true); return true; }
-  if (curScreen && curScreen !== 'sMenu') { goMenu(); return true; }
+  if (curScreen && curScreen !== 'sMenu') { const bk = $(curScreen) && $(curScreen).querySelector('[data-back]'); if (bk) bk.click(); else goMenu(); return true; } // Back on a screen opened from More goes back to More
   return false;
 };
 
@@ -5664,7 +5776,11 @@ function update(dt) {
       // doors open from the wall side only: once you've moved toward the middle of the hall you're clear (the box used
       // to reach 1 m past the door into the empty side, so a door 'hit' you after you had already switched lanes)
       const pastDoor = K.wallDoor && o.lane && (P.x - o.x) * Math.sign(o.lane) < -K.wallDoor;
-      if (((dz < (K.d || 0.5) / 2 + 0.3 && dx < K.hw + 0.3) || hopZone) && !pastDoor) {
+      // hit box: the same 0.3 m margin ahead (so a fast frame can't skip through it), but only 0.1 m once it's behind
+      // the runner's middle and 0.22 m to the sides (about half a runner's width): landing a jump just past a tray, or
+      // brushing past a classmate, used to count as hitting something you visibly didn't touch
+      const zIn = o.z >= PZ ? dz < (K.d || 0.5) / 2 + 0.3 : dz < (K.d || 0.5) / 2 + 0.1;
+      if (((zIn && dx < K.hw + 0.22) || hopZone) && !pastDoor) {
         let hit = false;
         if (K.type === 'low') hit = P.y < K.h - 0.12;
         else if (K.type === 'high') hit = !sliding || P.y > 0.2;
@@ -5692,9 +5808,9 @@ function update(dt) {
             if (G.stumble > 0 || (G.chase && G.chase.boss)) { G.caught = true; crash(o, (G.chase ? G.chase.name[0].toUpperCase() + G.chase.name.slice(1) : 'They') + ' caught you!'); }
             else { breakChain(); G.tpBump = true; G.stumble = chaseTime(); G.shake = 0.25; sfx('bump'); vibrate(60); popup('BUMPED! RUN!', '#ef476f'); startChase(o); }
           } else {
-            const msgs = { robot: 'CLANK! The robotics club robot ran you over. Switch lanes!', pie: 'SPLAT! A pie to the face. Slide under flying pies!', door: 'A classroom door swung open right into you! Watch for the flashing light.', locker: 'BONK! A locker door popped open. Slide under next time!', tape: 'You ran into the Principal\'s caution tape!', puddle: 'SPLASH! You slipped in a puddle. Jump it!', tray: 'You slipped on a spilled lunch tray! Jump it next time!', chair: 'A runaway rolling chair took you out! Jump it!', volcano: 'You crashed into the science fair volcano. Jump over it!', walkers: 'You crashed into two students walking to class!', kidline: 'You plowed through a whole class walking in line!', lockerkid: 'You slammed into a kid at their locker!', cart: "You crashed into the janitor's cart!", teacher: 'A teacher caught you running. Detention!', professor: 'The professor caught you. Expect a pop quiz!', monitor: 'The hall monitor wrote you up!', coach: 'The coach caught you. Laps for days!', group: 'You plowed right into a group of chatting students!', kid: 'You bumped into a little kid. Off to the principal!', student: 'You ran smack into another student!', sleepy: 'You woke up a sleepy student the hard way!' };
+            const msgs = { robot: 'CLANK! The robotics club robot ran you over. Switch lanes!', pie: 'SPLAT! A pie to the face. Slide under flying pies!', door: 'A classroom door swung open right into you! Watch for the flashing light.', locker: 'BONK! A locker door popped open. Slide under next time!', tape: 'You ran into the Principal\'s caution tape!', puddle: 'SPLASH! You slipped in a puddle. Jump it!', tray: 'You slipped on a spilled lunch tray! Jump it next time!', chair: 'A runaway rolling chair took you out! Jump it!', volcano: 'You crashed into the science fair volcano. Jump over it!', walkers: 'You crashed into two students walking to class!', kidline: 'You plowed through a whole class walking in line!', lockerkid: 'You slammed into a kid at their locker!', cart: "You crashed into the janitor's cart!", teacher: 'You ran right into a teacher! Switch lanes next time.', professor: 'You ran right into the professor! Switch lanes next time.', monitor: 'You ran right into the hall monitor! Switch lanes next time.', coach: 'You ran right into the coach! Switch lanes next time.', group: 'You plowed right into a group of chatting students!', kid: 'You bumped into a little kid. Off to the principal!', student: 'You ran smack into another student!', sleepy: 'You woke up a sleepy student the hard way!' };
             if (K.who === 'tray') sfx('tray');
-    crash(o, msgs[K.who] || (K.type === 'high' ? 'Bonk! You ran into ' + K.label + '. Slide under next time!' : 'You tripped over ' + K.label + '. Jump next time!'));
+    crash(o, (K.type === 'block' || !/^(teacher|professor|monitor|coach)$/.test(K.who) ? msgs[K.who] : null) || (K.type === 'high' ? 'Bonk! You ran into ' + K.label + '. Slide under next time!' : 'You tripped over ' + K.label + '. Jump next time!'));
             return;
           }
         }
@@ -5810,7 +5926,7 @@ function layoutStack(force) {
 }
 let toastTimer = null;
 function toast(title, sub, ms) {
-  if (save.msgsOff && G.scene === 'play' && !/REVIVE|BACK IN|PAUSED|GO!|FINISH|LATE/i.test(title)) return; // in-run messages muted (🔔 button)
+  if (save.msgsOff && G.scene === 'play' && !/REVIVE|BACK IN|PAUSED|GO!|FINISH|LATE|HUNTING/i.test(title)) return; // in-run messages muted (🔔 button)
   layoutStack(true); const el = $('toast'); el.innerHTML = ''; el.appendChild(document.createTextNode(title));
   if (sub) { const s = document.createElement('small'); s.textContent = sub; el.appendChild(s); }
   el.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('show'), ms || 1500);
@@ -5853,6 +5969,7 @@ function buildModes() {
   const box = $('modeList'); box.innerHTML = ''; const fb = save.funBest || {};
   const dc = dailyChallenge(), tp = currentTrip(), ts = tripSave();
   const feat = (cls, icon, title, desc, em, go) => { const d = document.createElement('button'); d.className = 'modeCard ' + cls; d.innerHTML = '<span class="mi"></span><div><b></b><small></small><em></em></div>'; d.querySelector('.mi').textContent = icon; d.querySelector('b').textContent = title; d.querySelector('small').textContent = desc; d.querySelector('em').textContent = em; d.onclick = () => { sfx('click'); go(); }; box.appendChild(d); };
+  feat('camp', '🎓', 'Campaign', '150 stages from elementary school to college. Beat the bell for stars, with a boss every 10th stage.', $('campTxt').textContent || '', openCampaign);
   feat('duel', '⚔️', 'Duel a Friend', 'Run the same hallway as a friend. Their score shows next to yours the whole run.', save.challenge ? 'Now: beat ' + save.challenge.from + ' (' + save.challenge.score.toLocaleString() + ')' : 'Start a duel or enter a friend\'s code', openDuel);
   feat('daily', '📅', 'Daily Challenge', THEMES[dc.theme].name + (dc.fun ? ' · ' + FUN[dc.fun].name : '') + ' · Beat ' + dc.target.toLocaleString() + ' points for 3★ + $500', dc.done ? 'Done today ✓ · best ' + dc.best.toLocaleString() + ' · new one in ' + fmtLeft(86400000 - (Date.now() - new Date().getTimezoneOffset() * 60000) % 86400000) : 'Today\'s best: ' + (dc.best ? dc.best.toLocaleString() : '-') + ' · Rank #' + (dcBoard().findIndex(r => r.me) + 1) + ' of 10', startDaily);
   const nx = TRIP_TRACK[ts.claimed];
@@ -6142,7 +6259,7 @@ $('bLeague').onclick = () => { initAudio(); sfx('click'); buildLeague(); $('lgPt
 $('bLgPlay').onclick = () => { sfx('click'); startRun('infinite'); };
 $('bTrophies').onclick = () => { initAudio(); sfx('click'); buildTrophies(); $('trCount').textContent = TROPHIES.reduce((a, t) => a + trophyTier(t), 0) + ' / ' + TROPHIES.length * 4; showScreen('sTrophies'); };
 $('saveCopy').onclick = async () => { const ok = await copyText(saveCode()); toast(ok ? 'Save code copied!' : 'Could not copy', 'Paste it on your other device: Settings → Load save code', 2200); };
-$('saveFile').onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([saveCode()], { type: 'text/plain' })); a.download = 'hallway-dash-save.txt'; document.body.appendChild(a); a.click(); a.remove(); };
+$('saveFile').onclick = async () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([await packSave()], { type: 'text/plain' })); a.download = 'hallway-dash-save.txt'; document.body.appendChild(a); a.click(); a.remove(); };
 $('saveLoad').onclick = () => { $('saveIn').value = ''; $('saveModal').classList.add('show'); };
 $('saveCancel').onclick = () => $('saveModal').classList.remove('show');
 $('saveDo').onclick = () => { if (loadSaveCode($('saveIn').value)) { toast('Save loaded!', 'Restarting…', 1200); setTimeout(() => location.reload(), 900); } else { sfx('deny'); toast('That save code didn\'t work', 'Copy the whole code (it starts with HD1.)', 2000); } };
@@ -6400,6 +6517,82 @@ function hotkey(e) {
   if (c === 'Escape') { const m = document.querySelector('.modal.show'); if (m) { m.classList.remove('show'); return true; } if (curScreen && curScreen !== 'sMenu' && !over) { const bk = $(curScreen) && $(curScreen).querySelector('[data-back]'); if (bk) { bk.click(); return true; } } }
   return false;
 }
+/* ---------------- SIMPLE HOME: the More screen and the website's save code ---------------- */
+// The home screen only has TAP TO PLAY and four big buttons (Locker, Modes, Ranks, More). Every extra lives on the More
+// screen as a big tile that presses the original (hidden) button, so all of their old logic and badges keep working.
+const MORE_TILES = [ // [icon, label, button it presses, element with its live sub-text, its badge, "hot" when]
+  ['🎁', 'Free Gift', 'bFree', 'freeTxt', null, () => streakState().can],
+  ['🎯', 'Missions', 'bMissions', null, 'missBadge', () => missionsAllDone()],
+  ['🎉', 'Event', 'bEvents', null, null, null],
+  ['🔐', 'Mystery Locker', 'bMLocker', 'mLockTxt', null, () => !lockerLeft()],
+  ['🎡', 'Daily Spin', 'bSpin', null, 'spinBadge', () => spinFree()],
+  ['🎟️', 'School Pass', 'bPass', 'passTierTxt', 'passBadge', () => passClaimable() > 0],
+  ['🛡️', 'League', 'bLeague', 'lgBtnTxt', null, null],
+  ['🏆', 'Trophies', 'bTrophies', null, 'trBadge', () => trophyClaimable() > 0],
+  ['📺', 'Free Gold Star', 'bAdStar', 'adStarTxt', null, null],
+  ['❓', 'How to Play', 'bHow', null, null, null],
+  ['⌨️', 'Controls', 'bCtrlMenu', null, null, null, 'web']
+];
+let moreReturn = false; // Back on a screen opened from More goes back to More
+function buildMore() { const g = $('moreGrid'); if (!g) return; g.innerHTML = '';
+  for (const [icon, label, btn, sub, badge, hot, only] of MORE_TILES) { if (only === 'web' && !IS_WEB) continue; if (!$(btn)) continue;
+    const t = document.createElement('button'); t.className = 'mTile'; t.dataset.btn = btn; t.innerHTML = '<i></i><b></b><small></small><em class="badge"></em>';
+    t.querySelector('i').textContent = icon; t.querySelector('b').textContent = label;
+    t.onclick = e => { e.stopPropagation(); $(btn).click(); if (curScreen && curScreen !== 'sMenu' && curScreen !== 'sMore') moreReturn = true; setTimeout(syncMore, 50); };
+    g.appendChild(t); }
+  syncMore(); }
+function moreHot() { let n = 0; for (const tl of MORE_TILES) { try { if (tl[5] && tl[5]()) n++; } catch (e) {} } return n; }
+function syncMore() { const n = moreHot(), b = $('moreBadge'); if (b) { b.textContent = n ? String(n) : ''; b.classList.toggle('on', n > 0); }
+  const g = $('moreGrid'); if (!g) return;
+  for (const t of g.children) { const tl = MORE_TILES.find(x => x[2] === t.dataset.btn); if (!tl) continue;
+    const sub = tl[3] && $(tl[3]); t.querySelector('small').textContent = sub ? sub.textContent : '';
+    const bd = tl[4] && $(tl[4]), tb = t.querySelector('.badge'); const on = !!(bd && bd.classList.contains('on') && bd.textContent); tb.textContent = on ? bd.textContent : ''; tb.classList.toggle('on', on);
+    let h = false; try { h = !!(tl[5] && tl[5]()); } catch (e) {} t.classList.toggle('hot', h); } }
+$('bMore').onclick = e => { e.stopPropagation(); initAudio(); sfx('click'); refreshMenu(); buildMore(); showScreen('sMore'); };
+// Back: to More when the screen was opened from there, otherwise home
+document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => { sfx('click'); const m = moreReturn && curScreen !== 'sMore'; moreReturn = false; goMenu(); if (m) { buildMore(); showScreen('sMore'); } });
+{ const _ss = showScreen; showScreen = function (id) { if (id === 'sMenu' || id === null) moreReturn = false; _ss(id); if (id === 'sMenu') try { syncMore(); } catch (e) {} }; }
+
+// Save code (website only): copy it, paste it in any browser to carry on where you left off
+// HD3 save codes: the save (minus admin flags and the short-lived login token) is gzipped and encrypted with AES-GCM.
+// The code looks like random letters, and changing even one letter makes it fail to load (the GCM tag no longer
+// matches), so a decoded and edited code is refused. The key ships inside the game, so a determined person who digs
+// through the page's code could still find it; making codes impossible to forge needs a server to sign them.
+// Old HD1 (plain base64) and HD2 (gzip only) codes are refused: anyone could edit those.
+const SAVE_KEY_PARTS = ['hallway', 'Dash', '#r0und17', 'n0-ch3ating', '2026'];
+let _saveKey = null;
+async function saveCryptoKey() { if (_saveKey) return _saveKey; const raw = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(SAVE_KEY_PARTS.join('|') + '|' + SAVE_KEY));
+  return (_saveKey = await crypto.subtle.importKey('raw', raw, 'AES-GCM', false, ['encrypt', 'decrypt'])); }
+const b64u = u => { let bin = ''; for (let i = 0; i < u.length; i += 8192) bin += String.fromCharCode.apply(null, u.subarray(i, i + 8192)); return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); };
+const unb64u = t => { const bin = atob(t.replace(/-/g, '+').replace(/_/g, '/')), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return u; };
+const gz = async (u, dir) => new Uint8Array(await new Response(new Blob([u]).stream().pipeThrough(dir ? new CompressionStream('gzip') : new DecompressionStream('gzip'))).arrayBuffer());
+async function packSave() {
+  const raw = JSON.parse(JSON.stringify(save)); delete raw.admin; delete raw.adminGod;
+  // keep who you are online (your player id and leaderboard login) but not the one-hour access token: the new browser
+  // swaps the long-lived login for a fresh token, so your scores, school and friend code stay yours
+  if (raw.fbAuth) raw.fbAuth = { uid: raw.fbAuth.uid, refresh: raw.fbAuth.refresh, exp: 0 };
+  raw.codeT = Date.now();
+  const iv = crypto.getRandomValues(new Uint8Array(12)), data = await gz(new TextEncoder().encode(JSON.stringify(raw)), true);
+  const ct = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv, additionalData: new TextEncoder().encode('HD3') }, await saveCryptoKey(), data));
+  const out = new Uint8Array(12 + ct.length); out.set(iv); out.set(ct, 12); return 'HD3.' + b64u(out); }
+async function unpackSave(code) { const t = String(code || '').trim().replace(/\s+/g, ''); if (!t.startsWith('HD3.')) return false;
+  try { const u = unb64u(t.slice(4)); if (u.length < 30) return false;
+    const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: u.subarray(0, 12), additionalData: new TextEncoder().encode('HD3') }, await saveCryptoKey(), u.subarray(12));
+    const d = JSON.parse(new TextDecoder().decode(await gz(new Uint8Array(pt), false)));
+    return loadSaveCode('HD1.' + btoa(unescape(encodeURIComponent(JSON.stringify(d))))); } catch (e) { return false; } }
+async function openSaveCode() { initAudio(); sfx('click'); $('svIn').value = ''; $('svOut').value = '…'; showScreen('sSave'); $('svOut').value = await packSave(); }
+$('bSaveHome').onclick = e => { e.stopPropagation(); openSaveCode(); };
+$('svOut').onclick = () => $('svOut').select();
+$('svCopy').onclick = async () => { const c = $('svOut').value.length > 8 ? $('svOut').value : await packSave(); const ok = await copyText(c); sfx(ok ? 'coin' : 'deny');
+  toast(ok ? 'Code copied!' : 'Select the code and copy it', ok ? 'Keep it safe. Paste it here any time to resume.' : '', 2200); if (!ok) $('svOut').select(); };
+$('svLoad').onclick = async () => { const v = $('svIn').value; if (!v.trim()) { sfx('deny'); toast('Paste your save code first', 'It starts with HD3.', 1600); $('svIn').focus(); return; }
+  const had = save.best > 0 || save.bank > 0; if (had && !confirm('Load this save? It replaces the progress in this browser.')) return;
+  if (await unpackSave(v)) { toast('Welcome back!', 'Loading your progress…', 1200); setTimeout(() => location.reload(), 900); }
+  else { sfx('deny'); toast('That code didn\'t work', 'Copy the whole code, exactly as it was (it starts with HD3.)', 2400); } };
+if ($('saveCopy')) $('saveCopy').onclick = async () => { const ok = await copyText(await packSave()); toast(ok ? 'Save code copied!' : 'Could not copy', 'Paste it on your other device: Settings → Load save code', 2200); };
+if ($('saveDo')) $('saveDo').onclick = async () => { if (await unpackSave($('saveIn').value)) { toast('Save loaded!', 'Restarting…', 1200); setTimeout(() => location.reload(), 900); } else { sfx('deny'); toast('That save code didn\'t work', 'Copy the whole code, exactly as it was (it starts with HD3.)', 2400); } };
+addEventListener('keydown', e => { if (G.scene === 'menu' && curScreen === 'sMenu' && !e.ctrlKey && !e.metaKey && !document.querySelector('.modal.show') && !/INPUT|TEXTAREA/.test((document.activeElement || {}).tagName || '')) {
+  if (e.code === 'KeyB' && IS_WEB) { e.preventDefault(); openSaveCode(); } } });
 setTimeout(() => checkCrown(), 4000);
 
 resize(); applyAudioSettings();
@@ -6413,11 +6606,10 @@ loadCharacters().then(() => {
   if (IS_WEB && !save.bmTipOff) setTimeout(() => { // the "bookmark us" tip (browser only), easy to close for good
     const mob = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent), mac = /Mac/i.test(navigator.platform || navigator.userAgent);
     $('bmTxt').textContent = mob ? (/iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'Tip: tap Share → Add to Home Screen to keep Hallway Dash one tap away' : 'Tip: tap ⋮ → Add to Home screen (or ☆ bookmark) to keep Hallway Dash one tap away') : 'Tip: press ' + (mac ? '⌘+D' : 'Ctrl+D') + ' to bookmark Hallway Dash (tick "Bookmarks bar" to keep it one click away)';
-    const syncBm = () => $('bmTip').classList.toggle('show', !save.bmTipOff && G.scene === 'menu' && curScreen === 'sMenu'); syncBm(); const iv = setInterval(() => { if (save.bmTipOff) { clearInterval(iv); $('bmTip').classList.remove('show'); } else syncBm(); }, 600);
+    const syncBm = () => $('bmTip').classList.toggle('show', !save.bmTipOff && save.best > 0 && G.scene === 'menu' && curScreen === 'sMenu'); syncBm(); const iv = setInterval(() => { if (save.bmTipOff) { clearInterval(iv); $('bmTip').classList.remove('show'); } else syncBm(); }, 600);
     $('bmX').onclick = e => { e.stopPropagation(); save.bmTipOff = 1; persist(); $('bmTip').classList.remove('show'); };
     addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && (e.key === 'd' || e.key === 'D')) { save.bmTipOff = 1; persist(); } });
   }, 4000);
-  if (!save.age && IS_WEB) { save.age = 'teen'; save.webNoGate = 1; persist(); applyPrivacy(); } // browser: no age screen; safe defaults (no analytics, non-personalised ads, ads only when picked)
   if (!save.age) setTimeout(() => openAgeGate(), 300); // the app: the age check comes first, as soon as the game loads
   applyBtnPos();
   fitMenu(); setInterval(() => { if (curScreen === 'sMenu' || $('sMenu').classList.contains('show')) fitMenu(); }, 1200);
