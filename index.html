@@ -677,6 +677,50 @@ body.homeWide .mSide .worldCard .cTxt{text-align:left}
 /* the ✕ that closes a screen (top corner of the panel, stays visible while the panel scrolls) */
 .screenX{float:right;position:sticky;top:0;z-index:5;margin:-6px -6px 4px 10px;width:42px;height:42px;display:grid;place-items:center;border-radius:12px;border:3px solid var(--ink);background:#ef476f;color:#fff;font:900 22px/1 system-ui,sans-serif;box-shadow:0 3px 0 var(--ink);cursor:pointer;padding:0}
 .screenX:hover{filter:brightness(1.08)}.screenX:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+/* ===== Level Maker ===== */
+.mkPanel .tabs{margin:8px 0}
+.mkSort{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.mkSort .chip.on,.mkChips .chip.on{background:#ff8a00;color:#fff;border-color:var(--ink)}
+.mkFind{display:flex;gap:6px;margin:6px 0}.mkFind input{flex:1;min-width:0;font:inherit;font-size:15px;padding:8px 10px;border:3px solid var(--ink);border-radius:12px;background:#fff;color:#1d2340;user-select:text;-webkit-user-select:text}
+.mkList{display:flex;flex-direction:column;gap:8px;margin:8px 0;min-height:60px}
+.mkCard{display:flex;gap:10px;align-items:center;width:100%;text-align:left;font:inherit;color:#1d2340;background:#fff;border:3px solid var(--ink);border-radius:14px;padding:8px 10px;box-shadow:0 4px 0 var(--ink);cursor:pointer}
+.mkCard:active{transform:translateY(2px);box-shadow:0 2px 0 var(--ink)}
+.mkCard .mkF{font-size:30px;width:42px;text-align:center;flex:none}.mkCard .mkC{flex:1;min-width:0}
+.mkCard b{display:block;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mkCard small{display:block;font-size:12.5px;color:#565d7e}
+.mkCard em{display:block;font-style:normal;font-weight:900;font-size:12px;color:#7b2cbf}.mkCard em.ok{color:#06a77d}
+.mkCard .mkBtns{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}.mkCard .mkBtns .chip{font-size:12.5px;padding:5px 8px}
+.mkCard.draft{cursor:default}
+.mkEmpty{text-align:center;color:#565d7e;padding:14px 6px;font-size:14px}
+.mkLbl{display:block;font-weight:900;margin:10px 0 4px;color:#1d2340}.mkLbl input{display:block;width:100%;margin-top:4px;font:inherit;font-size:16px;padding:8px 10px;border:3px solid var(--ink);border-radius:12px;user-select:text;-webkit-user-select:text}
+.mkChips{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;font-weight:400}.mkChips .chip{font-size:13px;padding:6px 9px}.mkChips input{width:110px;display:inline-block;margin:0}
+.mkSetPanel,.mkLvPanel,.mkDonePanel{width:min(460px,100%);max-height:94vh;overflow-y:auto}
+.mkFace{font-size:54px;text-align:center;line-height:1}.mkLvPanel h2{text-align:center;word-break:break-word}.mkBy{text-align:center;color:#565d7e;margin:2px 0 6px}
+.mkStats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}.mkStats div{background:#fff;border:2px solid var(--ink);border-radius:10px;padding:6px 4px;text-align:center;font-size:12px;color:#565d7e}.mkStats b{display:block;font-size:17px;color:#1d2340}
+.mkMe{text-align:center;font-weight:900;color:#7b2cbf;min-height:1em}.mkCode{font:900 28px/1.2 ui-monospace,Menlo,Consolas,monospace;letter-spacing:2px;text-align:center;background:#fff;border:3px dashed var(--ink);border-radius:12px;padding:10px;margin:8px 0;color:#1d2340;user-select:text;-webkit-user-select:text}
+.mkDonePanel .overTitle{font-size:34px}.mkDonePanel p{text-align:center}
+.mkLvPanel .row .btn,.mkDonePanel .row .btn,.mkSetPanel .row .btn{flex:1}
+#sMkEdit{padding:0;justify-content:stretch;align-items:stretch;background:#111633;overflow:hidden;z-index:12}
+#sMkEdit .mkTop{display:flex;gap:6px;align-items:center;padding:8px;padding-top:max(8px,env(safe-area-inset-top));background:#1b2150;border-bottom:2px solid #000;flex:none}
+.mkIcon{flex:none;min-width:42px;height:42px;border-radius:12px;border:2px solid #000;background:#2c3577;color:#fff;font:900 20px/1 system-ui,sans-serif;cursor:pointer;box-shadow:0 3px 0 #000;padding:0 8px}
+.mkIcon:active{transform:translateY(2px);box-shadow:0 1px 0 #000}.mkIcon:disabled{opacity:.35}.mkIcon.mkX{background:#ef476f}
+.mkName{flex:1;min-width:0;text-align:left;background:none;border:none;color:#fff;font:inherit;cursor:pointer;padding:0 4px}.mkName b{display:block;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff}.mkName small{display:block;font-size:12px;color:#aab3e6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mkPlay{flex:none;height:42px;border-radius:12px;border:2px solid #000;background:#06d6a0;color:#06261c;font:900 17px/1 inherit;padding:0 14px;box-shadow:0 3px 0 #000;cursor:pointer}.mkPlay:active{transform:translateY(2px);box-shadow:0 1px 0 #000}
+.mkMid{position:relative;flex:1;min-height:0;touch-action:none}
+#mkCv{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:crosshair}
+#mkMini{position:absolute;right:6px;top:8px;bottom:8px;width:34px;height:calc(100% - 16px);border-radius:8px;background:#0b0f26;border:2px solid #000;touch-action:none;cursor:pointer}
+.mkFloat{position:absolute;right:48px;bottom:10px;display:flex;flex-direction:column;gap:6px}.mkFloat .mkIcon{font-size:18px}.mkFloat .mkSnap,.mkFloat .mkHere{font-size:13px}.mkFloat .mkHere{background:#06a77d}
+.mkInsp{position:absolute;left:8px;right:48px;top:8px;display:none;flex-wrap:wrap;gap:5px;align-items:center;background:rgba(17,22,51,.94);border:2px solid #000;border-radius:14px;padding:7px 8px;color:#fff;font-size:13px;box-shadow:0 4px 0 #000}
+.mkInsp.show{display:flex}.mkInsp .t{flex:1 1 100%;font-weight:900;font-size:13.5px}.mkInsp .t small{font-weight:400;color:#aab3e6}
+.mkInsp button{border:2px solid #000;border-radius:10px;background:#2c3577;color:#fff;font:800 14px/1 system-ui,sans-serif;padding:7px 9px;cursor:pointer;min-width:34px}.mkInsp button.del{background:#ef476f}.mkInsp button.on{background:#ff8a00}
+.mkBot{flex:none;background:#1b2150;border-top:2px solid #000;padding:6px 6px max(6px,env(safe-area-inset-bottom))}
+.mkTools,.mkGroups{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px}.mkTools::-webkit-scrollbar,.mkGroups::-webkit-scrollbar,.mkItems::-webkit-scrollbar{display:none}
+.mkTool,.mkGrp{flex:none;border:2px solid #000;border-radius:10px;background:#2c3577;color:#fff;font:800 13.5px/1 system-ui,sans-serif;padding:8px 10px;cursor:pointer}
+.mkTool.on{background:#ffd60a;color:#1b1f3b}.mkGrp.on{background:var(--gc,#ff8a00);color:#111}
+.mkItems{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0}
+.mkItem{flex:none;width:68px;border:2px solid #000;border-radius:12px;background:#2c3577;color:#fff;padding:5px 3px;cursor:pointer;text-align:center;font:700 10.5px/1.15 system-ui,sans-serif}
+.mkItem span{display:block;font-size:24px;line-height:1.15}.mkItem.on{background:var(--gc,#ffd60a);color:#111;transform:translateY(-2px);box-shadow:0 3px 0 #000}
+#mkRun{position:fixed;right:max(12px,env(safe-area-inset-right));top:50%;transform:translateY(-50%);z-index:6;display:none;flex-direction:column;gap:8px}#mkRun.show{display:flex}
+#mkRun button{width:58px;height:58px;border-radius:50%;border:3px solid #1b1f3b;background:#06d6a0;color:#06261c;font:900 24px/1 system-ui,sans-serif;box-shadow:0 4px 0 #1b1f3b;cursor:pointer}#mkRun button small{display:block;font-size:9px}#mkRun #mkCpDel{background:#ef476f;color:#fff}
+@media (min-width:900px){body.web #sMaker .panel{width:min(760px,100%)}.mkItem{width:76px}}
 </style>
 </head>
 <body>
@@ -710,6 +754,7 @@ body.homeWide .mSide .worldCard .cTxt{text-align:left}
 <div id="pwFlash"></div>
 <div id="pwSide"><div id="hPw"></div></div>
 <div id="boostBar"></div>
+<div id="mkRun"><button id="mkCpBtn" aria-label="Place a checkpoint">🚩<small>CHECK</small></button><button id="mkCpDel" aria-label="Remove the last checkpoint">✖<small>UNDO</small></button></div>
 <button id="finBtn" aria-label="Combo finisher">💥<small>FINISHER</small></button>
 <div id="photoBar"><button class="btn blue small" id="phPose">🔄 Pose</button><button class="btn gold small" id="phSnap">📷 Snap</button><button class="btn blue small" id="phObs">🧱 Obstacles shown</button><button class="btn gray small" id="phDone">Done</button><small>Drag to spin the camera</small></div>
 <button id="replayTag">🎬 REPLAY · tap to close</button>
@@ -1218,6 +1263,55 @@ body.homeWide .mSide .worldCard .cTxt{text-align:left}
     <small>Reports go only to the game's moderator. They don't see your name.</small>
   </div>
 </div>
+<!-- LEVEL MAKER: level settings -->
+<div class="modal" id="mkSetModal">
+  <div class="mPanel mkSetPanel">
+    <h2>⚙️ Level settings</h2>
+    <label class="mkLbl">Name<input id="mkNameIn" maxlength="24" placeholder="Name your level" autocomplete="off"></label>
+    <div class="mkLbl">Hallway<div class="mkChips" id="mkThemes"></div></div>
+    <div class="mkLbl">Speed<div class="mkChips" id="mkSpeeds"></div></div>
+    <div class="mkLbl">How hard is it?<div class="mkChips" id="mkStars"></div></div>
+    <label class="volRow"><span>🔦 Lights out (run by flashlight)</span><input type="checkbox" id="mkDark"></label>
+    <div class="mkLbl">Length<div class="mkChips"><button class="chip" id="mkLenAuto">Auto</button><input id="mkLenIn" type="number" min="40" max="5000" step="10" inputmode="numeric" placeholder="metres"></div><small id="mkLenTxt"></small></div>
+    <button class="btn green" id="mkSetOk">Done</button>
+    <div class="row"><button class="btn gray small" id="mkClearAll">🧹 Clear everything</button><button class="btn red small" id="mkDelLv">🗑 Delete level</button></div>
+  </div>
+</div>
+<!-- LEVEL MAKER: a shared level (play, practice, like, report) -->
+<div class="modal" id="mkLvModal">
+  <div class="mPanel mkLvPanel">
+    <div class="mkFace" id="mkLvFace">😬</div>
+    <h2 id="mkLvName">Level</h2>
+    <p class="mkBy" id="mkLvBy"></p>
+    <div class="mkStats" id="mkLvStats"></div>
+    <p class="mkMe" id="mkLvMe"></p>
+    <button class="btn gold" id="mkLvPlay">▶ Play</button>
+    <button class="btn blue small" id="mkLvPrac">🚩 Practice (checkpoints, doesn't count)</button>
+    <div class="row"><button class="btn purple small" id="mkLvLike">❤️ Like</button><button class="btn gray small" id="mkLvId">📋 Copy ID</button><button class="btn red small" id="mkLvRep">⚑ Report</button></div>
+    <button class="btn gray small" id="mkLvClose">Close</button>
+  </div>
+</div>
+<!-- LEVEL MAKER: level complete -->
+<div class="modal" id="mkDoneModal">
+  <div class="mPanel mkDonePanel">
+    <div class="overTitle win" id="mkDoneT">LEVEL COMPLETE!</div>
+    <p id="mkDoneSub"></p>
+    <div class="mkStats" id="mkDoneStats"></div>
+    <button class="btn gold" id="mkDoneAgain">↻ Play again</button>
+    <div class="row"><button class="btn purple small" id="mkDoneLike">❤️ Like</button><button class="btn blue small" id="mkDoneEdit">✏️ Back to editor</button><button class="btn red small" id="mkDoneRep">⚑ Report</button></div>
+    <button class="btn gray small" id="mkDoneBack">Back to levels</button>
+  </div>
+</div>
+<!-- LEVEL MAKER: published -->
+<div class="modal" id="mkPubModal">
+  <div class="mPanel">
+    <h2 id="mkPubT">📤 Shared!</h2>
+    <p id="mkPubSub"></p>
+    <div class="mkCode" id="mkPubId"></div>
+    <button class="btn gold" id="mkPubCopy">📋 Copy the level ID</button>
+    <button class="btn gray small" id="mkPubOk">OK</button>
+  </div>
+</div>
 <!-- SCHOOL RULES (shown once before joining or adding a school) -->
 <!-- INTRO STEP: add your school (online players 13+ only) -->
 <div class="modal" id="schoolIntro">
@@ -1255,7 +1349,7 @@ body.homeWide .mSide .worldCard .cTxt{text-align:left}
 <div class="modal" id="ownerModal">
   <div class="mPanel admPanel ownPanel">
     <h2>🛡 Moderation</h2>
-    <div class="tabs" id="ownTabs"><button class="tab on" data-own="reports">Reports</button><button class="tab" data-own="requests">New schools</button><button class="tab" data-own="schools">Schools</button><button class="tab" data-own="players">Players</button><button class="tab" data-own="bans">Bans</button><button class="tab" data-own="switches">Switches</button></div>
+    <div class="tabs" id="ownTabs"><button class="tab on" data-own="reports">Reports</button><button class="tab" data-own="requests">New schools</button><button class="tab" data-own="schools">Schools</button><button class="tab" data-own="players">Players</button><button class="tab" data-own="levels">Levels</button><button class="tab" data-own="bans">Bans</button><button class="tab" data-own="switches">Switches</button></div>
     <div class="frow" id="ownFind" style="display:none"><input id="ownQ" class="ownIn" placeholder="Username or friend code" autocomplete="off"><button class="btn blue small" id="ownQGo">Find</button></div>
     <small id="ownSub"></small>
     <div id="ownList" class="ownList"></div>
@@ -1282,7 +1376,56 @@ body.homeWide .mSide .worldCard .cTxt{text-align:left}
     <div class="soundRow"><button class="chip" id="bSfx2">🔊 Sound</button><button class="chip" id="bMusic2">🎵 Music on/off</button></div>
     <button class="btn blue" id="bPhoto">📷 Photo mode</button>
     <button class="chip" id="bCtrl2">⌨️ Controls</button><button class="chip" id="bAdmin2" style="display:none">🛠 Admin</button>
+    <button class="btn purple" id="bMkEdit" style="display:none">✏️ Back to editor</button>
+    <button class="btn blue small" id="bMkPrac" style="display:none">🚩 Practice mode</button>
     <button class="btn red" id="bQuit">Quit to Menu</button>
+  </div>
+</div>
+
+<!-- LEVEL MAKER: play levels other players made, and build your own -->
+<div class="screen" id="sMaker">
+  <div class="panel mkPanel">
+    <h2>🛠️ Level Maker</h2>
+    <div class="sub" id="mkSub">Build your own hallway, make it as hard as you dare, and share it. Every shared level has been beaten by the player who made it.</div>
+    <div class="tabs" id="mkTabs"><button class="tab on" data-mk="play">🌍 Play levels</button><button class="tab" data-mk="mine">✏️ My levels</button></div>
+    <div id="mkPlayPane">
+      <div class="mkSort" id="mkSort"><button class="chip" data-ms="featured">⭐ Featured</button><button class="chip" data-ms="new">🆕 Newest</button><button class="chip" data-ms="likes">❤️ Most liked</button><button class="chip" data-ms="plays">🔥 Most played</button><button class="chip" data-ms="hard">💀 Hardest</button></div>
+      <div class="mkFind"><input id="mkFindIn" maxlength="14" placeholder="Got a level ID? Type it here" autocomplete="off" spellcheck="false"><button class="chip" id="mkFindGo">Find</button></div>
+      <div id="mkList" class="mkList"></div>
+    </div>
+    <div id="mkMinePane" style="display:none">
+      <button class="btn gold" id="mkNew">➕ New level</button>
+      <div id="mkMine" class="mkList"></div>
+    </div>
+    <button class="btn gray" data-back>Back</button>
+  </div>
+</div>
+
+<!-- LEVEL EDITOR (full screen, top-down view of the three lanes) -->
+<div class="screen" id="sMkEdit">
+  <div class="mkTop">
+    <button class="mkIcon mkX" id="mkClose" aria-label="Close the editor" title="Close (your level is saved)">✕</button>
+    <button class="mkName" id="mkNameBtn" title="Level settings"><b id="mkNameTxt">My level</b><small id="mkInfo"></small></button>
+    <button class="mkIcon" id="mkUndo" title="Undo (Ctrl+Z)" aria-label="Undo">↶</button>
+    <button class="mkIcon" id="mkRedo" title="Redo (Ctrl+Y)" aria-label="Redo">↷</button>
+    <button class="mkIcon" id="mkSet" title="Level settings" aria-label="Level settings">⚙️</button>
+    <button class="mkPlay" id="mkTest" title="Play it from the start (T)">▶ Test</button>
+  </div>
+  <div class="mkMid" id="mkMid">
+    <canvas id="mkCv"></canvas>
+    <canvas id="mkMini" title="Whole level: tap to jump there"></canvas>
+    <div class="mkFloat">
+      <button class="mkIcon" id="mkZoomIn" title="Zoom in" aria-label="Zoom in">＋</button>
+      <button class="mkIcon" id="mkZoomOut" title="Zoom out" aria-label="Zoom out">－</button>
+      <button class="mkIcon mkSnap" id="mkSnap" title="Grid step">½ m</button>
+      <button class="mkIcon mkHere" id="mkHere" title="Test from the bottom of the screen (H)">▶ here</button>
+    </div>
+    <div class="mkInsp" id="mkInsp"></div>
+  </div>
+  <div class="mkBot">
+    <div class="mkTools"><button class="mkTool on" data-tool="place">✏️ Place</button><button class="mkTool" data-tool="select">⬚ Select</button><button class="mkTool" data-tool="erase">🧽 Erase</button></div>
+    <div class="mkGroups" id="mkGroups"></div>
+    <div class="mkItems" id="mkItems"></div>
   </div>
 </div>
 
@@ -4580,6 +4723,7 @@ function pushOne(o, quiet) {
   if (!quiet) { G.score += 40 * scoreMult(); popup('OUTTA MY WAY!', '#ffd60a'); sfx('bump'); buzz('push'); }
 }
 function doPush() {
+  if (G.mode === 'maker') return;
   if (G.scene !== 'play' || G.paused || G.dying || G.countdown > 0 || G.intro > 0) return;
   if ((G.pushCd || 0) > 0) { sfx('deny'); return; }
   let n = 0;
@@ -4593,6 +4737,7 @@ function doPush() {
   if (n) { G.score += 40 * n * scoreMult(); popup(n > 1 ? 'COMING THROUGH! x' + n : 'EXCUSE ME!', '#ffd60a'); mission('dodges', n); } else popup('PUSH!', '#ffffff');
 }
 function useHeelys() {
+  if (G.mode === 'maker' && G.scene === 'play') return;
   if (G.scene !== 'play' || G.dying || G.paused || G.heely > 0) return;
   if ((save.heelys || 0) <= 0) { if (G.mode !== 'tutorial') toast('No Heel Wheels left', 'Get more in the Locker Room or mystery boxes', 1400); sfx('deny'); return; }
   save.heelys--; persist();
@@ -4884,6 +5029,7 @@ function addChain(n, why) {
   if (comboMul() > before) { popup('COMBO x' + comboMul() + '!', '#ff9f1c'); tone(660 + comboMul() * 120, 0.12, 'square', 0.09); }
 }
 function doFinisher() {
+  if (G.mode === 'maker') return;
   if (G.scene !== 'play' || G.paused || G.dying || comboMul() < 3) return;
   let n = 0; for (const o of G.objs) if (o.K.cat === 'obs' && !o.flying && o.z > PZ - 1 && o.z < PZ + 45) { o.flying = true; o.fx = 0; o.fy = 0; o.fvx = (o.x >= P.x ? 1 : -1) * rand(9, 15); o.fvy = rand(9, 13); o.rot = 0; n++; }
   const pts = Math.round(G.chain * 80 * scoreMult()); G.score += pts; popup('💥 HALLWAY CLEARED! +' + pts.toLocaleString(), '#ff2bd6'); G.shake = 0.5; G.flash = 0.4; sfx('crash'); sfx('win'); buzz('crash'); voice('go_go_go', 0); emit(P.x, 1.2, -3, 40, '#ff2bd6', 9, 0.8, 0.4, 2, true); G.chain = 0; G.chainT = 0; stats().finishers = (stats().finishers || 0) + 1;
@@ -5019,7 +5165,7 @@ const PET_RULES = [
 ];
 const petRule = () => PET_RULES[(dayNum() * 5) % PET_RULES.length];
 function petHelp(dt) {
-  const h = petDef().help; if (!h || G.mode === 'tutorial' || G.dying) return;
+  const h = petDef().help; if (!h || G.mode === 'tutorial' || G.mode === 'maker' || G.dying) return;
   if (h === 'fetch') { G.fetchT = (G.fetchT === undefined ? 25 : G.fetchT) - dt; if (G.fetchT <= 0) { G.fetchT = 25; addObj(pick(['pass', 'energy', 'cheat']), P.lane, PZ + 22, { y: 1.0 }); popup('🐶 FETCH!', '#ffd60a'); sfx('power'); } }
   if (h === 'juice' && !G.juiced && G.dist > 25) { G.juiced = true; G.pw.energy = Math.max(G.pw.energy, pwTime('energy')); popup('🐶 Juice Box delivery!', '#ff8fab'); sfx('power'); }
   if (h === 'bark') { for (const o of G.objs) { if (o.K.cat !== 'obs' || o.ignore || o.barked || Math.abs(o.x - P.x) > (o.K.hw || 0.5) + 0.3) continue; const t = (o.z - PZ) / Math.max(1, G.speed); if (t > 0.5 && t < 1.1) { o.barked = true; const need = o.K.type === 'low' ? 'JUMP!' : o.K.type === 'high' ? 'SLIDE!' : 'MOVE!'; if ((o.K.type === 'low' && P.y > 0.3) || (o.K.type === 'high' && P.slide > 0)) continue; popup('🐕 WOOF! ' + need, '#ffd60a'); tone(520, 0.08, 'square', 0.12); tone(420, 0.1, 'square', 0.12, 0, 0.1); break; } } }
@@ -5283,6 +5429,7 @@ const P = { lane: 0, fromLane: 0, x: 0, y: 0, vy: 0, slide: 0, slideQ: false, fa
 
 function scoreMult() { return Math.round((comboMul() * (save.mult || 1) + (charDef().perk === 'mult' ? 1 : 0)) * (G.score2 ? 2 : 1) * (G.mode === 'infinite' ? diff().score : 1) * speedMode().score * ({ dark: 2, hardcore: 3, sled: 1.5 }[G.fun] || 1) * (1 + pwTime('score') / 100) * (petDef().perk === 'score' ? 1.1 : 1) * 10) / 10; }
 function baseSpeed() {
+  if (G.mode === 'maker' && MK.play) return MK.play.lvl.speed; // a player-made level runs at its own fixed speed
   const sm = speedMode().mul;
   if (G.mode === 'campaign') { const L = LEVELS[G.levelIdx]; return lerp(L.s0, L.s1, clamp(G.dist / L.target, 0, 1)) * 1.12 * diff().camp * sm; }
   if (G.mode === 'tutorial') return 11;
@@ -5317,15 +5464,15 @@ function hopAssist(vy) {
   const g = 26 * (cheatOn('moon') ? 0.45 : 1), want = (nx.K.h || 1.75) + 0.08 - (P.fl || 0), need = (want + g * t * t / 2) / t;
   return clamp(Math.max(vy, need), vy, vy * 1.6);
 }
-function jumpV() { return lerp(11.2, 9.0, wN()) * (save.up.helium ? 1.1 : 1) * shoeDef().jump * (charDef().perk === 'jump' ? 1.08 : 1); }
+function jumpV() { if (G.mode === 'maker') return 11.2; return lerp(11.2, 9.0, wN()) * (save.up.helium ? 1.1 : 1) * shoeDef().jump * (charDef().perk === 'jump' ? 1.08 : 1); }
 function onWax() { for (const o of G.objs) if (o.kind === 'wax' && o.z < PZ + 0.3 && o.z + o.len > PZ && Math.abs(o.x - P.x) < laneW * 0.6) return true; return false; }
 // height of whatever you're standing over (0 = the hallway floor, or the top / ramp of a platform)
 function platH(o, rel) { const K = o.K; if (!o.ramp) return K.top; if (K.stepLen) return rel < K.stepLen ? K.stepH : K.top; return rel < RAMP_LEN ? K.top * clamp(rel / RAMP_LEN, 0, 1) : K.top; }
 function platUnder(x) { for (const o of G.objs) { if (o.K.cat !== 'plat' || o.dead) continue; const rel = PZ - o.z; if (rel < 0 || rel > o.len || Math.abs(o.x - x) > laneW * 0.46) continue; return { o, h: platH(o, rel) }; } return null; }
 function floorAt(x) { const u = platUnder(x); return u ? u.h : 0; }
-function laneSpeed() { return (G.waxed ? 0.35 : 1) * laneW * lerp(11, 5.2, wN()) * shoeDef().lane * (charDef().perk === 'lanes' ? 1.2 : 1); }
+function laneSpeed() { return (G.waxed ? 0.35 : 1) * laneW * lerp(11, 5.2, wN()) * (G.mode === 'maker' ? 1 : shoeDef().lane * (charDef().perk === 'lanes' ? 1.2 : 1)); }
 // the slide lasts 0.95 s again (round 18 made it 0.5 s along with the backpack change, which cut it in half for everyone)
-function slideDur() { return 0.95 * shoeDef().slide; }
+function slideDur() { return 0.95 * (G.mode === 'maker' ? 1 : shoeDef().slide); }
 function startSlide() { if (!(P.slide > 0)) { P.slideAge = 0; sfx('slide'); } P.slide = Math.max(P.slide, slideDur()); }
 function startRoll(t) { P.rollT = t; if (player && player.act.cur === 'Roll') player.act.cur = ''; } // restart the clip even if the last roll just ended
 // row spacing follows the speed WITHOUT the Fast/Turbo multiplier: faster modes really are harder (less time per row), not just stretched out
@@ -5334,12 +5481,12 @@ function gap() { return clamp(G.speed / speedMode().mul * 0.95, 11, 26) * (G.cfg
 /* ---------------- SPAWNING ---------------- */
 // a small (jumpable) obstacle must never sit right behind coins or other pickups, where they'd hide it
 const smallObs = K => K.cat === 'obs' && K.type === 'low';
-function hidesSomething(lane, z, y) { if (G.mode === 'tutorial' || y > 1.9) return false; for (const o of G.objs) if (smallObs(o.K) && !o.ignore && Math.abs(o.x - lane * laneW) < 0.9 && o.z > z - 0.5 && o.z - z < 11 && y < (o.K.h || 0.8) + 0.9) return true; return false; }
+function hidesSomething(lane, z, y) { if (G.mode === 'tutorial' || G.mode === 'maker' || y > 1.9) return false; for (const o of G.objs) if (smallObs(o.K) && !o.ignore && Math.abs(o.x - lane * laneW) < 0.9 && o.z > z - 0.5 && o.z - z < 11 && y < (o.K.h || 0.8) + 0.9) return true; return false; }
 function addObj(kind, lane, z, extra) {
   const K = KINDS[kind];
   if (K.cat === 'pick' && lane !== undefined && !(extra && extra.x !== undefined) && hidesSomething(lane, z, (extra && extra.y) || 0)) return null;
-  if (K.cat === 'obs' && !K.cross && G.mode !== 'tutorial' && lane !== undefined) for (let i = G.objs.length - 1; i >= 0; i--) { const q = G.objs[i]; if (q.K.cat === 'pick' && !q.sky && Math.abs(q.x - lane * laneW) < 0.9 && q.z < z + 0.8 && z - q.z < 3.2 && q.y < (K.h || 1.8) + 0.2) killObj(i); } // clear sightline to what's coming
-  if (smallObs(K) && G.mode !== 'tutorial') for (let i = G.objs.length - 1; i >= 0; i--) { const q = G.objs[i]; if (q.K.cat === 'pick' && Math.abs(q.x - lane * laneW) < 0.9 && q.z < z + 0.5 && z - q.z < 11 && q.y < (K.h || 0.8) + 0.9) killObj(i); }
+  if (K.cat === 'obs' && !K.cross && G.mode !== 'tutorial' && G.mode !== 'maker' && lane !== undefined) for (let i = G.objs.length - 1; i >= 0; i--) { const q = G.objs[i]; if (q.K.cat === 'pick' && !q.sky && Math.abs(q.x - lane * laneW) < 0.9 && q.z < z + 0.8 && z - q.z < 3.2 && q.y < (K.h || 1.8) + 0.2) killObj(i); } // clear sightline to what's coming
+  if (smallObs(K) && G.mode !== 'tutorial' && G.mode !== 'maker') for (let i = G.objs.length - 1; i >= 0; i--) { const q = G.objs[i]; if (q.K.cat === 'pick' && Math.abs(q.x - lane * laneW) < 0.9 && q.z < z + 0.5 && z - q.z < 11 && q.y < (K.h || 0.8) + 0.9) killObj(i); }
   if (K.cat === 'pick' && G.plat && G.objs.includes(G.plat) && lane === G.plat.lane && z > G.plat.z - 0.3 && z < G.plat.z + G.plat.len && !(extra && extra.x !== undefined)) { const P2 = G.plat, rel = z - P2.z, top = platH(P2, Math.max(0, rel)); extra = Object.assign({}, extra || {}); extra.y = Math.max(extra.y || 0, top + ((extra.y || 0.6) > 1.5 ? 0.6 : (extra.y || 0.6))); }
   const o = Object.assign({ kind, K, lane, x: lane * laneW, z, y: 0, row: G.rowId, seed: Math.random(), t: rand(0, 5), shout: 0 }, extra || {});
   if (K.init) K.init(o);
@@ -5546,22 +5693,24 @@ G.lastQuiz = 0; G.lastShortcut = 0; G.lastLetter = -999; G.tpStart = undefined; 
   endGhost(); if (mode === 'infinite' && G.ghostNext) startGhost(G.ghostNext); G.ghostNext = null;
   G.quiz = null; $('quizBox').classList.remove('show');
   G.rivals = mode === 'infinite' && !G.fun ? rivals() : null; G.cc = 0; G.slowT = 0;
-  if (G.daily) toast('DAILY CHALLENGE', 'Beat ' + dailyChallenge().target.toLocaleString() + ' points' + (G.fun ? ' · ' + FUN[G.fun].name : '') + ' for 3★', 2400); else if (G.trip) toast(currentTrip().name.toUpperCase(), 'Collect ' + currentTrip().item + '!', 2200); else if (G.fun) toast(FUN[G.fun].name.toUpperCase(), FUN[G.fun].desc, 2200); else if (mode !== 'tutorial') toast(mode === 'campaign' ? LEVELS[G.levelIdx].name : 'INFINITE RUN', mode === 'campaign' ? 'Get to ' + LEVELS[G.levelIdx].dest + ' before the bell!' : THEME().name, 2200);
+  if (G.daily) toast('DAILY CHALLENGE', 'Beat ' + dailyChallenge().target.toLocaleString() + ' points' + (G.fun ? ' · ' + FUN[G.fun].name : '') + ' for 3★', 2400); else if (G.trip) toast(currentTrip().name.toUpperCase(), 'Collect ' + currentTrip().item + '!', 2200); else if (G.fun) toast(FUN[G.fun].name.toUpperCase(), FUN[G.fun].desc, 2200); else if (mode !== 'tutorial' && mode !== 'maker') toast(mode === 'campaign' ? LEVELS[G.levelIdx].name : 'INFINITE RUN', mode === 'campaign' ? 'Get to ' + LEVELS[G.levelIdx].dest + ' before the bell!' : THEME().name, 2200);
   G.bossOn = false; G.timeLeft0 = G.timeLeft;
   if (mode === 'campaign') setTimeout(() => { if (G.scene === 'play' && G.mode === 'campaign') toast('Goal for ★★★', goalText(LEVELS[G.levelIdx]), 2200); }, 2400);
   duelSetup(); quickCtlStart();
-  if (mode !== 'tutorial') MUSIC.intro(); else syncMusic(); Analytics.log('run_start', { mode: G.fun || G.trip || (G.daily ? 'daily' : mode), level: mode === 'campaign' ? G.levelIdx + 1 : 0 });
+  if (mode !== 'tutorial' && mode !== 'maker') MUSIC.intro(); else syncMusic(); if (!G.mkRetry) Analytics.log('run_start', { mode: G.fun || G.trip || (G.daily ? 'daily' : mode), level: mode === 'campaign' ? G.levelIdx + 1 : 0 });
+  if (mode === 'maker') mkOnStart(); // a player-made level: fair physics, the level's own layout (see LEVEL MAKER)
 }
 function crash(o, msg) {
   if (G.dying) return;
   if (save.admin && save.adminGod && G.mode !== 'tutorial') { if (o) o.ignore = true; return; } // admin god mode
   if (G.shield && G.mode !== 'tutorial') { G.shield = 0; if (o) o.ignore = true; G.pw.pass = Math.max(G.pw.pass, 1.5); G.caught = false; popup('🛡 SHIELD SAVED YOU!', '#7bdff2'); sfx('smash'); G.shake = 0.3; return; }
-  if (petDef().help === 'guard' && !G.foxSaved && G.mode !== 'tutorial') { G.foxSaved = true; if (o) o.ignore = true; G.pw.pass = Math.max(G.pw.pass, 1.5); G.caught = false; popup('🦊 FOX TO THE RESCUE!', '#ff9f1c'); sfx('power'); clearChase(); G.stumble = 0; return; }
+  if (petDef().help === 'guard' && !G.foxSaved && G.mode !== 'tutorial' && G.mode !== 'maker') { G.foxSaved = true; if (o) o.ignore = true; G.pw.pass = Math.max(G.pw.pass, 1.5); G.caught = false; popup('🦊 FOX TO THE RESCUE!', '#ff9f1c'); sfx('power'); clearChase(); G.stumble = 0; return; }
   if (G.easyRun && !G.frSaved && G.dist < 900) { G.frSaved = true; if (o) o.ignore = true; G.pw.pass = Math.max(G.pw.pass, 1.5); G.caught = false; G.stumble = 0; clearChase(); G.shake = 0.25; sfx('bump'); popup('OOPS! FREE SAVE', '#ffd60a'); toast('First run bonus', 'Your first crash is on us. Next one counts!', 1800); return; }
   if (G.mode !== 'tutorial') breakChain(true);
   if (heelySave(o)) { if (G.tut) G.tut.saved = true; return; }
   if (G.mode === 'tutorial') { sfx('crash'); G.shake = 0.4; const k = G.caught || G.stumble > 0 ? 'caught' : (o && o.K.type) || 'block'; tutRetry(k === 'block' || k === 'low' || k === 'high' || k === 'caught' ? k : 'block'); return; }
   G.dying = true; G.dyingT = 1.3; G.shake = 0.5; G.flash = 0.6; P.fall = 0.001; P.slide = 0; P.slideQ = false; P.rollQ = false; P.rollT = 0; // a crash always ends the slide (no lying-down lean mixed into the fall)
+  if (G.mode === 'maker') { G.dyingT = 0.7; if (MK.play) MK.play.deathAt = G.dist; } // maker levels: back in quickly for the next attempt
   G.deathMsg = msg; sfx('crash'); vibrate(200); if (G.caught) { G.dyingT = 1.6; popup('CAUGHT!', '#ef476f'); }
   emit(P.x, 1.6, 0, 16, '#ffe066', 3.5, 0.9, 0.4, 3, true);
   if (o && o.K.say !== undefined) o.shout = 2;
@@ -5777,7 +5926,7 @@ function act(a) {
   else if ((a === 'left' && P.lane === -1) || (a === 'right' && P.lane === 1)) lockerSlam(a === 'left' ? -1 : 1);
   else if (a === 'jump') {
     if (P.y <= (P.fl || 0) + 0.001) { P.vy = hopAssist(jumpV() * (G.heely > 0 ? 1.12 : 1) * (G.pw.spring > 0 ? 1.55 : 1)); if (G.pw.spring > 0) { emit(P.x, 0.1, 0.2, 14, '#7dff9a', 4, 0.5, 0.2, 0, true, true); sfx('power'); } P.slide = 0; P.slideQ = false; P.rollQ = false; P.rollT = 0; sfx('jump'); if (G.heely > 0) startTrick(); G.lastJumpT = G.t; }
-    else if (charDef().ab === 'djump' && !P.dj && P.vy < jumpV() * 0.7) { P.dj = true; P.vy = jumpV() * 0.88; sfx('jump'); popup('DOUBLE JUMP!', '#7bdff2'); emit(P.x, P.y, 0.2, 10, '#ffffff', 2.5, 0.4, 0.15, 0, true, true); }
+    else if (charDef().ab === 'djump' && G.mode !== 'maker' && !P.dj && P.vy < jumpV() * 0.7) { P.dj = true; P.vy = jumpV() * 0.88; sfx('jump'); popup('DOUBLE JUMP!', '#7bdff2'); emit(P.x, P.y, 0.2, 10, '#ffffff', 2.5, 0.4, 0.15, 0, true, true); }
     else if (P.vy <= 0) P.jumpBuf = G.t; // swiped up a moment before landing: jump the instant your feet touch down
   } else if (a === 'slide') {
     // in the air: slam down and tuck into the roll RIGHT AWAY (it used to wait until you touched the floor)
@@ -5891,7 +6040,7 @@ function update(dt) {
     G.dyingT -= dt; P.fall = Math.min(1, P.fall + dt * 3);
     if (P.y > (P.fl || 0)) { P.vy -= 30 * dt; P.y = Math.max(P.fl || 0, P.y + P.vy * dt); }
     G.objs.forEach(o => o.t += dt);
-    if (G.dyingT <= 0 && !G.reviving) { if (!offerRevive()) endRun(false); }
+    if (G.dyingT <= 0 && !G.reviving) { if (G.mode === 'maker' && MK.play) { mkDied(); return; } if (!offerRevive()) endRun(false); }
     return;
   }
   if (G.tutHold) return;
@@ -5947,7 +6096,7 @@ function update(dt) {
     if (G.pw.cheat - dt <= 0) { G.pw.pass = Math.max(G.pw.pass, 1.2); P.vy = -2; }
     if (G.pw.cheat > 0.9 && G.pw.cheat - dt <= 0.9) for (const o of G.objs) if (o.sky && o.z > PZ - 0.5 && !o.dead) { o.dead = true; emit(o.x, o.y, -(o.z - PZ), 4, '#ffd60a', 2, 0.4, 0.1, 0, true, true); } // plane is landing: leftover sky coins pop
   } else if (P.y > P.fl + 0.0001 || P.vy > 0) {
-    const g = 26 * (save.up.helium && P.vy < 0 ? 0.72 : 1) * (cheatOn('moon') ? 0.45 : 1) * (charDef().ab === 'glide' && P.vy < 0 ? 0.55 : 1);
+    const g = G.mode === 'maker' ? 26 * (cheatOn('moon') ? 0.45 : 1) : 26 * (save.up.helium && P.vy < 0 ? 0.72 : 1) * (cheatOn('moon') ? 0.45 : 1) * (charDef().ab === 'glide' && P.vy < 0 ? 0.55 : 1);
     P.vy -= g * dt; P.y += P.vy * dt;
     if (P.y <= P.fl) { P.y = P.fl; P.dj = false; if (G.hopN > 1 && P.fl < 0.3) { G.hopT = 0; } G.hopN = P.fl < 0.3 ? 0 : G.hopN; P.vy = 0; sfx('land'); if (G.trick) landTrick(); emit(P.x, 0.1, 0.2, 10, '#e8e0cc', 2.4, 0.45, 0.28, 2, false, true); P.landT = 0.2; if (P.slideQ) { P.slideQ = false; if (P.rollQ) { P.slide = Math.max(P.rollT, 0.4); P.slideAge = 1; P.rollT = P.slide; } else startSlide(); } else if (P.jumpBuf && G.t - P.jumpBuf < 0.22) { P.jumpBuf = 0; act('jump'); } P.rollQ = false; }
   }
@@ -5983,7 +6132,8 @@ function update(dt) {
   G.nextRow -= move;
   if (G.mode === 'tutorial') { G.nextRow = 1e9; tutUpdate(); }
   if (G.firstRun) firstRunHints();
-  while (G.nextRow < SPAWN_Z) {
+  if (G.mode === 'maker' && MK.play) { if (mkTick()) return; } // player-made level: objects come from the level, not spawnRow
+  else while (G.nextRow < SPAWN_Z) {
     if (lvl && G.dist + G.nextRow - PZ > lvl.target - 18) {
       if (!G.finishSpawned) { G.finishSpawned = true; addObj('finish', 0, lvl.target - G.dist + PZ, { dest: lvl.dest.toUpperCase() }); }
       G.nextRow = 1e9; break;
@@ -6005,10 +6155,10 @@ function update(dt) {
     if (o.pushed && o.mesh) { o.pushed.t += wdt; const tx = o.pushed.dir * (HW - 0.7); o.x += (tx - o.x) * Math.min(1, wdt * 5); } // no whole-body tilt: tilting the group around its middle pushed the low-side feet ~8-15 cm into the floor; the bump reaction animation shows the shove
     const ovz = o.vz !== undefined ? o.vz : K.vz;
     if (ovz && !o.vzFix) { o.vzFix = true; const lim = ovz < -2 ? 60 : 40; if (o.z > lim) o.z -= ovz * (o.z - lim) / Math.max(G.speed, 4); } // start them back along their path so they reach you at the same spot as before
-    if (ovz && o.z > PZ - 2) o.z += ovz * wdt; // people walk from the moment they appear (they used to stand frozen until you got close)
+    if (o.d0 !== undefined) mkPlace(o); else if (ovz && o.z > PZ - 2) o.z += ovz * wdt; // people walk from the moment they appear (they used to stand frozen until you got close)
     // crossing objects (dodgeballs/scooters)
     if (K.cross) {
-      if (!o.crossing && o.z < 40) { o.crossing = true; const tReach = Math.max(0.6, (o.z - PZ) / Math.max(G.speed, 1)); const endX = pick([-1, 0, 1]) * laneW * 0.9; o.vx = o.dir * (Math.abs(endX - o.x)) / tReach; }
+      if (!o.crossing && o.z < 40) { o.crossing = true; const tReach = Math.max(0.6, (o.z - PZ) / Math.max(G.speed, 1)); const endX = (o.endLane !== undefined ? o.endLane : pick([-1, 0, 1])) * laneW * 0.9; o.vx = o.dir * (Math.abs(endX - o.x)) / tReach; }
       if (o.crossing) o.x += (o.vx || 0) * wdt;
     }
     if (K.sway) o.x = o.lane * laneW + Math.sin(o.t * 1.4 + o.seed * 6) * 0.35;
@@ -6079,7 +6229,7 @@ function update(dt) {
           if (G.mode === 'tutorial' && !tutSide) { o.ignore = true; if (!G.tut.oops) { G.tut.oops = true; popup('OOPS! No worries', '#ffd60a'); } sfx('bump'); continue; } // the tutorial's side-bump lesson always counts as a side bump
           const moving = Math.abs(P.x - P.lane * laneW) > 0.25 || tutSide;
           if (heelySave(o)) { if (G.tut) G.tut.saved = true; continue; }
-          if (G.fun !== 'hardcore' && moving && P.fromLane !== P.lane && Math.abs(o.x - P.lane * laneW) < Math.abs(o.x - P.fromLane * laneW)) {
+          if (G.fun !== 'hardcore' && G.mode !== 'maker' && moving && P.fromLane !== P.lane && Math.abs(o.x - P.lane * laneW) < Math.abs(o.x - P.fromLane * laneW)) {
             o.ignore = true; o.bumped = true; P.lane = P.fromLane;
             if (G.stumble > 0 || (G.chase && G.chase.boss)) { G.caught = true; crash(o, (G.chase ? G.chase.name[0].toUpperCase() + G.chase.name.slice(1) : 'They') + ' caught you!'); }
             else { breakChain(); G.tpBump = true; G.stumble = chaseTime(); G.shake = 0.25; sfx('bump'); vibrate(60); popup('BUMPED! RUN!', '#ef476f'); P.stumbleT = 0.45; knockAside(o); startChase(null, MONITOR_CHASE); }
@@ -6158,17 +6308,18 @@ function updateHUD() {
   setText('hScore', Math.floor(G.score).toLocaleString());
   { const cb = $('hCombo'), on = (G.chain || 0) > 0; cb.style.display = on ? 'block' : 'none'; if (on) { setText('hComboT', 'COMBO x' + comboMul() + ' · ' + G.chain); $('hComboBar').style.width = clamp(G.chainT / COMBO_TIME * 100, 0, 100) + '%'; cb.classList.toggle('hot', comboMul() >= 3); } }
   setText('hDist', Math.floor(G.dist) + ' m'); setText('hMult', 'x' + scoreMult());
-  setText('heelyCount', String(save.heelys || 0)); $('heelyBtn').classList.toggle('on', G.heely > 0); $('heelyBtn').classList.toggle('show', G.scene === 'play' && (G.mode === 'tutorial' || (save.heelys || 0) > 0 || G.heely > 0));
+  setText('heelyCount', String(save.heelys || 0)); $('heelyBtn').classList.toggle('on', G.heely > 0); $('heelyBtn').classList.toggle('show', G.scene === 'play' && G.mode !== 'maker' && (G.mode === 'tutorial' || (save.heelys || 0) > 0 || G.heely > 0));
   { const on = G.scene === 'play' && G.stumble > 0 && !G.dying; $('chaseMeter').classList.toggle('show', on); if (on) $('chaseFill').style.width = clamp(G.stumble / chaseTime() * 100, 0, 100) + '%'; }
   { const m = scoreMult(); if (hudCache.mult !== m) { if (hudCache.mult !== undefined && G.scene === 'play') bumpEl('hMult', 1.5); hudCache.mult = m; } }
   setText('hCoins', '$' + G.coins); if (hudCache.coins !== G.coins) { if (G.coins > (hudCache.coins || 0) && G.scene === 'play') bumpEl('hCoins', 1.22); hudCache.coins = G.coins; }
-  $('finBtn').classList.toggle('show', G.scene === 'play' && comboMul() >= 3);
+  $('finBtn').classList.toggle('show', G.scene === 'play' && G.mode !== 'maker' && comboMul() >= 3);
   { const pb = $('pushBtn'), cd = G.pushCd || 0; pb.classList.toggle('cool', cd > 0); pb.style.setProperty('--p', (1 - cd / pushCD()) * 360 + 'deg'); pb.classList.toggle('pads', G.padsT > 0); }
   const showTok = G.mode === 'infinite' && !G.trip && (G.eventRun || G.runTok > 0); $('hTok').style.display = showTok ? 'block' : 'none'; if (showTok) setText('hTok', (EV_ICON[currentEvent().id] || '🎟') + ' ' + G.runTok + ' · ' + eventSave().tokens + '/' + EVENT_TRACK[EVENT_TRACK.length - 1][0]);
   const wp = Math.round(G.weight * 100);
   if (hudCache.w !== wp) { hudCache.w = wp; $('hW').style.width = wp + '%'; $('hWt').textContent = wp + '%'; }
   if (G.fun === 'coinrush') { const tl = Math.max(0, Math.ceil(G.timeLeft)); setText('hBell', '⏱ 0:' + String(tl).padStart(2, '0')); setText('hDest', 'Coin Rush'); $('hBell').classList.toggle('warn', G.timeLeft < 10); $('hProg').firstElementChild.style.width = (G.timeLeft / 60 * 100) + '%'; }
   if (G.fun === 'trial') { setText('hBell', '⏱ ' + G.trialT.toFixed(1) + 's'); setText('hDest', Math.floor(G.dist) + ' / 1000m'); $('hProg').firstElementChild.style.width = clamp(G.dist / 10, 0, 100) + '%'; }
+  if (G.mode === 'maker' && MK.play) mkHud();
   if (G.mode === 'campaign') {
     const L = LEVELS[G.levelIdx], tl = Math.max(0, Math.ceil(G.timeLeft));
     setText('hBell', '🔔 ' + Math.floor(tl / 60) + ':' + String(tl % 60).padStart(2, '0'));
@@ -6670,7 +6821,7 @@ function frame(now) {
   if (save.battery) { _skip = !_skip; if (_skip) { requestAnimationFrame(frame); return; } } // ~30 fps
   if (AUTO_Q) { const fdt = (now - lastT) / 1000; if (fdt > 0 && fdt < 0.5) { fpsAcc += fdt; fpsN++; } if (now - fpsT > 2000 && fpsN > 20) { const fps = fpsN / fpsAcc; let np = curPr; if (fps < 45) np = Math.max(Q.minPr, curPr - 0.15); else if (fps > 57) np = Math.min(Q.pr, curPr + 0.1); if (np !== curPr) { curPr = np; renderer.setPixelRatio(Math.min(DPR, curPr)); renderer.setSize(W, H, false); } fpsAcc = 0; fpsN = 0; fpsT = now; } }
   const dt = Math.min(0.05, Math.max(0, (now - lastT) / 1000)); lastT = now;
-  try { update(dt); render(); if (curScreen === 'sShop') drawPreview(); } catch (e) { console.error(e); }
+  try { if (curScreen !== 'sMkEdit') { update(dt); render(); } if (curScreen === 'sShop') drawPreview(); } catch (e) { console.error(e); }
   requestAnimationFrame(frame);
 }
 /* ===================== ROUND 16 =====================
@@ -7069,7 +7220,7 @@ const docPath = (c, id) => '/' + c + '/' + encodeURIComponent(id);
 
 /* ---- schools list + moderator switches (cached) ---- */
 var SCHOOL_SEED = [{ id: 'nahs', name: 'NAHS', status: 'approved' }];
-var SCHOOLS = { list: SCHOOL_SEED.slice(), t: 0 }, APPCFG = { schools: true, requests: true, autoApprove: true, t: 0 };
+var SCHOOLS = { list: SCHOOL_SEED.slice(), t: 0 }, APPCFG = { schools: true, requests: true, autoApprove: true, levels: true, levelAuto: true, t: 0 };
 async function loadSchools(force) {
   if (!force && SCHOOLS.t && Date.now() - SCHOOLS.t < 120000) return SCHOOLS.list;
   if (loadSchools.p) return loadSchools.p;
@@ -7087,7 +7238,7 @@ async function loadSchools(force) {
   try { return await loadSchools.p; } finally { loadSchools.p = null; }
 }
 function APPCFG_LOAD() { return loadAppCfg(); }
-async function loadAppCfg() { if (APPCFG.t && Date.now() - APPCFG.t < 300000) return APPCFG; try { const d = fsDoc(await fsReq('GET', '/config/app')); APPCFG = { schools: d.schools !== false, requests: d.requests !== false, autoApprove: d.autoApprove !== false, t: Date.now() }; } catch (e) { APPCFG = { schools: true, requests: true, autoApprove: true, t: e.status === 404 ? Date.now() : 0 }; } return APPCFG; }
+async function loadAppCfg() { if (APPCFG.t && Date.now() - APPCFG.t < 300000) return APPCFG; try { const d = fsDoc(await fsReq('GET', '/config/app')); APPCFG = { schools: d.schools !== false, requests: d.requests !== false, autoApprove: d.autoApprove !== false, levels: d.levels !== false, levelAuto: d.levelAuto !== false, t: Date.now() }; } catch (e) { APPCFG = { schools: true, requests: true, autoApprove: true, levels: true, levelAuto: true, t: e.status === 404 ? Date.now() : 0 }; } return APPCFG; }
 function mySchool() { return save.school || ''; }
 function schoolName(id) { const s = SCHOOLS.list.find(x => x.id === id); return s ? s.name : String(id || '').toUpperCase(); }
 async function retagRuns() { // your existing board rows move to the new school straight away
@@ -7190,14 +7341,14 @@ async function buildSchoolBoard(dk, ol) {
 function addReportBtns(ol, rows) { [...ol.children].forEach((li, i) => { const r = rows[i]; if (!r || r.me || !r.uid || r.uid.includes('|')) return; const b = mk('button', 'repBtn', '🚩'); b.title = 'Report or block ' + r.n; b.onclick = e => { e.stopPropagation(); openReport({ kind: 'player', target: r.uid, name: r.n }); }; li.appendChild(b); }); }
 function openReport(t) {
   const m = $('reportModal'); let reason = '';
-  $('repWho').textContent = (t.kind === 'school' ? 'School: ' : 'Player: ') + t.name; $('repBlock').parentElement.style.display = t.kind === 'player' ? '' : 'none';
-  document.querySelectorAll('#repReasons [data-rr]').forEach(b => { b.classList.remove('on'); b.style.display = t.kind === 'school' && b.dataset.rr === 'cheat' ? 'none' : ''; b.onclick = () => { reason = b.dataset.rr; document.querySelectorAll('#repReasons [data-rr]').forEach(x => x.classList.toggle('on', x === b)); }; });
+  $('repWho').textContent = ({ school: 'School: ', level: 'Level: ' }[t.kind] || 'Player: ') + t.name; $('repBlock').parentElement.style.display = t.kind === 'player' || (t.kind === 'level' && t.by) ? '' : 'none'; $('repBlock').previousElementSibling.textContent = t.kind === 'level' ? 'Also block this maker (hide their levels and names)' : 'Also block (hide them from my boards)';
+  document.querySelectorAll('#repReasons [data-rr]').forEach(b => { b.classList.remove('on'); b.style.display = (t.kind === 'school' || t.kind === 'level') && b.dataset.rr === 'cheat' ? 'none' : ''; b.onclick = () => { reason = b.dataset.rr; document.querySelectorAll('#repReasons [data-rr]').forEach(x => x.classList.toggle('on', x === b)); }; });
   $('repSend').onclick = async () => {
     if (!reason) { toast('Pick a reason first', '', 1100); return; }
-    m.classList.remove('show'); if (t.kind === 'player' && $('repBlock').checked) blockUid(t.target);
+    m.classList.remove('show'); if ($('repBlock').checked && (t.kind === 'player' || (t.kind === 'level' && t.by))) blockUid(t.kind === 'level' ? t.by : t.target);
     try { const a = await Online.token(); await fsReq('PATCH', docPath('reports', a.uid + '_' + t.target), a.idToken, fsEnc({ by: a.uid, kind: t.kind, target: t.target, name: String(t.name || '').slice(0, 40), reason, ts: new Date() }), 'currentDocument.exists=false'); toast('Thanks! Report sent', 'The moderator will check it', 1600); }
     catch (e) { toast(e.status ? 'You already reported this' : 'Couldn\'t send the report', e.status ? 'The moderator will check it' : 'Check your connection', 1600); }
-    if (curScreen === 'sRanks') buildBoard();
+    if (curScreen === 'sRanks') buildBoard(); if (curScreen === 'sMaker' && t.kind === 'level') { MK.list.rows = null; mkRenderHub(); }
   };
   $('repCancel').onclick = () => m.classList.remove('show');
   m.classList.add('show');
@@ -7255,6 +7406,15 @@ async function modWipe(uid, tok) { const rs = await runsOf(uid, tok); await Prom
 async function modBan(uid, name, tok) { await fsReq('PATCH', docPath('bans', uid), tok, fsEnc({ name: String(name || '').slice(0, 40), ts: new Date() })); await modWipe(uid, tok); }
 async function modClearReports(target, tok) { const rs = await fsQuery('reports', fsEq('target', target), null, 100, tok); await Promise.all(rs.map(r => fsReq('DELETE', docPath('reports', r.id), tok))); }
 async function modSchool(id, fields, tok) { await fsReq('PATCH', docPath('schools', id), tok, fsEnc(fields), Object.keys(fields).map(k => 'updateMask.fieldPaths=' + k).join('&')); SCHOOLS.t = 0; }
+async function modLevel(id, fields, tok) { await fsReq('PATCH', docPath('levels', id), tok, fsEnc(fields), Object.keys(fields).map(k => 'updateMask.fieldPaths=' + k).join('&') + '&currentDocument.exists=true'); MK.list.rows = null; }
+function levelBtns(id, after, r) { const then = f => async t => { await f(t); if (after) await after(t); };
+  const out = [];
+  if (r && r.status === 'pending') out.push(chipBtn('✅ Approve', () => ownDo('Approved', then(t => modLevel(id, { status: 'live' }, t)))));
+  if (r && r.status === 'live') out.push(chipBtn(r.featured ? '☆ Unfeature' : '⭐ Feature', () => ownDo(r.featured ? 'Unfeatured' : 'Featured', then(t => modLevel(id, { featured: !r.featured }, t)))));
+  out.push(chipBtn(r && r.status === 'hidden' ? '👀 Show' : '🙈 Hide', () => ownDo(r && r.status === 'hidden' ? 'Shown' : 'Hidden', then(t => modLevel(id, { status: r && r.status === 'hidden' ? 'live' : 'hidden' }, t)))));
+  out.push(chipBtn('🗑 Delete', () => { if (confirm('Delete this level for good?')) ownDo('Deleted', then(t => fsReq('DELETE', docPath('levels', id), t).then(() => { MK.list.rows = null; }))); }));
+  out.push(chipBtn('⛔ Ban maker', () => { if (confirm('Ban the player who made this level? All their levels are deleted, their scores are removed and they can\'t post again.')) ownDo('Banned', then(async t => { const lv = r && r.by ? r : fsDoc(await fsReq('GET', docPath('levels', id))); const theirs = await mkQuery(null, fsEq('by', lv.by), 200).catch(() => []); await Promise.all([id].concat(theirs.map(x => x.id)).map(x => fsReq('DELETE', docPath('levels', x), t).catch(() => {}))); MK.list.rows = null; await modBan(lv.by, lv.author || 'Runner', t); })); }));
+  return out; }
 function slugify(n) { return n.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 24) || 'school'; }
 function playerBtns(uid, name, after) { const then = f => async t => { await f(t); if (after) await after(t); };
   return [chipBtn('✏️ Rename to Runner', () => ownDo('Renamed', then(t => modRename(uid, t)))), chipBtn('🗑 Remove scores', () => ownDo('Scores removed', then(t => modWipe(uid, t)))), chipBtn('⛔ Ban', () => { if (confirm('Ban ' + name + '? Their scores are removed and they can\'t post again.')) ownDo('Banned', then(t => modBan(uid, name, t))); })]; }
@@ -7269,7 +7429,7 @@ async function ownRender(q) {
       for (const r of rs) (by[r.target] = by[r.target] || { kind: r.kind, name: r.name, target: r.target, n: 0, why: {}, t: r.ts }).n++, by[r.target].why[r.reason] = 1;
       const g = Object.values(by).sort((a, b) => b.n - a.n || b.t - a.t);
       sub.textContent = g.length ? g.length + ' reported (most reports first). Dismiss clears the reports; the other buttons also act on the player or school.' : 'No reports. All clear! ✅';
-      for (const r of g) L.appendChild(ownRow((r.kind === 'school' ? '🏫 ' : '🧍 ') + r.name + ' · ' + r.n + ' report' + (r.n === 1 ? '' : 's'), Object.keys(r.why).join(', ') + ' · ' + ago(r.t) + ' · ' + r.target,
+      for (const r of g) L.appendChild(r.kind === 'level' ? ownRow('🛠️ ' + r.name + ' · ' + r.n + ' report' + (r.n === 1 ? '' : 's'), Object.keys(r.why).join(', ') + ' · ' + ago(r.t) + ' · level ' + r.target, [chipBtn('✅ Dismiss', () => ownDo('Dismissed', t => modClearReports(r.target, t)))].concat(levelBtns(r.target, t => modClearReports(r.target, t)))) : ownRow((r.kind === 'school' ? '🏫 ' : '🧍 ') + r.name + ' · ' + r.n + ' report' + (r.n === 1 ? '' : 's'), Object.keys(r.why).join(', ') + ' · ' + ago(r.t) + ' · ' + r.target,
         [chipBtn('✅ Dismiss', () => ownDo('Dismissed', t => modClearReports(r.target, t)))].concat(r.kind === 'school'
           ? [chipBtn('🙈 Hide school', () => ownDo('School hidden', async t => { await modSchool(r.target, { status: 'hidden' }, t); await modClearReports(r.target, t); }))]
           : playerBtns(r.target, r.name, t => modClearReports(r.target, t)))));
@@ -7300,16 +7460,488 @@ async function ownRender(q) {
     } else if (ownTab === 'bans') {
       const j = await fsReq('GET', '/bans', tok, null, 'pageSize=300'), rs = (j.documents || []).map(fsDoc); sub.textContent = rs.length ? rs.length + ' banned players. Banned players can still play, but nothing they post reaches the boards.' : 'Nobody is banned.';
       for (const r of rs) L.appendChild(ownRow(r.name || r.id, ago(r.ts) + ' · ' + r.id, [chipBtn('↩️ Unban', () => ownDo('Unbanned', t => fsReq('DELETE', docPath('bans', r.id), t)))]));
+    } else if (ownTab === 'levels') {
+      const rs = (await live(mkQuery('ts', null, 150))).sort((a, b) => (a.status === 'pending' ? 0 : 1) - (b.status === 'pending' ? 0 : 1) || (b.ts || 0) - (a.ts || 0));
+      sub.textContent = rs.length ? 'Newest shared levels (waiting ones first). Play one with its ID in Level Maker → Play levels. ⭐ Feature puts it on the Featured tab.' : 'No shared levels yet.';
+      for (const r of rs) L.appendChild(ownRow((r.status === 'pending' ? '⏳ ' : r.status === 'hidden' ? '🙈 ' : r.featured ? '⭐ ' : '') + r.name, 'by ' + (r.author || 'Runner') + ' · ' + mkStar(r.stars)[2] + ' · ❤️ ' + (r.likes || 0) + ' ▶ ' + (r.plays || 0) + ' ✅ ' + (r.clears || 0) + ' · ' + ago(r.ts) + ' · ' + r.id, levelBtns(r.id, null, r)));
     } else if (ownTab === 'switches') {
       APPCFG.t = 0; const c = await loadAppCfg(); sub.textContent = 'Emergency switches. They work for every player on the website and the app within a few minutes.';
-      const set = (k, v) => ownDo('Saved', t => fsReq('PATCH', '/config/app', t, fsEnc(Object.assign({ schools: c.schools, requests: c.requests, autoApprove: c.autoApprove }, { [k]: v }))).then(() => { APPCFG.t = 0; }));
+      const set = (k, v) => ownDo('Saved', t => fsReq('PATCH', '/config/app', t, fsEnc(Object.assign({ schools: c.schools, requests: c.requests, autoApprove: c.autoApprove, levels: c.levels, levelAuto: c.levelAuto }, { [k]: v }))).then(() => { APPCFG.t = 0; }));
       L.appendChild(ownRow('School boards: ' + (c.schools ? 'ON' : 'OFF'), 'Turn off to hide every school board at once.', [chipBtn(c.schools ? 'Turn off' : 'Turn on', () => set('schools', !c.schools))]));
       L.appendChild(ownRow('Players can add schools: ' + (c.requests ? 'ON' : 'OFF'), 'Turn off to stop players adding new schools.', [chipBtn(c.requests ? 'Turn off' : 'Turn on', () => set('requests', !c.requests))]));
       L.appendChild(ownRow('Approve new schools first: ' + (c.autoApprove ? 'OFF' : 'ON'), c.autoApprove ? 'New schools go on the boards straight away (the bad-word filter and reports still apply).' : 'New schools wait in Requests until you approve them. The player who added it can use it meanwhile.', [chipBtn(c.autoApprove ? 'Turn on' : 'Turn off', () => set('autoApprove', !c.autoApprove))]));
+      L.appendChild(ownRow('Players can share levels: ' + (c.levels ? 'ON' : 'OFF'), 'Turn off to stop new levels being shared (shared ones can still be played).', [chipBtn(c.levels ? 'Turn off' : 'Turn on', () => set('levels', !c.levels))]));
+      L.appendChild(ownRow('Approve new levels first: ' + (c.levelAuto ? 'OFF' : 'ON'), c.levelAuto ? 'New levels show up straight away (the name filter and reports still apply).' : 'New levels wait in the Levels tab until you approve them.', [chipBtn(c.levelAuto ? 'Turn on' : 'Turn off', () => set('levelAuto', !c.levelAuto))]));
       L.appendChild(ownRow('Your owner UID', OWN.uid, []));
     }
   } catch (e) { if (e && e.stale) return; sub.textContent = 'Couldn\'t load: ' + (e.status === 403 ? 'the database said no (check the owner UID in the rules)' : e.message); }
 }
+
+/* ===================== LEVEL MAKER =====================
+   Players build their own hallway on a top-down grid of the three lanes, test it, and share it. Shared levels are
+   played the hard way: one hit and you start over (with an attempt counter and your best %), or in Practice mode
+   with checkpoints that don't count. A level can only be shared after its maker has beaten it from the start, so
+   every shared level is possible, however hard it looks.
+   - Fair physics: in a maker level everyone runs with the same jump, slide, lane change and speed (no shoes, perks,
+     pets, shields, boosts, revives, PUSH or Heel Wheels), and obstacles are placed by the level, not by chance.
+   - People who walk are timed so they meet you exactly where they sit in the editor, on every attempt.
+   - Online: levels/{id} (+ plays / clears / likes markers, one per player), see firestore.rules. Players 13+ only,
+     names go through the same bad-word filter as usernames, and every level can be reported to the owner panel. */
+const MK_GROUPS = { jump: ['⤴ Jump', '#2ec27e'], duck: ['⤵ Slide', '#4d96ff'], block: ['⛔ Dodge', '#ef476f'], move: ['➡ Moving', '#ff9f1c'], plat: ['▭ Platforms', '#b388ff'], pick: ['★ Pickups', '#ffd60a'] };
+const MK_ITEMS = [
+  ['tray', '🥡', 'Lunch tray', 'jump'], ['cone', '⚠️', 'Wet floor sign', 'jump'], ['hurdle', '🚧', 'Hurdle', 'jump'], ['mop', '🧹', 'Mop', 'jump'], ['trash', '🗑️', 'Trash can', 'jump'],
+  ['basketball', '🏀', 'Basketball', 'jump'], ['puddle', '💧', 'Puddle', 'jump'], ['chair', '🪑', 'Rolling chair', 'jump'], ['hose', '🧯', 'Fire hose', 'jump'], ['sprinkler', '💦', 'Sprinkler', 'jump'],
+  ['volcano', '🌋', 'Volcano', 'jump'], ['robot', '🤖', 'Robot', 'jump'], ['lunchtable', '🍽️', 'Lunch table', 'jump'],
+  ['banner', '🎌', 'Banner', 'duck'], ['poster', '🪧', 'Poster board', 'duck'], ['paintladder', '🪜', 'Painter plank', 'duck'], ['lockerpop', '🔒', 'Locker door', 'duck', { outer: 1 }],
+  ['student', '🧍', 'Student', 'block'], ['kid', '🧒', 'Little kid', 'block'], ['teacher', '👩‍🏫', 'Teacher', 'block'], ['monitor', '🦺', 'Hall monitor', 'block'], ['coach', '📣', 'Coach', 'block'],
+  ['professor', '🎓', 'Professor', 'block'], ['group', '👥', 'Group', 'block'], ['umbrellas', '☂️', 'Umbrellas', 'block'], ['pyramid', '🤸', 'Cheer pyramid', 'block'], ['tape', '🚫', 'Caution tape', 'block'],
+  ['doorswing', '🚪', 'Swinging door', 'block', { outer: 1 }],
+  ['rusher', '🏃', 'Sprinter', 'move'], ['walkers', '🚶', 'Walking pair', 'move'], ['cart', '🛒', 'Janitor cart', 'move'], ['avcart', '📽️', 'AV cart', 'move'], ['bandkid', '🥁', 'Drummer', 'move'],
+  ['kidline', '🐥', 'Class in line', 'move'], ['sleepy', '😴', 'Sleepy wobbler', 'move'], ['scooter', '🛴', 'Runaway scooter', 'move'], ['pie', '🥧', 'Flying pie', 'move'],
+  ['tablerow', '🟫', 'Lunch tables', 'plat', { len: 12 }], ['riser', '🏟️', 'Bleachers', 'plat', { len: 14 }], ['wax', '✨', 'Waxed floor', 'plat', { len: 9 }],
+  ['coin', '🪙', 'Coin', 'pick', { y: 0.6 }], ['coinhi', '💫', 'High coin', 'pick', { k: 'coin', y: 2.3 }], ['pass', '🎫', 'Hall pass', 'pick', { y: 1.0 }], ['spring', '🦘', 'Spring shoes', 'pick', { y: 1.0 }], ['cheat', '✈️', 'Paper plane', 'pick', { y: 1.0 }]
+].map(([id, ic, nm, g, x]) => Object.assign({ id, k: id, ic, nm, g }, x || {})).filter(I => KINDS[I.k]);
+const MK_BY = {}; for (const I of MK_ITEMS) MK_BY[I.id] = I;
+const MK_THEMES = ['high', 'middle', 'elem', 'college', 'gym', 'snowquad', 'trip_museum', 'trip_aquarium', 'trip_science', 'trip_arcade'].filter(k => THEMES[k]);
+const MK_SPEEDS = [[10, '🐢 10'], [13, '13'], [16, '16'], [19, '19'], [22, '22'], [26, '26'], [30, '🚀 30']];
+const MK_STARS = [[1, '🙂', 'Easy'], [2, '😊', 'Normal'], [3, '😬', 'Hard'], [4, '😰', 'Harder'], [5, '😱', 'Insane'], [6, '💀', 'Impossible']];
+const MK_MAX_OBJ = 1500, MK_MAX_LEN = 5000, MK_KEY = 'hallwayDash.levels.v1', MK_START = 4; // the first 4 m stay clear so every attempt starts on open floor
+const mkStar = s => MK_STARS[clamp((s | 0) - 1, 0, 5)];
+const mkSpan = it => { const I = MK_BY[it.i], K = KINDS[I.k]; if (I.g === 'plat') return [it.d, it.d + (it.n || I.len)]; const h = Math.max(0.35, (K.d || 0.5) / 2); return [it.d - h, it.d + h]; };
+const mkLen = lv => lv.len || Math.max(40, Math.ceil((lv.o.reduce((m, it) => Math.max(m, mkSpan(it)[1]), 0) + 20) / 5) * 5);
+function cleanLevelName(raw) { const v = String(raw || '').trim().replace(/[^A-Za-z0-9 .'!?-]/g, '').replace(/\s+/g, ' ').slice(0, 24).trim(); return v.length < 3 || isBadText(v) || isBadText(raw) ? '' : v; }
+function mkNewDraft() { return { lid: 'L' + Date.now().toString(36) + Math.floor(Math.random() * 1296).toString(36), name: 'My Level ' + ((MK.drafts.length || 0) + 1), theme: 'high', speed: 16, dark: 0, stars: 3, len: 0, o: [], ver: false, pub: null, t: Date.now() }; }
+// level <-> compact text: [item, lane, distance x10, length x10, ramp]
+function mkEncode(lv) { return JSON.stringify({ v: 1, o: lv.o.map(it => [it.i, it.l, Math.round(it.d * 10), it.n ? Math.round(it.n * 10) : 0, it.r ? 1 : 0]) }); }
+function mkDecode(txt) {
+  let j; try { j = JSON.parse(txt); } catch (e) { return null; } if (!j || !Array.isArray(j.o)) return null;
+  const o = []; for (const a of j.o.slice(0, MK_MAX_OBJ)) { if (!Array.isArray(a) || !MK_BY[a[0]]) continue; const I = MK_BY[a[0]], l = clamp(a[1] | 0, -1, 1), d = clamp((+a[2] || 0) / 10, 0, MK_MAX_LEN); const it = { i: I.id, l: I.outer && !l ? 1 : l, d };
+    if (I.g === 'plat') { it.n = clamp((+a[3] || I.len * 10) / 10, 3, 60); if (I.k !== 'wax') it.r = !!a[4]; } o.push(it); }
+  return o.sort((a, b) => a.d - b.d);
+}
+const MK = { drafts: [], ed: null, play: null, list: { sort: 'featured', rows: null }, clip: null };
+function mkLoad() { try { const j = JSON.parse(localStorage.getItem(MK_KEY) || 'null'); MK.drafts = j && Array.isArray(j.list) ? j.list.filter(d => d && Array.isArray(d.o)) : []; } catch (e) { MK.drafts = []; } }
+function mkStore() { try { localStorage.setItem(MK_KEY, JSON.stringify({ list: MK.drafts })); } catch (e) { toast('Couldn\'t save your levels', 'Your browser storage is full', 1800); } }
+mkLoad();
+// per-level progress (attempts, best %, cleared) lives in the save so it travels with the save code / cloud save
+function mkStat(key) { save.mkStats = save.mkStats || {}; let s = save.mkStats[key]; if (!s) { s = save.mkStats[key] = { a: 0, b: 0, c: 0, t: Date.now() }; const ks = Object.keys(save.mkStats); if (ks.length > 300) { ks.sort((x, y) => (save.mkStats[x].t || 0) - (save.mkStats[y].t || 0)); delete save.mkStats[ks[0]]; } } s.t = Date.now(); return s; }
+
+/* ---------- playing a maker level ---------- */
+const mkFair = () => G.mode === 'maker' && G.scene === 'play';
+function mkPlay(lv, o) { // o: { test, remote, practice, from }
+  MK.play = Object.assign({ lvl: { name: lv.name, theme: THEMES[lv.theme] ? lv.theme : 'high', speed: clamp(lv.speed | 0 || 16, 8, 40), dark: !!lv.dark, o: lv.o.slice().sort((a, b) => a.d - b.d), len: mkLen(lv), stars: lv.stars || 3 }, draft: o.test ? lv : null, att: 0, cps: [], start: o.from || 0, at: o.from || 0, lane: 0, y: 0, t0: 0, seed: 1 + parseInt(hashCode(String(lv.lid || (o.remote && o.remote.id) || lv.name)), 16) % 100000 }, o);
+  MK.play.key = o.remote ? o.remote.id : 'L' + (lv.lid || ''); showScreen(null); MK.play.att = 0; mkStart(); }
+function mkStart() { G.mkRetry = MK.play.att > 0; startRun('maker'); G.mkRetry = false; }
+function mkOnStart() { // called at the end of startRun('maker')
+  const p = MK.play, L = p.lvl; p.att++; p.t0 = performance.now(); p.jumps = 0;
+  G.themeKey = L.theme; laneW = INF_CFG.laneW * LANE_SCALE; G.cfg = INF_CFG; G.rain = false; setDark(!!L.dark); clearChase(); G.hunt = null;
+  G.shield = 0; G.pw = { pass: 0, cheat: 0, energy: 0, spring: 0 }; G.loadoutDone = true; G.firstRun = G.easyRun = false; G.rivals = null; G.duel = null; G.nextRow = 1e9; G.intro = 0;
+  G.cheated = unfairCheats() || cheatOn('moon') || cheatOn('flyer') || cheatOn('juiced');
+  G.dist = p.at; Object.assign(P, { lane: p.lane, fromLane: p.lane, x: p.lane * laneW, ltx: p.lane * laneW, lt: 9, y: p.y, fl: p.y, vy: 0 });
+  MK.ptr = 0; MK.fin = false; p.lastCp = p.at; const win = (SPAWN_Z - PZ) * 1.35;
+  for (; MK.ptr < L.o.length && L.o[MK.ptr].d - G.dist < win; MK.ptr++) { const it = L.o[MK.ptr]; if (mkSpan(it)[1] < G.dist - 0.4 || (MK_BY[it.i].g !== 'plat' && it.d < G.dist - 0.3)) continue; mkSpawn(it, MK.ptr); }
+  if (p.at > 0 && !p.practice) G.pw.pass = 1.0; // testing from the middle: a moment to find your feet
+  for (const id of ['pushBtn', 'heelyBtn', 'finBtn']) $(id).classList.remove('show'); $('boostBar').classList.remove('show'); $('hBadges').style.display = 'none';
+  $('hCamp').style.visibility = 'visible'; $('mkRun').classList.toggle('show', !!p.practice);
+  if (p.att === 1) { toast((p.practice ? '🚩 PRACTICE: ' : p.test ? '✏️ TEST: ' : '') + L.name.toUpperCase(), p.practice ? 'Checkpoints drop by themselves (or tap 🚩). This run doesn\'t count.' : p.test ? 'Beat it from the start to unlock sharing' : mkStar(L.stars)[1] + ' ' + mkStar(L.stars)[2] + ' · one hit and you start over', 2200); if (p.remote && !p.practice) mkMarkPlay(p.remote); }
+  if (!p.practice && p.at === 0) { const s = mkStat(p.key); s.a++; }
+}
+function mkSpawn(it, idx) {
+  const I = MK_BY[it.i], z = it.d - G.dist + PZ, ex = { d0: it.d, vzFix: true, stepped: true, tipped: true }; let lane = it.l;
+  if (I.g === 'plat') { ex.len = it.n || I.len; if (I.k !== 'wax') ex.ramp = !!it.r; }
+  if (I.k === 'scooter') { const dir = it.l === -1 ? -1 : 1; Object.assign(ex, { x: -dir * (HW + 1.5), dir, crossing: false, endLane: it.l }); lane = 0; }
+  if (I.g === 'pick') { let y = I.y || 1.0; for (const q of MK.play.lvl.o) { const Q = MK_BY[q.i]; if (Q.g !== 'plat' || Q.k === 'wax' || q.l !== it.l) continue; const rel = it.d - q.d; if (rel >= 0 && rel <= (q.n || Q.len)) { y += platH({ K: KINDS[Q.k], ramp: !!q.r }, rel); break; } } ex.y = y; ex.x = lane * laneW; }
+  const r = Math.random; Math.random = mulberry(MK.play.seed * 7919 + idx * 104729); let o; try { o = addObj(I.k, lane, z, ex); } finally { Math.random = r; }
+  return o;
+}
+// the walk-time fix: a person walking at vz meets you exactly at the distance it was placed at, whatever the frame rate
+function mkPlace(o) { const vz = o.vz !== undefined ? o.vz : (o.K.vz || 0); o.z = PZ + (o.d0 - G.dist) * (1 - vz / Math.max(4, MK.play.lvl.speed)); }
+function mkTick() {
+  const p = MK.play, L = p.lvl, win = (SPAWN_Z - PZ) * 1.35;
+  while (MK.ptr < L.o.length && L.o[MK.ptr].d - G.dist < win) { mkSpawn(L.o[MK.ptr], MK.ptr); MK.ptr++; }
+  if (!MK.fin && L.len - G.dist < SPAWN_Z - PZ) { MK.fin = true; addObj('finish', 0, L.len - G.dist + PZ, { dest: 'FINISH', d0: L.len }); }
+  if (p.practice && !G.dying && G.dist - p.lastCp > L.speed * 1.8 && P.y <= (P.fl || 0) + 0.001 && P.vy === 0 && !(P.slide > 0) && !(G.pw.cheat > 0) && Math.abs(P.x - P.lane * laneW) < 0.05
+    && !G.objs.some(o => o.K.cat === 'obs' && !o.ignore && Math.abs(o.x - P.x) < laneW * 0.7 && o.z > PZ - 0.6 && o.z < PZ + L.speed * 0.7)) mkAddCp(true); // never right in front of something
+  if (G.dist >= L.len) { mkWon(); return true; }
+  return false;
+}
+function mkAddCp(auto) { const p = MK.play; if (!p || !p.practice || G.scene !== 'play' || G.dying) return; if (P.y > (P.fl || 0) + 0.001 && !auto) { sfx('deny'); return; }
+  p.cps.push({ d: G.dist, l: P.lane, y: P.fl || 0 }); p.lastCp = G.dist; popup('🚩 CHECKPOINT', '#06d6a0'); if (!auto) sfx('click'); }
+function mkDelCp() { const p = MK.play; if (!p || !p.cps.length) return; p.cps.pop(); p.lastCp = G.dist; popup('🚩 removed', '#ffffff'); sfx('click'); }
+function mkPct() { const p = MK.play; return p ? clamp(Math.floor(G.dist / p.lvl.len * 100), 0, 100) : 0; }
+function mkDied() {
+  const p = MK.play, pct = mkPct();
+  if (!p.practice && p.start === 0) { const s = mkStat(p.key); if (pct > s.b) { s.b = pct; if (p.att > 1 || pct > 5) setTimeout(() => popup('NEW BEST ' + pct + '%!', '#ffd60a'), 200); persist(); } }
+  if (p.practice && p.cps.length) { const c = p.cps[p.cps.length - 1]; p.at = c.d; p.lane = c.l; p.y = c.y; } else { p.at = p.start; p.lane = 0; p.y = 0; }
+  mkStart();
+}
+function mkHud() { const p = MK.play; if (!p) return; const pct = mkPct(); setText('hBell', (p.practice ? '🚩 Practice' : 'Attempt ' + p.att)); setText('hDest', pct + '%'); $('hBell').classList.remove('warn'); $('hProg').firstElementChild.style.width = pct + '%'; }
+function mkHideRun() { $('hud').classList.remove('show'); $('pwSide').classList.remove('show'); $('mkRun').classList.remove('show'); $('chaseMeter').classList.remove('show'); for (const id of ['pushBtn', 'heelyBtn', 'finBtn']) $(id).classList.remove('show'); }
+function mkWon() {
+  const p = MK.play, L = p.lvl, secs = (L.len - p.at) / L.speed; // run time at the level's speed (the same on a fast PC and a slow phone) G.scene = 'over'; mkHideRun(); sfx('win'); voice('congratulations');
+  const fromStart = p.start === 0 && !p.practice, fair = fromStart && !G.cheated, s = fromStart ? mkStat(p.key) : null, first = s && !s.c;
+  if (s) { s.b = 100; if (!G.cheated) s.c = 1; persist(); }
+  let sub = '';
+  if (p.test) { if (fair) { p.draft.ver = true; mkStore(); sub = '✅ Verified! You beat it from the start, so you can share it now.'; } else sub = p.practice ? 'Practice run done. Beat it from the start without practice to unlock sharing.' : G.cheated ? 'Cheats were on, so this doesn\'t verify the level.' : 'Nice! Test it from the start (▶ Test) to unlock sharing.'; }
+  else if (p.practice) sub = 'Practice complete! Now beat it for real.';
+  else if (fair && first && p.remote) { sub = 'First clear! 🎉'; mkMarkClear(p.remote, p.att); if (p.remote.by !== (save.fbAuth && save.fbAuth.uid)) { save.mkPay = save.mkPay && save.mkPay.d === todayKey() ? save.mkPay : { d: todayKey(), n: 0 }; if (save.mkPay.n < 5) { save.mkPay.n++; const cash = 40 * clamp(L.stars, 1, 6); grant({ cash }); sub += ' +$' + cash; } persist(); } }
+  else sub = G.cheated ? 'Cheats were on.' : 'Cleared again!';
+  $('mkDoneT').textContent = p.practice ? 'PRACTICE DONE!' : 'LEVEL COMPLETE!'; $('mkDoneSub').textContent = L.name + ' · ' + sub;
+  const st = $('mkDoneStats'); st.innerHTML = ''; for (const [k, v] of [['Attempts', p.practice ? '-' : p.att], ['Time', secs.toFixed(1) + 's'], ['Coins', G.coins]]) { const d = mk('div', '', k); d.prepend(mk('b', '', String(v))); st.appendChild(d); }
+  $('mkDoneLike').style.display = p.remote ? '' : 'none'; $('mkDoneRep').style.display = p.remote ? '' : 'none'; $('mkDoneEdit').style.display = p.test ? '' : 'none'; $('mkDoneBack').textContent = p.test ? 'Back to my levels' : 'Back to levels';
+  mkSyncLike($('mkDoneLike'), p.remote); setTimeout(() => { if (G.scene === 'over' && MK.play === p) $('mkDoneModal').classList.add('show'); }, 450);
+}
+function mkExit(toEditor) { const p = MK.play; $('mkDoneModal').classList.remove('show'); MK.play = null; $('mkRun').classList.remove('show'); if (G.paused) G.paused = false; goMenu(); syncMusic();
+  if (p && p.test && toEditor !== false) { mkOpenEditor(p.draft, p.deathAt); } else { mkOpenHub(p && p.test ? 'mine' : 'play'); } }
+$('mkDoneAgain').onclick = () => { sfx('click'); $('mkDoneModal').classList.remove('show'); const p = MK.play; if (!p) return; p.att = 0; p.cps = []; p.at = p.start; p.lane = 0; p.y = 0; mkStart(); };
+$('mkDoneEdit').onclick = () => { sfx('click'); mkExit(true); };
+$('mkDoneBack').onclick = () => { sfx('click'); mkExit(false); };
+$('mkDoneLike').onclick = () => { const p = MK.play; if (p && p.remote) mkToggleLike(p.remote, $('mkDoneLike')); };
+$('mkDoneRep').onclick = () => { const p = MK.play; if (p && p.remote) mkReport(p.remote); };
+$('mkCpBtn').onclick = e => { e.stopPropagation(); mkAddCp(false); }; $('mkCpDel').onclick = e => { e.stopPropagation(); mkDelCp(); };
+// pause screen: Restart starts the level over, Quit goes back to the levels (or the editor), and practice can be switched
+$('bMkEdit').onclick = () => { sfx('click'); const p = MK.play; if (p) p.deathAt = G.dist; mkExit(true); };
+$('bMkPrac').onclick = () => { sfx('click'); const p = MK.play; if (!p) return; p.practice = !p.practice; p.cps = []; p.att = 0; p.at = p.start; p.lane = 0; p.y = 0; G.paused = false; mkStart(); };
+{ const r0 = $('bRestart').onclick, q0 = $('bQuit').onclick;
+  $('bRestart').onclick = () => { if (G.mode === 'maker' && MK.play) { sfx('click'); $('mkDoneModal').classList.remove('show'); const p = MK.play; p.cps = []; p.at = p.start; p.lane = 0; p.y = 0; G.paused = false; mkStart(); return; } r0(); };
+  $('bQuit').onclick = () => { if (G.mode === 'maker' && MK.play) { sfx('click'); mkExit(); return; } q0(); }; }
+{ const tp0 = togglePause; togglePause = function (f) { tp0(f); const on = G.mode === 'maker' && !!MK.play; $('bMkEdit').style.display = on && MK.play.test ? '' : 'none'; $('bMkPrac').style.display = on ? '' : 'none'; if (on) $('bMkPrac').textContent = MK.play.practice ? '🏁 Switch to normal mode' : '🚩 Switch to practice mode'; $('bQuit').textContent = on ? (MK.play.test ? 'Quit to my levels' : 'Quit to levels') : 'Quit to Menu'; }; }
+{ const gm0 = goMenu; goMenu = function () { if (MK.play && G.mode === 'maker') { MK.play = null; $('mkDoneModal').classList.remove('show'); } $('mkRun').classList.remove('show'); return gm0.apply(this, arguments); }; }
+
+/* ---------- online: levels/{id} ---------- */
+const MK_META = ['name', 'by', 'author', 'theme', 'speed', 'len', 'n', 'stars', 'dark', 'status', 'featured', 'likes', 'plays', 'clears', 'ts'];
+async function mkQuery(order, where, limit) {
+  const q = { from: [{ collectionId: 'levels' }], select: { fields: MK_META.map(f => ({ fieldPath: f })) }, limit: limit || 60 }; if (where) q.where = where; if (order) q.orderBy = [{ field: { fieldPath: order }, direction: 'DESCENDING' }];
+  const rows = await fsReq('POST', ':runQuery', null, { structuredQuery: q }); return rows.filter(x => x.document).map(x => fsDoc(x.document));
+}
+const mkUid = () => (save.fbAuth && save.fbAuth.uid) || '';
+const mkVisible = r => r && (r.status === 'live' || (r.by && r.by === mkUid())) && !isBlocked(r.by) && cleanLevelName(r.name);
+const mkSub = (id, c) => 'levels/' + id + '/' + c;
+async function mkCountWrite(lv, coll, delta, extra) { // a one-per-player marker + the level's counter, in one write the rules can check
+  const a = await Online.token(), f = { plays: 'plays', clears: 'clears', likes: 'likes' }[coll];
+  const w = delta > 0 ? { update: Object.assign({ name: docName(mkSub(lv.id, coll), a.uid) }, fsEnc(extra || {})), updateTransforms: [{ fieldPath: 'ts', setToServerValue: 'REQUEST_TIME' }], currentDocument: { exists: false } } : { delete: docName(mkSub(lv.id, coll), a.uid), currentDocument: { exists: true } };
+  await fsReq('POST', ':commit', a.idToken, { writes: [w, { transform: { document: docName('levels', lv.id), fieldTransforms: [{ fieldPath: f, increment: { integerValue: String(delta) } }] }, currentDocument: { exists: true } }] });
+}
+function mkMarkPlay(lv) { save.mkPlayed = save.mkPlayed || {}; if (save.mkPlayed[lv.id] || !Online.ready()) return; mkCountWrite(lv, 'plays', 1).then(() => { save.mkPlayed[lv.id] = 1; lv.plays = (lv.plays || 0) + 1; }).catch(e => { if (e.status === 409 || e.status === 400) save.mkPlayed[lv.id] = 1; }); }
+function mkMarkClear(lv, att) { if (!Online.ready()) return; mkCountWrite(lv, 'clears', 1, { att: Math.min(99999, att | 0) }).then(() => { lv.clears = (lv.clears || 0) + 1; }).catch(() => {}); }
+const mkLiked = id => !!(save.mkLiked && save.mkLiked[id]);
+function mkSyncLike(btn, lv) { if (!btn || !lv) return; btn.textContent = (mkLiked(lv.id) ? '💜 Liked' : '❤️ Like') + ' · ' + (lv.likes || 0); }
+async function mkToggleLike(lv, btn) {
+  if (!Online.ready()) { toast('Likes are online-only', 'For players 13 and up', 1400); return; }
+  if (lv.by === mkUid()) { toast('That\'s your own level', 'Other players can like it', 1300); return; }
+  const on = !mkLiked(lv.id); save.mkLiked = save.mkLiked || {}; btn.disabled = true; sfx('click');
+  try { await mkCountWrite(lv, 'likes', on ? 1 : -1); if (on) save.mkLiked[lv.id] = 1; else delete save.mkLiked[lv.id]; lv.likes = Math.max(0, (lv.likes || 0) + (on ? 1 : -1)); persist(); if (on) sfx('buy'); }
+  catch (e) { if (e.status === 409 || e.status === 404 || e.status === 400) { if (on) save.mkLiked[lv.id] = 1; else delete save.mkLiked[lv.id]; persist(); } else toast('Couldn\'t save that', e.status === 403 ? 'Liking levels isn\'t switched on yet' : 'Check your connection', 1500); }
+  btn.disabled = false; mkSyncLike(btn, lv); mkSyncLike($('mkLvLike'), lv); mkSyncLike($('mkDoneLike'), lv);
+}
+function mkReport(lv) { openReport({ kind: 'level', target: lv.id, name: lv.name + ' (by ' + (lv.author || 'Runner') + ')', by: lv.by }); }
+async function mkFetch(id) { const d = fsDoc(await fsReq('GET', docPath('levels', id))); const o = mkDecode(d.data || ''); if (!o) throw new Error('broken level'); d.o = o; return d; }
+async function mkPublish(dr) {
+  if (!Online.ready()) { toast('Sharing is for players 13 and up', 'You can still build and play your own levels', 2200); return; }
+  if (!dr.ver) { toast('Beat it first!', 'Press ▶ Test and finish your level from the start (no practice). Then you can share it.', 2600); return; }
+  const name = cleanLevelName(dr.name); if (!name) { toast('Pick a different level name', '3+ letters, no bad words, links or long numbers', 2200); mkOpenEditor(dr); mkOpenSettings(); return; }
+  if (!dr.o.length) { toast('Your level is empty', 'Place a few obstacles first', 1500); return; }
+  const cfg = await loadAppCfg(); if (cfg.levels === false) { toast('Sharing levels is paused right now', 'Try again later', 2000); return; }
+  const go = async () => {
+    try {
+      const a = await Online.token(), author = safeName(await Online.claimName()), data = mkEncode(dr);
+      const f = { name, author, data, theme: dr.theme, speed: dr.speed, len: mkLen(dr), n: dr.o.length, stars: dr.stars, dark: !!dr.dark, ver: (dr.rev || 0) + 1 };
+      if (dr.pub) { // update the level you already shared (its likes and plays stay)
+        await fsReq('PATCH', docPath('levels', dr.pub), a.idToken, fsEnc(Object.assign({ by: a.uid }, f)), Object.keys(f).concat(['by']).map(k => 'updateMask.fieldPaths=' + k).join('&') + '&currentDocument.exists=true');
+        dr.rev = f.ver; mkStore(); mkShowPub(dr, true); return;
+      }
+      let made = null; try { made = fsDoc(await fsReq('GET', docPath('levelMade', a.uid), a.idToken)); } catch (e) { if (e.status !== 404) throw e; }
+      if (made && made.last && Date.now() - made.last < 60000) { toast('One level a minute, please', 'Try again in a moment', 1800); return; }
+      const id = Array.from({ length: 10 }, () => 'abcdefghijkmnpqrstuvwxyz23456789'[Math.floor(Math.random() * 32)]).join('');
+      const status = cfg.levelAuto === false ? 'pending' : 'live';
+      await fsReq('POST', ':commit', a.idToken, { writes: [
+        { update: Object.assign({ name: docName('levels', id) }, fsEnc(Object.assign({ by: a.uid, status, featured: false, likes: 0, plays: 0, clears: 0 }, f))), updateTransforms: [{ fieldPath: 'ts', setToServerValue: 'REQUEST_TIME' }], currentDocument: { exists: false } },
+        Object.assign({ update: Object.assign({ name: docName('levelMade', a.uid) }, fsEnc({ n: ((made && made.n) || 0) + 1, lv: id })), updateTransforms: [{ fieldPath: 'last', setToServerValue: 'REQUEST_TIME' }] }, { currentDocument: { exists: !!made } })] });
+      dr.pub = id; dr.rev = f.ver; dr.status = status; mkStore(); Analytics.log('level_publish', { objects: dr.o.length }); mkShowPub(dr, false);
+    } catch (e) { toast('Couldn\'t share it', e.status === 403 ? 'The level name isn\'t allowed, sharing is paused, or the database rules aren\'t updated yet' : 'Check your connection and try again', 2600); }
+  };
+  if (save.name) go(); else askName(go);
+}
+function mkShowPub(dr, upd) { $('mkPubT').textContent = upd ? '📤 Updated!' : '📤 Shared!'; $('mkPubSub').textContent = upd ? '"' + dr.name + '" was updated. Its likes and plays stay.' : dr.status === 'pending' ? '"' + dr.name + '" is waiting for the moderator. Once it\'s approved, everyone can find it under Newest. Its ID:' : 'Everyone can find "' + dr.name + '" under Newest now. Send friends its ID:';
+  $('mkPubId').textContent = dr.pub; $('mkPubCopy').onclick = () => { copyText(dr.pub); toast('Level ID copied', dr.pub, 1200); }; $('mkPubOk').onclick = () => { $('mkPubModal').classList.remove('show'); if (curScreen === 'sMaker') mkRenderMine(); }; $('mkPubModal').classList.add('show'); sfx('win'); }
+async function mkUnpublish(dr) { if (!confirm('Take "' + dr.name + '" off the shared levels? Its likes and plays are lost.')) return; try { const a = await Online.token(); await fsReq('DELETE', docPath('levels', dr.pub), a.idToken); } catch (e) { if (e.status !== 404) { toast('Couldn\'t remove it', 'Check your connection', 1500); return; } } dr.pub = null; dr.rev = 0; mkStore(); mkRenderMine(); toast('Level taken down', '', 1200); }
+
+/* ---------- the Level Maker screen (play tab + my levels tab) ---------- */
+let mkTab = 'play';
+function mkOpenHub(tab) { initAudio(); if (tab) mkTab = tab; showScreen('sMaker'); mkRenderHub(); }
+function mkRenderHub() {
+  document.querySelectorAll('#mkTabs [data-mk]').forEach(b => { b.classList.toggle('on', b.dataset.mk === mkTab); b.onclick = () => { sfx('click'); mkTab = b.dataset.mk; mkRenderHub(); }; });
+  $('mkPlayPane').style.display = mkTab === 'play' ? '' : 'none'; $('mkMinePane').style.display = mkTab === 'mine' ? '' : 'none';
+  if (mkTab === 'play') mkRenderList(); else mkRenderMine();
+}
+function mkCard(r, onTap) {
+  const st = mkStar(r.stars), c = mk('button', 'mkCard'), s = (save.mkStats || {})[r.id];
+  c.appendChild(mk('span', 'mkF', st[1])); const t = mk('span', 'mkC'); c.appendChild(t);
+  t.appendChild(mk('b', '', (r.featured ? '⭐ ' : '') + r.name)); t.appendChild(mk('small', '', 'by ' + (r.author || 'Runner') + ' · ' + st[2] + ' · ' + (r.len || 0) + ' m · speed ' + (r.speed || 16)));
+  t.appendChild(mk('small', '', '❤️ ' + (r.likes || 0) + '   ▶ ' + (r.plays || 0) + '   ✅ ' + (r.plays ? Math.min(100, Math.round((r.clears || 0) / r.plays * 100)) + '% clear' : 'no clears yet') + (r.status === 'pending' ? '   ⏳ waiting for approval' : '')));
+  if (s) t.appendChild(mk('em', s.c ? 'ok' : '', s.c ? '✅ You beat it' + (s.a ? ' (' + s.a + ' attempts)' : '') : 'Your best: ' + s.b + '% · ' + s.a + ' attempts'));
+  c.onclick = () => { sfx('click'); onTap(); }; return c;
+}
+async function mkRenderList() {
+  const box = $('mkList'), sort = MK.list.sort, gen = mkRenderList.gen = (mkRenderList.gen || 0) + 1;
+  document.querySelectorAll('#mkSort [data-ms]').forEach(b => { b.classList.toggle('on', b.dataset.ms === sort); b.onclick = () => { sfx('click'); MK.list.sort = b.dataset.ms; MK.list.rows = null; mkRenderList(); }; });
+  $('mkFindGo').onclick = () => mkFind($('mkFindIn').value); $('mkFindIn').onkeydown = e => { if (e.key === 'Enter') mkFind($('mkFindIn').value); };
+  if (!Online.ready()) { box.innerHTML = ''; box.appendChild(mk('div', 'mkEmpty', save.age === 'child' ? 'Shared levels are for players 13 and up. You can still build and play your own levels in My levels!' : 'Shared levels need the online board, which isn\'t set up in this build.')); return; }
+  if (!MK.list.rows || MK.list.t < Date.now() - 60000 || MK.list.for !== sort) { box.innerHTML = ''; box.appendChild(mk('div', 'mkEmpty', 'Loading levels...'));
+    try { const cfg = await loadAppCfg(); let rows;
+      if (sort === 'featured') { rows = await mkQuery(null, { fieldFilter: { field: { fieldPath: 'featured' }, op: 'EQUAL', value: { booleanValue: true } } }, 100); rows.sort((a, b) => (b.ts || 0) - (a.ts || 0)); if (!rows.filter(mkVisible).length) rows = await mkQuery('likes', null, 60); }
+      else rows = await mkQuery({ new: 'ts', likes: 'likes', plays: 'plays', hard: 'stars' }[sort], null, 80);
+      if (gen !== mkRenderList.gen) return; MK.list = { sort, rows: rows.filter(mkVisible), t: Date.now(), for: sort, off: cfg.levels === false };
+    } catch (e) { if (gen !== mkRenderList.gen) return; box.innerHTML = ''; box.appendChild(mk('div', 'mkEmpty', e.status === 403 ? 'Shared levels aren\'t switched on yet (the database rules need an update).' : 'Couldn\'t load levels. Check your connection.')); return; } }
+  if (gen !== mkRenderList.gen) return; box.innerHTML = '';
+  if (MK.list.off) box.appendChild(mk('div', 'mkEmpty', 'Sharing new levels is paused right now, but you can still play these.'));
+  if (!MK.list.rows.length) box.appendChild(mk('div', 'mkEmpty', 'No levels here yet. Make the first one in My levels!'));
+  for (const r of MK.list.rows) box.appendChild(mkCard(r, () => mkOpenLevel(r)));
+}
+async function mkFind(raw) { const id = String(raw || '').trim().toLowerCase().replace(/[^a-z0-9]/g, ''); if (id.length !== 10) { toast('Level IDs have 10 letters and numbers', 'Like k3x9q2mz7a', 1600); return; }
+  if (!Online.ready()) return; try { const d = await mkFetch(id); if (d.status !== 'live' && d.by !== mkUid()) throw { status: 404 }; mkOpenLevel(d); } catch (e) { toast(e.status === 404 ? 'No level with that ID' : 'Couldn\'t load it', e.status === 404 ? 'Check the letters and try again' : 'Check your connection', 1600); } }
+function mkOpenLevel(r) {
+  const st = mkStar(r.stars), s = (save.mkStats || {})[r.id], m = $('mkLvModal');
+  $('mkLvFace').textContent = st[1]; $('mkLvName').textContent = r.name; $('mkLvBy').textContent = 'by ' + (r.author || 'Runner') + ' · ' + st[2] + (r.featured ? ' · ⭐ Featured' : '');
+  const box = $('mkLvStats'); box.innerHTML = ''; for (const [k, v] of [['Likes', r.likes || 0], ['Players', r.plays || 0], ['Clear rate', r.plays ? Math.min(100, Math.round((r.clears || 0) / r.plays * 100)) + '%' : '-'], ['Length', (r.len || 0) + ' m'], ['Speed', r.speed || 16], ['ID', r.id]]) { const d = mk('div', '', k); d.prepend(mk('b', '', String(v))); box.appendChild(d); }
+  $('mkLvMe').textContent = s ? (s.c ? '✅ You beat it in ' + s.a + ' attempt' + (s.a === 1 ? '' : 's') : 'Your best: ' + s.b + '% (' + s.a + ' attempts)') : '';
+  const play = practice => async () => { sfx('click'); const b = practice ? $('mkLvPrac') : $('mkLvPlay'), t0 = b.textContent; b.disabled = true; b.textContent = 'Loading...';
+    try { const d = r.o ? r : Object.assign(r, await mkFetch(r.id)); m.classList.remove('show'); mkPlay({ name: d.name, theme: d.theme, speed: d.speed, dark: d.dark, stars: d.stars, o: d.o, len: d.len }, { remote: r, practice }); }
+    catch (e) { toast('Couldn\'t load this level', e.status === 404 ? 'It was taken down' : 'Check your connection', 1600); }
+    b.disabled = false; b.textContent = t0; };
+  $('mkLvPlay').onclick = play(false); $('mkLvPrac').onclick = play(true);
+  mkSyncLike($('mkLvLike'), r); $('mkLvLike').onclick = () => mkToggleLike(r, $('mkLvLike'));
+  $('mkLvId').onclick = () => { copyText(r.id); toast('Level ID copied', r.id + ' · send it to a friend', 1400); };
+  $('mkLvRep').style.display = r.by === mkUid() ? 'none' : ''; $('mkLvRep').onclick = () => { m.classList.remove('show'); mkReport(r); };
+  $('mkLvClose').onclick = () => m.classList.remove('show'); m.classList.add('show');
+}
+async function mkRenderMine() {
+  const box = $('mkMine'); box.innerHTML = '';
+  $('mkNew').onclick = () => { sfx('click'); const d = mkNewDraft(); MK.drafts.unshift(d); mkStore(); mkOpenEditor(d); };
+  if (!MK.drafts.length) { box.appendChild(mk('div', 'mkEmpty', 'No levels yet. Tap ➕ New level, place obstacles on the three lanes, press ▶ Test, and beat it to share it with everyone.')); return; }
+  let live = {}; if (Online.ready() && MK.drafts.some(d => d.pub) && save.fbAuth) { try { (await mkQuery(null, fsEq('by', save.fbAuth.uid), 100)).forEach(r => live[r.id] = r); } catch (e) {} if (curScreen !== 'sMaker' || mkTab !== 'mine') return; box.innerHTML = ''; }
+  for (const d of MK.drafts) {
+    const c = mk('div', 'mkCard draft'), st = mkStar(d.stars), r = d.pub ? live[d.pub] : null, s = (save.mkStats || {})['L' + d.lid];
+    c.appendChild(mk('span', 'mkF', st[1])); const t = mk('span', 'mkC'); c.appendChild(t);
+    t.appendChild(mk('b', '', d.name)); t.appendChild(mk('small', '', d.o.length + ' things · ' + mkLen(d) + ' m · speed ' + d.speed + ' · ' + st[2]));
+    t.appendChild(mk('em', d.ver ? 'ok' : '', (d.ver ? '✅ Beaten, ready to share' : '⚠️ Not beaten yet: test it to share it') + (d.pub ? ' · 🌍 shared: ' + d.pub + (r ? ' · ❤️ ' + (r.likes || 0) + ' ▶ ' + (r.plays || 0) + ' ✅ ' + (r.clears || 0) + (r.status === 'pending' ? ' · ⏳ waiting' : r.status === 'hidden' ? ' · 🙈 hidden by the moderator' : '') : '') : '')));
+    if (s && s.a) t.appendChild(mk('small', '', 'Your best: ' + s.b + '% · ' + s.a + ' attempts'));
+    const bs = mk('div', 'mkBtns'); t.appendChild(bs);
+    bs.appendChild(chipBtn('✏️ Edit', () => mkOpenEditor(d)));
+    bs.appendChild(chipBtn('▶ Play', () => { if (!d.o.length) { toast('Your level is empty', 'Place a few obstacles first', 1400); return; } mkPlay(d, { test: true }); }));
+    bs.appendChild(chipBtn(d.pub ? '📤 Update' : '📤 Share', () => mkPublish(d)));
+    bs.appendChild(chipBtn('⧉ Copy', () => { const c2 = JSON.parse(JSON.stringify(d)); Object.assign(c2, { lid: mkNewDraft().lid, name: (d.name + ' copy').slice(0, 24), pub: null, rev: 0, ver: false, t: Date.now() }); MK.drafts.unshift(c2); mkStore(); mkRenderMine(); }));
+    if (d.pub) bs.appendChild(chipBtn('📋 ID', () => { copyText(d.pub); toast('Level ID copied', d.pub, 1200); }));
+    if (d.pub) bs.appendChild(chipBtn('🙈 Unshare', () => mkUnpublish(d)));
+    bs.appendChild(chipBtn('🗑', () => { if (!confirm('Delete "' + d.name + '" for good?' + (d.pub ? ' (It stays shared until you Unshare it.)' : ''))) return; MK.drafts = MK.drafts.filter(x => x !== d); mkStore(); mkRenderMine(); }));
+    box.appendChild(c);
+  }
+}
+
+/* ---------- the editor ---------- */
+const MK_SNAPS = [1, 0.5, 0.25];
+function mkOpenEditor(dr, at) {
+  initAudio(); const keep = MK.ed && MK.ed.lv === dr ? MK.ed : null;
+  MK.ed = keep || { lv: dr, scroll: 0, ppm: 16, tool: 'place', item: MK.lastItem || 'tray', grp: (MK_BY[MK.lastItem || 'tray'] || MK_ITEMS[0]).g, sel: new Set(), snap: 0.5, undo: [], redo: [], ptrs: new Map() };
+  if (at !== undefined) MK.ed.scroll = Math.max(0, at - 6);
+  showScreen('sMkEdit'); mkBuildPalette(); mkSyncTop(); requestAnimationFrame(() => { mkResize(); mkDraw(); });
+}
+function mkSyncTop() { const E = MK.ed, d = E.lv; $('mkNameTxt').textContent = d.name; $('mkInfo').textContent = d.o.length + ' things · ' + mkLen(d) + ' m · speed ' + d.speed + ' · ' + (d.ver ? '✅ beaten' : '⚠️ not beaten yet');
+  $('mkUndo').disabled = !E.undo.length; $('mkRedo').disabled = !E.redo.length; $('mkSnap').textContent = (E.snap === 0.5 ? '½' : E.snap === 0.25 ? '¼' : '1') + ' m';
+  document.querySelectorAll('#sMkEdit [data-tool]').forEach(b => b.classList.toggle('on', b.dataset.tool === E.tool)); }
+function mkBuildPalette() {
+  const E = MK.ed, gb = $('mkGroups'), ib = $('mkItems'); gb.innerHTML = ''; ib.innerHTML = '';
+  for (const g in MK_GROUPS) { const b = mk('button', 'mkGrp' + (g === E.grp ? ' on' : ''), MK_GROUPS[g][0]); b.style.setProperty('--gc', MK_GROUPS[g][1]); b.onclick = () => { sfx('click'); E.grp = g; if (MK_BY[E.item].g !== g) E.item = MK_ITEMS.find(I => I.g === g).id; if (E.tool !== 'place') E.tool = 'place'; mkBuildPalette(); mkSyncTop(); }; gb.appendChild(b); }
+  for (const I of MK_ITEMS.filter(I => I.g === E.grp)) { const b = mk('button', 'mkItem' + (I.id === E.item ? ' on' : '')); b.style.setProperty('--gc', MK_GROUPS[I.g][1]); b.appendChild(mk('span', '', I.ic)); b.appendChild(document.createTextNode(I.nm)); b.title = KINDS[I.k].label || I.nm;
+    b.onclick = () => { sfx('click'); E.item = MK.lastItem = I.id; E.tool = 'place'; mkBuildPalette(); mkSyncTop(); }; ib.appendChild(b); }
+  const on = ib.querySelector('.on'); if (on) on.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+}
+function mkResize() { const cv = $('mkCv'), mm = $('mkMini'), r = cv.getBoundingClientRect(), dp = Math.min(2, window.devicePixelRatio || 1); cv.width = Math.max(1, r.width * dp); cv.height = Math.max(1, r.height * dp); const r2 = mm.getBoundingClientRect(); mm.width = Math.max(1, r2.width * dp); mm.height = Math.max(1, r2.height * dp); MK.dp = dp; }
+window.addEventListener('resize', () => { if (curScreen === 'sMkEdit') { mkResize(); mkDraw(); } });
+function mkGeo() { const cv = $('mkCv'), dp = MK.dp || 1, w = cv.width / dp, h = cv.height / dp, lw = Math.min(130, Math.max(60, (w - 46 - 96) / 3)), x0 = Math.max(46, (w - lw * 3) / 2 - 20); return { w, h, lw, x0, base: h - 26 }; }
+const mkY = (g, d) => g.base - (d - MK.ed.scroll) * MK.ed.ppm;
+const mkD = (g, y) => MK.ed.scroll + (g.base - y) / MK.ed.ppm;
+const mkLaneAt = (g, x) => { const l = Math.floor((x - g.x0) / g.lw) - 1; return l < -1 || l > 1 ? null : l; };
+const mkSnapD = d => Math.max(0, Math.round(d / MK.ed.snap) * MK.ed.snap);
+let mkDrawQ = false;
+function mkDraw() { if (mkDrawQ) return; mkDrawQ = true; requestAnimationFrame(() => { mkDrawQ = false; try { mkPaint(); mkPaintMini(); mkInspector(); } catch (e) { console.error(e); } }); }
+function mkPaint() {
+  const E = MK.ed, lv = E.lv, cv = $('mkCv'), x = cv.getContext('2d'), g = mkGeo(), dp = MK.dp || 1, L = mkLen(lv), th = THEMES[lv.theme] || THEMES.high;
+  x.setTransform(dp, 0, 0, dp, 0, 0); x.fillStyle = '#111633'; x.fillRect(0, 0, g.w, g.h);
+  const dTop = mkD(g, 0), dBot = mkD(g, g.h);
+  // lanes
+  x.fillStyle = th.floorA || '#5d7fd8'; x.globalAlpha = 0.28; x.fillRect(g.x0, 0, g.lw * 3, g.h); x.globalAlpha = 1;
+  for (let i = 0; i <= 3; i++) { x.fillStyle = i % 3 ? 'rgba(255,255,255,.45)' : 'rgba(255,255,255,.8)'; x.fillRect(g.x0 + i * g.lw - (i % 3 ? 1 : 1.5), 0, i % 3 ? 2 : 3, g.h); }
+  // grid + ruler
+  const step = E.ppm >= 26 ? 1 : E.ppm >= 12 ? 2 : E.ppm >= 6 ? 5 : 10, lab = step * (E.ppm >= 26 ? 5 : E.ppm >= 12 ? 5 : 2);
+  x.font = '700 11px system-ui,sans-serif'; x.textAlign = 'right'; x.textBaseline = 'middle';
+  for (let d = Math.max(0, Math.floor(dBot / step) * step); d <= dTop + step; d += step) { const y = mkY(g, d), big = d % lab === 0;
+    x.fillStyle = big ? 'rgba(255,255,255,.22)' : 'rgba(255,255,255,.08)'; x.fillRect(g.x0, y, g.lw * 3, 1);
+    if (big) { x.fillStyle = '#c6cdf7'; x.fillText(d + 'm', g.x0 - 6, y); x.fillStyle = '#7f88c2'; x.fillText((d / lv.speed).toFixed(1) + 's', g.x0 - 6, y + 12); } }
+  // start + finish
+  { const y0 = mkY(g, 0), y1 = mkY(g, MK_START); x.fillStyle = 'rgba(6,214,160,.13)'; x.fillRect(g.x0, y1, g.lw * 3, y0 - y1); }
+  { const y = mkY(g, 0); x.fillStyle = '#06d6a0'; x.fillRect(g.x0, y, g.lw * 3, 3); x.font = '900 12px system-ui,sans-serif'; x.textAlign = 'center'; x.fillText('START  🧑‍🎓', g.x0 + g.lw * 1.5, y + 13); }
+  { const y = mkY(g, L), sq = 8; for (let i = 0; i < g.lw * 3 / sq; i++) for (let j = 0; j < 2; j++) { x.fillStyle = (i + j) % 2 ? '#fff' : '#111'; x.fillRect(g.x0 + i * sq, y - sq * (j + 1), sq, sq); }
+    x.fillStyle = '#fff'; x.font = '900 12px system-ui,sans-serif'; x.textAlign = 'center'; x.fillText('FINISH' + (lv.len ? '' : ' (auto)'), g.x0 + g.lw * 1.5, y - 24); }
+  // jump / slide reach guide for the selected obstacle
+  if (E.sel.size === 1) { const it = [...E.sel][0], K = KINDS[MK_BY[it.i].k];
+    if (K.cat === 'obs' && (K.type === 'low' || K.type === 'high')) { const air = K.type === 'low' ? 2 * 11.2 / 26 : 0.95, reach = lv.speed * air, y1 = mkY(g, it.d - reach / 2), y2 = mkY(g, it.d + reach / 2), xl = g.x0 + (it.l + 1) * g.lw;
+      x.fillStyle = K.type === 'low' ? 'rgba(46,194,126,.16)' : 'rgba(77,150,255,.16)'; x.fillRect(xl + 2, y2, g.lw - 4, y1 - y2); x.strokeStyle = K.type === 'low' ? '#2ec27e' : '#4d96ff'; x.setLineDash([5, 4]); x.strokeRect(xl + 2, y2, g.lw - 4, y1 - y2); x.setLineDash([]);
+      x.fillStyle = '#fff'; x.font = '700 10px system-ui,sans-serif'; x.textAlign = 'center'; x.fillText((K.type === 'low' ? 'a jump covers ' : 'a slide covers ') + reach.toFixed(1) + ' m', xl + g.lw / 2, y2 - 7); } }
+  // objects
+  for (const it of lv.o) { const [a, b] = mkSpan(it); if (b < dBot - 2 || a > dTop + 2) continue; mkPaintObj(x, g, it, E.sel.has(it)); }
+  // box select
+  const bx = E.box; if (bx) { x.fillStyle = 'rgba(255,214,10,.12)'; x.strokeStyle = '#ffd60a'; x.lineWidth = 1.5; x.setLineDash([6, 4]); x.fillRect(bx.x0, bx.y0, bx.x1 - bx.x0, bx.y1 - bx.y0); x.strokeRect(bx.x0, bx.y0, bx.x1 - bx.x0, bx.y1 - bx.y0); x.setLineDash([]); }
+  if (!lv.o.length) { x.fillStyle = 'rgba(255,255,255,.75)'; x.font = '800 14px system-ui,sans-serif'; x.textAlign = 'center'; const cx = g.x0 + g.lw * 1.5; x.fillText('Pick something below,', cx, g.h * 0.35); x.fillText('then tap a lane to place it.', cx, g.h * 0.35 + 18); x.font = '600 12px system-ui,sans-serif'; x.fillStyle = 'rgba(255,255,255,.55)'; x.fillText('Drag to scroll · you run up the screen', cx, g.h * 0.35 + 40); }
+}
+function mkPaintObj(x, g, it, sel) {
+  const I = MK_BY[it.i], K = KINDS[I.k], [a, b] = mkSpan(it), col = MK_GROUPS[I.g][1], xl = g.x0 + (it.l + 1) * g.lw;
+  const pick = I.g === 'pick', y1 = mkY(g, a), y2 = mkY(g, b), h = Math.max(pick ? 0 : 16, y1 - y2);
+  x.save();
+  if (pick) { const cy = mkY(g, it.d), r = Math.max(7, Math.min(g.lw * 0.2, 0.55 * MK.ed.ppm)); x.beginPath(); x.arc(xl + g.lw / 2 + (I.id === 'coinhi' ? g.lw * 0.18 : 0), cy, r, 0, 7); x.fillStyle = col; x.globalAlpha = 0.9; x.fill(); x.globalAlpha = 1; x.lineWidth = sel ? 3 : 1.5; x.strokeStyle = sel ? '#fff' : '#000'; x.stroke();
+    x.font = Math.round(r * 1.2) + 'px system-ui,sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(I.ic, xl + g.lw / 2 + (I.id === 'coinhi' ? g.lw * 0.18 : 0), cy + 1); x.restore(); return; }
+  const wide = (K.hw || 0.5) >= 0.9 || I.g === 'plat' ? 1 : (K.hw || 0.5) >= 0.6 ? 0.85 : 0.66, w = (g.lw - 8) * wide, xx = xl + (g.lw - w) / 2, yy = y1 - h + (h > y1 - y2 ? (h - (y1 - y2)) / 2 : 0);
+  x.fillStyle = col; x.globalAlpha = I.g === 'plat' ? 0.55 : 0.92; x.beginPath(); x.roundRect ? x.roundRect(xx, yy, w, h, 6) : x.rect(xx, yy, w, h); x.fill(); x.globalAlpha = 1;
+  x.lineWidth = sel ? 3 : 1.5; x.strokeStyle = sel ? '#fff' : '#000'; x.stroke();
+  if (I.g === 'plat' && it.r) { x.fillStyle = 'rgba(255,255,255,.35)'; x.beginPath(); x.moveTo(xx, y1); x.lineTo(xx + w, y1); x.lineTo(xx + w / 2, y1 - Math.min(h, RAMP_LEN * MK.ed.ppm)); x.fill(); }
+  const fs = Math.max(10, Math.min(g.lw * 0.36, h * 0.8, 30)); x.font = fs + 'px system-ui,sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle';
+  const cy = I.g === 'plat' ? y1 - Math.min(h, 3 * MK.ed.ppm) / 2 : yy + h / 2; x.fillText(I.ic, xl + g.lw / 2, cy);
+  if (I.g === 'move' && h > 14) { x.fillStyle = '#000'; x.font = '900 ' + Math.max(9, fs * 0.5) + 'px system-ui'; x.fillText('▼', xl + g.lw / 2 + fs * 0.7, cy); }
+  if (sel && h > 26 && g.lw > 70) { x.fillStyle = '#fff'; x.font = '700 9.5px system-ui,sans-serif'; x.fillText(I.nm, xl + g.lw / 2, cy + fs * 0.62 + 4); }
+  x.restore();
+}
+function mkPaintMini() {
+  const E = MK.ed, lv = E.lv, cv = $('mkMini'), x = cv.getContext('2d'), dp = MK.dp || 1, w = cv.width / dp, h = cv.height / dp, L = Math.max(mkLen(lv), 40), g = mkGeo(), k = (h - 8) / L;
+  x.setTransform(dp, 0, 0, dp, 0, 0); x.clearRect(0, 0, w, h); x.fillStyle = 'rgba(255,255,255,.06)'; x.fillRect(4, 4, w - 8, h - 8);
+  for (const it of lv.o) { const I = MK_BY[it.i], [a, b] = mkSpan(it); x.fillStyle = MK_GROUPS[I.g][1]; x.fillRect(4 + (it.l + 1) * (w - 8) / 3 + 1, h - 4 - b * k, (w - 8) / 3 - 2, Math.max(1.5, (b - a) * k)); }
+  const vb = E.scroll, vt = E.scroll + g.base / E.ppm; x.strokeStyle = '#fff'; x.lineWidth = 1.5; x.strokeRect(2, h - 4 - vt * k, w - 4, (vt - vb) * k);
+}
+function mkHit(g, px, py) { const l = mkLaneAt(g, px); if (l === null) return null; const d = mkD(g, py), pad = 6 / MK.ed.ppm; let best = null;
+  for (const it of MK.ed.lv.o) { if (it.l !== l) continue; const I = MK_BY[it.i]; let [a, b] = mkSpan(it); if (I.g === 'pick') { a = it.d - Math.max(0.6, 8 / MK.ed.ppm); b = it.d + Math.max(0.6, 8 / MK.ed.ppm); } if (b - a < 10 / MK.ed.ppm) { const c = (a + b) / 2; a = c - 5 / MK.ed.ppm; b = c + 5 / MK.ed.ppm; }
+    if (d >= a - pad && d <= b + pad && (!best || (I.g !== 'plat' && MK_BY[best.i].g === 'plat') || Math.abs(it.d - d) < Math.abs(best.d - d))) best = it; }
+  return best; }
+// undo / redo: whole-level snapshots (levels are small)
+function mkSnapshot() { const lv = MK.ed.lv; return JSON.stringify({ o: lv.o, len: lv.len }); }
+function mkPush() { const E = MK.ed; E.undo.push(mkSnapshot()); if (E.undo.length > 120) E.undo.shift(); E.redo = []; }
+function mkChanged() { const E = MK.ed; E.lv.o.sort((a, b) => a.d - b.d || a.l - b.l); E.lv.ver = false; E.lv.t = Date.now(); clearTimeout(MK.saveT); MK.saveT = setTimeout(mkStore, 400); mkSyncTop(); mkDraw(); }
+function mkRestore(s) { const E = MK.ed, j = JSON.parse(s), keep = new Set([...E.sel].map(it => JSON.stringify(it))); E.lv.o = j.o; E.lv.len = j.len; E.sel = new Set(E.lv.o.filter(it => keep.has(JSON.stringify(it)))); mkChanged(); }
+function mkUndo() { const E = MK.ed; if (!E.undo.length) return; E.redo.push(mkSnapshot()); mkRestore(E.undo.pop()); sfx('click'); }
+function mkRedo() { const E = MK.ed; if (!E.redo.length) return; E.undo.push(mkSnapshot()); mkRestore(E.redo.pop()); sfx('click'); }
+function mkAddAt(l, d) {
+  const E = MK.ed, I = MK_BY[E.item]; if (E.lv.o.length >= MK_MAX_OBJ) { toast('That\'s the most a level can hold', MK_MAX_OBJ + ' things', 1500); return null; }
+  if (I.outer && l === 0) { toast(I.nm + 's open from the wall', 'Put them in the left or right lane', 1500); sfx('deny'); return null; }
+  d = Math.min(Math.max(I.g === 'pick' ? 1 : MK_START, mkSnapD(d)), MK_MAX_LEN - 5); if (E.lv.o.some(it => it.i === I.id && it.l === l && Math.abs(it.d - d) < 0.01)) return null;
+  mkPush(); const it = { i: I.id, l, d }; if (I.g === 'plat') { it.n = I.len; if (I.k !== 'wax') it.r = true; } E.lv.o.push(it); E.sel = new Set([it]); sfx('lane'); mkChanged(); return it;
+}
+function mkDelete(items) { const E = MK.ed, s = new Set(items); if (!s.size) return; mkPush(); E.lv.o = E.lv.o.filter(it => !s.has(it)); for (const it of s) E.sel.delete(it); sfx('slide'); mkChanged(); }
+function mkMove(items, dd, dl) { const E = MK.ed; items = [...items]; if (!items.length) return; if (items.some(it => it.l + dl < -1 || it.l + dl > 1 || (MK_BY[it.i].outer && it.l + dl === 0))) dl = 0; { const lo = Math.min(...items.map(it => it.d - (MK_BY[it.i].g === 'pick' ? 1 : MK_START))); if (lo + dd < 0) dd = Math.min(0, -lo); }
+  if (!dd && !dl) return; mkPush(); for (const it of items) { it.d = Math.round((it.d + dd) * 100) / 100; it.l += dl; } mkChanged(); }
+function mkDup(items, ahead) { const E = MK.ed; items = [...items]; if (!items.length) return; const ds = [...new Set(items.map(it => it.d))].sort((a, b) => a - b), lo = ds[0], hi = ds[ds.length - 1], gap = ds.length > 1 ? (hi - lo) / (ds.length - 1) : Math.max(3, E.lv.speed * 0.6), off = ahead ? Math.max(E.snap, Math.round((hi - lo + gap) / E.snap) * E.snap) : 0; // repeats keep the pattern's own spacing
+  if (E.lv.o.length + items.length > MK_MAX_OBJ) { toast('That\'s the most a level can hold', '', 1200); return; } mkPush(); const add = items.map(it => Object.assign({}, it, { d: it.d + off })); E.lv.o.push(...add); E.sel = new Set(add); E.scroll = Math.max(E.scroll, lo + off - 4); sfx('buy'); mkChanged(); }
+function mkMirror(items) { items = [...items]; if (!items.length) return; mkPush(); for (const it of items) it.l = -it.l; mkChanged(); }
+function mkInspector() {
+  const E = MK.ed, box = $('mkInsp'), n = E.sel.size; box.innerHTML = '';
+  const btn = (t, f, cls, tip) => { const b = mk('button', cls || '', t); if (tip) b.title = tip; b.onclick = e => { e.stopPropagation(); f(); }; box.appendChild(b); return b; };
+  if (!n) { if (MK.clip && MK.clip.length) { box.appendChild(mk('div', 't', '📋 ' + MK.clip.length + ' copied')); btn('Paste here', () => mkPaste()); btn('✕', () => { MK.clip = null; mkDraw(); }); box.classList.add('show'); } else box.classList.remove('show'); return; }
+  box.classList.add('show');
+  if (n === 1) { const it = [...E.sel][0], I = MK_BY[it.i], t = mk('div', 't', I.ic + ' ' + I.nm + ' '); t.appendChild(mk('small', '', it.d + ' m · ' + ['left', 'middle', 'right'][it.l + 1] + ' lane' + (I.g === 'move' ? ' · meets you here' : '') + (I.g === 'plat' ? ' · ' + it.n + ' m long' : ''))); box.appendChild(t);
+    btn('◀', () => mkMove(E.sel, 0, -1), '', 'Lane left'); btn('▶', () => mkMove(E.sel, 0, 1), '', 'Lane right'); btn('▲', () => mkMove(E.sel, E.snap, 0), '', 'Further'); btn('▼', () => mkMove(E.sel, -E.snap, 0), '', 'Closer');
+    if (I.g === 'plat') { btn('− len', () => { mkPush(); it.n = Math.max(3, it.n - 1); mkChanged(); }); btn('+ len', () => { mkPush(); it.n = Math.min(60, it.n + 1); mkChanged(); }); if (I.k !== 'wax') btn(it.r ? '◢ Ramp' : '▮ No ramp', () => { mkPush(); it.r = !it.r; mkChanged(); }, it.r ? 'on' : '', 'With a ramp (or step) you can run up it; without one you have to jump on'); }
+  } else { box.appendChild(mk('div', 't', n + ' selected')); btn('◀', () => mkMove(E.sel, 0, -1)); btn('▶', () => mkMove(E.sel, 0, 1)); btn('▲', () => mkMove(E.sel, E.snap, 0)); btn('▼', () => mkMove(E.sel, -E.snap, 0)); btn('⇋ Mirror', () => mkMirror(E.sel)); }
+  btn('⧉ Repeat', () => mkDup(E.sel, true), '', 'Copy right after (great for patterns)'); btn('📋 Copy', () => { const lo = Math.min(...[...E.sel].map(it => it.d)); MK.clip = [...E.sel].map(it => Object.assign({}, it, { d: it.d - lo })); toast('Copied', 'Scroll, then tap Paste', 900); });
+  btn('🗑', () => mkDelete(E.sel), 'del', 'Delete'); btn('✕', () => { E.sel.clear(); mkDraw(); }, '', 'Deselect');
+}
+function mkPaste() { const E = MK.ed, g = mkGeo(); if (!MK.clip) return; const at = mkSnapD(E.scroll + (g.base * 0.3) / E.ppm); if (E.lv.o.length + MK.clip.length > MK_MAX_OBJ) return; mkPush(); const add = MK.clip.map(it => Object.assign({}, it, { d: it.d + at })); E.lv.o.push(...add); E.sel = new Set(add); sfx('buy'); mkChanged(); }
+function mkScrollBy(dd) { const E = MK.ed, g = mkGeo(); E.scroll = clamp(E.scroll + dd, -2, Math.max(0, mkLen(E.lv) - g.base / E.ppm * 0.5)); mkDraw(); }
+function mkZoom(f, cy) { const E = MK.ed, g = mkGeo(), y = cy === undefined ? g.base * 0.5 : cy, d = mkD(g, y); E.ppm = clamp(E.ppm * f, 4, 60); E.scroll = Math.max(-2, d - (g.base - y) / E.ppm); mkDraw(); }
+// pointer: tap to place / select, drag an object to move it, drag empty space to scroll (Select tool: box select), pinch to zoom
+{ const cv = $('mkCv');
+  const pos = e => { const r = cv.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+  cv.addEventListener('pointerdown', e => { const E = MK.ed; if (!E) return; cv.setPointerCapture(e.pointerId); const p = pos(e), g = mkGeo(); E.ptrs.set(e.pointerId, p);
+    if (E.ptrs.size === 2) { const [a, b] = [...E.ptrs.values()]; E.pinch = { dist: Math.hypot(a.x - b.x, a.y - b.y), ppm: E.ppm, my: (a.y + b.y) / 2, d: mkD(g, (a.y + b.y) / 2) }; E.drag = null; E.box = null; return; }
+    const hit = mkHit(g, p.x, p.y); E.drag = { x: p.x, y: p.y, hit, d0: mkD(g, p.y), l0: mkLaneAt(g, p.x), moved: false, scroll0: E.scroll, mode: null };
+    if (E.tool === 'erase' && hit) { mkDelete([hit]); E.drag.erasing = true; } });
+  cv.addEventListener('pointermove', e => { const E = MK.ed; if (!E || !E.ptrs.has(e.pointerId)) return; const p = pos(e), g = mkGeo(); E.ptrs.set(e.pointerId, p);
+    if (E.pinch && E.ptrs.size >= 2) { const [a, b] = [...E.ptrs.values()], dist = Math.hypot(a.x - b.x, a.y - b.y), my = (a.y + b.y) / 2; E.ppm = clamp(E.pinch.ppm * dist / Math.max(20, E.pinch.dist), 4, 60); E.scroll = Math.max(-2, E.pinch.d - (g.base - my) / E.ppm); mkDraw(); return; }
+    const D = E.drag; if (!D) return; if (!D.moved && Math.hypot(p.x - D.x, p.y - D.y) < 7) return;
+    if (!D.moved) { D.moved = true;
+      if (E.tool === 'erase') D.mode = 'erase';
+      else if (D.hit && (E.tool === 'place' || E.tool === 'select')) { D.mode = 'move'; if (!E.sel.has(D.hit)) E.sel = new Set([D.hit]); mkPush(); D.orig = [...E.sel].map(it => [it, it.d, it.l]); D.pushed = true; }
+      else if (E.tool === 'select') { D.mode = 'box'; if (!e.shiftKey) E.sel.clear(); }
+      else D.mode = 'pan'; }
+    if (D.mode === 'pan') { E.scroll = clamp(D.scroll0 + (p.y - D.y) / E.ppm, -2, Math.max(0, mkLen(E.lv) + 20)); mkDraw(); }
+    else if (D.mode === 'erase') { const h = mkHit(g, p.x, p.y); if (h) { E.lv.o = E.lv.o.filter(it => it !== h); E.sel.delete(h); if (!D.erasePushed) { D.erasePushed = true; } mkChanged(); } }
+    else if (D.mode === 'move') { const dd = mkSnapD(Math.max(0, mkD(g, p.y))) - mkSnapD(Math.max(0, D.d0)), l = mkLaneAt(g, p.x); let dl = l === null || D.l0 === null ? 0 : l - D.l0;
+      if (D.orig.some(([it, d, l0]) => l0 + dl < -1 || l0 + dl > 1 || (MK_BY[it.i].outer && l0 + dl === 0))) dl = D.orig.length === 1 && MK_BY[D.orig[0][0].i].outer ? (D.orig[0][2] + dl === 0 ? 0 : dl) : 0;
+      const minD = Math.min(...D.orig.map(o => o[1] - (MK_BY[o[0].i].g === 'pick' ? 1 : MK_START))); const ddc = Math.max(dd, Math.min(0, -minD));
+      for (const [it, d, l0] of D.orig) { it.d = Math.round((d + ddc) * 100) / 100; const nl = l0 + dl; if (nl >= -1 && nl <= 1 && !(MK_BY[it.i].outer && nl === 0)) it.l = nl; }
+      if (p.y < 30) E.scroll += 0.4; else if (p.y > g.h - 30) E.scroll = Math.max(-2, E.scroll - 0.4); mkDraw(); }
+    else if (D.mode === 'box') { E.box = { x0: Math.min(D.x, p.x), y0: Math.min(D.y, p.y), x1: Math.max(D.x, p.x), y1: Math.max(D.y, p.y) }; const da = mkD(g, E.box.y1), db = mkD(g, E.box.y0), la = mkLaneAt(g, Math.max(g.x0 + 1, E.box.x0)), lb = mkLaneAt(g, Math.min(g.x0 + g.lw * 3 - 1, E.box.x1));
+      E.sel = new Set(E.lv.o.filter(it => { const [a, b] = mkSpan(it); return b >= da && a <= db && la !== null && lb !== null && it.l >= la && it.l <= lb; })); mkDraw(); } });
+  const up = e => { const E = MK.ed; if (!E || !E.ptrs.has(e.pointerId)) return; E.ptrs.delete(e.pointerId); if (E.pinch) { if (E.ptrs.size < 2) { E.pinch = null; E.drag = null; } return; }
+    const D = E.drag; E.drag = null; E.box = null; if (!D) return; const g = mkGeo();
+    if (D.mode === 'move') { if (D.orig.every(([it, d, l]) => it.d === d && it.l === l)) E.undo.pop(); mkChanged(); return; }
+    if (D.mode === 'erase') { mkChanged(); return; }
+    if (D.moved) { mkDraw(); return; }
+    if (D.erasing) return;
+    const l = D.l0; if (E.tool === 'place') { if (D.hit) { E.sel = new Set([D.hit]); sfx('click'); mkDraw(); } else if (l !== null) { if (E.sel.size) { E.sel.clear(); } mkAddAt(l, D.d0); } else { E.sel.clear(); mkDraw(); } }
+    else if (E.tool === 'select') { if (D.hit) { if (E.sel.has(D.hit)) E.sel.delete(D.hit); else E.sel.add(D.hit); sfx('click'); } else E.sel.clear(); mkDraw(); } };
+  cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
+  cv.addEventListener('wheel', e => { if (!MK.ed) return; e.preventDefault(); if (e.ctrlKey || e.metaKey) mkZoom(e.deltaY < 0 ? 1.12 : 1 / 1.12, pos(e).y); else mkScrollBy(-e.deltaY / MK.ed.ppm * 0.6); }, { passive: false });
+  const mm = $('mkMini'); let mmDown = false; const mmGo = e => { const E = MK.ed, r = mm.getBoundingClientRect(), L = Math.max(mkLen(E.lv), 40), k = (r.height - 8) / L, g = mkGeo(); E.scroll = clamp((r.bottom - 4 - e.clientY) / k - g.base / E.ppm / 2, -2, L); mkDraw(); };
+  mm.addEventListener('pointerdown', e => { if (!MK.ed) return; mmDown = true; mm.setPointerCapture(e.pointerId); mmGo(e); }); mm.addEventListener('pointermove', e => { if (mmDown) mmGo(e); }); mm.addEventListener('pointerup', () => mmDown = false); mm.addEventListener('pointercancel', () => mmDown = false);
+}
+document.querySelectorAll('#sMkEdit [data-tool]').forEach(b => b.onclick = () => { sfx('click'); MK.ed.tool = b.dataset.tool; if (b.dataset.tool !== 'select' && MK.ed.sel.size > 1) MK.ed.sel.clear(); mkSyncTop(); mkDraw(); });
+$('mkUndo').onclick = () => mkUndo(); $('mkRedo').onclick = () => mkRedo();
+$('mkZoomIn').onclick = () => mkZoom(1.25); $('mkZoomOut').onclick = () => mkZoom(0.8);
+$('mkSnap').onclick = () => { const E = MK.ed; E.snap = MK_SNAPS[(MK_SNAPS.indexOf(E.snap) + 1) % MK_SNAPS.length]; sfx('click'); mkSyncTop(); toast('Grid step: ' + E.snap + ' m', '', 800); };
+function mkTest(from) { const E = MK.ed; if (!E.lv.o.length) { toast('Place a few things first', 'Then test your level', 1300); return; } clearTimeout(MK.saveT); mkStore(); mkPlay(E.lv, { test: true, from: from || 0 }); }
+$('mkTest').onclick = () => { sfx('click'); mkTest(0); };
+$('mkHere').onclick = () => { sfx('click'); mkTest(Math.max(0, mkSnapD(MK.ed.scroll + 1))); };
+$('mkClose').onclick = () => { sfx('click'); clearTimeout(MK.saveT); mkStore(); MK.ed.sel.clear(); mkOpenHub('mine'); };
+$('mkNameBtn').onclick = () => mkOpenSettings(); $('mkSet').onclick = () => mkOpenSettings();
+function mkOpenSettings() {
+  const E = MK.ed, lv = E.lv, m = $('mkSetModal'); sfx('click'); $('mkNameIn').value = lv.name;
+  const chips = (box, list, cur, set) => { box.innerHTML = ''; for (const [v, t] of list) { const b = mk('button', 'chip' + (v === cur() ? ' on' : ''), t); b.onclick = () => { sfx('click'); set(v); chips(box, list, cur, set); }; box.appendChild(b); } };
+  const change = f => { mkPush(); f(); lv.ver = false; mkStore(); mkSyncTop(); mkDraw(); };
+  chips($('mkThemes'), MK_THEMES.map(k => [k, THEMES[k].name]), () => lv.theme, v => change(() => lv.theme = v));
+  chips($('mkSpeeds'), MK_SPEEDS, () => lv.speed, v => change(() => lv.speed = v));
+  chips($('mkStars'), MK_STARS.map(s => [s[0], s[1] + ' ' + s[2]]), () => lv.stars, v => { lv.stars = v; mkStore(); });
+  $('mkDark').checked = !!lv.dark; $('mkDark').onchange = () => change(() => lv.dark = $('mkDark').checked ? 1 : 0);
+  const syncLen = () => { $('mkLenAuto').classList.toggle('on', !lv.len); $('mkLenIn').value = lv.len || ''; $('mkLenIn').placeholder = mkLen(Object.assign({}, lv, { len: 0 })) + ' m'; $('mkLenTxt').textContent = lv.len ? 'The finish line is at ' + lv.len + ' m.' : 'Auto: the finish line is 20 m after the last thing (' + mkLen(lv) + ' m now).'; };
+  $('mkLenAuto').onclick = () => { change(() => lv.len = 0); syncLen(); }; $('mkLenIn').onchange = () => { const v = clamp(Math.round(+$('mkLenIn').value || 0), 0, MK_MAX_LEN); change(() => lv.len = v >= 40 ? v : 0); syncLen(); }; syncLen();
+  $('mkSetOk').onclick = () => { const raw = $('mkNameIn').value, nm = cleanLevelName(raw); if (raw.trim() && !nm) { toast('Pick a different name', '3 to 24 letters, no bad words, links or long numbers', 2000); return; } if (nm && nm !== lv.name) { lv.name = nm; if (lv.pub) lv.ver = lv.ver; } mkStore(); mkSyncTop(); m.classList.remove('show'); };
+  $('mkClearAll').onclick = () => { if (!lv.o.length || !confirm('Remove everything from this level? (Undo can bring it back.)')) return; change(() => { lv.o = []; E.sel.clear(); }); m.classList.remove('show'); };
+  $('mkDelLv').onclick = () => { if (!confirm('Delete "' + lv.name + '" for good?')) return; MK.drafts = MK.drafts.filter(x => x !== lv); mkStore(); m.classList.remove('show'); MK.ed = null; mkOpenHub('mine'); };
+  m.classList.add('show');
+}
+// keyboard in the editor (captured first, so the game's own shortcut keys stay quiet while you build)
+window.addEventListener('keydown', e => {
+  if (curScreen !== 'sMkEdit' || !MK.ed || document.querySelector('.modal.show') || /INPUT|TEXTAREA/.test((document.activeElement || {}).tagName || '')) return;
+  const E = MK.ed, c = e.code, mod = e.ctrlKey || e.metaKey; let ok = true;
+  if (mod && c === 'KeyZ') { if (e.shiftKey) mkRedo(); else mkUndo(); } else if (mod && c === 'KeyY') mkRedo();
+  else if (mod && c === 'KeyC') { if (E.sel.size) { const lo = Math.min(...[...E.sel].map(it => it.d)); MK.clip = [...E.sel].map(it => Object.assign({}, it, { d: it.d - lo })); toast('Copied', '', 700); mkDraw(); } }
+  else if (mod && c === 'KeyV') mkPaste(); else if (mod && c === 'KeyD') mkDup(E.sel, true); else if (mod && c === 'KeyA') { E.sel = new Set(E.lv.o); mkDraw(); }
+  else if (c === 'Delete' || c === 'Backspace') mkDelete(E.sel);
+  else if (c === 'ArrowLeft' || c === 'ArrowRight') { if (E.sel.size) mkMove(E.sel, 0, c === 'ArrowLeft' ? -1 : 1); }
+  else if (c === 'ArrowUp' || c === 'ArrowDown') { if (E.sel.size) mkMove(E.sel, (c === 'ArrowUp' ? 1 : -1) * E.snap, 0); else mkScrollBy((c === 'ArrowUp' ? 1 : -1) * 4); }
+  else if (c === 'PageUp' || c === 'PageDown') mkScrollBy((c === 'PageUp' ? 1 : -1) * mkGeo().base / E.ppm * 0.8);
+  else if (c === 'Escape') { if (E.sel.size) { E.sel.clear(); mkDraw(); } else $('mkClose').click(); }
+  else if (c === 'KeyT' || c === 'Enter') mkTest(0); else if (c === 'KeyH') $('mkHere').click();
+  else if (c === 'KeyP' || c === 'KeyB') { E.tool = 'place'; mkSyncTop(); } else if (c === 'KeyS' && !mod) { E.tool = 'select'; mkSyncTop(); } else if (c === 'KeyE') { E.tool = 'erase'; mkSyncTop(); }
+  else if (c === 'KeyM') mkMirror(E.sel); else if (c === 'Equal' || c === 'NumpadAdd') mkZoom(1.25); else if (c === 'Minus' || c === 'NumpadSubtract') mkZoom(0.8);
+  else if (/^Digit[1-6]$/.test(c)) { E.grp = Object.keys(MK_GROUPS)[+c.slice(5) - 1]; E.item = MK_ITEMS.find(I => I.g === E.grp).id; E.tool = 'place'; mkBuildPalette(); mkSyncTop(); }
+  else ok = false;
+  if (ok) { e.preventDefault(); e.stopImmediatePropagation(); } else if (!mod) e.stopImmediatePropagation();
+}, true);
+{ const ab0 = window.onAndroidBack; window.onAndroidBack = function () { if (document.querySelector('#mkSetModal.show,#mkLvModal.show,#mkPubModal.show')) { document.querySelectorAll('#mkSetModal,#mkLvModal,#mkPubModal').forEach(m => m.classList.remove('show')); return true; } if (curScreen === 'sMkEdit') { $('mkClose').click(); return true; } return ab0 ? ab0() : false; }; }
+// entry points: Modes (the card after Campaign), More (a tile), and G on the home screen
+{ const bm0 = buildModes; buildModes = function () { const r = bm0.apply(this, arguments); const box = $('modeList'), d = mk('button', 'modeCard mkMode'); d.innerHTML = '<span class="mi">🛠️</span><div><b>Level Maker</b><small></small><em></em></div>';
+    d.querySelector('small').textContent = 'Build your own hallway and share it, or play the hardest levels other players made.'; d.querySelector('em').textContent = MK.drafts.length ? MK.drafts.length + ' level' + (MK.drafts.length === 1 ? '' : 's') + ' made' : 'NEW';
+    d.onclick = () => { sfx('click'); mkOpenHub(); }; box.insertBefore(d, box.children[1] || null); return r; }; }
+MORE_TILES.splice(1, 0, ['🛠️', 'Level Maker', 'bMakerHidden', null, null, null]);
+{ const hb = mk('button'); hb.id = 'bMakerHidden'; hb.style.display = 'none'; hb.onclick = () => mkOpenHub(); document.body.appendChild(hb); }
+addEventListener('keydown', e => { if (e.code === 'KeyG' && G.scene === 'menu' && curScreen === 'sMenu' && !e.ctrlKey && !e.metaKey && !document.querySelector('.modal.show') && !/INPUT|TEXTAREA/.test((document.activeElement || {}).tagName || '')) { e.preventDefault(); mkOpenHub(); } });
 
 </script>
 </body>
