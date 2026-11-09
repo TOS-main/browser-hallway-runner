@@ -1646,6 +1646,13 @@ const PZ = 5.5, SPAWN_Z = 82, SEG = 10, NSEG = 14, WALLH = 9.5;
 // lanes are ~20% wider than the original layout so the hallway feels roomy; the camera frames the 3 lanes edge to edge
 const LANE_SCALE = 1.2;
 let laneW = 2.1 * LANE_SCALE, HW = 4.4, CAMX = 0, CAMD = 9, CAMY = 5;
+// lane changes and rolls: quick and snappy like the classic lane runners
+const DODGE = { lean: 0.3, yaw: 0.32, hop: 0.07, leg: 0.3, arm: 0.5, chest: 0.25 };
+const LANE_T = 0.2, ROLL_T = 0.6, ROLL_CLIP = 1.4583;
+const laneMul = () => laneSpeed() / (laneW * 11); // shoes, Track Star perk, slippery wax
+// slide pose strength: eases in over the first 1/8 s and out over the last 1/8 s (counted from when the slide began, so
+// swiping down again mid-slide just makes it longer instead of popping the runner back up)
+const slideK = () => clamp(Math.min(P.slideAge || 0, P.slide) * 8, 0, 1);
 /* ---------- GRAPHICS QUALITY ---------- */
 const QUALITY_PRESETS = {
   low: { name: 'Low', pr: 1, minPr: 0.6, aa: false, shadows: 0, std: false, env: false, particles: false, view: 62, joints: false },
@@ -3659,7 +3666,8 @@ function syncPlayer() {
   const air = P.y - (P.fl || 0), inAir = !inMenu && (air > 0.05 || (a.cur === 'Jump_Loop' && air > 0.015));
   if (G.dying) a.pose('die', 1.3, 0.1);
   else if (flying || sledding) a.pose('idle', 0.5, 0.15);
-  else if (sliding) { if (P.rollT > 0) a.pose('roll', 1.5, 0.08); else a.pose('idle', 1, 0.12); } // swipe down in the air = tuck and roll
+  else if (P.rollT > 0 && !inMenu) a.pose('roll', ROLL_CLIP / ROLL_T, 0.05); // swipe down in the air = tuck and roll, straight away
+  else if (sliding) a.pose('idle', 1, 0.12);
   else if (inAir) a.pose(G.trick && G.trick.kind === 'grab' ? 'roll' : 'jump', G.trick && G.trick.kind === 'grab' ? 0.35 : 1, 0.15);
   else if (G.pushAnim > 0 && G.scene === 'play') a.pose('push', 2.2, 0.14); // shoving through (a softer blend: the 0.06s snap dropped the hips 30cm in ~3 frames)
   else if (G.heely > 0 && G.scene === 'play') a.pose('idle', 0.6, 0.1); // rolling on the heel wheels
@@ -3671,14 +3679,16 @@ function syncPlayer() {
   pp.plane.visible = flying || (pp.plane.visible && P.y > 0.3 && G.scene === 'play');
   if (pp.plane.visible) { pp.plane.position.set(P.x, P.y + 0.42, 0.15); pp.plane.rotation.set(0.05 + Math.sin(G.t * 3) * 0.03, 0, clamp((P.x - P.lane * laneW) / laneW, -1, 1) * 0.5 + Math.sin(G.t * 2) * 0.04); }
   const heelRoll = G.heely > 0 && G.scene === 'play' && P.y - (P.fl || 0) <= 0.05 && !sliding && !G.dying;
-  a.noGround = sliding || flying || sledding;
+  a.noGround = sliding || P.rollT > 0 || flying || sledding;
   { // trick poses (plane / sled kneel, heel roll, slide arm) fade in and out instead of switching on in one frame: the
     // slide's raised arm used to snap 130-150 degrees the moment a slide started or ended (the runner's arm glitch)
-    const W = pp.trickW || (pp.trickW = { kneel: 0, heel: 0, slide: 0 }), kneel = flying || sledding;
-    const slideK = sliding ? clamp(Math.min(P.slide, slideDur() - P.slide) * 8, 0, 1) : 0;
-    const tgt = { kneel: kneel ? 1 : 0, heel: heelRoll && !kneel ? 1 : 0, slide: sliding && !kneel && !heelRoll && !(P.rollT > 0) ? slideK : 0 }, step = G.paused ? 0 : FRAME_DT * 8;
-    for (const k in W) W[k] = k === 'slide' && tgt.slide > W.slide ? tgt.slide : W[k] + clamp(tgt[k] - W[k], -step, step);
-    a.post = W.kneel + W.heel + W.slide < 0.001 ? null : (A => {
+    const W = pp.trickW || (pp.trickW = { kneel: 0, heel: 0, slide: 0, dodge: 0 }), kneel = flying || sledding;
+    const sk = sliding ? slideK() : 0;
+    // side step: 0 -> 1 -> 0 over the lane change, signed by direction (only on your feet, not mid-slide, roll or jump)
+    const dk = !inMenu && G.scene === 'play' && !G.dying && P.lt < P.ldur ? Math.sin(Math.min(1, P.lt / P.ldur) * Math.PI) * (P.ldir || 0) : 0;
+    const tgt = { kneel: kneel ? 1 : 0, heel: heelRoll && !kneel ? 1 : 0, slide: sliding && !kneel && !heelRoll && !(P.rollT > 0) ? sk : 0, dodge: !kneel && !sliding && !(P.rollT > 0) && !inAir ? dk : 0 }, step = G.paused ? 0 : FRAME_DT * 8;
+    for (const k in W) W[k] = (k === 'slide' && tgt.slide > W.slide) || k === 'dodge' ? tgt[k] : W[k] + clamp(tgt[k] - W[k], -step, step);
+    a.post = W.kneel + W.heel + W.slide + Math.abs(W.dodge) < 0.001 ? null : (A => {
       if (W.kneel > 0.001) { const w = W.kneel; // kneeling on the plane, hands on the wings
         twist(A, 'UpperLegL', 1, 0, 0, -1.25 * w); twist(A, 'UpperLegR', 1, 0, 0, -1.25 * w); twist(A, 'LowerLegL', 1, 0, 0, 1.9 * w); twist(A, 'LowerLegR', 1, 0, 0, 1.9 * w);
         twist(A, 'Chest', 1, 0, 0, 0.25 * w); twist(A, 'UpperArmL', 0, 0, 1, 0.5 * w); twist(A, 'UpperArmR', 0, 0, 1, -0.5 * w); twist(A, 'UpperArmL', 1, 0, 0, -0.5 * w); twist(A, 'UpperArmR', 1, 0, 0, -0.5 * w); }
@@ -3687,16 +3697,23 @@ function syncPlayer() {
         twist(A, 'FootL', 1, 0, 0, -0.75 * w); twist(A, 'FootR', 1, 0, 0, -0.65 * w);
         twist(A, 'Chest', 1, 0, 0, -0.12 * w); twist(A, 'UpperArmL', 0, 0, 1, (1.15 + sw * 0.12) * w); twist(A, 'UpperArmR', 0, 0, 1, (-1.15 + sw * 0.12) * w); }
       if (W.slide > 0.001) { const w = W.slide; twist(A, 'UpperArmR', 1, 0, 0, -2.2 * w); twist(A, 'UpperArmL', 0, 0, 1, 0.6 * w); twist(A, 'UpperLegL', 1, 0, 0, -0.35 * w); twist(A, 'LowerLegL', 1, 0, 0, 0.9 * w); }
+      if (Math.abs(W.dodge) > 0.001) { const w = Math.abs(W.dodge), s = Math.sign(W.dodge); // DODGE_POSE
+        // push off the outside foot, reach with the inside one, arms swing out for balance, chest turns into the move
+        twist(A, 'UpperLegL', 0, 0, 1, DODGE.leg * w * s); twist(A, 'UpperLegR', 0, 0, 1, DODGE.leg * w * s);
+        twist(A, 'UpperArmL', 0, 0, 1, DODGE.arm * w * (s > 0 ? 1.4 : 0.6)); twist(A, 'UpperArmR', 0, 0, 1, -DODGE.arm * w * (s > 0 ? 0.6 : 1.4));
+        twist(A, 'Chest', 0, 1, 0, DODGE.chest * w * s); }
     });
   }
   a.update(G.paused ? 0 : FRAME_DT);
   if (a.bones.Head) a.bones.Head.scale.setScalar(cheatOn('bighead') ? 1.9 : 1.12);
   if (flying) pp.wrap.position.y = P.y - 0.5; if (sledding) pp.wrap.position.y = P.y - 0.42;
   if (sliding) { // feet-first slide: lean way back with the hips near the floor
-    const k = P.rollT > 0 ? 0 : clamp(Math.min(P.slide, slideDur() - P.slide) * 8, 0, 1); pp.pivot.rotation.x = lerp(0, 1.12, k); pp.wrap.position.y = P.y - 0.5 * k;
+    const k = P.rollT > 0 ? 0 : slideK(); pp.pivot.rotation.x = lerp(0, 1.12, k); pp.wrap.position.y = P.y - 0.5 * k;
     if (Math.random() < 0.6) emit(P.x + rand(-0.3, 0.3), 0.08, -0.2, 1, '#d9d4c7', 2.2, 0.35, 0.18, 0, false, true);
   }
-  pp.root.rotation.z = inMenu ? 0 : clamp((P.lane * laneW - P.x) / laneW, -1, 1) * 0.26;
+  // lane change lean: the whole body tips into the move and rights itself as you arrive (a sine over the move, no snapping)
+  const dodgeW = !inMenu && G.scene === 'play' && !G.dying && P.lt < P.ldur ? Math.sin(Math.min(1, P.lt / P.ldur) * Math.PI) * (P.ldir || 0) : 0;
+  pp.root.rotation.z = dodgeW * DODGE.lean;
   // skating: push side to side and lean forward
   const skating = heelRoll;
   if (skating) { const ph = G.t * 2.4; pp.root.rotation.z += Math.sin(ph) * 0.05; pp.root.rotation.y = Math.PI + Math.sin(ph * 0.5) * 0.12; }
@@ -3714,15 +3731,14 @@ function syncPlayer() {
     // a forward stumble when you get bumped. All of it rides on the wrap (feet at its origin), so the feet stay planted.
     const dt = G.paused ? 0 : FRAME_DT, play = G.scene === 'play' && !G.dying && !flying && !sledding, air = P.y - (P.fl || 0);
     if (play && !pp.wasAir && air > 0.05 && P.vy > 0) P.takeT = 0.16; pp.wasAir = air > 0.05;
-    if (P.rollT > 0) P.rollT = Math.max(0, P.rollT - dt);
     let sx = 1, sy = 1;
     if (P.takeT > 0) { P.takeT = Math.max(0, P.takeT - dt); const k = P.takeT / 0.16; sy += 0.13 * k; sx -= 0.06 * k; }
     if (P.landT > 0) { P.landT = Math.max(0, P.landT - dt); const e = Math.sin(P.landT / 0.2 * Math.PI); sy -= 0.15 * e; sx += 0.09 * e; }
     if (!play) { P.takeT = 0; P.landT = 0; sx = sy = 1; }
     const b = pp.baseSc || 1; pp.wrap.scale.set(b * sx, b * sy, b * sx);
-    const off = play ? clamp((P.lane * laneW - P.x) / laneW, -1, 1) : 0, prog = Math.abs(off);
-    pp.wrap.rotation.y = -off * 0.3;
-    if (play && prog > 0.02 && air < 0.05 && !sliding) pp.wrap.position.y += Math.sin((1 - prog) * Math.PI) * 0.1 * Math.min(1, prog * 4);
+    const dw = play ? dodgeW : 0;
+    pp.wrap.rotation.y = -dw * DODGE.yaw; // face a little into the move
+    if (play && air < 0.05 && !sliding && !(P.rollT > 0)) pp.wrap.position.y += Math.abs(dw) * DODGE.hop; // light skip off the floor
     if (P.stumbleT > 0 && G.scene === 'play') { P.stumbleT = Math.max(0, P.stumbleT - dt); const k = P.stumbleT / 0.45; pp.wrap.rotation.x = -Math.sin(k * Math.PI) * 0.3; pp.wrap.rotation.z = Math.sin(k * Math.PI * 4) * 0.14 * k; }
   }
   keepAboveFloor(pp, flying ? -9 : sledding ? (P.fl || 0) + 0.12 : (P.fl || 0)); // final safety: no part of the runner ever goes below the floor
@@ -5249,7 +5265,10 @@ function platH(o, rel) { const K = o.K; if (!o.ramp) return K.top; if (K.stepLen
 function platUnder(x) { for (const o of G.objs) { if (o.K.cat !== 'plat' || o.dead) continue; const rel = PZ - o.z; if (rel < 0 || rel > o.len || Math.abs(o.x - x) > laneW * 0.46) continue; return { o, h: platH(o, rel) }; } return null; }
 function floorAt(x) { const u = platUnder(x); return u ? u.h : 0; }
 function laneSpeed() { return (G.waxed ? 0.35 : 1) * laneW * lerp(11, 5.2, wN()) * shoeDef().lane * (charDef().perk === 'lanes' ? 1.2 : 1); }
-function slideDur() { return lerp(0.5, 0.95, wN()) * shoeDef().slide; }
+// the slide lasts 0.95 s again (round 18 made it 0.5 s along with the backpack change, which cut it in half for everyone)
+function slideDur() { return 0.95 * shoeDef().slide; }
+function startSlide() { if (!(P.slide > 0)) { P.slideAge = 0; sfx('slide'); } P.slide = Math.max(P.slide, slideDur()); }
+function startRoll(t) { P.rollT = t; if (player && player.act.cur === 'Roll') player.act.cur = ''; } // restart the clip even if the last roll just ended
 // row spacing follows the speed WITHOUT the Fast/Turbo multiplier: faster modes really are harder (less time per row), not just stretched out
 function gap() { return clamp(G.speed / speedMode().mul * 0.95, 11, 26) * (G.cfg.gapMul || 1) * diff().gap; }
 
@@ -5451,7 +5470,7 @@ G.lastQuiz = 0; G.lastShortcut = 0; G.lastLetter = -999; G.tpStart = undefined; 
   showBoostBar(mode);
   if (charDef().perk === 'pass') G.pw.pass = 3;
   G.weight = baseWeight();
-  Object.assign(P, { lane: 0, fromLane: 0, x: 0, y: 0, vy: 0, slide: 0, slideQ: false, fall: 0, fl: 0 }); G.highAir = false; G.onPlat = false; G.plat = null;
+  Object.assign(P, { lane: 0, fromLane: 0, x: 0, y: 0, vy: 0, slide: 0, slideAge: 0, slideQ: false, rollQ: false, rollT: 0, fall: 0, fl: 0, ltx: 0, lx0: 0, lt: 9, ldur: 1, ldir: 0 }); G.highAir = false; G.onPlat = false; G.plat = null;
   G.speed = baseSpeed();
   if (G.adOpen || Ads.cb) { $('adModal').classList.remove('show'); if (Ads.cb) Ads.finish(false); G.adOpen = false; } // safety: a new run always clears an ad that got stuck, so it can never freeze the runner
   G.scene = 'play'; G.countdown = 0; G.lastCount = 0; G.intro = fromMenu && mode !== 'campaign' ? INTRO : 0; G.caught = false; clearChase(); startChase(null, { role: 'monitor', t: 3.2, warmup: true, line: 'HEY! NO RUNNING!' }); try { schoolIntroToast(); } catch (e) {}
@@ -5483,7 +5502,7 @@ function crash(o, msg) {
   if (G.mode !== 'tutorial') breakChain(true);
   if (heelySave(o)) { if (G.tut) G.tut.saved = true; return; }
   if (G.mode === 'tutorial') { sfx('crash'); G.shake = 0.4; const k = G.caught || G.stumble > 0 ? 'caught' : (o && o.K.type) || 'block'; tutRetry(k === 'block' || k === 'low' || k === 'high' || k === 'caught' ? k : 'block'); return; }
-  G.dying = true; G.dyingT = 1.3; G.shake = 0.5; G.flash = 0.6; P.fall = 0.001; P.slide = 0; P.slideQ = false; // a crash always ends the slide (no lying-down lean mixed into the fall)
+  G.dying = true; G.dyingT = 1.3; G.shake = 0.5; G.flash = 0.6; P.fall = 0.001; P.slide = 0; P.slideQ = false; P.rollQ = false; P.rollT = 0; // a crash always ends the slide (no lying-down lean mixed into the fall)
   G.deathMsg = msg; sfx('crash'); vibrate(200); if (G.caught) { G.dyingT = 1.6; popup('CAUGHT!', '#ef476f'); }
   emit(P.x, 1.6, 0, 16, '#ffe066', 3.5, 0.9, 0.4, 3, true);
   if (o && o.K.say !== undefined) o.shout = 2;
@@ -5698,12 +5717,13 @@ function act(a) {
   else if (a === 'right' && P.lane < 1) { P.fromLane = P.lane; P.lane++; sfx('lane'); G.laneT = G.t; G.tpLane = true; }
   else if ((a === 'left' && P.lane === -1) || (a === 'right' && P.lane === 1)) lockerSlam(a === 'left' ? -1 : 1);
   else if (a === 'jump') {
-    if (P.y <= (P.fl || 0) + 0.001) { P.vy = hopAssist(jumpV() * (G.heely > 0 ? 1.12 : 1) * (G.pw.spring > 0 ? 1.55 : 1)); if (G.pw.spring > 0) { emit(P.x, 0.1, 0.2, 14, '#7dff9a', 4, 0.5, 0.2, 0, true, true); sfx('power'); } P.slide = 0; P.slideQ = false; sfx('jump'); if (G.heely > 0) startTrick(); G.lastJumpT = G.t; }
+    if (P.y <= (P.fl || 0) + 0.001) { P.vy = hopAssist(jumpV() * (G.heely > 0 ? 1.12 : 1) * (G.pw.spring > 0 ? 1.55 : 1)); if (G.pw.spring > 0) { emit(P.x, 0.1, 0.2, 14, '#7dff9a', 4, 0.5, 0.2, 0, true, true); sfx('power'); } P.slide = 0; P.slideQ = false; P.rollQ = false; P.rollT = 0; sfx('jump'); if (G.heely > 0) startTrick(); G.lastJumpT = G.t; }
     else if (charDef().ab === 'djump' && !P.dj && P.vy < jumpV() * 0.7) { P.dj = true; P.vy = jumpV() * 0.88; sfx('jump'); popup('DOUBLE JUMP!', '#7bdff2'); emit(P.x, P.y, 0.2, 10, '#ffffff', 2.5, 0.4, 0.15, 0, true, true); }
     else if (P.vy <= 0) P.jumpBuf = G.t; // swiped up a moment before landing: jump the instant your feet touch down
   } else if (a === 'slide') {
-    if (P.y > (P.fl || 0) + 0.001) { P.vy = Math.min(P.vy, -22); P.slideQ = true; P.rollQ = true; }
-    else if (P.slide <= 0.1) { P.slide = slideDur(); sfx('slide'); }
+    // in the air: slam down and tuck into the roll RIGHT AWAY (it used to wait until you touched the floor)
+    if (P.y > (P.fl || 0) + 0.001) { P.vy = Math.min(P.vy, -26); P.slideQ = true; P.rollQ = true; if (!(P.rollT > 0.15)) { startRoll(ROLL_T); sfx('slide'); } }
+    else startSlide();
   }
 }
 function lockerSlam(dir) {
@@ -5852,8 +5872,13 @@ function update(dt) {
   }
 
   // player
-  const tx = P.lane * laneW, ls = laneSpeed() * dt;
-  { const d = tx - P.x; P.x += Math.abs(d) < 0.004 ? d : clamp(d * Math.min(1, dt * 24), -ls, ls); } // eased lane change: full speed at first, soft landing in the lane
+  const tx = P.lane * laneW;
+  { // lane change on a timed curve: moves the instant you swipe, glides into the lane and stops dead on its centre.
+    // A new target mid-move (a second swipe, or bouncing back off something) starts a fresh curve from where you are.
+    if (P.ltx !== tx) { const d = Math.abs(tx - P.x); P.ltx = tx; P.lx0 = P.x; P.lt = 0; P.ldir = Math.sign(tx - P.x); P.ldur = clamp(d / laneW, 0.45, 2) * LANE_T / Math.max(0.2, laneMul()); }
+    if (P.lt < P.ldur) { P.lt += dt; const k = Math.min(1, P.lt / P.ldur), e = 0.5 * (1 - (1 - k) * (1 - k)) + 0.5 * k * k * (3 - 2 * k); P.x = lerp(P.lx0, tx, e); }
+    else P.x = tx;
+  }
   P.fl = floorAt(P.x);
   if (!(G.pw.cheat > 0)) G.skyFill = false;
   if (G.pw.cheat > 0 && !G.skyFill) { G.skyFill = true; fillSky(); }
@@ -5865,13 +5890,14 @@ function update(dt) {
   } else if (P.y > P.fl + 0.0001 || P.vy > 0) {
     const g = 26 * (save.up.helium && P.vy < 0 ? 0.72 : 1) * (cheatOn('moon') ? 0.45 : 1) * (charDef().ab === 'glide' && P.vy < 0 ? 0.55 : 1);
     P.vy -= g * dt; P.y += P.vy * dt;
-    if (P.y <= P.fl) { P.y = P.fl; P.dj = false; if (G.hopN > 1 && P.fl < 0.3) { G.hopT = 0; } G.hopN = P.fl < 0.3 ? 0 : G.hopN; P.vy = 0; sfx('land'); if (G.trick) landTrick(); emit(P.x, 0.1, 0.2, 10, '#e8e0cc', 2.4, 0.45, 0.28, 2, false, true); P.landT = 0.2; if (P.slideQ) { P.slideQ = false; P.slide = slideDur(); sfx('slide'); if (P.rollQ) P.rollT = Math.min(0.5, P.slide); } else if (P.jumpBuf && G.t - P.jumpBuf < 0.22) { P.jumpBuf = 0; act('jump'); } P.rollQ = false; }
+    if (P.y <= P.fl) { P.y = P.fl; P.dj = false; if (G.hopN > 1 && P.fl < 0.3) { G.hopT = 0; } G.hopN = P.fl < 0.3 ? 0 : G.hopN; P.vy = 0; sfx('land'); if (G.trick) landTrick(); emit(P.x, 0.1, 0.2, 10, '#e8e0cc', 2.4, 0.45, 0.28, 2, false, true); P.landT = 0.2; if (P.slideQ) { P.slideQ = false; if (P.rollQ) { P.slide = Math.max(P.rollT, 0.4); P.slideAge = 1; P.rollT = P.slide; } else startSlide(); } else if (P.jumpBuf && G.t - P.jumpBuf < 0.22) { P.jumpBuf = 0; act('jump'); } P.rollQ = false; }
   }
   else if (P.y < P.fl) P.y = P.fl; // walking up a ramp
   if (P.fl > 0.5) G.highAir = true; else if (P.y <= 0.01) G.highAir = false; // jumped from a table
   if (P.fl > 0.7 && P.y >= P.fl - 0.01 && !G.onPlat) { G.onPlat = true; mission('platform', 1); popup('TABLE RUN!', '#7bdff2'); addChain(1); } else if (P.fl < 0.4) G.onPlat = false;
   if (G.hopT > 0) G.hopT -= dt;
-  if (P.slide > 0) P.slide = Math.max(0, P.slide - dt);
+  if (P.slide > 0) { P.slide = Math.max(0, P.slide - dt); P.slideAge = (P.slideAge || 0) + dt; }
+  if (P.rollT > 0) P.rollT = Math.max(0, P.rollT - dt);
   { const w = onWax(); if (w && !G.waxed) { popup('SLIPPERY!', '#bfe9ff'); sfx('slide'); } G.waxed = w; }
   tpUpdate(); petHelp(dt);
   if (!G.loadoutDone && G.dist > 8 && G.mode !== 'tutorial') { G.loadoutDone = true; for (const id of save.loadout || []) { if (id === 'heelys') { if ((save.heelys || 0) > 0 && !(G.heely > 0)) useHeelys(); } else if (boostCount(id) > 0) useBoost(id); } }
@@ -6136,7 +6162,7 @@ function showScreen(id) {
 function goMenu() { $('tutSkip').classList.remove('show'); $('pwSide').classList.remove('show');
   G.scene = 'menu'; G.dist = 0; G.intro = 0; G.fun = null; if (darkOn) setDark(false); G.decorSeed = 1 + Math.floor(Math.random() * 997); for (const sg of segs) sg.userData.k = null; if (menuSet) menuSet.position.set(0, 0, 0); clearObjs(); clearChase(); endGhost(); G.paused = false; G.tut = null; G.tutHold = false; $('heelyBtn').classList.remove('show'); $('pushBtn').classList.remove('show'); $('tutPrompt').classList.remove('show'); $('boostBar').classList.remove('show'); $('hud').classList.remove('show'); $('countdown').style.display = 'none';
   if (G.mode !== 'campaign') G.themeKey = hallPick('locations').theme;
-  laneW = 2.1 * LANE_SCALE; setCamera(); Object.assign(P, { x: 0, y: 0, vy: 0, slide: 0, fall: 0, lane: 0 }); rebuildPlayer();
+  laneW = 2.1 * LANE_SCALE; setCamera(); Object.assign(P, { x: 0, y: 0, vy: 0, slide: 0, rollT: 0, fall: 0, lane: 0, ltx: 0, lt: 9 }); rebuildPlayer();
   refreshMenu(); showScreen('sMenu'); checkCrown();
   if (!save.appTour && (save.runsTotal || 0) >= 1) setTimeout(() => { if (G.scene === 'menu' && curScreen === 'sMenu' && !document.querySelector('.modal.show')) startAppTour(); }, 700);
 }
