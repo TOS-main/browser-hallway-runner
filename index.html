@@ -462,6 +462,8 @@ kbd{display:inline-block;min-width:22px;text-align:center;padding:1px 6px;margin
 
 #adminModal{z-index:85}.admPanel{max-height:94vh;overflow:auto}.admGrid{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;margin:6px 0;text-align:left}.admGrid label{font-size:13px;font-weight:700;display:flex;flex-direction:column;gap:2px}.admGrid input{width:100%;padding:6px 8px;border:2px solid #1d2340;border-radius:8px;font:inherit;font-size:15px;user-select:text;-webkit-user-select:text}
 #codeIn,#chalIn{user-select:text;-webkit-user-select:text}
+.muteBtn .mOff{display:none}.muteBtn.muted .mOn{display:none}.muteBtn.muted .mOff{display:inline}.muteBtn.muted{background:#ffe0e6!important}
+.ageMute{position:absolute;top:10px;left:10px;z-index:3;width:44px!important;height:44px!important}.ageMute .ic{width:24px!important;height:24px!important}
 #tutSkip{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(max(18px,env(safe-area-inset-bottom)) + 84px);z-index:40;display:none;border:3px solid #1d2340;border-radius:999px;background:#fff;color:#1d2340;font-family:'Luckiest Guy',sans-serif;font-size:15px;padding:6px 16px;box-shadow:0 3px 0 #1d2340;cursor:pointer}#tutSkip.show{display:block}
 html,body{position:fixed;inset:0;height:100%;height:100dvh}
 .fsChip{left:auto!important;right:12px}.appChip{left:50%!important;transform:translateX(-50%);top:calc(max(12px,env(safe-area-inset-top)) + 200px)!important;text-decoration:none;background:#3ddc84!important;color:#0b3d1f!important;font-weight:900}
@@ -729,7 +731,7 @@ body.homeWide .mSide .worldCard .cTxt{text-align:left}
        Everything else (missions, events, gifts, pass, spin, league, trophies...) lives on the More screen. -->
   <div class="mTop">
     <div class="mWallet"><div class="mCash"><span class="coinIco">$</span><b id="mBank">0</b><button class="plusBtn" data-store="cash" aria-label="Get cash">+</button></div><div class="mCash star"><span class="starIco">★</span><b id="mStars">0</b><button class="plusBtn" data-store="stars" aria-label="Get Gold Stars">+</button></div></div>
-    <div class="mTopR"><button class="chip ctrlChip fsChip" id="bFull" onclick="event.stopPropagation();toggleFullscreen()">⛶ Full screen (F)</button><button class="pill savePill webOnly" id="bSaveHome" aria-label="Your progress saves automatically"><span aria-hidden="true" id="saveIco">✓</span><span id="saveTxt">Saved</span></button><button class="iconBtn" id="bGear" aria-label="Settings"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+    <div class="mTopR"><button class="chip ctrlChip fsChip" id="bFull" onclick="event.stopPropagation();toggleFullscreen()">⛶ Full screen (F)</button><button class="pill savePill webOnly" id="bSaveHome" aria-label="Your progress saves automatically"><span aria-hidden="true" id="saveIco">✓</span><span id="saveTxt">Saved</span></button><button class="iconBtn muteBtn" id="bMute" aria-label="Mute" title="Mute (V)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path class="mOn" d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/><path class="mOff" d="m16 9 6 6M22 9l-6 6"/></svg></button><button class="iconBtn" id="bGear" aria-label="Settings"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
   </div>
   <div class="wordmark"><span>HALLWAY</span><b>DASH</b><small>Don't be late for class.</small></div>
   <div class="hGoal"><div class="hBest"><small>Best</small><b id="mBest">0</b></div><button class="card small worldCard" id="mSchool" style="display:none"><div class="ico">🏫</div><div class="cTxt"><small id="mSchoolSub">Your school</small><b id="mSchoolTxt">–</b></div></button><button class="card small worldCard" id="mWorld" style="display:none"><div class="ico">🌍</div><div class="cTxt"><small>World record to beat</small><b id="mWorldTxt">–</b></div></button></div>
@@ -978,6 +980,7 @@ body.homeWide .mSide .worldCard .cTxt{text-align:left}
 <!-- AGE GATE (neutral: no age is suggested, nothing is pre-selected) -->
 <div class="modal" id="ageModal">
   <div class="mPanel agePanel">
+    <button class="iconBtn muteBtn ageMute" aria-label="Mute" title="Mute"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path class="mOn" d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/><path class="mOff" d="m16 9 6 6M22 9l-6 6"/></svg></button>
     <div class="ageSky"><span class="cl c1"></span><span class="cl c2"></span><span class="ageBus">🚌</span><span class="ageSchool">🏫</span></div>
     <div class="ageHero" id="ageHero">🎒</div>
     <h2>How old are you?</h2>
@@ -1270,6 +1273,7 @@ body.homeWide .mSide .worldCard .cTxt{text-align:left}
     <h2 id="tutCardTitle"></h2>
     <p id="tutCardBody"></p>
     <button class="btn gold" id="tutCardBtn">Got it</button>
+    <button class="linkBtn" id="tutCardSkip" onclick="document.getElementById('tutCard').classList.remove('show');skipTutorial()">Skip tutorial ⏭</button>
   </div>
 </div>
 
@@ -1649,7 +1653,7 @@ const LANE_SCALE = 1.2;
 let laneW = 2.1 * LANE_SCALE, HW = 4.4, CAMX = 0, CAMD = 9, CAMY = 5;
 // lane changes and rolls: quick and snappy like the classic lane runners
 const DODGE = { lean: 0.3, yaw: 0.32, hop: 0.07, leg: 0.3, arm: 0.5, chest: 0.25 };
-const LANE_T = 0.2, ROLL_T = 0.6, ROLL_CLIP = 1.4583;
+const LANE_T = 0.2, ROLL_CLIP = 1.4583; // a roll lasts exactly as long as a slide (slideDur, 0.95 s with plain shoes)
 const laneMul = () => laneSpeed() / (laneW * 11); // shoes, Track Star perk, slippery wax
 // slide pose strength: eases in over the first 1/8 s and out over the last 1/8 s (counted from when the slide began, so
 // swiping down again mid-slide just makes it longer instead of popping the runner back up)
@@ -3172,6 +3176,7 @@ function applyAudioSettings() {
   if (musicBus) musicBus.gain.value = 0.38 * (save.musicVol === undefined ? 0.6 : save.musicVol);
   if (sfxBus) sfxBus.gain.value = sfxVol();
   ['bSfx', 'bSfx2'].forEach(id => $(id) && $(id).classList.toggle('off', !save.sound));
+  document.querySelectorAll('.muteBtn').forEach(b => { b.classList.toggle('muted', !save.sound); b.setAttribute('aria-label', save.sound ? 'Mute' : 'Unmute'); b.title = (save.sound ? 'Mute' : 'Unmute') + (b.id === 'bMute' ? ' (V)' : ''); });
   ['bMusic2'].forEach(id => $(id) && $(id).classList.toggle('off', curTrack() === 'off'));
 }
 
@@ -3667,7 +3672,7 @@ function syncPlayer() {
   const air = P.y - (P.fl || 0), inAir = !inMenu && (air > 0.05 || (a.cur === 'Jump_Loop' && air > 0.015));
   if (G.dying) a.pose('die', 1.3, 0.1);
   else if (flying || sledding) a.pose('idle', 0.5, 0.15);
-  else if (P.rollT > 0 && !inMenu) a.pose('roll', ROLL_CLIP / ROLL_T, 0.05); // swipe down in the air = tuck and roll, straight away
+  else if (P.rollT > 0 && !inMenu) a.pose('roll', ROLL_CLIP / (P.rollDur || slideDur()), 0.05); // swipe down in the air = tuck and roll, straight away
   else if (sliding) a.pose('idle', 1, 0.12);
   else if (inAir) a.pose(G.trick && G.trick.kind === 'grab' ? 'roll' : 'jump', G.trick && G.trick.kind === 'grab' ? 0.35 : 1, 0.15);
   else if (G.pushAnim > 0 && G.scene === 'play') a.pose('push', 2.2, 0.14); // shoving through (a softer blend: the 0.06s snap dropped the hips 30cm in ~3 frames)
@@ -5198,6 +5203,8 @@ function startTutorial() {
   tutNext();
 }
 function skipTutorial() {
+  // the first-run swipe hints (built into a real run): stop them and keep running at full speed
+  if (G.firstRun && G.mode !== 'tutorial') { G.firstRun = false; G.easyRun = false; G.tutSlow = 1; if (G.fr) G.fr.cur = null; $('tutPrompt').classList.remove('show', 'frozen'); $('tutSkip').classList.remove('show'); toast('TUTORIAL SKIPPED', 'Settings → Replay tutorial any time', 1400); return; }
   if (G.mode !== 'tutorial') return; save.tutDone = 1; persist(); $('tutCard').classList.remove('show'); $('tutPrompt').classList.remove('show'); $('tutSkip').classList.remove('show'); G.tutHold = false;
   goMenu(); toast('TUTORIAL SKIPPED', 'Settings → Replay tutorial any time', 1600);
 }
@@ -5206,6 +5213,7 @@ function tutCard(key, then) {
   $('tutCardTitle').textContent = t; $('tutCardBody').textContent = b; $('tutCard').classList.add('show'); $('tutPrompt').classList.remove('show');
   $('tutCardBtn').textContent = key === 'done' ? 'Start running!' : key === 'block' || key === 'low' || key === 'high' || key === 'caught' ? 'Try again' : 'Got it';
   $('tutCardBtn').onclick = () => { $('tutCard').classList.remove('show'); G.tutHold = false; then && then(); };
+  $('tutCardSkip').style.display = key === 'done' ? 'none' : '';
 }
 function tutPrompt(step) {
   $('tutTitle').textContent = step.title; $('tutSub').textContent = step.sub;
@@ -5262,7 +5270,7 @@ function firstRunHints() {
   if (F.cur) {
     const o = F.cur.o, d = o.z - PZ, k = F.cur.k;
     const ok = k === 'low' ? P.y > 0.25 : k === 'high' ? P.slide > 0 : Math.abs(P.lane * laneW - o.x) > laneW * 0.5;
-    if (ok || d < -1 || !G.objs.includes(o)) { F.done[k] = 1; F.cur = null; G.tutSlow = 1; $('tutPrompt').classList.remove('show', 'frozen'); if (ok) { popup('NICE!', '#7dff9a'); sfx('coin'); } if (F.done.low && F.done.high && F.done.block) { G.firstRun = false; setTimeout(() => { if (G.scene === 'play') toast('YOU\'VE GOT IT!', 'Now run as far as you can', 1600); }, 500); } }
+    if (ok || d < -1 || !G.objs.includes(o)) { F.done[k] = 1; F.cur = null; G.tutSlow = 1; $('tutPrompt').classList.remove('show', 'frozen'); if (ok) { popup('NICE!', '#7dff9a'); sfx('coin'); } if (F.done.low && F.done.high && F.done.block) { G.firstRun = false; $('tutSkip').classList.remove('show'); setTimeout(() => { if (G.scene === 'play') toast('YOU\'VE GOT IT!', 'Now run as far as you can', 1600); }, 500); } }
     else { G.tutSlow = d < 10 ? 0.22 : 0.65; $('tutPrompt').classList.toggle('frozen', d < 10); }
     return;
   }
@@ -5327,7 +5335,7 @@ function laneSpeed() { return (G.waxed ? 0.35 : 1) * laneW * lerp(11, 5.2, wN())
 // the slide lasts 0.95 s again (round 18 made it 0.5 s along with the backpack change, which cut it in half for everyone)
 function slideDur() { return 0.95 * shoeDef().slide; }
 function startSlide() { if (!(P.slide > 0)) { P.slideAge = 0; sfx('slide'); } P.slide = Math.max(P.slide, slideDur()); }
-function startRoll(t) { P.rollT = t; if (player && player.act.cur === 'Roll') player.act.cur = ''; } // restart the clip even if the last roll just ended
+function startRoll(t) { P.rollT = P.rollDur = t; if (player && player.act.cur === 'Roll') player.act.cur = ''; } // restart the clip even if the last roll just ended
 // row spacing follows the speed WITHOUT the Fast/Turbo multiplier: faster modes really are harder (less time per row), not just stretched out
 function gap() { return clamp(G.speed / speedMode().mul * 0.95, 11, 26) * (G.cfg.gapMul || 1) * diff().gap; }
 
@@ -5536,7 +5544,7 @@ G.lastQuiz = 0; G.lastShortcut = 0; G.lastLetter = -999; G.tpStart = undefined; 
   if (mode !== 'tutorial') { if (cheatOn('flyer')) G.pw.cheat = pwTime('cheat') + 3; if (cheatOn('juiced')) G.pw.energy = pwTime('energy') + 3; }
   G.cheated = unfairCheats(); G.shield = mode !== 'tutorial' && charDef().ab === 'shield' ? 1 : 0; P.dj = false;
   dayBest(); setText('hTop', (save.best || 0).toLocaleString()); setText('hToday', (save.dayBest.s || 0).toLocaleString()); $('hBadges').style.display = G.mode === 'infinite' && !G.fun ? '' : 'none';
-  showScreen(null); $('popCol').innerHTML = ''; if (mode !== 'tutorial') $('tutSkip').classList.remove('show'); $('hud').classList.add('show'); $('heelyBtn').classList.toggle('show', mode === 'tutorial' || (save.heelys || 0) > 0); $('pushBtn').classList.toggle('show', mode !== 'tutorial' && pushUnlocked());
+  showScreen(null); $('popCol').innerHTML = ''; $('tutSkip').classList.toggle('show', mode === 'tutorial' || G.firstRun); $('hud').classList.add('show'); $('heelyBtn').classList.toggle('show', mode === 'tutorial' || (save.heelys || 0) > 0); $('pushBtn').classList.toggle('show', mode !== 'tutorial' && pushUnlocked());
   if (mode !== 'tutorial' && pushUnlocked() && !save.pushIntro) { save.pushIntro = 1; persist(); setTimeout(() => { if (G.scene === 'play') toast('NEW: ✋ PUSH', 'Tap it to shove people out of your lane', 2200); }, 2600); }
   if (G.fun === 'coinrush') G.timeLeft = 60;
   $('hCamp').style.visibility = mode === 'campaign' || G.fun === 'coinrush' || G.fun === 'trial' ? 'visible' : 'hidden';
@@ -5781,7 +5789,7 @@ function act(a) {
     else if (P.vy <= 0) P.jumpBuf = G.t; // swiped up a moment before landing: jump the instant your feet touch down
   } else if (a === 'slide') {
     // in the air: slam down and tuck into the roll RIGHT AWAY (it used to wait until you touched the floor)
-    if (P.y > (P.fl || 0) + 0.001) { P.vy = Math.min(P.vy, -26); P.slideQ = true; P.rollQ = true; if (!(P.rollT > 0.15)) { startRoll(ROLL_T); sfx('slide'); } }
+    if (P.y > (P.fl || 0) + 0.001) { P.vy = Math.min(P.vy, -26); P.slideQ = true; P.rollQ = true; if (!(P.rollT > 0.15)) { startRoll(slideDur()); sfx('slide'); } }
     else startSlide();
   }
 }
@@ -5949,7 +5957,7 @@ function update(dt) {
   } else if (P.y > P.fl + 0.0001 || P.vy > 0) {
     const g = 26 * (save.up.helium && P.vy < 0 ? 0.72 : 1) * (cheatOn('moon') ? 0.45 : 1) * (charDef().ab === 'glide' && P.vy < 0 ? 0.55 : 1);
     P.vy -= g * dt; P.y += P.vy * dt;
-    if (P.y <= P.fl) { P.y = P.fl; P.dj = false; if (G.hopN > 1 && P.fl < 0.3) { G.hopT = 0; } G.hopN = P.fl < 0.3 ? 0 : G.hopN; P.vy = 0; sfx('land'); if (G.trick) landTrick(); emit(P.x, 0.1, 0.2, 10, '#e8e0cc', 2.4, 0.45, 0.28, 2, false, true); P.landT = 0.2; if (P.slideQ) { P.slideQ = false; if (P.rollQ) { P.slide = Math.max(P.rollT, 0.4); P.slideAge = 1; P.rollT = P.slide; } else startSlide(); } else if (P.jumpBuf && G.t - P.jumpBuf < 0.22) { P.jumpBuf = 0; act('jump'); } P.rollQ = false; }
+    if (P.y <= P.fl) { P.y = P.fl; P.dj = false; if (G.hopN > 1 && P.fl < 0.3) { G.hopT = 0; } G.hopN = P.fl < 0.3 ? 0 : G.hopN; P.vy = 0; sfx('land'); if (G.trick) landTrick(); emit(P.x, 0.1, 0.2, 10, '#e8e0cc', 2.4, 0.45, 0.28, 2, false, true); P.landT = 0.2; if (P.slideQ) { P.slideQ = false; if (P.rollQ) { P.slide = Math.max(P.rollT, 0.4); P.slideAge = 1; P.rollT = P.slide; P.rollDur = Math.max(P.rollDur || 0, P.rollT); } else startSlide(); } else if (P.jumpBuf && G.t - P.jumpBuf < 0.22) { P.jumpBuf = 0; act('jump'); } P.rollQ = false; }
   }
   else if (P.y < P.fl) P.y = P.fl; // walking up a ramp
   if (P.fl > 0.5) G.highAir = true; else if (P.y <= 0.01) G.highAir = false; // jumped from a table
@@ -6499,6 +6507,9 @@ const openSettings = () => { initAudio(); sfx('click'); buildSettings(); showScr
 $('bSideCamp').onclick = openCampaign;
 $('bRanks').onclick = openRanks; $('mRankPill').onclick = openRanks;
 $('bSettings').onclick = openSettings; $('bGear').onclick = openSettings;
+// mute everything (music, sound effects, voices) from the start screen and the first-launch age screen
+document.querySelectorAll('.muteBtn').forEach(b => b.onclick = e => { e.stopPropagation(); toggleSound(); toast(save.sound ? 'Sound on' : 'Muted', save.sound ? '' : 'Tap 🔇 again to turn sound back on', 900); });
+applyAudioSettings();
 $('bFree').onclick = () => { initAudio(); sfx('click'); openStreak(); };
 // watch an ad for a Gold Star (3 a day), like the "ad → keys" button in other runners
 const AD_STAR_DAY = 3;
