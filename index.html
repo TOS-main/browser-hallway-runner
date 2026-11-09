@@ -648,6 +648,32 @@ body.web .simpleHome .nav{font-size:19px!important}
 .mTile.locked{filter:grayscale(.9);opacity:.6}
 @media (prefers-reduced-motion:reduce){#chaseMeter.show,.btn.bigAgain,#sOver .overTitle,#sOver .panel{animation:none!important}}
 body.a11yFlash #pwFlash{display:none}
+/* round 19: wide browser home. Records on the left, today's extras on the right, bigger buttons; phones keep the simple layout */
+.mSide{display:none}
+body.homeWide .simpleHome .mSide{display:flex;flex-direction:column;gap:8px;position:absolute;top:96px;width:clamp(240px,21vw,320px);z-index:2;padding:12px;border:3px solid var(--ink);border-radius:20px;background:rgba(255,253,243,.92);box-shadow:0 5px 0 var(--ink);max-height:calc(100% - 290px);overflow-y:auto}
+body.homeWide .simpleHome .mSideL{left:20px}body.homeWide .simpleHome .mSideR{right:20px}
+.sideHead{font-family:'Luckiest Guy',sans-serif;font-size:18px;letter-spacing:.5px;color:var(--ink);margin:2px 2px 0}
+.sideCards{display:flex;flex-direction:column;gap:8px}
+.mSide .worldCard{width:100%!important;max-width:none!important;box-sizing:border-box;background:#fff!important;color:var(--ink);padding:6px 10px 6px 6px!important;gap:8px;margin:0}
+.mSide .worldCard .ico{width:36px;height:36px;font-size:20px;flex:none}
+.mSide .worldCard .cTxt small{font-size:12px}.mSide .worldCard .cTxt b{font-size:17px}
+.sideBtn{border:3px solid var(--ink);border-radius:14px;background:#fff;color:var(--ink);font:inherit;font-weight:900;font-size:15px;padding:8px 10px;text-align:left;cursor:pointer;box-shadow:0 3px 0 var(--ink)}
+.sideBtn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.qGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.qGrid .mTile{min-height:84px;padding:8px 4px}.qGrid .mTile i{font-size:28px}.qGrid .mTile b{font-size:14px}
+body.homeWide .simpleHome .mNav{max-width:980px!important;gap:14px!important}
+body.homeWide .simpleHome .nav{font-size:22px!important;padding:16px 4px 14px!important}
+body.homeWide .simpleHome .nav .ic{width:40px!important;height:40px!important}
+.savePill.synced{background:#2f8cff!important}
+/* leaderboard: five tabs and five setting buttons fit; wider on big screens */
+.boardTabs{flex-wrap:nowrap}.boardTabs .tab{flex:1 1 0;min-width:0;padding:8px 2px;font-size:12px;overflow:hidden;text-overflow:ellipsis}
+.seg.boardDiff:not(.boardSpd){grid-template-columns:repeat(5,1fr)}.seg.boardDiff:not(.boardSpd) button{font-size:13px}
+.schoolPick{max-height:30vh;overflow-y:auto}
+@media (min-width:900px){body.web #sRanks .panel,body.web #sMore .panel,body.web #sSave .panel,body.web #sSettings .panel,body.web #sModes .panel{width:min(760px,100%)}body.web .boardTabs .tab{font-size:15px}body.web .moreGrid{grid-template-columns:repeat(4,1fr)}}
+@media (max-width:480px){.boardTabs .tab{font-size:10px;letter-spacing:0}.seg.boardDiff:not(.boardSpd) button{font-size:11px}}
+.svOk{background:#e9fbe9!important}.svMore{margin:8px 0;text-align:left}.svMore summary{cursor:pointer;font-weight:900;font-size:16px;color:var(--ink);padding:6px 2px}
+@media (max-width:560px){.savePill #saveTxt{display:none}.savePill{padding:0 12px!important}}
+body.homeWide .mSide .worldCard .cTxt{text-align:left}
 </style>
 </head>
 <body>
@@ -700,10 +726,14 @@ body.a11yFlash #pwFlash{display:none}
        Everything else (missions, events, gifts, pass, spin, league, trophies...) lives on the More screen. -->
   <div class="mTop">
     <div class="mWallet"><div class="mCash"><span class="coinIco">$</span><b id="mBank">0</b><button class="plusBtn" data-store="cash" aria-label="Get cash">+</button></div><div class="mCash star"><span class="starIco">★</span><b id="mStars">0</b><button class="plusBtn" data-store="stars" aria-label="Get Gold Stars">+</button></div></div>
-    <div class="mTopR"><button class="chip ctrlChip fsChip" id="bFull" onclick="event.stopPropagation();toggleFullscreen()">⛶ Full screen (F)</button><button class="pill savePill webOnly" id="bSaveHome" aria-label="Save code"><span aria-hidden="true">💾</span><span>Save</span></button><button class="iconBtn" id="bGear" aria-label="Settings"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+    <div class="mTopR"><button class="chip ctrlChip fsChip" id="bFull" onclick="event.stopPropagation();toggleFullscreen()">⛶ Full screen (F)</button><button class="pill savePill webOnly" id="bSaveHome" aria-label="Your progress saves automatically"><span aria-hidden="true" id="saveIco">✓</span><span id="saveTxt">Saved</span></button><button class="iconBtn" id="bGear" aria-label="Settings"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
   </div>
   <div class="wordmark"><span>HALLWAY</span><b>DASH</b><small>Don't be late for class.</small></div>
   <div class="hGoal"><div class="hBest"><small>Best</small><b id="mBest">0</b></div><button class="card small worldCard" id="mSchool" style="display:none"><div class="ico">🏫</div><div class="cTxt"><small id="mSchoolSub">Your school</small><b id="mSchoolTxt">–</b></div></button><button class="card small worldCard" id="mWorld" style="display:none"><div class="ico">🌍</div><div class="cTxt"><small>World record to beat</small><b id="mWorldTxt">–</b></div></button></div>
+  <!-- wide browser windows only: records on the left, today's extras on the right (phones keep the simple layout) -->
+  <div class="mSide mSideL" id="mSideL"><div class="sideHead">🏆 Records</div><div class="sideCards" id="mRecSlot"></div><div class="card small worldCard sideCard" id="mTodayCard"><div class="ico">📅</div><div class="cTxt"><small>Your best today</small><b id="mTodayTxt">–</b></div></div>
+    <button class="sideBtn" id="mSideRanks">See all leaderboards ›</button><div class="sideHead">🎮 Playing on</div><button class="sideBtn" id="mSideDiff">Normal ›</button></div>
+  <div class="mSide mSideR" id="mSideR"><div class="sideHead">🎁 Today</div><div class="qGrid" id="mQuick"></div><button class="sideBtn" id="mSideMore">Everything else ›</button></div>
   <div class="tapZone" id="tapZone"><div class="tipLine" id="mTipTxt"></div><div class="tapPlay">Tap to Play</div><div class="tapHint">Swipe to dodge · jump · slide</div></div>
   <div class="mNav">
     <button class="nav" id="bShop"><svg class="ic" viewBox="0 0 24 24"><path d="M8 6V5a4 4 0 0 1 8 0v1"/><rect x="5" y="6" width="14" height="15" rx="4"/><path d="M9 14h6v4H9z"/></svg><span>Locker</span><em class="badge" id="shopBadge"></em></button>
@@ -747,13 +777,19 @@ body.a11yFlash #pwFlash{display:none}
 <!-- SAVE CODE (website only): copy your code, paste it anywhere to resume -->
 <div class="screen" id="sSave">
   <div class="panel savePanel">
-    <h2>💾 Save code</h2>
-    <div class="svBox"><b>Keep your progress</b><small>Copy this code and keep it somewhere safe (notes, email to yourself). It has your coins, stars, runners and records.</small>
+    <h2>💾 Your progress</h2>
+    <div class="svBox svOk"><b>✓ Saves by itself</b><small>Everything you do is saved in this browser straight away: coins, stars, runners, records and your school. There's nothing to press. Come back any time on this computer and it's all here.</small></div>
+    <div class="svBox" id="svGoogle" style="display:none">
+      <div id="svGIn"><b>☁️ Play on other devices too</b><small>Sign in with Google once and your progress saves to your account by itself after every run. Sign in on any other browser to carry on there. It's only used to find your save. Nothing is posted and nobody else can see it.</small><div id="svGBtn" style="min-height:44px;margin-top:4px"></div></div>
+      <div id="svGOn" style="display:none"><b>☁️ Saving to your Google account</b><small>Your progress syncs by itself after every run. Sign in with the same Google account on another browser to carry on there. <span id="svGWhen"></span></small><div class="frow"><button class="btn green small" id="svGSync">☁️ Sync now</button><button class="btn gray small" id="svGOut">Sign out</button></div></div>
+    </div>
+    <details class="svMore"><summary>Save code (backup)</summary>
+    <div class="svBox"><b>Keep a backup</b><small>Copy this code and keep it somewhere safe (notes, email to yourself). It has your coins, stars, runners and records.</small>
       <textarea id="svOut" readonly rows="3" spellcheck="false"></textarea>
       <button class="btn green" id="svCopy">📋 Copy my code</button></div>
-    <div class="svBox"><b>Resume on any browser</b><small>Paste a save code here to pick up where you left off.</small>
+    <div class="svBox"><b>Load a code</b><small>Paste a save code here to pick up where you left off.</small>
       <textarea id="svIn" rows="3" spellcheck="false" placeholder="Paste your code here (it starts with HD3.)"></textarea>
-      <button class="btn gold" id="svLoad">▶ Resume my progress</button></div>
+      <button class="btn gold" id="svLoad">▶ Resume my progress</button></div></details>
     <button class="btn gray" data-back>Back</button>
   </div>
 </div>
@@ -783,7 +819,7 @@ body.a11yFlash #pwFlash{display:none}
     <div class="setRow"><b>Accessibility</b><div class="soundRow" style="justify-content:flex-start;flex-wrap:wrap;gap:6px"><button class="chip off" id="a11y_flash">🚫 Reduce flashing &amp; shaking</button><button class="chip off" id="a11y_hc">◐ High contrast</button><button class="chip off" id="a11y_cb">🎨 Colour-blind-safe warnings</button></div><small>Reduce flashing turns off screen shake, flashes, the fire-drill strobe and blinking warnings. Colour-blind-safe makes danger lanes blue instead of red.</small></div>
     <div class="setRow"><b>Your title</b><div class="soundRow" id="titleList" style="justify-content:flex-start;flex-wrap:wrap;gap:6px"></div><small>Shows under your name on leaderboards. Unlock more by playing.</small></div>
     <div class="setRow"><b>Battery &amp; voice</b><div class="soundRow" style="justify-content:flex-start;flex-wrap:wrap;gap:6px"><button class="chip off" id="bBattery">🔋 Battery saver</button><button class="chip" id="bVoice">📣 Announcer voice</button></div><small>Battery saver: 30 fps, low graphics, fewer crowds and particles (reloads the game).</small></div>
-    <div class="setRow"><b>💾 Your save</b><small>Progress saves automatically in this browser / on this phone (device ID <b id="saveDev"></b>). To move it to another device or browser, copy your save code and load it there.</small><div class="soundRow" style="justify-content:flex-start;flex-wrap:wrap;gap:6px;margin-top:4px"><button class="chip" id="saveCopy">📋 Copy save code</button><button class="chip" id="saveFile">⬇️ Download save</button><button class="chip" id="saveLoad">⬆️ Load save code</button></div></div>
+    <div class="setRow"><b>💾 Your save</b><small>Progress saves by itself in this browser / on this phone (device ID <b id="saveDev"></b>). On the website, sign in with Google (tap Saved at the top of the home screen) to carry it to other browsers, or use a save code.</small><div class="soundRow" style="justify-content:flex-start;flex-wrap:wrap;gap:6px;margin-top:4px"><button class="chip" id="saveCopy">📋 Copy save code</button><button class="chip" id="saveFile">⬇️ Download save</button><button class="chip" id="saveLoad">⬆️ Load save code</button></div></div>
     <div class="setRow"><b>🔑 Secret codes</b><div class="frow"><input id="codeIn" maxlength="24" placeholder="Type a code" autocomplete="off" autocapitalize="characters"><button class="btn gold small" id="codeGo">Enter</button></div><small id="codeState"></small><button class="chip" id="bAdmin" style="display:none">🛠 Admin panel</button></div>
     <div class="setRow"><b>🚩 Blocked players</b><small id="blockState"></small><div class="soundRow" style="justify-content:flex-start;flex-wrap:wrap;gap:6px"><button class="chip" id="blockClear">Unblock everyone</button><button class="chip" id="bOwner">🛡 Owner sign-in</button></div></div>
     <div class="setRow"><b>Controls</b><button class="chip" onclick="toggleControls(true)" style="margin:4px 0">⌨️ Show all controls</button><button class="chip" id="bQuickCtl" style="margin:4px 0 4px 6px">🎮 Quick controls on screen</button><button class="chip" onclick="showScreen(null);startTutorial()" style="margin:4px 0 4px 6px">🎓 Replay tutorial</button><button class="chip" id="bTourAgain" style="margin:4px 0 4px 6px">🗺 App tour</button><button class="chip" id="bBtnEdit" style="margin:4px 0 4px 6px">✋ Move run buttons</button><button class="chip" id="bQuiz" style="margin:4px 0 4px 6px">➗ Pop quizzes (math)</button><div class="soundRow" style="justify-content:flex-start"><button class="chip off" id="bLefty">🫲 Left-handed buttons</button></div><small>Swipe anywhere, even starting on a button. Buttons only react to taps.</small></div>
@@ -806,11 +842,11 @@ body.a11yFlash #pwFlash{display:none}
 <div class="screen" id="sRanks">
   <div class="panel">
     <div class="topbar"><h2>🏆 Leaderboard</h2><span class="bankPill" id="rBest">0</span></div>
-    <div class="tabs"><button class="tab" data-board="world">World</button><button class="tab" data-board="local">Classmates</button><button class="tab" data-board="school">🏫 School</button><button class="tab" data-board="friends">Friends</button></div>
+    <div class="tabs boardTabs"><button class="tab" data-board="world">🌍 Everyone</button><button class="tab" data-board="school">🏫 My school</button><button class="tab" data-board="schools">🏆 Schools</button><button class="tab" data-board="friends">👥 Friends</button><button class="tab" data-board="local">🎒 Classmates</button></div>
     <div class="friendBox schoolBox" id="schoolBox"></div>
     <div class="friendBox" id="friendBox"><div>Your friend code: <b id="myCode">------</b></div><div style="margin-top:8px" id="chalNow"></div><div class="frow"><button class="btn green small" id="chalLive">⏱ Race now (same time)</button><button class="btn blue small" id="chalNew">🎲 New challenge hallway</button><button class="btn gold small" id="chalCopy">📋 Copy my code</button></div><small style="display:block;margin:4px 0">Codes work between phones and the browser. A code with a 3rd part (MAYA-5K2-AB3) gives your friend the exact same hallway.</small><div class="frow"><input id="chalIn" maxlength="16" placeholder="e.g. MAYA-5K2" autocomplete="off"><button class="btn gold small" id="chalAdd">Accept</button></div><div class="frow"><input id="friendIn" maxlength="6" placeholder="Friend's code" autocomplete="off"><button class="btn blue small" id="friendAdd">Add</button></div></div>
     <div class="allBest" id="allBest"></div>
-    <div class="seg boardDiff" id="boardDiff"><button data-bd="easy">Easy</button><button data-bd="normal">Normal</button><button data-bd="hard">Hard</button><button data-bd="insane">Insane</button></div>
+    <div class="seg boardDiff" id="boardDiff"><button data-bd="all">All settings</button><button data-bd="easy">Easy</button><button data-bd="normal">Normal</button><button data-bd="hard">Hard</button><button data-bd="insane">Insane</button></div>
     <div class="seg boardDiff boardSpd" id="boardSpd"><button data-bs="chill">🐢 Chill</button><button data-bs="normal">Normal speed</button><button data-bs="fast">Fast</button><button data-bs="turbo">🚀 Turbo</button></div>
     <div class="seg boardPer" id="boardPer"><button data-bp="all">All-time</button><button data-bp="month">Month</button><button data-bp="week">Week</button><button data-bp="day">Today</button></div>
     <div class="toBeat" id="toBeat" style="display:none"></div>
@@ -1187,7 +1223,7 @@ body.a11yFlash #pwFlash{display:none}
     <p style="font-size:15px;margin:4px 0 8px">Your runs count for your school, and you get a school record to chase. Use a nickname, never your real name.</p>
     <div class="frow"><input id="siSearch" placeholder="Search schools" maxlength="40" autocomplete="off"></div>
     <div id="siList" style="max-height:34vh;overflow-y:auto"></div>
-    <div class="frow" id="siAskRow"><input id="siAsk" placeholder="Can't find yours? School name" maxlength="40" autocomplete="off"><button class="btn gold small" id="siAskGo">Ask to add</button></div>
+    <div class="frow" id="siAskRow"><input id="siAsk" placeholder="Can't find yours? School name" maxlength="40" autocomplete="off"><button class="btn gold small" id="siAskGo">➕ Add my school</button></div>
     <div id="siWait" style="display:none;font-size:14px;margin-top:6px"></div>
     <button class="btn gray" id="siSkip">Skip for now</button>
   </div>
@@ -1195,7 +1231,7 @@ body.a11yFlash #pwFlash{display:none}
 <div class="modal" id="schoolRules">
   <div class="mPanel">
     <h2>🏫 School board rules</h2>
-    <p style="text-align:left;font-size:15px">• Use a nickname, never your real name.<br>• Don't share your address, phone, social media or anyone else's info.<br>• School names must be the school's real name. No jokes about people.<br>• No bad words, bullying or hate. Breaking the rules gets you removed.<br>• Tap 🚩 next to anyone who breaks them. A moderator checks every new school before it shows up.</p>
+    <p style="text-align:left;font-size:15px">• Use a nickname, never your real name.<br>• Don't share your address, phone, social media or anyone else's info.<br>• School names must be the school's real name. No jokes about people.<br>• No bad words, bullying or hate. Breaking the rules gets you removed.<br>• Tap 🚩 next to anyone who breaks them. A moderator checks new schools and reports, and hides anything that breaks the rules.</p>
     <button class="btn green" id="rulesOk">I agree</button>
     <button class="linkBtn" id="rulesTerms">Read the Terms of Service</button>
     <button class="btn gray" id="rulesNo">Not now</button>
@@ -1292,6 +1328,14 @@ window.ONLINE_BOARD = {
   apiKey: 'AIzaSyCOjpzGBB3AkmhimQF7rFeP3iDRVH4nuoU'
 };
 
+/* ===== Google sign-in for automatic cloud saves on the website (optional) =====
+   Paste the "Web client ID" from Firebase console -> Authentication -> Sign-in method -> Google -> Web SDK configuration
+   (it ends in .apps.googleusercontent.com). With it empty, the website still saves by itself in each browser, and the
+   "Continue with Google" button stays hidden. Steps: FIREBASE_SETUP.md. */
+window.GOOGLE_SIGNIN = {
+  clientId: ''
+};
+
 /* ===== Analytics (optional) =====
    Paste your Google Analytics 4 / Firebase "Measurement ID" (looks like G-XXXXXXXXXX) to see
    how many players come back, where they quit, and which levels are too hard.
@@ -1365,7 +1409,7 @@ const AWAY_MS = save.lastSeen ? Date.now() - save.lastSeen : 0; // how long sinc
 if (!save.pid) { save.pid = Math.random().toString(36).slice(2) + Date.now().toString(36); }
 if (save.music === 0 && !save.track) save.track = 'off';
 let saveSwapped = false; // a pasted save code was just loaded: never write the old progress back over it before the reload
-function persist() { if (saveSwapped) return; save.lastSeen = Date.now(); let j = ''; try { j = JSON.stringify(save); } catch (e) { return; } try { localStorage.setItem(SAVE_KEY, j); } catch (e) {} mirrorSave(j); }
+function persist(quiet) { if (saveSwapped) return; save.lastSeen = Date.now(); let j = ''; try { j = JSON.stringify(save); } catch (e) { return; } try { localStorage.setItem(SAVE_KEY, j); } catch (e) {} mirrorSave(j); if (!quiet && save.gLink && typeof GSync === 'object' && GSync) GSync.soon(); }
 // saves happen on their own: after every change, every 15 seconds, and when the tab is hidden or closed (all three copies right away)
 function flushSave() { if (saveSwapped) return; try { persist(); clearTimeout(mirrorT); const j = JSON.stringify(save); idb(st => st.put(j, SAVE_KEY)); cookieSave.write(j); } catch (e) {} }
 setInterval(flushSave, 15000); addEventListener('pagehide', flushSave); addEventListener('beforeunload', flushSave); document.addEventListener('visibilitychange', () => { if (document.hidden) flushSave(); });
@@ -3834,7 +3878,7 @@ function fmtLeft(ms) { if (ms > 48 * 3600000) return Math.ceil(ms / 86400000) + 
 const CLASSMATES = [['Maya', 24500, 2310], ['Jordan', 17200, 1720], ['Ava', 11800, 1290], ['Leo', 8400, 990], ['Zoe', 5600, 720], ['Sam', 3100, 450], ['Priya', 1500, 260], ['Eli', 700, 140]];
 var CPU_DIFF = { easy: 0.6, normal: 1, hard: 1.6, insane: 2.3 }; // classmates' scores on each difficulty
 function boardRows(dk) {
-  dk = dk || runBK(); const me = (save.name || '').trim().toLowerCase(), k = (CPU_DIFF[bkDiff(dk)] || 1) * SPEEDS[bkSpd(dk)].score;
+  dk = dk || runBK(); const me = (save.name || '').trim().toLowerCase(), k = dk === 'all' ? 1 : (CPU_DIFF[bkDiff(dk)] || 1) * SPEEDS[bkSpd(dk)].score;
   const rows = CLASSMATES.filter(([n]) => n.toLowerCase() !== me).map(([n, s, d]) => ({ n, s: Math.round(s * k / 10) * 10, d, cpu: true }));
   const per = boardPer(), b = per === 'all' ? bestFor(dk) : { s: myPeriodBest(dk, per) }; if (b && b.s > 0) rows.push({ n: save.name || 'You', s: b.s, d: b.d || 0, me: true, t: b.t || 0 }); // you appear once, at your best score on this difficulty (in the chosen period)
   rows.sort((a, b) => b.s - a.s);
@@ -3842,28 +3886,37 @@ function boardRows(dk) {
 }
 function myRank() { const r = boardRows(); const i = r.findIndex(x => x.me); return i < 0 ? 0 : i + 1; }
 let boardMode = 'world'; // the world record is the default record to beat
-const WREC = {}; // world record per difficulty, cached for a few minutes
-function worldRecord(dk) { dk = dk || runBK(); const c = WREC[dk]; if (!Online.ready()) return Promise.resolve(null); if (c && Date.now() - c.t < 180000) return Promise.resolve(c.r);
+const WREC = {}; // world record ('all' = every setting, the one on the menu), cached for a few minutes
+function worldRecord(dk) { dk = dk || 'all'; const c = WREC[dk]; if (!Online.ready()) return Promise.resolve(null); if (c && Date.now() - c.t < 180000) return Promise.resolve(c.r);
   return Online.board(dk, 'all').then(rows => { const r = rows[0] || null; WREC[dk] = { r, t: Date.now() }; return r; }).catch(() => (c ? c.r : null)); }
-function syncWorldCard() { const el = $('mWorld'); if (!el) return; const dk = runBK(); el.querySelector('small').textContent = 'World record · ' + DIFF[bkDiff(dk)].name + (bkSpd(dk) !== 'normal' ? ' ' + SPEEDS[bkSpd(dk)].name : ''); if (!Online.ready()) { el.style.display = 'none'; return; } el.style.display = ''; worldRecord(dk).then(r => { if (!r) { $('mWorldTxt').textContent = 'Be the first!'; return; } $('mWorldTxt').textContent = r.s.toLocaleString() + ' · ' + (r.me ? 'YOU! 👑' : r.n); }); }
+function syncWorldCard() { const el = $('mWorld'); if (!el) return; el.querySelector('small').textContent = 'World record'; if (!Online.ready()) { el.style.display = 'none'; return; } el.style.display = '';
+  worldRecord().then(r => { $('mWorldTxt').textContent = !r ? 'Be the first!' : r.s.toLocaleString() + ' · ' + (r.me ? 'YOU! 👑' : r.n); }); }
 // ---- your school's record: the target on the menu card and in each run's intro ----
-const SREC = {}; // school record per school + board, cached for a couple of minutes
-function schoolsOn() { return Online.ready() && save.age !== 'child' && APPCFG.schools !== false; }
-function schoolRecord(dk) { dk = dk || runBK(); if (!schoolsOn() || !save.school) return Promise.resolve(undefined); const k = save.school + '|' + dk, c = SREC[k];
+const SREC = {}; // school record per school, cached for a couple of minutes
+function schoolsOn() { return Online.ready() && save.age !== 'child' && APPCFG.schools !== false && !SCHOOLS.denied; } // denied: the database rules for schools aren't published yet (FIREBASE_SETUP.md)
+function schoolRecord(dk) { dk = dk || 'all'; if (!schoolsOn() || !save.school) return Promise.resolve(undefined); const k = save.school + '|' + dk, c = SREC[k];
   if (c && Date.now() - c.t < 120000) return Promise.resolve(c.r);
   return Online.board(dk, 'all', save.school).then(rows => { const r = rows[0] || null; SREC[k] = { r, t: Date.now() }; return r; }).catch(() => (c ? c.r : undefined)); }
+// once a minute on the menu: send your board row if it didn't go through (offline), refresh the school list (your school's
+// approval, schools hidden by the moderator) and add a school you asked for before schools could be added directly
+function menuOnlineTick() { if (!Online.ready() || Date.now() - (menuOnlineTick.t || 0) < 60000) return; menuOnlineTick.t = Date.now();
+  Online.syncPlayer(); if (save.age === 'child') return;
+  loadAppCfg().then(() => APPCFG.schools !== false ? loadSchools(!!SCHOOLS.denied) : null).then(() => { syncSchoolCard(); return checkSchoolReq(); }).catch(() => {}); }
+function schoolPending(id) { const s = SCHOOLS.list.find(x => x.id === (id || save.school)); return !!(s && s.status === 'pending'); }
 function syncSchoolCard() { const el = $('mSchool'); if (!el) return;
   if (!schoolsOn()) { el.style.display = 'none'; return; } el.style.display = '';
-  if (!save.school) { $('mSchoolSub').textContent = 'Your school'; $('mSchoolTxt').textContent = 'Add your school +'; return; }
-  const sn = schoolName(save.school); if ($('mSchoolTxt').textContent === '–') { $('mSchoolSub').textContent = sn; $('mSchoolTxt').textContent = 'School record'; } schoolRecord().then(r => { if (r === undefined) return;
-    if (!r) { $('mSchoolSub').textContent = sn; $('mSchoolTxt').textContent = 'Set your school record!'; }
-    else if (r.me) { $('mSchoolSub').textContent = sn + ' record'; $('mSchoolTxt').textContent = r.s.toLocaleString() + ' · YOU! 👑'; }
-    else { $('mSchoolSub').textContent = 'Classmates\' record'; $('mSchoolTxt').textContent = r.s.toLocaleString() + ' · ' + r.n; } }); }
+  const sub = $('mSchoolSub'), txt = $('mSchoolTxt');
+  if (!save.school) { sub.textContent = 'Your school'; txt.textContent = 'Add your school +'; return; }
+  const sn = schoolName(save.school); sub.textContent = sn + (schoolPending() ? ' · waiting for approval' : ''); if (txt.textContent === '–' || txt.textContent === 'Add your school +') txt.textContent = 'School record';
+  schoolRecord().then(r => { if (r === undefined || !save.school) return; const sn2 = schoolName(save.school), pend = schoolPending() ? ' · waiting for approval' : '';
+    if (!r) { sub.textContent = sn2 + pend; txt.textContent = 'Set your school record!'; }
+    else if (r.me) { sub.textContent = sn2 + ' record' + pend; txt.textContent = r.s.toLocaleString() + ' · YOU! 👑'; }
+    else { sub.textContent = sn2 + ' record' + pend; txt.textContent = r.s.toLocaleString() + ' · ' + r.n; } }); }
 function schoolIntroToast() { // shown as each Infinite Run starts: set the record, or the classmate's record to break
-  if (!save.school || !schoolsOn() || G.mode !== 'infinite' || G.fun || G.fixed || (G.duel && G.duel.on)) return; const t0 = G.runStart = Date.now(), dk = runBK(), sn = schoolName(save.school);
-  schoolRecord(dk).then(r => { if (r === undefined || G.runStart !== t0 || G.scene !== 'play') return; setTimeout(() => { if (G.runStart !== t0 || G.scene !== 'play' || G.dying) return;
-    if (!r) toast('🏫 SET YOUR SCHOOL RECORD!', 'Nobody from ' + sn + ' has a run on ' + bkName(dk) + ' yet. Be the first!', 2800);
-    else if (r.me) toast('🏫 YOU HOLD THE ' + sn.toUpperCase() + ' RECORD', r.s.toLocaleString() + ' on ' + bkName(dk) + '. Beat your own record!', 2800);
+  if (!save.school || !schoolsOn() || G.mode !== 'infinite' || G.fun || G.fixed || (G.duel && G.duel.on)) return; const t0 = G.runStart = Date.now(), sn = schoolName(save.school);
+  schoolRecord().then(r => { if (r === undefined || G.runStart !== t0 || G.scene !== 'play') return; setTimeout(() => { if (G.runStart !== t0 || G.scene !== 'play' || G.dying) return;
+    if (!r) toast('🏫 SET YOUR SCHOOL RECORD!', 'Nobody from ' + sn + ' has a run yet. Be the first!', 2800);
+    else if (r.me) toast('🏫 YOU HOLD THE ' + sn.toUpperCase() + ' RECORD', r.s.toLocaleString() + '. Beat your own record!', 2800);
     else toast('🏫 BREAK YOUR CLASSMATES\' RECORD', r.n + ' has ' + r.s.toLocaleString() + ' for ' + sn + '. Score ' + (r.s + 1).toLocaleString() + ' to take it!', 3200); }, 1300); }); }
 function schoolRecordAfterRun(sc, dk, delay) { // called once the run is sent to the board
   if (!save.school || !schoolsOn()) return; const k = save.school + '|' + dk, c = SREC[k]; if (!c || c.r === undefined) return;
@@ -3882,13 +3935,14 @@ function openSchoolIntro(then) {
       const r2 = await schoolRecord(); toast('🏫 You joined ' + s.name + '!', r2 ? 'Break your classmates\' record: ' + r2.s.toLocaleString() + ' by ' + (r2.me ? 'you' : r2.n) : 'Set your school record!', 2600); if (then) setTimeout(then, 300); }))); lst.appendChild(r); });
     if (!hits.length) lst.appendChild(mk('div', '', t ? 'No school called that yet. Ask to add it below.' : 'Loading schools...')); };
   q.oninput = draw; draw();
-  const syncAsk = () => { const w = save.schoolReq; $('siWait').style.display = w ? '' : 'none'; $('siWait').textContent = w ? '⏳ Waiting for approval: ' + w.name + '. It shows up here once the moderator says yes.' : ''; $('siAskRow').style.display = w || APPCFG.requests === false ? 'none' : 'flex'; };
-  syncAsk(); $('siAskGo').onclick = async () => { await requestSchool($('siAsk').value); syncAsk(); };
+  const syncAsk = () => { $('siWait').style.display = 'none'; $('siAskRow').style.display = APPCFG.requests === false ? 'none' : 'flex'; };
+  syncAsk(); $('siAskGo').onclick = async () => { const ok = await addSchool($('siAsk').value); if (ok) { m.classList.remove('show'); if (then) setTimeout(then, 300); } };
+  $('siAsk').onkeydown = e => { if (e.key === 'Enter') $('siAskGo').click(); };
   $('siSkip').onclick = () => { sfx('click'); toast('No problem', 'Add your school any time from the menu', 1600); done(); };
   Promise.all([loadSchools().catch(() => SCHOOLS.list), loadAppCfg()]).then(([, cfg]) => { if (!cfg.schools) return done(); if (m.classList.contains('show')) { draw(); syncAsk(); } });
 }
 function buildBoard(highlightT) {
-  if ((boardMode === 'world' || boardMode === 'school') && !Online.ready()) boardMode = 'local';
+  if ((boardMode === 'world' || boardMode === 'school' || boardMode === 'schools') && !Online.ready()) boardMode = 'local';
   document.querySelectorAll('[data-board]').forEach(x => x.classList.toggle('on', x.dataset.board === boardMode));
   const ol = $('boardList'); ol.innerHTML = ''; const dk = syncBoardDiff();
   $('friendBox').style.display = boardMode === 'friends' ? 'block' : 'none'; $('chalNow').textContent = save.challenge ? 'Current challenge: beat ' + save.challenge.from + '\'s ' + save.challenge.score.toLocaleString() : 'Got a challenge code from a friend\'s score card? Enter it:'; $('myCode').textContent = myCode() || '------';
@@ -3899,14 +3953,14 @@ function buildBoard(highlightT) {
     refreshFriends().then(() => { if (boardMode === 'friends' && curScreen === 'sRanks') { const r2 = (save.friends || []).length; if (r2) { ol.innerHTML = ''; const rr = save.friends.map(f => ({ n: f.n, s: f.s || 0, d: f.d })); if (save.best > 0) rr.push({ n: save.name || 'You', s: save.best, me: true }); rr.sort((a, b) => b.s - a.s).forEach((r, i) => ol.appendChild(boardRow(r, i))); addGhostBtns(ol, rr); } } });
     return;
   }
-  $('schoolBox').style.display = boardMode === 'school' ? 'block' : 'none';
-  if (boardMode === 'school') { buildSchoolBoard(dk, ol); return; }
+  $('schoolBox').style.display = boardMode === 'school' || boardMode === 'schools' ? 'block' : 'none';
+  if (boardMode === 'school' || boardMode === 'schools') { buildSchoolBoard(dk, ol); return; }
   if (boardMode === 'world') {
     if (!Online.ready()) { $('boardSub').textContent = 'The world leaderboard isn\'t connected yet. (Setup steps are in the README.)'; showToBeat(null, dk); return; }
     const per = boardPer(); $('boardSub').textContent = 'Loading world scores...';
     if (per === 'all') Online.top(100).then(all => checkCrown(all)).catch(() => {});
-    Online.board(dk, per).then(rows => { if (boardMode !== 'world' || boardDK !== dk && boardDK) return; rows = rows.slice(0, 25);
-      $('boardSub').textContent = rows.length ? 'Top ' + bkName(dk) + ' runs from players everywhere · ' + BOARD_PER[per] : 'No ' + bkName(dk) + ' runs on the world board ' + (per === 'all' ? 'yet' : BOARD_PER[per].toLowerCase()) + '. Be the first!';
+    Online.board(dk, per).then(rows => { if (boardMode !== 'world' || boardDK !== dk && boardDK) return; const me = rows.findIndex(r => r.me), mine = me >= 50 ? rows[me] : null; rows = rows.slice(0, 50); if (mine) { mine.rank = me + 1; rows.push(mine); }
+      $('boardSub').textContent = rows.length ? 'Top runs from every player · ' + bkName(dk) + ' · ' + BOARD_PER[per] : 'No ' + bkName(dk) + ' runs on the world board ' + (per === 'all' ? 'yet' : BOARD_PER[per].toLowerCase()) + '. Be the first!';
       ol.innerHTML = ''; rows.forEach((r, i) => ol.appendChild(boardRow(r, i))); showToBeat(rows, dk); addReportBtns(ol, rows); })
       .catch(() => { if (boardMode !== 'world') return; ol.innerHTML = ''; showToBeat(null, dk); $('boardSub').textContent = per === 'all' ? 'Couldn\'t reach the world board. Check your connection and try again.' : BOARD_PER[per] + ' world boards turn on after one quick Firebase rules update (README → Online leaderboard).'; });
     return;
@@ -3919,7 +3973,7 @@ function addGhostBtns(ol, rows) { [...ol.children].forEach((li, i) => { const r 
 function boardRow(r, i, highlightT) {
   {
     const li = document.createElement('li'); if (r.me) li.className = 'me';
-    const rk = document.createElement('span'); rk.className = 'rk'; rk.textContent = i + 1;
+    const rk = document.createElement('span'); rk.className = 'rk'; rk.textContent = r.rank || i + 1;
     const nm = document.createElement('span'); nm.className = 'nm'; nm.textContent = r.me ? (save.name || 'You') : r.n;
     const tag = document.createElement('small'); tag.textContent = r.me ? myTitle() + (r.t && r.t === highlightT ? ' · NEW BEST!' : '') : boardMode === 'friends' && !r.me ? 'friend' : r.cpu ? 'classmate' : r.me ? (r.t && r.t === highlightT ? 'NEW BEST!' : 'you') : ''; nm.appendChild(tag);
     const sc = document.createElement('span'); sc.className = 'sc'; sc.textContent = r.s.toLocaleString();
@@ -4150,7 +4204,7 @@ const TOUR_STEPS = [ // the simple home has only a few buttons, so the tour is s
   ['bModes', 'Modes', 'The campaign, daily challenge, duels and fun modes.'],
   ['bRanks', 'Ranks', 'Beat your school, your friends and the world.'],
   ['bMore', 'More', 'Free gift, missions, spin, pass and more. A number means something is waiting for you.'],
-  ['bSaveHome', 'Save code', 'Copy your code to keep your progress, or paste one to carry on in any browser.']
+  ['bSaveHome', 'Saved', 'Your progress saves by itself. Tap here to sign in with Google and carry it to other browsers.']
 ];
 function startAppTour(force) {
   if (!force && save.appTour) return; save.appTour = 1; persist(); let i = 0;
@@ -4572,7 +4626,7 @@ const Online = {
   async remove() {
     if (!(window.ONLINE_BOARD && ONLINE_BOARD.projectId && ONLINE_BOARD.apiKey) || !save.fbAuth) return true;
     try { const a = await this.token(), H = { method: 'DELETE', headers: { Authorization: 'Bearer ' + a.idToken } }; const r = await fetch(this.url('/scores/' + encodeURIComponent(a.uid)), H);
-      await Promise.allSettled(ALL_BK.map(k => fetch(this.url('/runs/' + encodeURIComponent(a.uid + '_' + k)), H)).concat([fetch(this.url('/schoolRequests/' + encodeURIComponent(a.uid)), H)])); return r.ok; } catch (e) { return false; }
+      await Promise.allSettled(ALL_BK.map(k => fetch(this.url('/runs/' + encodeURIComponent(a.uid + '_' + k)), H)).concat(['players', 'saves', 'schoolRequests'].map(c => fetch(this.url('/' + c + '/' + encodeURIComponent(a.uid)), H)))); return r.ok; } catch (e) { return false; }
   },
   async byCode(code) {
     const r = await fetch(this.url(':runQuery'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ structuredQuery: { from: [{ collectionId: 'scores' }], where: { fieldFilter: { field: { fieldPath: 'code' }, op: 'EQUAL', value: { stringValue: code } } }, limit: 1 } }) });
@@ -4591,21 +4645,56 @@ const Online = {
       if (r.ok) { p.sent = Date.now(); persist(); } else if (r.status === 403 && mySchool() && !this._retry) { await loadSchools(true).catch(() => {}); if (!mySchool()) { this._retry = 1; try { await this.submitRun(name, dist); } finally { this._retry = 0; } } }
     } catch (e) { /* offline or rules not updated yet: ignore */ }
   },
+  // One leaderboard row per player (players/{uid}): best on any setting, plus best today / this week / this month.
+  // Every board (All players, My school, School vs school, world + school records) reads it. Sent after any run that
+  // beats one of those, and retried on the next launch if the phone was offline.
+  async syncPlayer(force) {
+    if (!this.ready() || save.age === 'child') return false; const r = myRow(), name = safeName(save.name || 'Runner'), sch = mySchool();
+    if (!r.best) return false; if (!force && !r.dirty && r.sentName === name && r.sentSchool === sch) return true;
+    if (this._syncing) { this._again = 1; return this._syncing; }
+    const go = async () => { const a = await this.token(); const K = perKeys(), cur = per => r[per] === K[per] ? (r[per + 'S'] || 0) : 0;
+      const body = { name, code: myCode(), school: sch, best: r.best, bestDist: r.bestDist || 0, bestDiff: String(r.bestDiff || 'normal'), day: K.day, dayS: Math.min(cur('day'), r.best), week: K.week, weekS: Math.min(cur('week'), r.best), month: K.month, monthS: Math.min(cur('month'), r.best), ts: new Date() };
+      try { await fsReq('PATCH', docPath('players', a.uid), a.idToken, fsEnc(body)); }
+      catch (e) { if (e.status !== 403) throw e;
+        if (sch) { await loadSchools(true).catch(() => {}); if (mySchool() !== sch) return go(); } // your school was hidden: send without it
+        const old = await fsReq('GET', docPath('players', a.uid)).then(fsDoc).catch(() => null); // the board already has a higher best (restored an older save)
+        if (old && (old.best || 0) > r.best) { r.best = old.best; r.bestDist = old.bestDist || 0; r.bestDiff = old.bestDiff || r.bestDiff; return go(); }
+        throw e; }
+      r.dirty = 0; r.sentName = name; r.sentSchool = sch; r.sentT = Date.now(); persist(); return true; };
+    this._syncing = go().catch(() => false).finally(() => { this._syncing = null; if (this._again) { this._again = 0; this.syncPlayer(); } });
+    return this._syncing;
+  },
+  // rows from players/: everyone (all-time comes back ordered by best), or one period and/or one school (sorted here,
+  // so no extra Firestore index is needed)
+  async players(per, school, limit) {
+    const K = perKeys(), fl = []; if (per !== 'all') fl.push(fsEq(per, K[per])); if (school) fl.push(fsEq('school', school));
+    const q = { from: [{ collectionId: 'players' }], limit: limit || 500 };
+    if (fl.length) q.where = fl.length === 1 ? fl[0] : { compositeFilter: { op: 'AND', filters: fl } };
+    else { q.orderBy = [{ field: { fieldPath: 'best' }, direction: 'DESCENDING' }]; q.limit = limit || 200; }
+    const uid = save.fbAuth && save.fbAuth.uid, rows = await fsReq('POST', ':runQuery', null, { structuredQuery: q });
+    const err = rows.find(x => x.error); if (err) { const e = new Error(err.error.message || 'query failed'); e.status = err.error.code; throw e; }
+    return rows.filter(x => x.document).map(x => fsDoc(x.document)).map(f => ({ n: f.name || 'Runner', s: per === 'all' ? f.best || 0 : f[per + 'S'] || 0, d: per === 'all' ? f.bestDist || 0 : 0, diff: f.bestDiff || '', uid: f.id, sch: f.school || '', me: !!uid && f.id === uid }))
+      .filter(r => r.s > 0 && !isBlocked(r.uid));
+  },
+  // dk = 'all' (every setting, the default) or one difficulty + speed board (runs/{uid}_{dk})
   async board(dk, per, school) {
-    const K = perKeys(), eq = (f, v) => ({ fieldFilter: { field: { fieldPath: f }, op: 'EQUAL', value: { stringValue: v } } });
-    const fl = [eq('diff', dk)]; if (per !== 'all') fl.push(eq(per, K[per])); if (school) fl.push(eq('school', school));
-    const where = fl.length === 1 ? fl[0] : { compositeFilter: { op: 'AND', filters: fl } };
     const uid = save.fbAuth && save.fbAuth.uid, best = new Map(), add = (id, row) => { const o = best.get(id); if (!o || row.s > o.s) best.set(id, row); };
-    const q = fetch(this.url(':runQuery'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ structuredQuery: { from: [{ collectionId: 'runs' }], where, limit: 300 } }) })
-      .then(async r => { if (!r.ok) throw new Error('HTTP ' + r.status); for (const x of await r.json()) { if (!x.document) continue; const f = x.document.fields, id = f.uid ? f.uid.stringValue : '';
-        const sc = +((per === 'all' ? f.best : f[per + 'S']) || {}).integerValue || 0; if (sc > 0 && !isBlocked(id)) add(id, { n: f.name.stringValue, s: sc, d: per === 'all' ? +(f.bestDist && f.bestDist.integerValue || 0) : 0, diff: dk, uid: id, sch: f.school ? f.school.stringValue : '', me: !!uid && id === uid }); } return true; });
-    if (per !== 'all' || school) await q; // daily / weekly / monthly come only from the new rows
-    else { // all-time also keeps everyone already on the original board
-      const [a, b] = await Promise.allSettled([q, this.top(100)]);
-      if (b.status === 'fulfilled') for (const r of b.value) if ((r.diff || 'normal') === dk && !isBlocked(r.uid)) add(r.uid || r.n + '|' + r.s, r);
-      if (a.status === 'rejected' && b.status === 'rejected') throw a.reason;
+    if (dk === 'all') {
+      const [a, b] = await Promise.allSettled([this.players(per, school), per === 'all' && !school ? this.top(100) : Promise.resolve([])]);
+      if (a.status === 'fulfilled') for (const r of a.value) add(r.uid, r);
+      if (b.status === 'fulfilled') for (const r of b.value) if (!isBlocked(r.uid)) add(r.uid || r.n + '|' + r.s, r); // players from before this board (older app versions)
+      if (a.status === 'rejected' && (b.status === 'rejected' || per !== 'all' || school)) throw a.reason;
+      const me = myRow(), myS = per === 'all' ? me.best : myPeriodBest('all', per); // your own row shows straight away, even before it reaches the server
+      if (uid && myS > 0 && (!school || school === mySchool()) && !(best.get(uid) && best.get(uid).s >= myS)) add(uid, { n: safeName(save.name), s: myS, d: per === 'all' ? me.bestDist || 0 : 0, uid, sch: mySchool(), me: true });
+      return [...best.values()].sort((x, y) => y.s - x.s);
     }
-    return [...best.values()].sort((a, b) => b.s - a.s);
+    const K = perKeys(), fl = [fsEq('diff', dk)]; if (per !== 'all') fl.push(fsEq(per, K[per])); if (school) fl.push(fsEq('school', school));
+    const where = fl.length === 1 ? fl[0] : { compositeFilter: { op: 'AND', filters: fl } };
+    const rows = await fsReq('POST', ':runQuery', null, { structuredQuery: { from: [{ collectionId: 'runs' }], where, limit: 300 } });
+    for (const x of rows) { if (!x.document) continue; const f = fsDoc(x.document), id = f.uid || '', sc = (per === 'all' ? f.best : f[per + 'S']) || 0;
+      if (sc > 0 && !isBlocked(id)) add(id, { n: f.name || 'Runner', s: sc, d: per === 'all' ? f.bestDist || 0 : 0, diff: dk, uid: id, sch: f.school || '', me: !!uid && id === uid }); }
+    if (per === 'all' && !school) { try { for (const r of await this.top(100)) if ((r.diff || 'normal') === dk && !isBlocked(r.uid)) add(r.uid || r.n + '|' + r.s, r); } catch (e) {} }
+    return [...best.values()].sort((x, y) => y.s - x.s);
   },
   async top(n = 25) {
     const r = await fetch(this.url(':runQuery'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ structuredQuery: { from: [{ collectionId: 'scores' }], orderBy: [{ field: { fieldPath: 'score' }, direction: 'DESCENDING' }], limit: n } }) });
@@ -5446,16 +5535,16 @@ function endRun(win, reason) {
   if (G.tourney && !G.cheated) { const T = tourneySave(); T.tries++; if (sc > T.best) { T.best = sc; toast('NEW TOURNAMENT BEST!', sc.toLocaleString(), 1800); } persist(); }
   let dcLine = '';
   if (G.daily) { const c = dailyChallenge(), sc0 = Math.floor(G.score); if (sc0 > save.dc.best) save.dc.best = sc0; if (!save.dc.done && sc0 >= c.target) { save.dc.done = 1; grant({ gs: 3, cash: 500 }); dcLine = 'DAILY CHALLENGE BEATEN! +3★ +$500'; Analytics.log('daily_challenge_complete', { score: sc0 }); } else dcLine = save.dc.done ? 'Daily challenge done ✓ · today\'s best ' + save.dc.best.toLocaleString() : 'Daily target: ' + c.target.toLocaleString() + ' · today\'s best ' + save.dc.best.toLocaleString(); }
-  mission('runs', 1); mission('coins_total', G.coins); setTimeout(() => Cloud.save(), 500); mission('dist_run', Math.floor(G.dist)); mission('score_run', Math.floor(G.score));
+  mission('runs', 1); mission('coins_total', G.coins); setTimeout(() => { Cloud.save(); GSync.push(); }, 500); mission('dist_run', Math.floor(G.dist)); mission('score_run', Math.floor(G.score));
   const sc = Math.floor(G.score);
   if (G.mode === 'infinite' && !G.fun && !G.tourney) { save.lastCode = challengeCode(sc); if (sc > dayBest().s) save.dayBest.s = sc; }
   if (G.mode === 'infinite' && !G.fun && tourOn() && G.dist >= 1000 && save.tourStamp !== tourWeek()) { save.tourStamp = tourWeek(); save.tourStamps = (save.tourStamps || 0) + 1; grant({ cash: 1000, gs: 1 }); setTimeout(() => toast(tourStop().flag + ' TOUR STAMP!', tourStop().name + ' · +$1,000 +1★ (' + save.tourStamps + ' stamps)', 2600), 1600); }
   let newBest = false;
   let placed = null;
-  if (G.mode === 'infinite' && !G.fun) { if (sc > 0) { const nb = logRunByDiff(sc, Math.floor(G.dist)), np = logRunPeriods(sc); if ((nb || np) && !G.cheated) { const dd = G.dist, w = WREC[runBK()], wr = Online.ready() && w && (!w.r || sc > w.r.s);
-      if (wr) { WREC[runBK()] = { r: { n: save.name || 'You', s: sc, d: Math.floor(dd), me: true }, t: Date.now() }; }
-      if (wr && !save.name) setTimeout(() => askName(() => { Online.submitRun(save.name || 'Runner', dd); toast('👑 WORLD RECORD!', (save.name || 'Runner') + ' is #1 in the world', 2400); }, true), 1200); // no nickname yet: ask for one for the record
-      else { Online.submitRun(save.name || 'Runner', dd); if (wr) setTimeout(() => toast('👑 NEW WORLD RECORD!', 'You\'re #1 on the world board', 2400), 1200); } schoolRecordAfterRun(sc, runBK(), wr ? 4000 : 1200); } } duelEnd(sc); if (sc > save.best) { save.best = sc; newBest = true; } save.bestDist = Math.max(save.bestDist, Math.floor(G.dist)); if (sc > 0 && !G.fun) { placed = recordRun(sc, Math.floor(G.dist)); if (sc >= save.best && !G.cheated) Online.submit(save.name || 'Runner', sc, G.dist); } }
+  if (G.mode === 'infinite' && !G.fun) { if (sc > 0) { const nb = logRunByDiff(sc, Math.floor(G.dist)), np = logRunPeriods(sc), nr = !G.cheated && noteBoardRun(sc, Math.floor(G.dist), runBK()); if ((nb || np || nr) && !G.cheated) { const dd = G.dist, w = WREC.all, wr = Online.ready() && w && (!w.r || sc > w.r.s);
+      if (wr) { WREC.all = { r: { n: save.name || 'You', s: sc, d: Math.floor(dd), me: true }, t: Date.now() }; }
+      if (wr && !save.name) setTimeout(() => askName(() => { Online.submitRun(save.name || 'Runner', dd); Online.syncPlayer(); toast('👑 WORLD RECORD!', (save.name || 'Runner') + ' is #1 in the world', 2400); }, true), 1200); // no nickname yet: ask for one for the record
+      else { Online.submitRun(save.name || 'Runner', dd); Online.syncPlayer(); if (wr) setTimeout(() => toast('👑 NEW WORLD RECORD!', 'You\'re #1 on the world board', 2400), 1200); } schoolRecordAfterRun(sc, 'all', wr ? 4000 : 1200); } } duelEnd(sc); if (sc > save.best) { save.best = sc; newBest = true; } save.bestDist = Math.max(save.bestDist, Math.floor(G.dist)); if (sc > 0 && !G.fun) { placed = recordRun(sc, Math.floor(G.dist)); if (sc >= save.best && !G.cheated) Online.submit(save.name || 'Runner', sc, G.dist); } }
   persist();
   let funLine = '';
   if (G.fun) {
@@ -6035,7 +6124,7 @@ function refreshMenu() {
   $('mMult').textContent = '×' + scoreMult(); $('mWord').textContent = wordShown().replace(/ /g, '');
   ['lBank', 'sBank'].forEach(id => $(id).textContent = '$' + save.bank); $('sStars').textContent = '★ ' + (save.gs || 0);
   $('mBest').textContent = save.best.toLocaleString();
-  $('mTop').textContent = save.bestDist.toLocaleString() + ' m'; try { syncWorldCard(); } catch (e) {} try { syncSchoolCard(); } catch (e) {}
+  $('mTop').textContent = save.bestDist.toLocaleString() + ' m'; try { syncWorldCard(); } catch (e) {} try { syncSchoolCard(); } catch (e) {} try { menuOnlineTick(); } catch (e) {} try { syncHomeSide(); } catch (e) {}
   const rk = myRank(); $('mRankTxt').textContent = rk ? '#' + rk : '–'; try { buildSideModes(); } catch (e) {}
   const stS = streakState(); $('freeTxt').textContent = stS.can ? 'FREE' : 'Day ' + stS.day + ' ✓'; $('bFree').classList.toggle('wait', !stS.can);
   $('campTxt').textContent = 'Stage ' + Math.min(save.unlocked, LEVELS.length) + '/' + LEVELS.length;
@@ -6293,7 +6382,7 @@ function buildShop() {
 document.querySelectorAll('.tab').forEach(t => t.onclick = () => { document.querySelectorAll('.tab').forEach(x => x.classList.remove('on')); t.classList.add('on'); shopTab = t.dataset.tab; sfx('click'); buildShop(); });
 document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => { sfx('click'); goMenu(); });
 const openCampaign = () => { initAudio(); sfx('click'); buildLevels(); refreshMenu(); showScreen('sLevels'); };
-const openRanks = () => { initAudio(); sfx('click'); boardDK = runBK(); if (!openRanks.done) { openRanks.done = 1; boardMode = Online.ready() ? 'world' : 'local'; } buildBoard(); showScreen('sRanks'); };
+const openRanks = () => { initAudio(); sfx('click'); boardDK = boardDK || 'all'; if (!openRanks.done) { openRanks.done = 1; boardMode = Online.ready() ? 'world' : 'local'; } buildBoard(); showScreen('sRanks'); };
 $('mWorld').onclick = e => { e.stopPropagation(); boardMode = 'world'; openRanks.done = 1; openRanks(); };
 $('mSchool').onclick = e => { e.stopPropagation(); sfx('click'); if (!save.school) { save.schoolAsked = 0; openSchoolIntro(() => refreshMenu()); return; } boardMode = 'school'; save.schoolView = 'kids'; openRanks.done = 1; openRanks(); };
 const openSettings = () => { initAudio(); sfx('click'); buildSettings(); showScreen('sSettings'); };
@@ -6392,7 +6481,7 @@ $('bLefty').onclick = () => { save.lefty = save.lefty ? 0 : 1; persist(); docume
 document.body.classList.toggle('lefty', !!save.lefty);
 document.querySelectorAll('#vibeSeg button').forEach(b => b.onclick = () => { save.vibe = b.dataset.v; persist(); syncVibeSeg(); if (b.dataset.v !== 'off') buzz('bump'); });
 function syncVibeSeg() { document.querySelectorAll('#vibeSeg button').forEach(b => b.classList.toggle('on', (save.vibe || 'light') === b.dataset.v)); }
-document.querySelectorAll('.spdSeg button').forEach(b => b.onclick = () => { save.speedMode = b.dataset.sp; persist(); sfx('click'); syncSpeedSeg(); boardDK = runBK(); try { refreshMenu(); } catch (e) {} });
+document.querySelectorAll('.spdSeg button').forEach(b => b.onclick = () => { save.speedMode = b.dataset.sp; persist(); sfx('click'); syncSpeedSeg(); try { refreshMenu(); } catch (e) {} });
 function syncSpeedSeg() { document.querySelectorAll('.spdSeg button').forEach(b => b.classList.toggle('on', (save.speedMode || 'normal') === b.dataset.sp)); }
 $('bMissions').onclick = () => { initAudio(); sfx('click'); buildMissions(); showScreen('sMissions'); };
 $('bEvents').onclick = () => { initAudio(); sfx('click'); buildEvents(); showScreen('sEvents'); };
@@ -6454,30 +6543,30 @@ var DIFF_KEYS = ['easy', 'normal', 'hard', 'insane'], SPEED_KEYS = ['chill', 'no
 // every difficulty + speed pair is its own leaderboard: 'insane' (normal speed) and 'insane_turbo' are different records
 const boardKey = (d, sp) => (DIFF[d] ? d : 'normal') + (sp && sp !== 'normal' && SPEEDS[sp] ? '_' + sp : '');
 const bkDiff = bk => String(bk || 'normal').split('_')[0], bkSpd = bk => String(bk || '').split('_')[1] || 'normal';
-const bkName = bk => (DIFF[bkDiff(bk)] || DIFF.normal).name + ' · ' + SPEEDS[bkSpd(bk)].name + ' speed';
+const bkName = bk => bk === 'all' ? 'All settings' : (DIFF[bkDiff(bk)] || DIFF.normal).name + ' · ' + SPEEDS[bkSpd(bk)].name + ' speed';
 const ALL_BK = DIFF_KEYS.flatMap(d => SPEED_KEYS.map(sp => boardKey(d, sp)));
 function runSpeed() { return (G && G.fixed && G.scene !== 'menu') ? 'normal' : (SPEEDS[save.speedMode] ? save.speedMode : 'normal'); }
 function runBK() { return boardKey(runDiff(), runSpeed()); }
 function runDiff() { return (G && G.fixed && G.scene !== 'menu') ? 'normal' : (DIFF[save.difficulty] ? save.difficulty : 'normal'); }
 function migrateBest() { if (save.bestBy) return; save.bestBy = {}; if (save.best > 0) save.bestBy[DIFF[save.difficulty] ? save.difficulty : 'normal'] = { s: save.best, d: save.bestDist || 0, t: save.bestT || 0 }; }
-function bestFor(dk) { migrateBest(); return save.bestBy[dk] || null; }
+function bestFor(dk) { migrateBest(); if (dk === 'all') { const r = myRow(); return r.best ? { s: r.best, d: r.bestDist || 0, t: 0 } : null; } return save.bestBy[dk] || null; }
 function logRunByDiff(sc, dist) { migrateBest(); const dk = runBK(), b = save.bestBy[dk]; if (!b || sc > b.s) { save.bestBy[dk] = { s: sc, d: dist, t: Date.now() }; return true; } return false; }
 function allTimeBest() { migrateBest(); let top = null; for (const k of Object.keys(save.bestBy)) { const b = save.bestBy[k]; if (b && (!top || b.s > top.s)) top = Object.assign({ k }, b); } return top; }
 var boardDK = null; // which difficulty the leaderboard shows (starts on the one you play)
-function setDifficulty(k) { if (!DIFF[k]) return; save.difficulty = k; persist(); sfx('click'); try { buildModes(); buildSettings(); } catch (e) {} boardDK = boardKey(k, runSpeed()); refreshMenu(); toast('Difficulty: ' + DIFF[k].name, DIFF[k].score > 1 ? 'Scores x' + DIFF[k].score : '', 1000); }
+function setDifficulty(k) { if (!DIFF[k]) return; save.difficulty = k; persist(); sfx('click'); try { buildModes(); buildSettings(); } catch (e) {} refreshMenu(); toast('Difficulty: ' + DIFF[k].name, DIFF[k].score > 1 ? 'Scores x' + DIFF[k].score : '', 1000); }
 function syncBoardDiff() {
-  const dk = boardDK || runBK();
+  const dk = boardDK || 'all';
   document.querySelectorAll('#boardDiff button').forEach(b => b.classList.toggle('on', b.dataset.bd === bkDiff(dk)));
   document.querySelectorAll('#boardSpd button').forEach(b => b.classList.toggle('on', b.dataset.bs === bkSpd(dk)));
-  $('boardDiff').style.display = boardMode === 'friends' ? 'none' : ''; $('boardSpd').style.display = boardMode === 'friends' ? 'none' : ''; syncBoardPer();
+  $('boardDiff').style.display = boardMode === 'friends' ? 'none' : ''; $('boardSpd').style.display = boardMode === 'friends' || dk === 'all' ? 'none' : ''; syncBoardPer();
   const at = allTimeBest();
   $('allBest').innerHTML = '<div><small>🏅 HIGHEST SCORE EVER</small><span></span></div><b></b>';
   $('allBest').querySelector('span').textContent = at ? bkName(at.k) + ' · ' + (at.d || 0).toLocaleString() + ' m' + (at.t ? ' · ' + new Date(at.t).toLocaleDateString() : '') : 'Play an Infinite Run to set one';
   $('allBest').querySelector('b').textContent = at ? at.s.toLocaleString() : '-';
   return dk;
 }
-document.querySelectorAll('#boardDiff button').forEach(b => b.onclick = () => { sfx('click'); boardDK = boardKey(b.dataset.bd, bkSpd(boardDK || runBK())); buildBoard(); });
-document.querySelectorAll('#boardSpd button').forEach(b => b.onclick = () => { sfx('click'); boardDK = boardKey(bkDiff(boardDK || runBK()), b.dataset.bs); buildBoard(); });
+document.querySelectorAll('#boardDiff button').forEach(b => b.onclick = () => { sfx('click'); boardDK = b.dataset.bd === 'all' ? 'all' : boardKey(b.dataset.bd, boardDK && boardDK !== 'all' ? bkSpd(boardDK) : 'normal'); buildBoard(); });
+document.querySelectorAll('#boardSpd button').forEach(b => b.onclick = () => { sfx('click'); boardDK = boardKey(boardDK && boardDK !== 'all' ? bkDiff(boardDK) : runDiff(), b.dataset.bs); buildBoard(); });
 /* ---- leaderboard periods: All-time (default) / This month / This week / Today, plus the run to beat ---- */
 var BOARD_PER = { all: 'All-time', month: 'This month', week: 'This week', day: 'Today' };
 function boardPer() { return BOARD_PER[save.boardPer] ? save.boardPer : 'all'; }
@@ -6486,7 +6575,17 @@ function perKeys(t) { // UTC, so every player in the world is on the same day / 
   return { day: iso.slice(0, 10), week: 'W' + mon.toISOString().slice(0, 10), month: iso.slice(0, 7) }; }
 function logRunPeriods(sc) { const dk = runBK(), K = perKeys(); save.pb = save.pb || {}; const p = save.pb[dk] || (save.pb[dk] = {}); let ch = false;
   for (const per of ['day', 'week', 'month']) { if (p[per] !== K[per]) { p[per] = K[per]; p[per + 'S'] = sc; ch = true; } else if (sc > (p[per + 'S'] || 0)) { p[per + 'S'] = sc; ch = true; } } return ch; }
-function myPeriodBest(dk, per) { if (per === 'all') { const b = bestFor(dk); return b ? b.s : 0; } const p = (save.pb || {})[dk], K = perKeys(); return p && p[per] === K[per] ? p[per + 'S'] || 0 : 0; }
+// your row on the main (all settings) board; kept up to date after every Infinite Run that counts
+function myRow() { if (save.pRow && save.pRow.v === 2) return save.pRow;
+  const at = allTimeBest(), K = perKeys(), r = { v: 2, best: at ? at.s : 0, bestDist: at ? at.d || 0 : 0, bestDiff: at ? at.k : 'normal', day: K.day, dayS: 0, week: K.week, weekS: 0, month: K.month, monthS: 0, dirty: at ? 1 : 0 };
+  for (const k in (save.pb || {})) { const p = save.pb[k]; if (p) for (const per of ['day', 'week', 'month']) if (p[per] === K[per]) r[per + 'S'] = Math.min(r.best, Math.max(r[per + 'S'], p[per + 'S'] || 0)); }
+  return (save.pRow = r); }
+function noteBoardRun(sc, dist, dk) { const r = myRow(), K = perKeys(); let ch = false;
+  if (sc > r.best) { r.best = sc; r.bestDist = dist; r.bestDiff = dk; ch = true; }
+  for (const per of ['day', 'week', 'month']) { if (r[per] !== K[per]) { r[per] = K[per]; r[per + 'S'] = sc; ch = true; } else if (sc > (r[per + 'S'] || 0)) { r[per + 'S'] = sc; ch = true; } }
+  if (ch) r.dirty = 1; return ch; }
+function myPeriodBest(dk, per) { if (dk === 'all') { const r = myRow(), K = perKeys(); return per === 'all' ? r.best : r[per] === K[per] ? r[per + 'S'] || 0 : 0; }
+  if (per === 'all') { const b = bestFor(dk); return b ? b.s : 0; } const p = (save.pb || {})[dk], K = perKeys(); return p && p[per] === K[per] ? p[per + 'S'] || 0 : 0; }
 function syncBoardPer() { const per = boardPer(); document.querySelectorAll('#boardPer button').forEach(b => b.classList.toggle('on', b.dataset.bp === per)); $('boardPer').style.display = boardMode === 'friends' ? 'none' : ''; return per; }
 document.querySelectorAll('#boardPer button').forEach(b => b.onclick = () => { sfx('click'); save.boardPer = b.dataset.bp; persist(); buildBoard(); });
 function showToBeat(rows, dk) {
@@ -6619,17 +6718,34 @@ const MORE_TILES = [ // [icon, label, button it presses, element with its live s
 const MORE_UNLOCK = { bSpin: [2, 8], bEvents: [2, 8], bTrophies: [2, 10], bPass: [3, 15], bLeague: [3, 15] };
 function moreLocked(btn) { const u = MORE_UNLOCK[btn]; if (!u) return 0; const runs = save.runsTotal || 0; return playDays() >= u[0] || runs >= u[1] ? 0 : u[1] - runs; }
 let moreReturn = false; // Back on a screen opened from More goes back to More
+function moreTile([icon, label, btn], fromHome) {
+  const t = document.createElement('button'); t.className = 'mTile'; t.dataset.btn = btn; t.innerHTML = '<i></i><b></b><small></small><em class="badge"></em>';
+  t.querySelector('i').textContent = icon; t.querySelector('b').textContent = label;
+  t.onclick = e => { e.stopPropagation(); initAudio(); const lk = moreLocked(btn); if (lk) { sfx('deny'); toast('🔒 ' + label, 'Unlocks after ' + lk + ' more run' + (lk > 1 ? 's' : '') + ' (or come back tomorrow)', 1600); return; } $(btn).click(); if (!fromHome && curScreen && curScreen !== 'sMenu' && curScreen !== 'sMore') moreReturn = true; setTimeout(syncMore, 50); };
+  return t; }
 function buildMore() { const g = $('moreGrid'); if (!g) return; g.innerHTML = '';
-  for (const [icon, label, btn, sub, badge, hot, only] of MORE_TILES) { if (only === 'web' && !IS_WEB) continue; if (!$(btn)) continue;
-    const t = document.createElement('button'); t.className = 'mTile'; t.dataset.btn = btn; t.innerHTML = '<i></i><b></b><small></small><em class="badge"></em>';
-    t.querySelector('i').textContent = icon; t.querySelector('b').textContent = label;
-    t.onclick = e => { e.stopPropagation(); const lk = moreLocked(btn); if (lk) { sfx('deny'); toast('🔒 ' + label, 'Unlocks after ' + lk + ' more run' + (lk > 1 ? 's' : '') + ' (or come back tomorrow)', 1600); return; } $(btn).click(); if (curScreen && curScreen !== 'sMenu' && curScreen !== 'sMore') moreReturn = true; setTimeout(syncMore, 50); };
-    g.appendChild(t); }
+  for (const tl of MORE_TILES) { if (tl[6] === 'web' && !IS_WEB) continue; if (!$(tl[2])) continue; g.appendChild(moreTile(tl)); }
   syncMore(); }
+// ---- wide browser windows: records on the left of the runner, today's extras on the right ----
+const HOME_QUICK = ['bFree', 'bMissions', 'bSpin', 'bEvents', 'bMLocker', 'bPass'];
+const WIDE_MQ = window.matchMedia ? matchMedia('(min-width: 1100px) and (min-height: 600px)') : { matches: false };
+function placeHomeCards() { const wide = IS_WEB && WIDE_MQ.matches, slot = $('mRecSlot'), hg = document.querySelector('.hGoal'); if (!slot || !hg) return;
+  document.body.classList.toggle('homeWide', wide);
+  // the world and school record cards move into the left column (both show there); back in the middle on small screens
+  for (const id of wide ? ['mWorld', 'mSchool'] : ['mSchool', 'mWorld']) { const el = $(id), to = wide ? slot : hg; if (el && el.parentNode !== to) to.appendChild(el); }
+  if (wide && $('mQuick') && !$('mQuick').children.length) buildQuick(); }
+function buildQuick() { const g = $('mQuick'); if (!g) return; g.innerHTML = ''; for (const b of HOME_QUICK) { const tl = MORE_TILES.find(x => x[2] === b); if (tl && $(b)) g.appendChild(moreTile(tl, true)); } syncMore(); }
+function syncHomeSide() { if (!document.body.classList.contains('homeWide')) return;
+  const t = myPeriodBest('all', 'day'); $('mTodayTxt').textContent = t > 0 ? t.toLocaleString() : 'Play to set one!';
+  $('mSideDiff').textContent = DIFF[runDiff()].name + ' · ' + SPEEDS[runSpeed()].name + ' speed ›'; }
+try { if (WIDE_MQ.addEventListener) WIDE_MQ.addEventListener('change', () => { placeHomeCards(); syncHomeSide(); }); placeHomeCards(); } catch (e) {}
+$('mSideRanks').onclick = e => { e.stopPropagation(); boardMode = Online.ready() ? 'world' : 'local'; openRanks.done = 1; openRanks(); };
+$('mSideDiff').onclick = e => { e.stopPropagation(); $('bModes').click(); };
+$('mSideMore').onclick = e => { e.stopPropagation(); $('bMore').click(); };
+$('mTodayCard').onclick = e => { e.stopPropagation(); save.boardPer = 'day'; $('mSideRanks').click(); };
 function moreHot() { let n = 0; for (const tl of MORE_TILES) { if (moreLocked(tl[2])) continue; try { if (tl[5] && tl[5]()) n++; } catch (e) {} } return n; }
 function syncMore() { const n = moreHot(), b = $('moreBadge'); if (b) { b.textContent = n ? String(n) : ''; b.classList.toggle('on', n > 0); }
-  const g = $('moreGrid'); if (!g) return;
-  for (const t of g.children) { const tl = MORE_TILES.find(x => x[2] === t.dataset.btn); if (!tl) continue;
+  for (const g of [$('moreGrid'), $('mQuick')]) if (g) for (const t of g.children) { const tl = MORE_TILES.find(x => x[2] === t.dataset.btn); if (!tl) continue;
     { const lk = moreLocked(tl[2]); t.classList.toggle('locked', !!lk); if (lk) { t.querySelector('small').textContent = '🔒 ' + lk + ' more run' + (lk > 1 ? 's' : ''); const tb = t.querySelector('.badge'); tb.textContent = ''; tb.classList.remove('on'); t.classList.remove('hot'); continue; } }
     const sub = tl[3] && $(tl[3]); t.querySelector('small').textContent = sub ? sub.textContent : '';
     const bd = tl[4] && $(tl[4]), tb = t.querySelector('.badge'); const on = !!(bd && bd.classList.contains('on') && bd.textContent); tb.textContent = on ? bd.textContent : ''; tb.classList.toggle('on', on);
@@ -6652,8 +6768,9 @@ async function saveCryptoKey() { if (_saveKey) return _saveKey; const raw = awai
 const b64u = u => { let bin = ''; for (let i = 0; i < u.length; i += 8192) bin += String.fromCharCode.apply(null, u.subarray(i, i + 8192)); return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); };
 const unb64u = t => { const bin = atob(t.replace(/-/g, '+').replace(/_/g, '/')), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return u; };
 const gz = async (u, dir) => new Uint8Array(await new Response(new Blob([u]).stream().pipeThrough(dir ? new CompressionStream('gzip') : new DecompressionStream('gzip'))).arrayBuffer());
-async function packSave() {
+async function packSave(forCloud) {
   const raw = JSON.parse(JSON.stringify(save)); delete raw.admin; delete raw.adminGod;
+  if (forCloud) { delete raw.fbAuth; delete raw.gLink; delete raw.age; delete raw.quality; } // the cloud copy never holds a login or this device's settings
   // keep who you are online (your player id and leaderboard login) but not the one-hour access token: the new browser
   // swaps the long-lived login for a fresh token, so your scores, school and friend code stay yours
   if (raw.fbAuth) raw.fbAuth = { uid: raw.fbAuth.uid, refresh: raw.fbAuth.refresh, exp: 0 };
@@ -6661,12 +6778,74 @@ async function packSave() {
   const iv = crypto.getRandomValues(new Uint8Array(12)), data = await gz(new TextEncoder().encode(JSON.stringify(raw)), true);
   const ct = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv, additionalData: new TextEncoder().encode('HD3') }, await saveCryptoKey(), data));
   const out = new Uint8Array(12 + ct.length); out.set(iv); out.set(ct, 12); return 'HD3.' + b64u(out); }
+async function readSave(code) { const t = String(code || '').trim().replace(/\s+/g, ''); if (!t.startsWith('HD3.')) return null;
+  try { const u = unb64u(t.slice(4)); if (u.length < 30) return null;
+    const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: u.subarray(0, 12), additionalData: new TextEncoder().encode('HD3') }, await saveCryptoKey(), u.subarray(12));
+    const d = JSON.parse(new TextDecoder().decode(await gz(new Uint8Array(pt), false))); return d && typeof d === 'object' && typeof d.bank === 'number' && d.owned ? d : null; } catch (e) { return null; } }
 async function unpackSave(code) { const t = String(code || '').trim().replace(/\s+/g, ''); if (!t.startsWith('HD3.')) return false;
   try { const u = unb64u(t.slice(4)); if (u.length < 30) return false;
     const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: u.subarray(0, 12), additionalData: new TextEncoder().encode('HD3') }, await saveCryptoKey(), u.subarray(12));
     const d = JSON.parse(new TextDecoder().decode(await gz(new Uint8Array(pt), false)));
     return loadSaveCode('HD1.' + btoa(unescape(encodeURIComponent(JSON.stringify(d))))); } catch (e) { return false; } }
-async function openSaveCode() { initAudio(); sfx('click'); $('svIn').value = ''; $('svOut').value = '…'; showScreen('sSave'); $('svOut').value = await packSave(); }
+async function openSaveCode() { initAudio(); sfx('click'); $('svIn').value = ''; $('svOut').value = '…'; GSync.paint(); showScreen('sSave'); $('svOut').value = await packSave(); }
+/* ---------- automatic saving ----------
+   Every change is written to this browser at once (localStorage, with IndexedDB and cookie copies), so there is nothing
+   to press. Players 13+ can also tap "Continue with Google": their Hallway Dash player is linked to that Google account
+   and the (encrypted) save is kept in saves/{uid} and synced by itself after every run, so any browser where they sign in
+   picks up the same progress. On a new browser, Google can sign them back in by itself (One Tap with auto-select). */
+var GSync = {
+  clientId: () => (window.GOOGLE_SIGNIN && GOOGLE_SIGNIN.clientId) || '',
+  on() { return IS_WEB && !!this.clientId() && Online.ready() && !!save.age && save.age !== 'child' && location.protocol === 'https:'; },
+  linked: () => !!save.gLink,
+  gis: null,
+  loadGis() { if (this.gis) return this.gis; this.gis = new Promise((res, rej) => { if (window.google && google.accounts && google.accounts.id) return res(); const sc = document.createElement('script'); sc.src = 'https://accounts.google.com/gsi/client'; sc.async = true; sc.onload = () => res(); sc.onerror = () => { this.gis = null; rej(new Error('gis')); }; document.head.appendChild(sc); }); return this.gis; },
+  async init() { await this.loadGis(); if (this.inited) return; this.inited = 1;
+    google.accounts.id.initialize({ client_id: this.clientId(), callback: r => this.onCred(r && r.credential), auto_select: true, itp_support: true, use_fedcm_for_prompt: true, cancel_on_tap_outside: true, context: 'signin' }); },
+  // On a new browser, offer (and with auto-select, do) the sign-in by itself, at most once every 3 days, for 16+ players
+  async autoPrompt() { if (!this.on() || this.linked() || save.age !== 'adult' || Date.now() - (save.gAsk || 0) < 3 * 86400000) return;
+    save.gAsk = Date.now(); persist(); try { await this.init(); google.accounts.id.prompt(); } catch (e) {} },
+  async button(host) { if (!host) return; host.innerHTML = ''; try { await this.init(); google.accounts.id.renderButton(host, { theme: 'filled_blue', size: 'large', text: 'continue_with', shape: 'pill', width: 280 }); } catch (e) { host.textContent = 'Google sign-in couldn\'t load. Check your connection.'; } },
+  async idp(cred, linkTok) { const r = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key=' + encodeURIComponent(ONLINE_BOARD.apiKey), { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(Object.assign({ postBody: 'id_token=' + encodeURIComponent(cred) + '&providerId=google.com', requestUri: location.origin, returnSecureToken: true, returnIdpCredential: true }, linkTok ? { idToken: linkTok } : {})) });
+    const j = await r.json().catch(() => ({})); return r.ok && !j.errorMessage && j.idToken ? j : null; },
+  async onCred(cred) { if (!cred) return;
+    try { let a = null; try { a = await Online.token(); } catch (e) {}
+      // link this browser's player to the Google account; if that account already has a player, sign in as that one
+      let j = a ? await this.idp(cred, a.idToken) : null; if (!j) j = await this.idp(cred); if (!j) throw new Error('sign-in');
+      const switched = !a || j.localId !== a.uid;
+      save.fbAuth = { uid: j.localId, idToken: j.idToken, refresh: j.refreshToken, exp: Date.now() + (+j.expiresIn || 3600) * 1000 };
+      save.gLink = { t: Date.now(), syncT: 0 }; if (switched && save.pRow) save.pRow.dirty = 1; persist(); Analytics.log('google_link', { switched: switched ? 1 : 0 });
+      await this.pull(true); this.paint(); syncSavePill();
+    } catch (e) { toast('Couldn\'t sign in with Google', 'Check your connection and try again', 2000); } },
+  progress: sv => Cloud.progress(sv),
+  async pull(fromSignIn) { if (!this.linked() || !Online.ready()) return;
+    let doc = null; try { const a = await Online.token(); doc = fsDoc(await fsReq('GET', docPath('saves', a.uid), a.idToken)); } catch (e) { if (e.status === 404) { await this.push(true); if (fromSignIn) toast('☁️ Signed in with Google', 'Your progress now saves to your account by itself', 2400); return; } return; }
+    const remote = await readSave(doc.d); if (!remote) return this.push(true);
+    // the save with more progress wins (no questions): signing in on a new browser loads your account's save
+    const mine = this.progress(save), theirs = this.progress(remote), newer = (doc.t || 0) > ((save.gLink && save.gLink.syncT) || 0);
+    if (theirs > mine && (newer || fromSignIn)) {
+      return this.adopt(remote, doc.t); }
+    if (fromSignIn) toast('☁️ Signed in with Google', 'Your progress now saves to your account by itself', 2400);
+    return this.push(true); },
+  adopt(remote, t) { const keep = { age: save.age, quality: save.quality, fbAuth: save.fbAuth, gLink: { t: save.gLink.t, syncT: t || Date.now() } };
+    const d = Object.assign(loadSave(), remote, keep); if (d.pRow) d.pRow.dirty = 1;
+    if (loadSaveCode('HD1.' + btoa(unescape(encodeURIComponent(JSON.stringify(d)))))) { toast('☁️ Welcome back!', 'Loading your saved progress…', 1400); setTimeout(() => location.reload(), 1000); } },
+  async push(force) { if (!this.linked() || !Online.ready() || saveSwapped) return; if (!force && Date.now() - (this.lastPush || 0) < 20000) return this.soon(); this.lastPush = Date.now();
+    try { const a = await Online.token(), t = Date.now(); await fsReq('PATCH', docPath('saves', a.uid), a.idToken, { fields: { d: { stringValue: await packSave(true) }, t: { integerValue: String(t) }, p: { doubleValue: this.progress(save) } } });
+      save.gLink.syncT = t; persist(true); syncSavePill(); } catch (e) {} },
+  soon() { if (!this.linked()) return; clearTimeout(this.soonT); this.soonT = setTimeout(() => this.push(), 15000); },
+  signOut() { if (!confirm('Sign out of Google on this browser? Your progress stays here, but stops saving to your Google account.')) return; try { google.accounts.id.disableAutoSelect(); } catch (e) {} delete save.gLink; persist(); this.paint(); syncSavePill(); },
+  paint() { const box = $('svGoogle'); if (!box) return; const can = this.on(); box.style.display = can ? '' : 'none'; if (!can) return;
+    $('svGIn').style.display = this.linked() ? 'none' : ''; $('svGOn').style.display = this.linked() ? '' : 'none';
+    if (this.linked()) $('svGWhen').textContent = save.gLink.syncT ? 'Last synced ' + new Date(save.gLink.syncT).toLocaleString() : 'Syncing…'; else this.button($('svGBtn')); }
+};
+function syncSavePill() { const b = $('bSaveHome'); if (!b) return; const g = GSync.linked(); b.classList.toggle('synced', g); $('saveIco').textContent = g ? '☁️' : '✓'; $('saveTxt').textContent = g ? 'Synced' : 'Saved';
+  b.title = g ? 'Your progress saves to your Google account by itself' : 'Your progress saves in this browser by itself'; }
+$('svGSync').onclick = async () => { sfx('click'); await GSync.push(true); GSync.paint(); toast('☁️ Synced', 'Your progress is saved to your Google account', 1400); };
+$('svGOut').onclick = () => { sfx('click'); GSync.signOut(); };
+syncSavePill();
+setTimeout(() => { if (GSync.linked()) GSync.pull(false); else if (save.runsTotal > 0) GSync.autoPrompt(); }, 4000);
+addEventListener('visibilitychange', () => { if (document.hidden && GSync.linked()) GSync.push(); });
 $('bSaveHome').onclick = e => { e.stopPropagation(); openSaveCode(); };
 $('svOut').onclick = () => $('svOut').select();
 $('svCopy').onclick = async () => { const c = $('svOut').value.length > 8 ? $('svOut').value : await packSave(); const ok = await copyText(c); sfx(ok ? 'coin' : 'deny');
@@ -6748,22 +6927,29 @@ const docPath = (c, id) => '/' + c + '/' + encodeURIComponent(id);
 
 /* ---- schools list + moderator switches (cached) ---- */
 var SCHOOL_SEED = [{ id: 'nahs', name: 'NAHS', status: 'approved' }];
-var SCHOOLS = { list: SCHOOL_SEED.slice(), t: 0 }, APPCFG = { schools: true, requests: true, t: 0 };
+var SCHOOLS = { list: SCHOOL_SEED.slice(), t: 0 }, APPCFG = { schools: true, requests: true, autoApprove: true, t: 0 };
 async function loadSchools(force) {
   if (!force && SCHOOLS.t && Date.now() - SCHOOLS.t < 120000) return SCHOOLS.list;
-  const j = await fsReq('GET', '/schools', null, null, 'pageSize=300'); const all = (j.documents || []).map(fsDoc);
-  const list = all.filter(x => x.status === 'approved'); for (const s of SCHOOL_SEED) if (!all.find(x => x.id === s.id)) list.push(s);
-  list.sort((a, b) => a.id === 'nahs' ? -1 : b.id === 'nahs' ? 1 : a.name.localeCompare(b.name));
-  SCHOOLS = { list, t: Date.now() };
-  if (save.school && !list.find(x => x.id === save.school)) { save.school = ''; persist(); toast('Your school was taken off the boards', 'Pick another one any time', 2200); }
-  return list;
+  if (loadSchools.p) return loadSchools.p;
+  loadSchools.p = (async () => {
+    const all = []; let tok = '';
+    for (let i = 0; i < 10; i++) { let j; try { j = await fsReq('GET', '/schools', null, null, 'pageSize=300' + (tok ? '&pageToken=' + encodeURIComponent(tok) : '')); } catch (e) { if (e.status === 403) { SCHOOLS.denied = 1; try { syncSchoolCard(); } catch (e2) {} } throw e; } all.push(...(j.documents || []).map(fsDoc)); tok = j.nextPageToken; if (!tok) break; }
+    const uid = save.fbAuth && save.fbAuth.uid, wasPending = schoolPending();
+    // approved schools, plus the one you added if it is still waiting for approval
+    const list = all.filter(x => x.status === 'approved' || (x.status === 'pending' && uid && x.by === uid)); for (const s of SCHOOL_SEED) if (!all.find(x => x.id === s.id)) list.push(s);
+    list.sort((a, b) => a.id === 'nahs' ? -1 : b.id === 'nahs' ? 1 : a.name.localeCompare(b.name));
+    const wasDenied = SCHOOLS.denied; SCHOOLS = { list, t: Date.now() }; if (wasDenied) try { syncSchoolCard(); } catch (e) {}
+    if (save.school && !list.find(x => x.id === save.school)) { save.school = ''; persist(); myRow().dirty = 1; Online.syncPlayer(); toast('Your school was taken off the boards', 'Pick another one any time', 2200); }
+    else if (save.school && wasPending && !schoolPending()) toast('🏫 ' + schoolName(save.school) + ' was approved!', 'Classmates can find it and join now', 2600);
+    return list; })();
+  try { return await loadSchools.p; } finally { loadSchools.p = null; }
 }
 function APPCFG_LOAD() { return loadAppCfg(); }
-async function loadAppCfg() { if (APPCFG.t && Date.now() - APPCFG.t < 300000) return APPCFG; try { const d = fsDoc(await fsReq('GET', '/config/app')); APPCFG = { schools: d.schools !== false, requests: d.requests !== false, t: Date.now() }; } catch (e) { APPCFG = { schools: true, requests: true, t: e.status === 404 ? Date.now() : 0 }; } return APPCFG; }
+async function loadAppCfg() { if (APPCFG.t && Date.now() - APPCFG.t < 300000) return APPCFG; try { const d = fsDoc(await fsReq('GET', '/config/app')); APPCFG = { schools: d.schools !== false, requests: d.requests !== false, autoApprove: d.autoApprove !== false, t: Date.now() }; } catch (e) { APPCFG = { schools: true, requests: true, autoApprove: true, t: e.status === 404 ? Date.now() : 0 }; } return APPCFG; }
 function mySchool() { return save.school || ''; }
 function schoolName(id) { const s = SCHOOLS.list.find(x => x.id === id); return s ? s.name : String(id || '').toUpperCase(); }
 async function retagRuns() { // your existing board rows move to the new school straight away
-  if (!Online.ready() || !save.fbAuth) return;
+  if (!Online.ready() || !save.fbAuth) return; myRow().dirty = 1; Online.syncPlayer();
   try { const a = await Online.token(); await Promise.allSettled(ALL_BK.filter(k => save.pb && save.pb[k] && save.pb[k].sent).map(k => fsReq('PATCH', docPath('runs', a.uid + '_' + k), a.idToken, fsEnc({ school: mySchool() }), 'updateMask.fieldPaths=school&currentDocument.exists=true'))); } catch (e) {}
 }
 function withSchoolRules(then) {
@@ -6773,65 +6959,87 @@ function withSchoolRules(then) {
   $('rulesNo').onclick = () => $('schoolRules').classList.remove('show');
   $('rulesTerms').onclick = () => { try { $('privTerms').click(); } catch (e) {} };
 }
-function joinSchool(id) { withSchoolRules(async () => { save.school = id; save.schoolView = 'kids'; persist(); $('boardSub').textContent = 'Joining...'; await retagRuns(); toast('🏫 You joined ' + schoolName(id) + '!', 'Your Infinite Runs now count for your school', 2000); Analytics.log('school_join', { school: id }); buildBoard(); }); }
-async function leaveSchool() { save.school = ''; persist(); buildBoard(); await retagRuns(); }
-async function requestSchool(raw) {
-  const name = cleanSchoolName(raw); if (!name) { toast('That school name isn\'t allowed', 'Use the school\'s real name (3+ letters), no bad words or numbers', 2200); return; }
-  if (SCHOOLS.list.some(s => s.name.toLowerCase() === name.toLowerCase())) { toast('That school is already on the list', 'Tap Join next to it', 1600); return; }
-  withSchoolRules(async () => {
-    try { const a = await Online.token(); await fsReq('PATCH', docPath('schoolRequests', a.uid), a.idToken, fsEnc({ name, ts: new Date() })); save.schoolReq = { name, t: Date.now() }; persist(); toast('Sent for approval', name + ' shows up once the moderator approves it', 2400); buildBoard(); }
-    catch (e) { toast('Couldn\'t send it', e.status === 403 ? 'New schools are paused right now, or the name isn\'t allowed' : 'Check your connection', 2000); }
-  });
+function joinSchool(id) { withSchoolRules(async () => { $('boardSub').textContent = 'Joining...'; await setMySchool(id); toast('🏫 You joined ' + schoolName(id) + '!', 'Your Infinite Runs now count for your school', 2000); Analytics.log('school_join', { school: id }); }); }
+async function leaveSchool() { save.school = ''; persist(); syncSchoolCard(); buildBoard(); await retagRuns(); }
+// Add your school: it becomes your school straight away. It's on the boards for everyone at once, or (if the owner turned
+// "approve new schools first" on) only for you until the moderator approves it. One new school per player.
+const docName = (c, id) => 'projects/' + ONLINE_BOARD.projectId + '/databases/(default)/documents/' + c + '/' + id;
+async function addSchool(raw, quiet) {
+  const name = cleanSchoolName(raw); if (!name) { if (!quiet) toast('That school name isn\'t allowed', 'Use the school\'s real name (3+ letters), no bad words or long numbers', 2200); return false; }
+  await loadSchools().catch(() => {});
+  const same = SCHOOLS.list.find(s => s.name.toLowerCase() === name.toLowerCase() || s.id === slugify(name));
+  if (same) { if (quiet) return false; return new Promise(res => withSchoolRules(async () => { await setMySchool(same.id); toast('🏫 You joined ' + same.name + '!', 'It was already on the list. Your runs count for it now', 2400); res(true); })); }
+  const go = async () => {
+    try { const a = await Online.token(), cfg = await loadAppCfg(); if (cfg.requests === false) { if (!quiet) toast('Adding schools is paused right now', 'Try again later', 2000); return false; }
+      let id = slugify(name); for (let k = 2; ; k++) { try { await fsReq('GET', docPath('schools', id)); } catch (e) { if (e.status === 404) break; throw e; } if (k > 9) throw new Error('no free id'); id = slugify(name).slice(0, 21) + '-' + k; }
+      const status = cfg.autoApprove === false ? 'pending' : 'approved';
+      await fsReq('POST', ':commit', a.idToken, { writes: [
+        { update: Object.assign({ name: docName('schools', id) }, fsEnc({ name, status, by: a.uid, ts: new Date() })), currentDocument: { exists: false } },
+        { update: Object.assign({ name: docName('schoolMade', a.uid) }, fsEnc({ school: id })), currentDocument: { exists: false } }] });
+      SCHOOLS.list.push({ id, name, status, by: a.uid }); SCHOOLS.list.sort((x, y) => x.id === 'nahs' ? -1 : y.id === 'nahs' ? 1 : x.name.localeCompare(y.name));
+      save.schoolReq = null; await setMySchool(id); Analytics.log('school_add', { school: id });
+      toast('🏫 ' + name + ' added!', status === 'approved' ? 'You\'re in. Every Infinite Run now counts for your school' : 'You\'re in. Classmates can find it once the moderator approves it', 2800); return true;
+    } catch (e) {
+      if (e.status === 403 || e.status === 409 || e.status === 400) { let made = null; try { const a = await Online.token(); made = fsDoc(await fsReq('GET', docPath('schoolMade', a.uid), a.idToken)); } catch (e2) {}
+        if (made && made.school) { await loadSchools(true).catch(() => {}); const mine = SCHOOLS.list.find(s => s.id === made.school);
+          if (mine) { await setMySchool(mine.id); if (!quiet) toast('🏫 You\'re back in ' + mine.name, 'You already added a school, so you were put back in it', 2400); return true; }
+          if (!quiet) toast('You already added a school', 'Each player can add one. Ask a classmate who hasn\'t yet, or pick one from the list', 2600); return false; }
+        if (!quiet) toast('Couldn\'t add that school', 'The name isn\'t allowed, or adding schools is paused right now', 2400); return false; }
+      if (!quiet) toast('Couldn\'t add it', 'Check your connection and try again', 2000); return false; }
+  };
+  if (quiet) return go();
+  return new Promise(res => withSchoolRules(async () => res(await go())));
 }
-async function checkSchoolReq() { // did the moderator approve the school you asked for?
-  if (!save.schoolReq || !save.fbAuth) return; const a = save.fbAuth;
-  try { await fsReq('GET', docPath('schoolRequests', a.uid), (await Online.token()).idToken); }
-  catch (e) { if (e.status !== 404) return; const req = save.schoolReq; save.schoolReq = null; persist();
-    const s = SCHOOLS.list.find(x => x.by === a.uid) || SCHOOLS.list.find(x => x.name.toLowerCase() === req.name.toLowerCase());
-    if (s) { toast('🏫 ' + s.name + ' was approved!', 'You\'re in. Run to put it on the map', 2600); if (!save.school) { save.school = s.id; persist(); retagRuns(); } }
-    else toast('Your school request wasn\'t approved', 'Check the spelling and use the school\'s real name', 2600); }
-}
-
+async function setMySchool(id) { save.school = id; save.schoolView = 'kids'; save.schoolAsked = 1; persist(); delete SREC[id + '|all']; syncSchoolCard(); await retagRuns(); if (curScreen === 'sRanks') buildBoard(); }
+async function checkSchoolReq() { // players who asked for a school before schools could be added straight away: add it for them now
+  if (!save.schoolReq || !save.fbAuth || save.school || !schoolsOn()) return; const req = save.schoolReq;
+  const ok = await addSchool(req.name, true).catch(() => false); if (ok || save.school) { save.schoolReq = null; persist(); toast('🏫 ' + schoolName(save.school) + ' is your school now', 'The school you asked for is on the boards', 2600); } }
 /* ---- the School tab on the leaderboard ---- */
 function mk(tag, cls, txt) { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
 function chipBtn(txt, fn, cls) { const b = mk('button', 'chip' + (cls ? ' ' + cls : ''), txt); b.onclick = e => { e.stopPropagation(); sfx('click'); fn(); }; return b; }
 var SB_GEN = 0;
+// the school picker (search, join, add yours) used on the My school tab when you don't have one yet
+function schoolPicker(box, cfg) {
+  box.appendChild(mk('div', '', 'Join your school and every Infinite Run you play counts for it. Use a nickname, never your real name.'));
+  const fr = mk('div', 'frow'), q = mk('input'); q.placeholder = 'Search schools'; q.maxLength = 40; q.autocomplete = 'off'; fr.appendChild(q); box.appendChild(fr);
+  const lst = mk('div', 'schoolPick'); box.appendChild(lst);
+  const draw = () => { lst.innerHTML = ''; const t = q.value.trim().toLowerCase(), hits = SCHOOLS.list.filter(s => !t || s.name.toLowerCase().includes(t)).slice(0, 30);
+    hits.forEach(s => { const r = mk('div', 'sRow'); r.appendChild(mk('span', '', s.name)); r.append(chipBtn('Join', () => joinSchool(s.id)), chipBtn('🚩', () => openReport({ kind: 'school', target: s.id, name: s.name }))); lst.appendChild(r); });
+    if (!hits.length && t) lst.appendChild(mk('div', '', 'No school called that yet. Add it below.')); };
+  q.oninput = () => { draw(); if (ni && !ni.dataset.touched) ni.value = q.value; }; draw();
+  let ni = null;
+  if (cfg.requests) { const ar = mk('div', 'frow'); ni = mk('input'); ni.placeholder = 'Can\'t find yours? School name'; ni.maxLength = 40; ni.autocomplete = 'off'; ni.oninput = () => { ni.dataset.touched = 1; };
+    const go = mk('button', 'btn gold small', '➕ Add my school'); go.onclick = () => addSchool(ni.value); ni.onkeydown = e => { if (e.key === 'Enter') go.click(); }; ar.append(ni, go); box.appendChild(ar); }
+}
 async function buildSchoolBoard(dk, ol) {
-  const gen = ++SB_GEN, stale = () => gen !== SB_GEN || boardMode !== 'school';
+  const mode = boardMode, gen = ++SB_GEN, stale = () => gen !== SB_GEN || boardMode !== mode || curScreen !== 'sRanks';
   const box = $('schoolBox'); box.innerHTML = ''; $('toBeat').style.display = 'none';
   if (!Online.ready()) { $('boardSub').textContent = save.age === 'child' ? 'School boards are for players 13 and up.' : 'School boards need the online leaderboard.'; return; }
   $('boardSub').textContent = 'Loading schools...';
-  const [cfg] = await Promise.all([loadAppCfg(), loadSchools().catch(() => SCHOOLS.list), checkSchoolReq()]);
-  if (stale() || curScreen !== 'sRanks') return;
-  if (!cfg.schools) { box.appendChild(mk('div', '', 'School boards are paused for a little while. Check back soon!')); $('boardSub').textContent = ''; return; }
-  const per = boardPer(), view = save.school && save.schoolView !== 'top' ? 'kids' : 'top';
-  if (save.school) {
-    const top = mk('div', 'sRow'); top.appendChild(mk('span', '', '🏫 Your school: ' + schoolName(save.school)));
-    top.append(chipBtn(view === 'kids' ? '🏆 Top schools' : '👥 My school', () => { save.schoolView = view === 'kids' ? 'top' : 'kids'; persist(); buildBoard(); }),
-      chipBtn('Change', () => { save.schoolPick = 1; leaveSchool(); }), chipBtn('🚩', () => openReport({ kind: 'school', target: save.school, name: schoolName(save.school) })));
+  const [cfg] = await Promise.all([loadAppCfg(), loadSchools(!!SCHOOLS.denied).catch(() => SCHOOLS.list), checkSchoolReq().catch(() => {})]);
+  if (stale()) return;
+  if (!cfg.schools || SCHOOLS.denied) { box.appendChild(mk('div', '', 'School boards are paused for a little while. Check back soon!')); $('boardSub').textContent = ''; return; }
+  const per = boardPer();
+  if (mode === 'school') {
+    if (!save.school) { schoolPicker(box, cfg); $('boardSub').textContent = ''; return; }
+    const top = mk('div', 'sRow'); top.appendChild(mk('span', '', '🏫 ' + schoolName(save.school) + (schoolPending() ? ' · waiting for approval' : '')));
+    top.append(chipBtn('Change school', () => { if (confirm('Leave ' + schoolName(save.school) + '? Your runs stop counting for it.')) leaveSchool(); }), chipBtn('🚩', () => openReport({ kind: 'school', target: save.school, name: schoolName(save.school) })));
     box.appendChild(top);
-  } else {
-    box.appendChild(mk('div', '', 'Join your school and every Infinite Run you play counts for it. Use a nickname, never your real name.'));
-    const fr = mk('div', 'frow'), q = mk('input'); q.placeholder = 'Search schools'; q.maxLength = 40; q.autocomplete = 'off'; fr.appendChild(q); box.appendChild(fr);
-    const lst = mk('div'); box.appendChild(lst);
-    const draw = () => { lst.innerHTML = ''; const t = q.value.trim().toLowerCase(); SCHOOLS.list.filter(s => !t || s.name.toLowerCase().includes(t)).slice(0, 30).forEach(s => { const r = mk('div', 'sRow'); r.appendChild(mk('span', '', s.name)); r.append(chipBtn('Join', () => joinSchool(s.id)), chipBtn('🚩', () => openReport({ kind: 'school', target: s.id, name: s.name }))); lst.appendChild(r); }); };
-    q.oninput = draw; draw();
-    if (save.schoolReq) box.appendChild(mk('div', '', '⏳ Waiting for approval: ' + save.schoolReq.name));
-    else if (cfg.requests) { const ar = mk('div', 'frow'), ni = mk('input'); ni.placeholder = 'Can\'t find yours? School name'; ni.maxLength = 40; ni.autocomplete = 'off'; const go = mk('button', 'btn gold small', 'Ask to add'); go.onclick = () => requestSchool(ni.value); ar.append(ni, go); box.appendChild(ar); }
   }
   $('boardSub').textContent = 'Loading...';
   try {
-    if (view === 'kids') {
+    if (mode === 'school') {
       const rows = (await Online.board(dk, per, save.school)).slice(0, 50);
       if (stale()) return; ol.innerHTML = ''; rows.forEach((r, i) => ol.appendChild(boardRow(r, i))); addReportBtns(ol, rows); showToBeat(rows, dk);
-      $('boardSub').textContent = rows.length ? 'Top ' + schoolName(save.school) + ' runners · ' + bkName(dk) + ' · ' + BOARD_PER[per] : 'Nobody from ' + schoolName(save.school) + ' is on this board ' + (per === 'all' ? 'yet' : BOARD_PER[per].toLowerCase()) + '. Be the first!';
-    } else {
+      $('boardSub').textContent = rows.length ? schoolName(save.school) + ' runners · ' + bkName(dk) + ' · ' + BOARD_PER[per] : 'Nobody from ' + schoolName(save.school) + ' is on this board ' + (per === 'all' ? 'yet' : BOARD_PER[per].toLowerCase()) + '. Play an Infinite Run to set the record!';
+    } else { // school vs school: each school's record (its best runner), with how many runners it has
       const rows = await Online.board(dk, per), by = {};
-      for (const r of rows) if (r.sch) (by[r.sch] = by[r.sch] || []).push(r.s);
-      const tops = Object.keys(by).filter(id => SCHOOLS.list.find(s => s.id === id)).map(id => { const sc = by[id].sort((a, b) => b - a); return { id, n: schoolName(id), s: sc.slice(0, 5).reduce((a, b) => a + b, 0), k: sc.length }; }).sort((a, b) => b.s - a.s).slice(0, 25);
+      for (const r of rows) if (r.sch) { const b = by[r.sch] = by[r.sch] || { id: r.sch, s: 0, n: '', k: 0 }; b.k++; if (r.s > b.s) { b.s = r.s; b.n = r.me ? (save.name || 'You') : r.n; } }
+      const tops = Object.values(by).filter(t => SCHOOLS.list.find(s => s.id === t.id && s.status !== 'pending')).sort((a, b) => b.s - a.s).slice(0, 50);
       if (stale()) return; ol.innerHTML = '';
-      tops.forEach((t, i) => { const li = boardRow({ n: t.n, s: t.s }, i); if (t.id === save.school) li.classList.add('me'); li.querySelector('.nm').appendChild(mk('small', '', t.k + ' runner' + (t.k === 1 ? '' : 's'))); ol.appendChild(li); });
-      $('boardSub').textContent = tops.length ? 'School vs school: the top 5 runs from each school added up · ' + bkName(dk) + ' · ' + BOARD_PER[per] : 'No school has a run on this board ' + (per === 'all' ? 'yet' : BOARD_PER[per].toLowerCase()) + '. Join yours and be the first!';
+      tops.forEach((t, i) => { const li = boardRow({ n: schoolName(t.id), s: t.s }, i); if (t.id === save.school) li.classList.add('me'); li.querySelector('.nm small').textContent = 'record by ' + t.n + ' · ' + t.k + ' runner' + (t.k === 1 ? '' : 's'); ol.appendChild(li); });
+      if (!save.school) { const j = mk('div', 'sRow'); j.appendChild(mk('span', '', 'Your school isn\'t on here yet.')); j.append(chipBtn('🏫 Add my school', () => { boardMode = 'school'; buildBoard(); })); box.appendChild(j); }
+      $('boardSub').textContent = tops.length ? 'School records: each school\'s best run · ' + bkName(dk) + ' · ' + BOARD_PER[per] : 'No school has a run on this board ' + (per === 'all' ? 'yet' : BOARD_PER[per].toLowerCase()) + '. Join yours and be the first!';
     }
   } catch (e) { if (!stale()) $('boardSub').textContent = 'Couldn\'t load the school board. Check your connection and try again.'; }
 }
@@ -6900,8 +7108,8 @@ function ownRow(title, sub, btns) { const r = mk('div', 'ownRow'), s = mk('span'
 const ago = t => { if (!t) return ''; const m = Math.round((Date.now() - t) / 60000); return m < 60 ? m + ' min ago' : m < 2880 ? Math.round(m / 60) + ' h ago' : Math.round(m / 1440) + ' days ago'; };
 async function ownDo(label, fn) { try { await fn(await ownTok()); toast('✓ ' + label, '', 1000); } catch (e) { toast('Didn\'t work: ' + label, e.message || '', 1800); } ownRender(ownRender.q); }
 async function runsOf(uid, tok) { return fsQuery('runs', fsEq('uid', uid), null, 50, tok); }
-async function modRename(uid, tok) { const rs = await runsOf(uid, tok); await Promise.all(rs.map(r => fsReq('PATCH', docPath('runs', r.id), tok, fsEnc({ name: 'Runner' }), 'updateMask.fieldPaths=name&currentDocument.exists=true')).concat([fsReq('PATCH', docPath('scores', uid), tok, fsEnc({ name: 'Runner' }), 'updateMask.fieldPaths=name&currentDocument.exists=true').catch(e => { if (e.status !== 404) throw e; })])); }
-async function modWipe(uid, tok) { const rs = await runsOf(uid, tok); await Promise.all(rs.map(r => fsReq('DELETE', docPath('runs', r.id), tok)).concat([fsReq('DELETE', docPath('scores', uid), tok), fsReq('DELETE', docPath('schoolRequests', uid), tok)])); }
+async function modRename(uid, tok) { const rs = await runsOf(uid, tok); await Promise.all(rs.map(r => fsReq('PATCH', docPath('runs', r.id), tok, fsEnc({ name: 'Runner' }), 'updateMask.fieldPaths=name&currentDocument.exists=true')).concat([fsReq('PATCH', docPath('players', uid), tok, fsEnc({ name: 'Runner' }), 'updateMask.fieldPaths=name&currentDocument.exists=true').catch(e => { if (e.status !== 404) throw e; }), fsReq('PATCH', docPath('scores', uid), tok, fsEnc({ name: 'Runner' }), 'updateMask.fieldPaths=name&currentDocument.exists=true').catch(e => { if (e.status !== 404) throw e; })])); }
+async function modWipe(uid, tok) { const rs = await runsOf(uid, tok); await Promise.all(rs.map(r => fsReq('DELETE', docPath('runs', r.id), tok)).concat([fsReq('DELETE', docPath('scores', uid), tok), fsReq('DELETE', docPath('players', uid), tok), fsReq('DELETE', docPath('schoolRequests', uid), tok)])); }
 async function modBan(uid, name, tok) { await fsReq('PATCH', docPath('bans', uid), tok, fsEnc({ name: String(name || '').slice(0, 40), ts: new Date() })); await modWipe(uid, tok); }
 async function modClearReports(target, tok) { const rs = await fsQuery('reports', fsEq('target', target), null, 100, tok); await Promise.all(rs.map(r => fsReq('DELETE', docPath('reports', r.id), tok))); }
 async function modSchool(id, fields, tok) { await fsReq('PATCH', docPath('schools', id), tok, fsEnc(fields), Object.keys(fields).map(k => 'updateMask.fieldPaths=' + k).join('&')); SCHOOLS.t = 0; }
@@ -6924,7 +7132,11 @@ async function ownRender(q) {
           ? [chipBtn('🙈 Hide school', () => ownDo('School hidden', async t => { await modSchool(r.target, { status: 'hidden' }, t); await modClearReports(r.target, t); }))]
           : playerBtns(r.target, r.name, t => modClearReports(r.target, t)))));
     } else if (ownTab === 'requests') {
-      const rs = await fsQuery('schoolRequests', null, 'ts', 100, tok); sub.textContent = rs.length ? 'Fix the spelling if needed, then approve. Reject anything that isn\'t a real school name.' : 'No new school requests.';
+      const [rs, pend] = await Promise.all([fsQuery('schoolRequests', null, 'ts', 100, tok), fsQuery('schools', fsEq('status', 'pending'), null, 200, tok)]);
+      sub.textContent = rs.length || pend.length ? 'Fix the spelling if needed, then approve. Reject anything that isn\'t a real school name.' : 'No new schools waiting. (New schools only wait here when "Approve new schools first" is on in Switches.)';
+      for (const r of pend) { const inp = mk('input', 'ownIn'); inp.value = r.name; inp.maxLength = 40; const row = ownRow('', 'added ' + ago(r.ts) + ' · player ' + r.by + ' · id ' + r.id, [
+        chipBtn('✅ Approve', () => { const nm = cleanSchoolName(inp.value); if (!nm) { toast('Name not allowed', '', 1200); return; } ownDo('Approved ' + nm, t => modSchool(r.id, { name: nm, status: 'approved' }, t)); }),
+        chipBtn('🙈 Reject', () => ownDo('Rejected', t => modSchool(r.id, { status: 'hidden' }, t))), chipBtn('⛔ Ban player', () => { if (confirm('Ban the player who added this?')) ownDo('Banned', async t => { await modSchool(r.id, { status: 'hidden' }, t); await modBan(r.by, r.name, t); }); })]); row.querySelector('span').prepend(inp); L.appendChild(row); }
       for (const r of rs) { const inp = mk('input', 'ownIn'); inp.value = r.name; inp.maxLength = 40; const row = ownRow('', 'asked ' + ago(r.ts) + ' · player ' + r.id, [
         chipBtn('✅ Approve', () => { const nm = cleanSchoolName(inp.value); if (!nm) { toast('Name not allowed', '', 1200); return; } ownDo('Approved ' + nm, async t => { let id = slugify(nm), k = 2; while (true) { try { await fsReq('GET', docPath('schools', id)); id = slugify(nm).slice(0, 21) + '-' + k++; } catch (e) { if (e.status === 404) break; throw e; } } await fsReq('PATCH', docPath('schools', id), t, fsEnc({ name: nm, status: 'approved', by: r.id, ts: new Date() }), 'currentDocument.exists=false'); await fsReq('DELETE', docPath('schoolRequests', r.id), t); SCHOOLS.t = 0; }); }),
         chipBtn('❌ Reject', () => ownDo('Rejected', t => fsReq('DELETE', docPath('schoolRequests', r.id), t))), chipBtn('⛔ Ban player', () => { if (confirm('Ban the player who sent this?')) ownDo('Banned', t => modBan(r.id, r.name, t)); })]); row.querySelector('span').prepend(inp); L.appendChild(row); }
@@ -6938,7 +7150,8 @@ async function ownRender(q) {
         chipBtn(r.status === 'approved' ? '🙈 Hide' : '👀 Show', () => ownDo(r.status === 'approved' ? 'Hidden' : 'Shown', t => modSchool(r.id, { status: r.status === 'approved' ? 'hidden' : 'approved' }, t))),
         chipBtn('🗑 Delete', () => { if (confirm('Delete ' + r.name + ' for good?')) ownDo('Deleted', t => fsReq('DELETE', docPath('schools', r.id), t).then(() => { SCHOOLS.t = 0; })); })]); row.querySelector('span').prepend(inp); L.appendChild(row); }
     } else if (ownTab === 'players') {
-      let rs; if (q) { const [a, b] = await Promise.all([fsQuery('runs', fsEq('name', q), null, 100, tok), fsQuery('runs', fsEq('code', q.toUpperCase()), null, 100, tok)]); rs = a.concat(b); } else rs = await fsQuery('runs', null, 'ts', 80, tok);
+      let rs; if (q) { const [a, b, c, d] = await Promise.all([fsQuery('players', fsEq('name', q), null, 100, tok), fsQuery('players', fsEq('code', q.toUpperCase()), null, 100, tok), fsQuery('runs', fsEq('name', q), null, 100, tok).catch(() => []), fsQuery('runs', fsEq('code', q.toUpperCase()), null, 100, tok).catch(() => [])]); rs = a.concat(b).map(r => Object.assign({ uid: r.id }, r)).concat(c, d); }
+      else rs = (await fsQuery('players', null, 'ts', 80, tok)).map(r => Object.assign({ uid: r.id }, r));
       const by = {}; for (const r of rs) { const o = by[r.uid] = by[r.uid] || { uid: r.uid, name: r.name, code: r.code, school: r.school, best: 0, t: 0 }; o.best = Math.max(o.best, r.best || 0); o.t = Math.max(o.t, r.ts || 0); }
       const g = Object.values(by).sort((a, b) => b.t - a.t); sub.textContent = q ? g.length + ' found for "' + q + '"' : 'Newest players on the boards. Search by exact nickname or friend code.';
       for (const p of g) L.appendChild(ownRow(p.name, 'code ' + (p.code || '-') + (p.school ? ' · ' + schoolName(p.school) : '') + ' · best ' + p.best.toLocaleString() + ' · ' + ago(p.t), playerBtns(p.uid, p.name)));
@@ -6947,9 +7160,10 @@ async function ownRender(q) {
       for (const r of rs) L.appendChild(ownRow(r.name || r.id, ago(r.ts) + ' · ' + r.id, [chipBtn('↩️ Unban', () => ownDo('Unbanned', t => fsReq('DELETE', docPath('bans', r.id), t)))]));
     } else if (ownTab === 'switches') {
       APPCFG.t = 0; const c = await loadAppCfg(); sub.textContent = 'Emergency switches. They work for every player on the website and the app within a few minutes.';
-      const set = (k, v) => ownDo('Saved', t => fsReq('PATCH', '/config/app', t, fsEnc({ schools: k === 'schools' ? v : c.schools, requests: k === 'requests' ? v : c.requests })).then(() => { APPCFG.t = 0; }));
+      const set = (k, v) => ownDo('Saved', t => fsReq('PATCH', '/config/app', t, fsEnc(Object.assign({ schools: c.schools, requests: c.requests, autoApprove: c.autoApprove }, { [k]: v }))).then(() => { APPCFG.t = 0; }));
       L.appendChild(ownRow('School boards: ' + (c.schools ? 'ON' : 'OFF'), 'Turn off to hide every school board at once.', [chipBtn(c.schools ? 'Turn off' : 'Turn on', () => set('schools', !c.schools))]));
-      L.appendChild(ownRow('New school requests: ' + (c.requests ? 'ON' : 'OFF'), 'Turn off to stop players asking for new schools.', [chipBtn(c.requests ? 'Turn off' : 'Turn on', () => set('requests', !c.requests))]));
+      L.appendChild(ownRow('Players can add schools: ' + (c.requests ? 'ON' : 'OFF'), 'Turn off to stop players adding new schools.', [chipBtn(c.requests ? 'Turn off' : 'Turn on', () => set('requests', !c.requests))]));
+      L.appendChild(ownRow('Approve new schools first: ' + (c.autoApprove ? 'OFF' : 'ON'), c.autoApprove ? 'New schools go on the boards straight away (the bad-word filter and reports still apply).' : 'New schools wait in Requests until you approve them. The player who added it can use it meanwhile.', [chipBtn(c.autoApprove ? 'Turn on' : 'Turn off', () => set('autoApprove', !c.autoApprove))]));
       L.appendChild(ownRow('Your owner UID', OWN.uid, []));
     }
   } catch (e) { if (e && e.stale) return; sub.textContent = 'Couldn\'t load: ' + (e.status === 403 ? 'the database said no (check the owner UID in the rules)' : e.message); }
