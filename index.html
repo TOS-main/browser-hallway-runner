@@ -4788,16 +4788,29 @@ const Online = {
   url: p => 'https://firestore.googleapis.com/v1/projects/' + encodeURIComponent(ONLINE_BOARD.projectId) + '/databases/(default)/documents' + p + '?key=' + encodeURIComponent(ONLINE_BOARD.apiKey),
   // Anonymous Firebase Auth (no email, no name): gives this install a private user id, so the database
   // rules can make sure players only ever change or delete their own leaderboard row.
+  // Your player id must never change by accident: it owns your board rows, your username and your school.
+  // Only one sign-in runs at a time (a new player's first run used to make several ids at once: scores, runs and
+  // players each got a different one), and a new id is only made when there is no login yet or Firebase says the old
+  // one is gone for good. A network or server hiccup just fails this try and keeps your id.
   async token() {
-    const k = encodeURIComponent(ONLINE_BOARD.apiKey), a = save.fbAuth;
-    if (a && a.idToken && a.exp > Date.now() + 60000) return a;
-    let r;
-    if (a && a.refresh) r = await fetch('https://securetoken.googleapis.com/v1/token?key=' + k, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'grant_type=refresh_token&refresh_token=' + encodeURIComponent(a.refresh) });
-    if (!r || !r.ok) r = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + k, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ returnSecureToken: true }) });
-    if (!r.ok) throw new Error('auth ' + r.status);
-    const j = await r.json();
-    save.fbAuth = { uid: j.localId || j.user_id, idToken: j.idToken || j.id_token, refresh: j.refreshToken || j.refresh_token, exp: Date.now() + (+(j.expiresIn || j.expires_in || 3600)) * 1000 };
-    persist(); return save.fbAuth;
+    const a0 = save.fbAuth; if (a0 && a0.idToken && a0.exp > Date.now() + 60000) return a0;
+    if (this._tok) return this._tok;
+    this._tok = (async () => {
+      const k = encodeURIComponent(ONLINE_BOARD.apiKey), a = save.fbAuth;
+      if (a && a.idToken && a.exp > Date.now() + 60000) return a;
+      let r = null;
+      if (a && a.refresh) {
+        r = await fetch('https://securetoken.googleapis.com/v1/token?key=' + k, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'grant_type=refresh_token&refresh_token=' + encodeURIComponent(a.refresh) });
+        if (!r.ok) { const t = await r.text().catch(() => ''); if (!/TOKEN_EXPIRED|INVALID_REFRESH_TOKEN|USER_NOT_FOUND|USER_DISABLED/.test(t)) throw new Error('auth ' + r.status); save.lostUid = a.uid; r = null; }
+      }
+      if (!r) r = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + k, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ returnSecureToken: true }) });
+      if (!r.ok) throw new Error('auth ' + r.status);
+      const j = await r.json(), uid = j.localId || j.user_id || (a && a.uid);
+      save.fbAuth = { uid, idToken: j.idToken || j.id_token, refresh: j.refreshToken || j.refresh_token, exp: Date.now() + (+(j.expiresIn || j.expires_in || 3600)) * 1000 };
+      if (a && a.uid && a.uid !== uid) { try { myRow().dirty = 1; save.onlineBest = 0; } catch (e) {} } // a new id: send your best again under it
+      persist(); return save.fbAuth;
+    })().finally(() => { this._tok = null; });
+    return this._tok;
   },
   async submit(name, score, dist) {
     if (!this.ready() || score <= 0 || score < (save.onlineBest || 0)) return;
@@ -4821,7 +4834,11 @@ const Online = {
   // carry that exact name and only lets it change once every 30 days, so both rules hold even for a modified game.
   // claimName(want) tries to make `want` (default: your saved name) yours and returns the name the server has for you.
   // this.nameErr says why it didn't work: 'taken' or 'wait'.
-  async claimName(wantArg) {
+  // one claim at a time: the score, run and board rows of a run all ask for your name at once, and parallel claims
+  // used to trip over each other (the second saw the first's username and gave up, so that row was never sent)
+  claimName(wantArg) { const k = wantArg === undefined ? '\u0000' : String(wantArg); this._claims = this._claims || {};
+    if (this._claims[k]) return this._claims[k]; return (this._claims[k] = this._claimName(wantArg).finally(() => { delete this._claims[k]; })); },
+  async _claimName(wantArg) {
     const a = await this.token(), want = wantArg === undefined ? safeName(save.name) : wantArg, L = save.nameLock; this.nameErr = '';
     if (L && L.uid === a.uid && L.n === want) return want;
     let cur = null; try { cur = fsDoc(await fsReq('GET', docPath('names', a.uid), a.idToken)); } catch (e) { if (e.status === 403) return want; if (e.status !== 404) throw e; } // 403: the database rules aren't updated yet, so post like before
@@ -4838,6 +4855,7 @@ const Online = {
     } catch (e) {
       if (![400, 403, 409].includes(e.status)) throw e;
       let owner = null; try { owner = fsDoc(await fsReq('GET', docPath('usernames', key(want)))).uid; } catch (e2) {}
+      if (owner === a.uid && want !== 'Runner') { let n2 = null; try { n2 = fsDoc(await fsReq('GET', docPath('names', a.uid), a.idToken)); } catch (e3) {} if (n2 && n2.name === want) return done(want, n2.at); } // it's already yours
       this.nameErr = owner && owner !== a.uid ? 'taken' : 'wait';
       if (wantArg !== undefined) { if (cur) done(cur.name, cur.at); return cur ? cur.name : null; } // you were picking a new name: say no, keep the old one
       if (cur) { toast('Your username is still ' + cur.name, this.nameErr === 'taken' ? 'Someone else has ' + want : cur.at ? 'You can change it again in ' + fmtDays(cur.at + NAME_WAIT - Date.now()) : '', 2600); return done(cur.name, cur.at); }
@@ -4880,7 +4898,7 @@ const Online = {
   // beats one of those, and retried on the next launch if the phone was offline.
   async syncPlayer(force) {
     if (!this.ready() || save.age === 'child') return false; const r = myRow(), name = safeName(save.name || 'Runner'), sch = mySchool();
-    if (!r.best) return false; if (!force && !r.dirty && r.sentName === name && r.sentSchool === sch) return true;
+    if (!r.best) return false; if (!force && !r.dirty && r.sentName === name && r.sentSchool === sch && r.sentUid === (save.fbAuth && save.fbAuth.uid)) return true;
     if (this._syncing) { this._again = 1; return this._syncing; }
     const go = async () => { const a = await this.token(), name = await this.claimName(); const K = perKeys(), cur = per => r[per] === K[per] ? (r[per + 'S'] || 0) : 0;
       const body = { name, code: myCode(), school: sch, best: r.best, bestDist: r.bestDist || 0, bestDiff: String(r.bestDiff || 'normal'), day: K.day, dayS: Math.min(cur('day'), r.best), week: K.week, weekS: Math.min(cur('week'), r.best), month: K.month, monthS: Math.min(cur('month'), r.best), ts: new Date() };
@@ -4890,7 +4908,7 @@ const Online = {
         const old = await fsReq('GET', docPath('players', a.uid)).then(fsDoc).catch(() => null); // the board already has a higher best (restored an older save)
         if (old && (old.best || 0) > r.best) { r.best = old.best; r.bestDist = old.bestDist || 0; r.bestDiff = old.bestDiff || r.bestDiff; return go(); }
         throw e; }
-      r.dirty = 0; r.sentName = name; r.sentSchool = sch; r.sentT = Date.now(); persist(); return true; };
+      r.dirty = 0; r.sentName = name; r.sentSchool = sch; r.sentUid = a.uid; r.sentT = Date.now(); persist(); return true; };
     this._syncing = go().catch(() => false).finally(() => { this._syncing = null; if (this._again) { this._again = 0; this.syncPlayer(); } });
     return this._syncing;
   },
