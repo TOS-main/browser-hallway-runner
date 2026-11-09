@@ -6492,7 +6492,8 @@ async function setUsername(raw, quiet) {
   if (Online.ready()) { // usernames are unique: the server has to give it to you first
     let got; try { got = await Online.claimName(v); } catch (e) { toast('Couldn\'t save your username', 'Check your connection and try again', 1800); return false; }
     if (got !== v) { toast(Online.nameErr === 'taken' ? v + ' is taken' : 'You can\'t change your username yet', Online.nameErr === 'taken' ? 'Someone already has that username. Try another one' : 'Usernames can change once every 30 days', 2200); return false; }
-  } else { save.name = v; save.nameAt = Date.now(); }
+  }
+  if (save.name !== v) { save.name = v; save.nameAt = Date.now(); } // offline, or the live database rules aren't updated yet: the game keeps the 30-day wait itself
   save.onlineBest = 0; persist();
   retagName(); if (!quiet) toast('Username saved: ' + v, 'Next change possible in 30 days', 1800);
   try { if (curScreen === 'sSettings') buildSettings(); } catch (e) {} return true;
