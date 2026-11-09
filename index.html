@@ -630,6 +630,50 @@ body.web .simpleHome .nav{font-size:19px!important}
 .hudBadges,.hudBox.wbox{display:none!important}
 @media (pointer:coarse){#quickCtl,#qcTab{display:none!important}}
 @media (max-width:640px){#bmTip{display:none!important}}
+
+/* ===== round 18: chase bar, power-up flash, game-over motion, locked More tiles ===== */
+#chaseMeter{position:fixed;left:50%;top:max(64px,calc(env(safe-area-inset-top) + 56px));transform:translate(-50%,-12px);z-index:6;display:flex;align-items:center;gap:6px;padding:4px 10px;border:3px solid var(--ink);border-radius:14px;background:#ff4d6d;color:#fff;box-shadow:0 3px 0 var(--ink);font-family:'Luckiest Guy',sans-serif;font-size:13px;letter-spacing:1px;pointer-events:none;opacity:0;transition:opacity .15s,transform .15s}
+#chaseMeter.show{opacity:1;transform:translate(-50%,0);animation:chaseShake .5s ease-in-out infinite}
+#chaseMeter .cm{width:84px;height:9px;border-radius:6px;background:rgba(0,0,0,.35);overflow:hidden}#chaseMeter .cm i{display:block;height:100%;background:#ffe066;border-radius:6px}
+@keyframes chaseShake{0%,100%{rotate:0deg}25%{rotate:-2deg}75%{rotate:2deg}}
+#pwFlash{position:fixed;inset:0;z-index:4;pointer-events:none;opacity:0;--c:255,255,255;background:radial-gradient(ellipse at center,rgba(var(--c),0) 40%,rgba(var(--c),.75) 100%)}
+#pwFlash.go{animation:pwFlash .55s ease-out}
+@keyframes pwFlash{0%{opacity:1}100%{opacity:0}}
+#sOver.show .panel,#sOver.active .panel{animation:overIn .38s cubic-bezier(.2,1.5,.4,1)}
+@keyframes overIn{0%{transform:translateY(40px) scale(.9);opacity:0}100%{transform:none;opacity:1}}
+#sOver .overTitle{animation:overTitle .5s cubic-bezier(.2,1.6,.4,1) .05s both}
+@keyframes overTitle{0%{transform:scale(2.2) rotate(-8deg);opacity:0}100%{transform:none;opacity:1}}
+.btn.bigAgain{display:block;width:100%;font-size:clamp(22px,6.5vw,30px);padding:14px 10px;margin:8px 0 6px;animation:againPulse 1.1s ease-in-out .6s infinite}
+@keyframes againPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+.mTile.locked{filter:grayscale(.9);opacity:.6}
+@media (prefers-reduced-motion:reduce){#chaseMeter.show,.btn.bigAgain,#sOver .overTitle,#sOver .panel{animation:none!important}}
+body.a11yFlash #pwFlash{display:none}
+/* round 19: wide browser home. Records on the left, today's extras on the right, bigger buttons; phones keep the simple layout */
+.mSide{display:none}
+body.homeWide .simpleHome .mSide{display:flex;flex-direction:column;gap:8px;position:absolute;top:96px;width:clamp(240px,21vw,320px);z-index:2;padding:12px;border:3px solid var(--ink);border-radius:20px;background:rgba(255,253,243,.92);box-shadow:0 5px 0 var(--ink);max-height:calc(100% - 290px);overflow-y:auto}
+body.homeWide .simpleHome .mSideL{left:20px}body.homeWide .simpleHome .mSideR{right:20px}
+.sideHead{font-family:'Luckiest Guy',sans-serif;font-size:18px;letter-spacing:.5px;color:var(--ink);margin:2px 2px 0}
+.sideCards{display:flex;flex-direction:column;gap:8px}
+.mSide .worldCard{width:100%!important;max-width:none!important;box-sizing:border-box;background:#fff!important;color:var(--ink);padding:6px 10px 6px 6px!important;gap:8px;margin:0}
+.mSide .worldCard .ico{width:36px;height:36px;font-size:20px;flex:none}
+.mSide .worldCard .cTxt small{font-size:12px}.mSide .worldCard .cTxt b{font-size:17px}
+.sideBtn{border:3px solid var(--ink);border-radius:14px;background:#fff;color:var(--ink);font:inherit;font-weight:900;font-size:15px;padding:8px 10px;text-align:left;cursor:pointer;box-shadow:0 3px 0 var(--ink)}
+.sideBtn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.qGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.qGrid .mTile{min-height:84px;padding:8px 4px}.qGrid .mTile i{font-size:28px}.qGrid .mTile b{font-size:14px}
+body.homeWide .simpleHome .mNav{max-width:980px!important;gap:14px!important}
+body.homeWide .simpleHome .nav{font-size:22px!important;padding:16px 4px 14px!important}
+body.homeWide .simpleHome .nav .ic{width:40px!important;height:40px!important}
+.savePill.synced{background:#2f8cff!important}
+/* leaderboard: five tabs and five setting buttons fit; wider on big screens */
+.boardTabs{flex-wrap:nowrap}.boardTabs .tab{flex:1 1 0;min-width:0;padding:8px 2px;font-size:12px;overflow:hidden;text-overflow:ellipsis}
+.seg.boardDiff:not(.boardSpd){grid-template-columns:repeat(5,1fr)}.seg.boardDiff:not(.boardSpd) button{font-size:13px}
+.schoolPick{max-height:30vh;overflow-y:auto}
+@media (min-width:900px){body.web #sRanks .panel,body.web #sMore .panel,body.web #sSave .panel,body.web #sSettings .panel,body.web #sModes .panel{width:min(760px,100%)}body.web .boardTabs .tab{font-size:15px}body.web .moreGrid{grid-template-columns:repeat(4,1fr)}}
+@media (max-width:480px){.boardTabs .tab{font-size:10px;letter-spacing:0}.seg.boardDiff:not(.boardSpd) button{font-size:11px}}
+.svOk{background:#e9fbe9!important}.svMore{margin:8px 0;text-align:left}.svMore summary{cursor:pointer;font-weight:900;font-size:16px;color:var(--ink);padding:6px 2px}
+@media (max-width:560px){.savePill #saveTxt{display:none}.savePill{padding:0 12px!important}}
+body.homeWide .mSide .worldCard .cTxt{text-align:left}
 </style>
 </head>
 <body>
@@ -659,6 +703,8 @@ body.web .simpleHome .nav{font-size:19px!important}
     </div>
   </div>
 </div>
+<div id="chaseMeter" aria-hidden="true"><span>🚨</span><b>HALL MONITOR</b><div class="cm"><i id="chaseFill"></i></div></div>
+<div id="pwFlash"></div>
 <div id="pwSide"><div id="hPw"></div></div>
 <div id="boostBar"></div>
 <button id="finBtn" aria-label="Combo finisher">💥<small>FINISHER</small></button>
@@ -680,10 +726,14 @@ body.web .simpleHome .nav{font-size:19px!important}
        Everything else (missions, events, gifts, pass, spin, league, trophies...) lives on the More screen. -->
   <div class="mTop">
     <div class="mWallet"><div class="mCash"><span class="coinIco">$</span><b id="mBank">0</b><button class="plusBtn" data-store="cash" aria-label="Get cash">+</button></div><div class="mCash star"><span class="starIco">★</span><b id="mStars">0</b><button class="plusBtn" data-store="stars" aria-label="Get Gold Stars">+</button></div></div>
-    <div class="mTopR"><button class="chip ctrlChip fsChip" id="bFull" onclick="event.stopPropagation();toggleFullscreen()">⛶ Full screen (F)</button><button class="pill savePill webOnly" id="bSaveHome" aria-label="Save code"><span aria-hidden="true">💾</span><span>Save</span></button><button class="iconBtn" id="bGear" aria-label="Settings"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+    <div class="mTopR"><button class="chip ctrlChip fsChip" id="bFull" onclick="event.stopPropagation();toggleFullscreen()">⛶ Full screen (F)</button><button class="pill savePill webOnly" id="bSaveHome" aria-label="Your progress saves automatically"><span aria-hidden="true" id="saveIco">✓</span><span id="saveTxt">Saved</span></button><button class="iconBtn" id="bGear" aria-label="Settings"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
   </div>
   <div class="wordmark"><span>HALLWAY</span><b>DASH</b><small>Don't be late for class.</small></div>
   <div class="hGoal"><div class="hBest"><small>Best</small><b id="mBest">0</b></div><button class="card small worldCard" id="mSchool" style="display:none"><div class="ico">🏫</div><div class="cTxt"><small id="mSchoolSub">Your school</small><b id="mSchoolTxt">–</b></div></button><button class="card small worldCard" id="mWorld" style="display:none"><div class="ico">🌍</div><div class="cTxt"><small>World record to beat</small><b id="mWorldTxt">–</b></div></button></div>
+  <!-- wide browser windows only: records on the left, today's extras on the right (phones keep the simple layout) -->
+  <div class="mSide mSideL" id="mSideL"><div class="sideHead">🏆 Records</div><div class="sideCards" id="mRecSlot"></div><div class="card small worldCard sideCard" id="mTodayCard"><div class="ico">📅</div><div class="cTxt"><small>Your best today</small><b id="mTodayTxt">–</b></div></div>
+    <button class="sideBtn" id="mSideRanks">See all leaderboards ›</button><div class="sideHead">🎮 Playing on</div><button class="sideBtn" id="mSideDiff">Normal ›</button></div>
+  <div class="mSide mSideR" id="mSideR"><div class="sideHead">🎁 Today</div><div class="qGrid" id="mQuick"></div><button class="sideBtn" id="mSideMore">Everything else ›</button></div>
   <div class="tapZone" id="tapZone"><div class="tipLine" id="mTipTxt"></div><div class="tapPlay">Tap to Play</div><div class="tapHint">Swipe to dodge · jump · slide</div></div>
   <div class="mNav">
     <button class="nav" id="bShop"><svg class="ic" viewBox="0 0 24 24"><path d="M8 6V5a4 4 0 0 1 8 0v1"/><rect x="5" y="6" width="14" height="15" rx="4"/><path d="M9 14h6v4H9z"/></svg><span>Locker</span><em class="badge" id="shopBadge"></em></button>
@@ -727,13 +777,19 @@ body.web .simpleHome .nav{font-size:19px!important}
 <!-- SAVE CODE (website only): copy your code, paste it anywhere to resume -->
 <div class="screen" id="sSave">
   <div class="panel savePanel">
-    <h2>💾 Save code</h2>
-    <div class="svBox"><b>Keep your progress</b><small>Copy this code and keep it somewhere safe (notes, email to yourself). It has your coins, stars, runners and records.</small>
+    <h2>💾 Your progress</h2>
+    <div class="svBox svOk"><b>✓ Saves by itself</b><small>Everything you do is saved in this browser straight away: coins, stars, runners, records and your school. There's nothing to press. Come back any time on this computer and it's all here.</small></div>
+    <div class="svBox" id="svGoogle" style="display:none">
+      <div id="svGIn"><b>☁️ Play on other devices too</b><small>Sign in with Google once and your progress saves to your account by itself after every run. Sign in on any other browser to carry on there. It's only used to find your save. Nothing is posted and nobody else can see it.</small><div id="svGBtn" style="min-height:44px;margin-top:4px"></div></div>
+      <div id="svGOn" style="display:none"><b>☁️ Saving to your Google account</b><small>Your progress syncs by itself after every run. Sign in with the same Google account on another browser to carry on there. <span id="svGWhen"></span></small><div class="frow"><button class="btn green small" id="svGSync">☁️ Sync now</button><button class="btn gray small" id="svGOut">Sign out</button></div></div>
+    </div>
+    <details class="svMore"><summary>Save code (backup)</summary>
+    <div class="svBox"><b>Keep a backup</b><small>Copy this code and keep it somewhere safe (notes, email to yourself). It has your coins, stars, runners and records.</small>
       <textarea id="svOut" readonly rows="3" spellcheck="false"></textarea>
       <button class="btn green" id="svCopy">📋 Copy my code</button></div>
-    <div class="svBox"><b>Resume on any browser</b><small>Paste a save code here to pick up where you left off.</small>
+    <div class="svBox"><b>Load a code</b><small>Paste a save code here to pick up where you left off.</small>
       <textarea id="svIn" rows="3" spellcheck="false" placeholder="Paste your code here (it starts with HD3.)"></textarea>
-      <button class="btn gold" id="svLoad">▶ Resume my progress</button></div>
+      <button class="btn gold" id="svLoad">▶ Resume my progress</button></div></details>
     <button class="btn gray" data-back>Back</button>
   </div>
 </div>
@@ -763,7 +819,7 @@ body.web .simpleHome .nav{font-size:19px!important}
     <div class="setRow"><b>Accessibility</b><div class="soundRow" style="justify-content:flex-start;flex-wrap:wrap;gap:6px"><button class="chip off" id="a11y_flash">🚫 Reduce flashing &amp; shaking</button><button class="chip off" id="a11y_hc">◐ High contrast</button><button class="chip off" id="a11y_cb">🎨 Colour-blind-safe warnings</button></div><small>Reduce flashing turns off screen shake, flashes, the fire-drill strobe and blinking warnings. Colour-blind-safe makes danger lanes blue instead of red.</small></div>
     <div class="setRow"><b>Your title</b><div class="soundRow" id="titleList" style="justify-content:flex-start;flex-wrap:wrap;gap:6px"></div><small>Shows under your name on leaderboards. Unlock more by playing.</small></div>
     <div class="setRow"><b>Battery &amp; voice</b><div class="soundRow" style="justify-content:flex-start;flex-wrap:wrap;gap:6px"><button class="chip off" id="bBattery">🔋 Battery saver</button><button class="chip" id="bVoice">📣 Announcer voice</button></div><small>Battery saver: 30 fps, low graphics, fewer crowds and particles (reloads the game).</small></div>
-    <div class="setRow"><b>💾 Your save</b><small>Progress saves automatically in this browser / on this phone (device ID <b id="saveDev"></b>). To move it to another device or browser, copy your save code and load it there.</small><div class="soundRow" style="justify-content:flex-start;flex-wrap:wrap;gap:6px;margin-top:4px"><button class="chip" id="saveCopy">📋 Copy save code</button><button class="chip" id="saveFile">⬇️ Download save</button><button class="chip" id="saveLoad">⬆️ Load save code</button></div></div>
+    <div class="setRow"><b>💾 Your save</b><small>Progress saves by itself in this browser / on this phone (device ID <b id="saveDev"></b>). On the website, sign in with Google (tap Saved at the top of the home screen) to carry it to other browsers, or use a save code.</small><div class="soundRow" style="justify-content:flex-start;flex-wrap:wrap;gap:6px;margin-top:4px"><button class="chip" id="saveCopy">📋 Copy save code</button><button class="chip" id="saveFile">⬇️ Download save</button><button class="chip" id="saveLoad">⬆️ Load save code</button></div></div>
     <div class="setRow"><b>🔑 Secret codes</b><div class="frow"><input id="codeIn" maxlength="24" placeholder="Type a code" autocomplete="off" autocapitalize="characters"><button class="btn gold small" id="codeGo">Enter</button></div><small id="codeState"></small><button class="chip" id="bAdmin" style="display:none">🛠 Admin panel</button></div>
     <div class="setRow"><b>🚩 Blocked players</b><small id="blockState"></small><div class="soundRow" style="justify-content:flex-start;flex-wrap:wrap;gap:6px"><button class="chip" id="blockClear">Unblock everyone</button><button class="chip" id="bOwner">🛡 Owner sign-in</button></div></div>
     <div class="setRow"><b>Controls</b><button class="chip" onclick="toggleControls(true)" style="margin:4px 0">⌨️ Show all controls</button><button class="chip" id="bQuickCtl" style="margin:4px 0 4px 6px">🎮 Quick controls on screen</button><button class="chip" onclick="showScreen(null);startTutorial()" style="margin:4px 0 4px 6px">🎓 Replay tutorial</button><button class="chip" id="bTourAgain" style="margin:4px 0 4px 6px">🗺 App tour</button><button class="chip" id="bBtnEdit" style="margin:4px 0 4px 6px">✋ Move run buttons</button><button class="chip" id="bQuiz" style="margin:4px 0 4px 6px">➗ Pop quizzes (math)</button><div class="soundRow" style="justify-content:flex-start"><button class="chip off" id="bLefty">🫲 Left-handed buttons</button></div><small>Swipe anywhere, even starting on a button. Buttons only react to taps.</small></div>
@@ -786,11 +842,11 @@ body.web .simpleHome .nav{font-size:19px!important}
 <div class="screen" id="sRanks">
   <div class="panel">
     <div class="topbar"><h2>🏆 Leaderboard</h2><span class="bankPill" id="rBest">0</span></div>
-    <div class="tabs"><button class="tab" data-board="world">World</button><button class="tab" data-board="local">Classmates</button><button class="tab" data-board="school">🏫 School</button><button class="tab" data-board="friends">Friends</button></div>
+    <div class="tabs boardTabs"><button class="tab" data-board="world">🌍 Everyone</button><button class="tab" data-board="school">🏫 My school</button><button class="tab" data-board="schools">🏆 Schools</button><button class="tab" data-board="friends">👥 Friends</button><button class="tab" data-board="local">🎒 Classmates</button></div>
     <div class="friendBox schoolBox" id="schoolBox"></div>
     <div class="friendBox" id="friendBox"><div>Your friend code: <b id="myCode">------</b></div><div style="margin-top:8px" id="chalNow"></div><div class="frow"><button class="btn green small" id="chalLive">⏱ Race now (same time)</button><button class="btn blue small" id="chalNew">🎲 New challenge hallway</button><button class="btn gold small" id="chalCopy">📋 Copy my code</button></div><small style="display:block;margin:4px 0">Codes work between phones and the browser. A code with a 3rd part (MAYA-5K2-AB3) gives your friend the exact same hallway.</small><div class="frow"><input id="chalIn" maxlength="16" placeholder="e.g. MAYA-5K2" autocomplete="off"><button class="btn gold small" id="chalAdd">Accept</button></div><div class="frow"><input id="friendIn" maxlength="6" placeholder="Friend's code" autocomplete="off"><button class="btn blue small" id="friendAdd">Add</button></div></div>
     <div class="allBest" id="allBest"></div>
-    <div class="seg boardDiff" id="boardDiff"><button data-bd="easy">Easy</button><button data-bd="normal">Normal</button><button data-bd="hard">Hard</button><button data-bd="insane">Insane</button></div>
+    <div class="seg boardDiff" id="boardDiff"><button data-bd="all">All settings</button><button data-bd="easy">Easy</button><button data-bd="normal">Normal</button><button data-bd="hard">Hard</button><button data-bd="insane">Insane</button></div>
     <div class="seg boardDiff boardSpd" id="boardSpd"><button data-bs="chill">🐢 Chill</button><button data-bs="normal">Normal speed</button><button data-bs="fast">Fast</button><button data-bs="turbo">🚀 Turbo</button></div>
     <div class="seg boardPer" id="boardPer"><button data-bp="all">All-time</button><button data-bp="month">Month</button><button data-bp="week">Week</button><button data-bp="day">Today</button></div>
     <div class="toBeat" id="toBeat" style="display:none"></div>
@@ -966,7 +1022,7 @@ body.web .simpleHome .nav{font-size:19px!important}
       </div>
       <div><h3>👆 Touch / mouse</h3>
         <p>Swipe (or drag) left / right: switch lanes</p>
-        <p>Swipe up: jump · twice fast: sprint burst</p>
+        <p>Swipe up: jump (swipe a moment before you land and you jump again right away)</p>
         <p>Swipe down: slide</p>
         <p>✋ button: push · 👟 button or double-tap: heel wheels</p>
         <p>💥 button: finisher (at x3 combo)</p>
@@ -1167,7 +1223,7 @@ body.web .simpleHome .nav{font-size:19px!important}
     <p style="font-size:15px;margin:4px 0 8px">Your runs count for your school, and you get a school record to chase. Use a nickname, never your real name.</p>
     <div class="frow"><input id="siSearch" placeholder="Search schools" maxlength="40" autocomplete="off"></div>
     <div id="siList" style="max-height:34vh;overflow-y:auto"></div>
-    <div class="frow" id="siAskRow"><input id="siAsk" placeholder="Can't find yours? School name" maxlength="40" autocomplete="off"><button class="btn gold small" id="siAskGo">Ask to add</button></div>
+    <div class="frow" id="siAskRow"><input id="siAsk" placeholder="Can't find yours? School name" maxlength="40" autocomplete="off"><button class="btn gold small" id="siAskGo">➕ Add my school</button></div>
     <div id="siWait" style="display:none;font-size:14px;margin-top:6px"></div>
     <button class="btn gray" id="siSkip">Skip for now</button>
   </div>
@@ -1175,7 +1231,7 @@ body.web .simpleHome .nav{font-size:19px!important}
 <div class="modal" id="schoolRules">
   <div class="mPanel">
     <h2>🏫 School board rules</h2>
-    <p style="text-align:left;font-size:15px">• Use a nickname, never your real name.<br>• Don't share your address, phone, social media or anyone else's info.<br>• School names must be the school's real name. No jokes about people.<br>• No bad words, bullying or hate. Breaking the rules gets you removed.<br>• Tap 🚩 next to anyone who breaks them. A moderator checks every new school before it shows up.</p>
+    <p style="text-align:left;font-size:15px">• Use a nickname, never your real name.<br>• Don't share your address, phone, social media or anyone else's info.<br>• School names must be the school's real name. No jokes about people.<br>• No bad words, bullying or hate. Breaking the rules gets you removed.<br>• Tap 🚩 next to anyone who breaks them. A moderator checks new schools and reports, and hides anything that breaks the rules.</p>
     <button class="btn green" id="rulesOk">I agree</button>
     <button class="linkBtn" id="rulesTerms">Read the Terms of Service</button>
     <button class="btn gray" id="rulesNo">Not now</button>
@@ -1233,14 +1289,15 @@ body.web .simpleHome .nav{font-size:19px!important}
     <div class="overTitle" id="oTitle">CAUGHT!</div>
     <div class="reason" id="oReason"></div>
     <div class="bigStars" id="oStars"></div>
+    <div class="overScore"><small>SCORE</small><b id="oScore">0</b><span><span id="oBestL">Best</span> <span id="oBest">0</span></span></div>
+    <button class="btn green" id="bNext" style="display:none">Next Stage ▶</button>
+    <button class="btn gold bigAgain" id="bAgain">▶ PLAY AGAIN</button>
+    <div class="oHook" id="oHook" style="display:none"></div>
+    <div class="overMini"><span>📏 <b id="oDist">0m</b></span><span>💵 <b id="oCoins">$0</b></span></div>
+    <div class="oCombo" id="oCombo"></div>
     <div class="rankNote" id="oRank" style="display:none"></div>
     <div class="rankNote" id="oXp" style="display:none"></div>
     <div id="oNameBox" style="display:none;margin-top:8px"><input id="oName" maxlength="14" placeholder="Type your name" autocomplete="off"></div>
-    <div class="overScore"><small>SCORE</small><b id="oScore">0</b><span><span id="oBestL">Best</span> <span id="oBest">0</span></span></div>
-    <div class="overMini"><span>📏 <b id="oDist">0m</b></span><span>💵 <b id="oCoins">$0</b></span></div>
-    <div class="oHook" id="oHook" style="display:none"></div><div class="oCombo" id="oCombo"></div>
-    <button class="btn green" id="bNext" style="display:none">Next Stage ▶</button>
-    <button class="btn gold" id="bAgain">Play Again</button>
     <div class="overExtras"><button class="btn blue small" id="bDouble" style="display:none">▶ 2× cash</button><div class="boxOffer" id="boxOffer"><span class="boxMini">🎁</span><button class="btn blue small" id="boxAd">▶ Box</button><button class="btn gold small" id="boxStars">★ 2</button></div></div>
     <div class="row"><button class="btn blue small" id="bShare">📤 Share / challenge</button><button class="btn purple small" id="bReplay">🎬 Replay</button></div>
     <div class="row"><button class="btn purple small" id="bOverShop">Locker Room</button><button class="btn gray small" id="bOverMenu">Menu</button></div>
@@ -1269,6 +1326,14 @@ body.web .simpleHome .nav{font-size:19px!important}
 window.ONLINE_BOARD = {
   projectId: 'hallway-dash',
   apiKey: 'AIzaSyCOjpzGBB3AkmhimQF7rFeP3iDRVH4nuoU'
+};
+
+/* ===== Google sign-in for automatic cloud saves on the website (optional) =====
+   Paste the "Web client ID" from Firebase console -> Authentication -> Sign-in method -> Google -> Web SDK configuration
+   (it ends in .apps.googleusercontent.com). With it empty, the website still saves by itself in each browser, and the
+   "Continue with Google" button stays hidden. Steps: FIREBASE_SETUP.md. */
+window.GOOGLE_SIGNIN = {
+  clientId: ''
 };
 
 /* ===== Analytics (optional) =====
@@ -1328,6 +1393,14 @@ function loadSave() {
   return d;
 }
 let save = loadSave();
+// day the player first opened the game (players from before round 18 count as long-time players)
+if (!save.born) { save.born = (save.runsTotal || 0) > 0 || save.tutDone ? 1 : Date.now(); } // saved with the next persist()
+const playDays = () => Math.floor((Date.now() - (save.born || 1)) / 86400000);
+const pushUnlocked = () => (save.runsTotal || 0) >= 3; // PUSH shows up from your 4th run, so the first runs are swipes only
+// little bounce on a HUD number (coins, multiplier) when it goes up
+function bumpEl(id, k) { const el = document.getElementById(id); if (!el || !el.animate || (typeof A11Y === 'function' && A11Y().flash)) return; try { el.animate([{ transform: 'scale(1)' }, { transform: 'scale(' + (k || 1.2) + ')', offset: 0.35 }, { transform: 'scale(1)' }], { duration: 260, easing: 'ease-out' }); } catch (e) {} }
+// power-up pickup: a coloured flash from the edges of the screen and a quick zoom punch
+function pwBurst(kind) { G.fovKick = 1; const col = { pass: '255,214,10', cheat: '155,246,255', energy: '255,143,171', spring: '125,255,154' }[kind] || '255,255,255'; const el = document.getElementById('pwFlash'); if (!el || (typeof A11Y === 'function' && A11Y().flash)) return; el.style.setProperty('--c', col); el.classList.remove('go'); void el.offsetWidth; el.classList.add('go'); }
 // the website asks for the age group too (it used to skip it and treat everyone as 13-15): Google Analytics and the
 // AdSense script only load once the player says how old they are, never for under-13s, and analytics only for 16+.
 // Website players who were set to 13-15 without being asked are asked once.
@@ -1336,7 +1409,7 @@ const AWAY_MS = save.lastSeen ? Date.now() - save.lastSeen : 0; // how long sinc
 if (!save.pid) { save.pid = Math.random().toString(36).slice(2) + Date.now().toString(36); }
 if (save.music === 0 && !save.track) save.track = 'off';
 let saveSwapped = false; // a pasted save code was just loaded: never write the old progress back over it before the reload
-function persist() { if (saveSwapped) return; save.lastSeen = Date.now(); let j = ''; try { j = JSON.stringify(save); } catch (e) { return; } try { localStorage.setItem(SAVE_KEY, j); } catch (e) {} mirrorSave(j); }
+function persist(quiet) { if (saveSwapped) return; save.lastSeen = Date.now(); let j = ''; try { j = JSON.stringify(save); } catch (e) { return; } try { localStorage.setItem(SAVE_KEY, j); } catch (e) {} mirrorSave(j); if (!quiet && save.gLink && typeof GSync === 'object' && GSync) GSync.soon(); }
 // saves happen on their own: after every change, every 15 seconds, and when the tab is hidden or closed (all three copies right away)
 function flushSave() { if (saveSwapped) return; try { persist(); clearTimeout(mirrorT); const j = JSON.stringify(save); idb(st => st.put(j, SAVE_KEY)); cookieSave.write(j); } catch (e) {} }
 setInterval(flushSave, 15000); addEventListener('pagehide', flushSave); addEventListener('beforeunload', flushSave); document.addEventListener('visibilitychange', () => { if (document.hidden) flushSave(); });
@@ -1365,7 +1438,6 @@ const SHOP = {
     { id: 'lvPush', name: 'Push Power', icon: '✋', lv: 'push', desc: 'PUSH recharges faster: {now}s → {next}s' },
     { id: 'lvScore', name: 'Score Booster', icon: '📈', lv: 'score', desc: 'Permanent score bonus: +{now}% → +{next}%' },
     { id: 'lvLuck', name: 'Piggy Bank', icon: '🐷', lv: 'luck', desc: 'Extra cash from every coin: +{now}% → +{next}%' },
-    { id: 'straps', name: 'Ergonomic Padded Straps', price: 250, icon: '🧷', desc: 'Permanently cuts base backpack load by 20%.' },
     { id: 'helium', name: 'Spring Insoles', price: 300, icon: '👟', desc: 'Slightly higher jumps and softer landings.' }
   ],
   boost: [
@@ -1374,7 +1446,7 @@ const SHOP = {
     { id: 'score2', name: 'Score Doubler', price: 400, icon: '✖2', desc: 'Double score for one run.' },
     { id: 'coins2', name: 'Coin Doubler', price: 350, icon: '💰', desc: 'Double coins for one run.' },
     { id: 'shield', name: 'Hall Pass Start', price: 250, icon: '🛡', desc: 'Start a run with 10s of invincibility.' },
-    { id: 'pads', name: 'Football Pads', price: 300, icon: '🏈', desc: '15s of running straight through people (they get shoved aside), and PUSH recharges instantly.' }
+    { id: 'pads', name: 'Football Pads', price: 300, icon: '🏈', desc: 'A 12s Hall Pass the moment you start: smash through anything.' }
   ],
   pack: [
     { id: 'classic', name: 'Classic Bookbag', price: 0, color: '#3a6fd8', trim: '#1d3f8f', w: 0, desc: 'Standard issue. Heavy.' },
@@ -1488,9 +1560,9 @@ const baseWeight = () => clamp(1 - (save.up.straps ? 0.2 : 0) + packDef().w - (c
 function hex(c) { const n = parseInt(c.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; }
 function mixc(a, b, t) { return 'rgb(' + ((a[0] + (b[0] - a[0]) * t) | 0) + ',' + ((a[1] + (b[1] - a[1]) * t) | 0) + ',' + ((a[2] + (b[2] - a[2]) * t) | 0) + ')'; }
 const THEMES = {
-  elem: { name: 'Elementary School', floorA: '#fff3c4', floorB: '#ffd6e0', wall: '#7bdff2', wallUp: '#d4f8ff', doors: ['#ff6b6b', '#4d96ff', '#6bcb77', '#ffd93d'], accent: '#ff6b6b', lockers: ['#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff'], ceil: '#fff6e0', light: '#fffde8', fog: '#e4f4fb', trim: '#ff9f1c', door: '#c47f3d', line: '#ffffff' },
-  middle: { name: 'Middle School', floorA: '#f1f1f1', floorB: '#ffcf56', wall: '#ff9f43', wallUp: '#ffe0a3', lockers: ['#2ec4b6', '#8338ec', '#2ec4b6', '#ff006e'], ceil: '#fff6e5', light: '#ffffff', fog: '#ffe9cc', trim: '#5f0f40', door: '#3a86ff', doors: ['#3a86ff', '#ff006e', '#06d6a0', '#8338ec'], accent: '#8338ec', line: '#ffffff' },
-  high: { name: 'High School', floorA: '#e9eef5', floorB: '#cfd9e8', wall: '#4cc9f0', wallUp: '#f7f3e3', lockers: ['#e63946', '#e63946', '#1d3557', '#ffb703'], ceil: '#f4f6fa', light: '#fffbea', fog: '#dff3fb', trim: '#e63946', door: '#ffb703', doors: ['#ffb703', '#e63946', '#2a9d8f', '#3a86ff'], accent: '#e63946', line: '#ffffff' },
+  elem: { name: 'Elementary School', floorA: '#ffb04a', floorB: '#ff9a3a', wall: '#7bdff2', wallUp: '#d4f8ff', doors: ['#ff6b6b', '#4d96ff', '#6bcb77', '#ffd93d'], accent: '#ff6b6b', lockers: ['#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff'], ceil: '#fff6e0', light: '#fffde8', fog: '#ffe7b8', trim: '#ff9f1c', door: '#c47f3d', line: '#ffffff' },
+  middle: { name: 'Middle School', floorA: '#3cb6a6', floorB: '#33a394', wall: '#ff9f43', wallUp: '#ffe0a3', lockers: ['#2ec4b6', '#8338ec', '#2ec4b6', '#ff006e'], ceil: '#fff6e5', light: '#ffffff', fog: '#ffd9a6', trim: '#5f0f40', door: '#3a86ff', doors: ['#3a86ff', '#ff006e', '#06d6a0', '#8338ec'], accent: '#8338ec', line: '#ffffff' },
+  high: { name: 'High School', floorA: '#5d7fd8', floorB: '#4f70c8', wall: '#4cc9f0', wallUp: '#f7f3e3', lockers: ['#e63946', '#e63946', '#1d3557', '#ffb703'], ceil: '#f4f6fa', light: '#fffbea', fog: '#ffdcae', trim: '#e63946', door: '#ffb703', doors: ['#ffb703', '#e63946', '#2a9d8f', '#3a86ff'], accent: '#e63946', line: '#ffffff' },
   college: { name: 'College Campus', outdoor: true, floorA: '#bdb4a4', floorB: '#ada392', grassA: '#62ad4c', grassB: '#57a043', sky1: '#3d9bff', sky2: '#cdeaff', fog: '#cdeaff', floorA: '#e8d5b5', floorB: '#d9bf98', trim: '#8b1e3f', line: '#ffffff' },
   gym: { name: 'After-School Athletics', gym: true, floorA: '#f0b866', floorB: '#e6a957', wall: '#1d4ed8', wallUp: '#2b63ff', lockers: ['#ffd60a', '#ffffff'], accent: '#ffd60a', ceil: '#2b3147', light: '#fff7d6', fog: '#8a93ad', trim: '#ffd60a', door: '#444', line: '#ffffff' },
   // field-trip locations (rotate every 3 weeks)
@@ -1800,8 +1872,9 @@ function floorTexTheme(key) {
       x.fillStyle = 'rgba(255,255,255,.18)'; for (let i = 0; i < 40; i++) x.fillRect((i * 137) % w, (i * 251) % h, 3, 3);
     }
     if (th.accent && !th.outdoor) { const edge = w * (0.6 / (2 * HW)); x.fillStyle = th.accent; x.fillRect(0, 0, edge, h); x.fillRect(w - edge, 0, edge, h); x.globalAlpha = 0.85; x.fillRect(0, h * 0.94, w, h * 0.03); x.globalAlpha = 1; }
-    x.fillStyle = 'rgba(255,255,255,.6)';
-    for (const lx of [-laneW / 2, laneW / 2]) { const u = (lx + HW) / (2 * HW) * w; for (let j = 0; j < 4; j++) x.fillRect(u - 3, j * 128 + 20, 6, 70); }
+    if (!th.outdoor && !th.gym) { x.fillStyle = 'rgba(10,20,60,.10)'; for (const lc of [-laneW, 0, laneW]) { const u = (lc + HW) / (2 * HW) * w, bw = laneW * 0.62 / (2 * HW) * w; x.fillRect(u - bw / 2, 0, bw, h); } }
+    x.fillStyle = 'rgba(255,255,255,.92)';
+    for (const lx of [-laneW / 2, laneW / 2]) { const u = (lx + HW) / (2 * HW) * w; for (let j = 0; j < 4; j++) x.fillRect(u - 4, j * 128 + 14, 8, 96); }
   });
 }
 function lockerTex(key) {
@@ -2746,8 +2819,8 @@ function rebuildWorld() {
     mesh(GEO.box, fm('#d8c3a5'), farLayer, 12, 22, -180, 8, 44, 8); const roof = mesh(GEO.cone, fm('#8b1e3f'), farLayer, 12, 48, -180, 6.5, 8, 6.5); roof.rotation.y = Math.PI / 4;
     mesh(GEO.circle, fm('#fff'), farLayer, 12, 36, -175.9, 2.4, 2.4, 1);
   } else {
-    scene.background = new THREE.Color(th.fog); scene.fog.color.set(th.fog); scene.fog.far = Math.min(92, Q.view + 10); scene.fog.near = scene.fog.far * 0.45;
-    hemi.intensity = Q.std ? 0.4 : (th.gym ? 0.55 : 0.6); sun.intensity = Q.std ? 0.7 : 0.6;
+    scene.background = new THREE.Color(th.fog); scene.fog.color.set(th.fog); scene.fog.far = Math.min(92, Q.view + 10); scene.fog.near = scene.fog.far * 0.66;
+    hemi.intensity = Q.std ? 0.46 : (th.gym ? 0.6 : 0.68); sun.intensity = Q.std ? 0.8 : 0.72;
   }
   scene.environment = envFor(G.themeKey);
   segKey = G.themeKey + '|' + laneW + '|' + hallKey();
@@ -3555,14 +3628,14 @@ function syncPlayer() {
   const pp = player, a = pp.act, inMenu = G.scene !== 'play';
   const menuView = G.scene === 'menu' && curScreen !== 'sLevels';
   if (menuView) {
-    pp.root.rotation.set(0, -0.55, 0); pp.wrap.scale.setScalar(1); pp.wrap.position.set(MENU_POS.x, 0, MENU_POS.z);
+    pp.root.rotation.set(0, -0.55, 0); pp.wrap.scale.setScalar(1); pp.wrap.rotation.set(0, 0, 0); pp.wrap.position.set(MENU_POS.x, 0, MENU_POS.z);
     { const R = MENU_ROUTINE, tot = R.reduce((q, r) => q + r[1], 0); let tt = G.t % tot, st = R[0]; for (const r of R) { if (tt < r[1]) { st = r; break; } tt -= r[1]; }
       const env = Math.min(1, tt / 0.45, (st[1] - tt) / 0.45); a.pose(st[0], st[2] || 1, 0.35); a.post = st[3] ? (A => { const tw = window.twist; window.twist = (A2, b, x, y, z, ang) => tw(A2, b, x, y, z, ang * env); try { st[3](A, tt); } finally { window.twist = tw; } }) : null; if (st[0] === 'jump') pp.wrap.position.y = Math.sin(Math.min(1, tt / st[1]) * Math.PI) * 0.45; }
     a.update(FRAME_DT);
     keepAboveFloor(pp, 0); pp.backpack.scale.setScalar(0.82 + 0.38 * baseWeight()); pp.aura.visible = false; pp.shadow.position.y = 0.003; followChest(pp); return;
   }
   pp.root.rotation.y = Math.PI;
-  pp.wrap.scale.setScalar(lerp(pp.wrap.scale.x, runnerScale(), 0.1));
+  pp.baseSc = lerp(pp.baseSc || runnerScale(), runnerScale(), 0.1); pp.wrap.scale.setScalar(pp.baseSc); pp.wrap.rotation.set(0, 0, 0);
   const ik = G.scene === 'play' && G.intro > 0 ? 1 - G.intro / INTRO : 1;
   if (ik < 1) { const e = ik * ik * (3 - 2 * ik), turn = Math.min(1, ik * 3); pp.root.rotation.y = lerp(-0.55 + Math.PI * 2, Math.PI, turn * turn * (3 - 2 * turn)); pp.wrap.position.set(lerp(MENU_POS.x, P.x, e), 0, lerp(MENU_POS.z, 0, e)); a.pose('run', clamp(G.speed / 11.5, 1.0, 2.2), 0.12); a.update(FRAME_DT); followChest(pp); pp.shadow.position.y = 0.003; pp.aura.visible = false; pp.wheels.forEach(w => w.visible = false); return; } // you're the same size as the other students at your school
   pp.wrap.position.set(inMenu ? 0 : P.x + (P.slam || 0), P.y, 0);
@@ -3573,7 +3646,7 @@ function syncPlayer() {
   const air = P.y - (P.fl || 0), inAir = !inMenu && (air > 0.05 || (a.cur === 'Jump_Loop' && air > 0.015));
   if (G.dying) a.pose('die', 1.3, 0.1);
   else if (flying || sledding) a.pose('idle', 0.5, 0.15);
-  else if (sliding) a.pose('idle', 1, 0.12);
+  else if (sliding) { if (P.rollT > 0) a.pose('roll', 1.5, 0.08); else a.pose('idle', 1, 0.12); } // swipe down in the air = tuck and roll
   else if (inAir) a.pose(G.trick && G.trick.kind === 'grab' ? 'roll' : 'jump', G.trick && G.trick.kind === 'grab' ? 0.35 : 1, 0.15);
   else if (G.pushAnim > 0 && G.scene === 'play') a.pose('push', 2.2, 0.14); // shoving through (a softer blend: the 0.06s snap dropped the hips 30cm in ~3 frames)
   else if (G.heely > 0 && G.scene === 'play') a.pose('idle', 0.6, 0.1); // rolling on the heel wheels
@@ -3590,7 +3663,7 @@ function syncPlayer() {
     // slide's raised arm used to snap 130-150 degrees the moment a slide started or ended (the runner's arm glitch)
     const W = pp.trickW || (pp.trickW = { kneel: 0, heel: 0, slide: 0 }), kneel = flying || sledding;
     const slideK = sliding ? clamp(Math.min(P.slide, slideDur() - P.slide) * 8, 0, 1) : 0;
-    const tgt = { kneel: kneel ? 1 : 0, heel: heelRoll && !kneel ? 1 : 0, slide: sliding && !kneel && !heelRoll ? slideK : 0 }, step = G.paused ? 0 : FRAME_DT * 8;
+    const tgt = { kneel: kneel ? 1 : 0, heel: heelRoll && !kneel ? 1 : 0, slide: sliding && !kneel && !heelRoll && !(P.rollT > 0) ? slideK : 0 }, step = G.paused ? 0 : FRAME_DT * 8;
     for (const k in W) W[k] = k === 'slide' && tgt.slide > W.slide ? tgt.slide : W[k] + clamp(tgt[k] - W[k], -step, step);
     a.post = W.kneel + W.heel + W.slide < 0.001 ? null : (A => {
       if (W.kneel > 0.001) { const w = W.kneel; // kneeling on the plane, hands on the wings
@@ -3607,10 +3680,10 @@ function syncPlayer() {
   if (a.bones.Head) a.bones.Head.scale.setScalar(cheatOn('bighead') ? 1.9 : 1.12);
   if (flying) pp.wrap.position.y = P.y - 0.5; if (sledding) pp.wrap.position.y = P.y - 0.42;
   if (sliding) { // feet-first slide: lean way back with the hips near the floor
-    const k = clamp(Math.min(P.slide, slideDur() - P.slide) * 8, 0, 1); pp.pivot.rotation.x = lerp(0, 1.12, k); pp.wrap.position.y = P.y - 0.5 * k;
+    const k = P.rollT > 0 ? 0 : clamp(Math.min(P.slide, slideDur() - P.slide) * 8, 0, 1); pp.pivot.rotation.x = lerp(0, 1.12, k); pp.wrap.position.y = P.y - 0.5 * k;
     if (Math.random() < 0.6) emit(P.x + rand(-0.3, 0.3), 0.08, -0.2, 1, '#d9d4c7', 2.2, 0.35, 0.18, 0, false, true);
   }
-  pp.root.rotation.z = inMenu ? 0 : clamp((P.lane * laneW - P.x) / laneW, -1, 1) * 0.18;
+  pp.root.rotation.z = inMenu ? 0 : clamp((P.lane * laneW - P.x) / laneW, -1, 1) * 0.26;
   // skating: push side to side and lean forward
   const skating = heelRoll;
   if (skating) { const ph = G.t * 2.4; pp.root.rotation.z += Math.sin(ph) * 0.05; pp.root.rotation.y = Math.PI + Math.sin(ph * 0.5) * 0.12; }
@@ -3624,6 +3697,21 @@ function syncPlayer() {
     else if (T.kind === 'grab') pp.pivot.rotation.z = Math.sin(e * Math.PI) * 0.5;
     else if (T.kind === 'superman') pp.pivot.rotation.x = Math.sin(e * Math.PI) * 1.25;
   } else if (!skating && !sliding) pp.pivot.rotation.set(lerp(pp.pivot.rotation.x, 0, 0.3), 0, 0);
+  { // round 18 animation layer: squash and stretch on jumps and landings, lean + twist + little hop on lane changes,
+    // a forward stumble when you get bumped. All of it rides on the wrap (feet at its origin), so the feet stay planted.
+    const dt = G.paused ? 0 : FRAME_DT, play = G.scene === 'play' && !G.dying && !flying && !sledding, air = P.y - (P.fl || 0);
+    if (play && !pp.wasAir && air > 0.05 && P.vy > 0) P.takeT = 0.16; pp.wasAir = air > 0.05;
+    if (P.rollT > 0) P.rollT = Math.max(0, P.rollT - dt);
+    let sx = 1, sy = 1;
+    if (P.takeT > 0) { P.takeT = Math.max(0, P.takeT - dt); const k = P.takeT / 0.16; sy += 0.13 * k; sx -= 0.06 * k; }
+    if (P.landT > 0) { P.landT = Math.max(0, P.landT - dt); const e = Math.sin(P.landT / 0.2 * Math.PI); sy -= 0.15 * e; sx += 0.09 * e; }
+    if (!play) { P.takeT = 0; P.landT = 0; sx = sy = 1; }
+    const b = pp.baseSc || 1; pp.wrap.scale.set(b * sx, b * sy, b * sx);
+    const off = play ? clamp((P.lane * laneW - P.x) / laneW, -1, 1) : 0, prog = Math.abs(off);
+    pp.wrap.rotation.y = -off * 0.3;
+    if (play && prog > 0.02 && air < 0.05 && !sliding) pp.wrap.position.y += Math.sin((1 - prog) * Math.PI) * 0.1 * Math.min(1, prog * 4);
+    if (P.stumbleT > 0 && G.scene === 'play') { P.stumbleT = Math.max(0, P.stumbleT - dt); const k = P.stumbleT / 0.45; pp.wrap.rotation.x = -Math.sin(k * Math.PI) * 0.3; pp.wrap.rotation.z = Math.sin(k * Math.PI * 4) * 0.14 * k; }
+  }
   keepAboveFloor(pp, flying ? -9 : sledding ? (P.fl || 0) + 0.12 : (P.fl || 0)); // final safety: no part of the runner ever goes below the floor
   pp.backpack.scale.setScalar(0.82 + 0.38 * G.weight);
   followChest(pp);
@@ -3668,8 +3756,9 @@ function render() {
     renderer.render(scene, camera); drawOverlay(); updateHUD(); return;
   }
   // speed feel: widen the view a little when boosting
-  if (camera.fov < baseFov - 8 || camera.fov > baseFov + 20) { camera.fov = baseFov; camera.updateProjectionMatrix(); }
-  const wantFov = baseFov + (G.pw.energy > 0 ? 7 : 0) + (G.burstT > 0 ? 9 : 0) + (G.scene === 'play' ? clamp((G.speed - 12) * 0.25, 0, 5) : 0);
+  if (camera.fov < baseFov - 16 || camera.fov > baseFov + 22) { camera.fov = baseFov; camera.updateProjectionMatrix(); }
+  if (G.fovKick > 0) G.fovKick = Math.max(0, G.fovKick - rdt * 2.5);
+  const wantFov = baseFov + (G.pw.energy > 0 ? 7 : 0) + (G.burstT > 0 ? 9 : 0) + (G.scene === 'play' ? clamp((G.speed - 12) * 0.25, 0, 5) : 0) + (G.fovKick || 0) * 9 - (G.scene === 'play' && G.dying ? (G.caught ? 12 : 6) * clamp(1 - G.dyingT / 1.3, 0, 1) : 0);
   if (Math.abs(camera.fov - wantFov) > 0.05) { camera.fov = lerp(camera.fov, wantFov, Math.min(1, rdt * 4)); camera.updateProjectionMatrix(); }
   // the shadow-casting light follows the runner
   const px = G.scene === 'play' ? P.x : 0;
@@ -3789,7 +3878,7 @@ function fmtLeft(ms) { if (ms > 48 * 3600000) return Math.ceil(ms / 86400000) + 
 const CLASSMATES = [['Maya', 24500, 2310], ['Jordan', 17200, 1720], ['Ava', 11800, 1290], ['Leo', 8400, 990], ['Zoe', 5600, 720], ['Sam', 3100, 450], ['Priya', 1500, 260], ['Eli', 700, 140]];
 var CPU_DIFF = { easy: 0.6, normal: 1, hard: 1.6, insane: 2.3 }; // classmates' scores on each difficulty
 function boardRows(dk) {
-  dk = dk || runBK(); const me = (save.name || '').trim().toLowerCase(), k = (CPU_DIFF[bkDiff(dk)] || 1) * SPEEDS[bkSpd(dk)].score;
+  dk = dk || runBK(); const me = (save.name || '').trim().toLowerCase(), k = dk === 'all' ? 1 : (CPU_DIFF[bkDiff(dk)] || 1) * SPEEDS[bkSpd(dk)].score;
   const rows = CLASSMATES.filter(([n]) => n.toLowerCase() !== me).map(([n, s, d]) => ({ n, s: Math.round(s * k / 10) * 10, d, cpu: true }));
   const per = boardPer(), b = per === 'all' ? bestFor(dk) : { s: myPeriodBest(dk, per) }; if (b && b.s > 0) rows.push({ n: save.name || 'You', s: b.s, d: b.d || 0, me: true, t: b.t || 0 }); // you appear once, at your best score on this difficulty (in the chosen period)
   rows.sort((a, b) => b.s - a.s);
@@ -3797,28 +3886,37 @@ function boardRows(dk) {
 }
 function myRank() { const r = boardRows(); const i = r.findIndex(x => x.me); return i < 0 ? 0 : i + 1; }
 let boardMode = 'world'; // the world record is the default record to beat
-const WREC = {}; // world record per difficulty, cached for a few minutes
-function worldRecord(dk) { dk = dk || runBK(); const c = WREC[dk]; if (!Online.ready()) return Promise.resolve(null); if (c && Date.now() - c.t < 180000) return Promise.resolve(c.r);
+const WREC = {}; // world record ('all' = every setting, the one on the menu), cached for a few minutes
+function worldRecord(dk) { dk = dk || 'all'; const c = WREC[dk]; if (!Online.ready()) return Promise.resolve(null); if (c && Date.now() - c.t < 180000) return Promise.resolve(c.r);
   return Online.board(dk, 'all').then(rows => { const r = rows[0] || null; WREC[dk] = { r, t: Date.now() }; return r; }).catch(() => (c ? c.r : null)); }
-function syncWorldCard() { const el = $('mWorld'); if (!el) return; const dk = runBK(); el.querySelector('small').textContent = 'World record · ' + DIFF[bkDiff(dk)].name + (bkSpd(dk) !== 'normal' ? ' ' + SPEEDS[bkSpd(dk)].name : ''); if (!Online.ready()) { el.style.display = 'none'; return; } el.style.display = ''; worldRecord(dk).then(r => { if (!r) { $('mWorldTxt').textContent = 'Be the first!'; return; } $('mWorldTxt').textContent = r.s.toLocaleString() + ' · ' + (r.me ? 'YOU! 👑' : r.n); }); }
+function syncWorldCard() { const el = $('mWorld'); if (!el) return; el.querySelector('small').textContent = 'World record'; if (!Online.ready()) { el.style.display = 'none'; return; } el.style.display = '';
+  worldRecord().then(r => { $('mWorldTxt').textContent = !r ? 'Be the first!' : r.s.toLocaleString() + ' · ' + (r.me ? 'YOU! 👑' : r.n); }); }
 // ---- your school's record: the target on the menu card and in each run's intro ----
-const SREC = {}; // school record per school + board, cached for a couple of minutes
-function schoolsOn() { return Online.ready() && save.age !== 'child' && APPCFG.schools !== false; }
-function schoolRecord(dk) { dk = dk || runBK(); if (!schoolsOn() || !save.school) return Promise.resolve(undefined); const k = save.school + '|' + dk, c = SREC[k];
+const SREC = {}; // school record per school, cached for a couple of minutes
+function schoolsOn() { return Online.ready() && save.age !== 'child' && APPCFG.schools !== false && !SCHOOLS.denied; } // denied: the database rules for schools aren't published yet (FIREBASE_SETUP.md)
+function schoolRecord(dk) { dk = dk || 'all'; if (!schoolsOn() || !save.school) return Promise.resolve(undefined); const k = save.school + '|' + dk, c = SREC[k];
   if (c && Date.now() - c.t < 120000) return Promise.resolve(c.r);
   return Online.board(dk, 'all', save.school).then(rows => { const r = rows[0] || null; SREC[k] = { r, t: Date.now() }; return r; }).catch(() => (c ? c.r : undefined)); }
+// once a minute on the menu: send your board row if it didn't go through (offline), refresh the school list (your school's
+// approval, schools hidden by the moderator) and add a school you asked for before schools could be added directly
+function menuOnlineTick() { if (!Online.ready() || Date.now() - (menuOnlineTick.t || 0) < 60000) return; menuOnlineTick.t = Date.now();
+  Online.syncPlayer(); if (save.age === 'child') return;
+  loadAppCfg().then(() => APPCFG.schools !== false ? loadSchools(!!SCHOOLS.denied) : null).then(() => { syncSchoolCard(); return checkSchoolReq(); }).catch(() => {}); }
+function schoolPending(id) { const s = SCHOOLS.list.find(x => x.id === (id || save.school)); return !!(s && s.status === 'pending'); }
 function syncSchoolCard() { const el = $('mSchool'); if (!el) return;
   if (!schoolsOn()) { el.style.display = 'none'; return; } el.style.display = '';
-  if (!save.school) { $('mSchoolSub').textContent = 'Your school'; $('mSchoolTxt').textContent = 'Add your school +'; return; }
-  const sn = schoolName(save.school); if ($('mSchoolTxt').textContent === '–') { $('mSchoolSub').textContent = sn; $('mSchoolTxt').textContent = 'School record'; } schoolRecord().then(r => { if (r === undefined) return;
-    if (!r) { $('mSchoolSub').textContent = sn; $('mSchoolTxt').textContent = 'Set your school record!'; }
-    else if (r.me) { $('mSchoolSub').textContent = sn + ' record'; $('mSchoolTxt').textContent = r.s.toLocaleString() + ' · YOU! 👑'; }
-    else { $('mSchoolSub').textContent = 'Classmates\' record'; $('mSchoolTxt').textContent = r.s.toLocaleString() + ' · ' + r.n; } }); }
+  const sub = $('mSchoolSub'), txt = $('mSchoolTxt');
+  if (!save.school) { sub.textContent = 'Your school'; txt.textContent = 'Add your school +'; return; }
+  const sn = schoolName(save.school); sub.textContent = sn + (schoolPending() ? ' · waiting for approval' : ''); if (txt.textContent === '–' || txt.textContent === 'Add your school +') txt.textContent = 'School record';
+  schoolRecord().then(r => { if (r === undefined || !save.school) return; const sn2 = schoolName(save.school), pend = schoolPending() ? ' · waiting for approval' : '';
+    if (!r) { sub.textContent = sn2 + pend; txt.textContent = 'Set your school record!'; }
+    else if (r.me) { sub.textContent = sn2 + ' record' + pend; txt.textContent = r.s.toLocaleString() + ' · YOU! 👑'; }
+    else { sub.textContent = sn2 + ' record' + pend; txt.textContent = r.s.toLocaleString() + ' · ' + r.n; } }); }
 function schoolIntroToast() { // shown as each Infinite Run starts: set the record, or the classmate's record to break
-  if (!save.school || !schoolsOn() || G.mode !== 'infinite' || G.fun || G.fixed || (G.duel && G.duel.on)) return; const t0 = G.runStart = Date.now(), dk = runBK(), sn = schoolName(save.school);
-  schoolRecord(dk).then(r => { if (r === undefined || G.runStart !== t0 || G.scene !== 'play') return; setTimeout(() => { if (G.runStart !== t0 || G.scene !== 'play' || G.dying) return;
-    if (!r) toast('🏫 SET YOUR SCHOOL RECORD!', 'Nobody from ' + sn + ' has a run on ' + bkName(dk) + ' yet. Be the first!', 2800);
-    else if (r.me) toast('🏫 YOU HOLD THE ' + sn.toUpperCase() + ' RECORD', r.s.toLocaleString() + ' on ' + bkName(dk) + '. Beat your own record!', 2800);
+  if (!save.school || !schoolsOn() || G.mode !== 'infinite' || G.fun || G.fixed || (G.duel && G.duel.on)) return; const t0 = G.runStart = Date.now(), sn = schoolName(save.school);
+  schoolRecord().then(r => { if (r === undefined || G.runStart !== t0 || G.scene !== 'play') return; setTimeout(() => { if (G.runStart !== t0 || G.scene !== 'play' || G.dying) return;
+    if (!r) toast('🏫 SET YOUR SCHOOL RECORD!', 'Nobody from ' + sn + ' has a run yet. Be the first!', 2800);
+    else if (r.me) toast('🏫 YOU HOLD THE ' + sn.toUpperCase() + ' RECORD', r.s.toLocaleString() + '. Beat your own record!', 2800);
     else toast('🏫 BREAK YOUR CLASSMATES\' RECORD', r.n + ' has ' + r.s.toLocaleString() + ' for ' + sn + '. Score ' + (r.s + 1).toLocaleString() + ' to take it!', 3200); }, 1300); }); }
 function schoolRecordAfterRun(sc, dk, delay) { // called once the run is sent to the board
   if (!save.school || !schoolsOn()) return; const k = save.school + '|' + dk, c = SREC[k]; if (!c || c.r === undefined) return;
@@ -3837,13 +3935,14 @@ function openSchoolIntro(then) {
       const r2 = await schoolRecord(); toast('🏫 You joined ' + s.name + '!', r2 ? 'Break your classmates\' record: ' + r2.s.toLocaleString() + ' by ' + (r2.me ? 'you' : r2.n) : 'Set your school record!', 2600); if (then) setTimeout(then, 300); }))); lst.appendChild(r); });
     if (!hits.length) lst.appendChild(mk('div', '', t ? 'No school called that yet. Ask to add it below.' : 'Loading schools...')); };
   q.oninput = draw; draw();
-  const syncAsk = () => { const w = save.schoolReq; $('siWait').style.display = w ? '' : 'none'; $('siWait').textContent = w ? '⏳ Waiting for approval: ' + w.name + '. It shows up here once the moderator says yes.' : ''; $('siAskRow').style.display = w || APPCFG.requests === false ? 'none' : 'flex'; };
-  syncAsk(); $('siAskGo').onclick = async () => { await requestSchool($('siAsk').value); syncAsk(); };
+  const syncAsk = () => { $('siWait').style.display = 'none'; $('siAskRow').style.display = APPCFG.requests === false ? 'none' : 'flex'; };
+  syncAsk(); $('siAskGo').onclick = async () => { const ok = await addSchool($('siAsk').value); if (ok) { m.classList.remove('show'); if (then) setTimeout(then, 300); } };
+  $('siAsk').onkeydown = e => { if (e.key === 'Enter') $('siAskGo').click(); };
   $('siSkip').onclick = () => { sfx('click'); toast('No problem', 'Add your school any time from the menu', 1600); done(); };
   Promise.all([loadSchools().catch(() => SCHOOLS.list), loadAppCfg()]).then(([, cfg]) => { if (!cfg.schools) return done(); if (m.classList.contains('show')) { draw(); syncAsk(); } });
 }
 function buildBoard(highlightT) {
-  if ((boardMode === 'world' || boardMode === 'school') && !Online.ready()) boardMode = 'local';
+  if ((boardMode === 'world' || boardMode === 'school' || boardMode === 'schools') && !Online.ready()) boardMode = 'local';
   document.querySelectorAll('[data-board]').forEach(x => x.classList.toggle('on', x.dataset.board === boardMode));
   const ol = $('boardList'); ol.innerHTML = ''; const dk = syncBoardDiff();
   $('friendBox').style.display = boardMode === 'friends' ? 'block' : 'none'; $('chalNow').textContent = save.challenge ? 'Current challenge: beat ' + save.challenge.from + '\'s ' + save.challenge.score.toLocaleString() : 'Got a challenge code from a friend\'s score card? Enter it:'; $('myCode').textContent = myCode() || '------';
@@ -3854,14 +3953,14 @@ function buildBoard(highlightT) {
     refreshFriends().then(() => { if (boardMode === 'friends' && curScreen === 'sRanks') { const r2 = (save.friends || []).length; if (r2) { ol.innerHTML = ''; const rr = save.friends.map(f => ({ n: f.n, s: f.s || 0, d: f.d })); if (save.best > 0) rr.push({ n: save.name || 'You', s: save.best, me: true }); rr.sort((a, b) => b.s - a.s).forEach((r, i) => ol.appendChild(boardRow(r, i))); addGhostBtns(ol, rr); } } });
     return;
   }
-  $('schoolBox').style.display = boardMode === 'school' ? 'block' : 'none';
-  if (boardMode === 'school') { buildSchoolBoard(dk, ol); return; }
+  $('schoolBox').style.display = boardMode === 'school' || boardMode === 'schools' ? 'block' : 'none';
+  if (boardMode === 'school' || boardMode === 'schools') { buildSchoolBoard(dk, ol); return; }
   if (boardMode === 'world') {
     if (!Online.ready()) { $('boardSub').textContent = 'The world leaderboard isn\'t connected yet. (Setup steps are in the README.)'; showToBeat(null, dk); return; }
     const per = boardPer(); $('boardSub').textContent = 'Loading world scores...';
     if (per === 'all') Online.top(100).then(all => checkCrown(all)).catch(() => {});
-    Online.board(dk, per).then(rows => { if (boardMode !== 'world' || boardDK !== dk && boardDK) return; rows = rows.slice(0, 25);
-      $('boardSub').textContent = rows.length ? 'Top ' + bkName(dk) + ' runs from players everywhere · ' + BOARD_PER[per] : 'No ' + bkName(dk) + ' runs on the world board ' + (per === 'all' ? 'yet' : BOARD_PER[per].toLowerCase()) + '. Be the first!';
+    Online.board(dk, per).then(rows => { if (boardMode !== 'world' || boardDK !== dk && boardDK) return; const me = rows.findIndex(r => r.me), mine = me >= 50 ? rows[me] : null; rows = rows.slice(0, 50); if (mine) { mine.rank = me + 1; rows.push(mine); }
+      $('boardSub').textContent = rows.length ? 'Top runs from every player · ' + bkName(dk) + ' · ' + BOARD_PER[per] : 'No ' + bkName(dk) + ' runs on the world board ' + (per === 'all' ? 'yet' : BOARD_PER[per].toLowerCase()) + '. Be the first!';
       ol.innerHTML = ''; rows.forEach((r, i) => ol.appendChild(boardRow(r, i))); showToBeat(rows, dk); addReportBtns(ol, rows); })
       .catch(() => { if (boardMode !== 'world') return; ol.innerHTML = ''; showToBeat(null, dk); $('boardSub').textContent = per === 'all' ? 'Couldn\'t reach the world board. Check your connection and try again.' : BOARD_PER[per] + ' world boards turn on after one quick Firebase rules update (README → Online leaderboard).'; });
     return;
@@ -3874,7 +3973,7 @@ function addGhostBtns(ol, rows) { [...ol.children].forEach((li, i) => { const r 
 function boardRow(r, i, highlightT) {
   {
     const li = document.createElement('li'); if (r.me) li.className = 'me';
-    const rk = document.createElement('span'); rk.className = 'rk'; rk.textContent = i + 1;
+    const rk = document.createElement('span'); rk.className = 'rk'; rk.textContent = r.rank || i + 1;
     const nm = document.createElement('span'); nm.className = 'nm'; nm.textContent = r.me ? (save.name || 'You') : r.n;
     const tag = document.createElement('small'); tag.textContent = r.me ? myTitle() + (r.t && r.t === highlightT ? ' · NEW BEST!' : '') : boardMode === 'friends' && !r.me ? 'friend' : r.cpu ? 'classmate' : r.me ? (r.t && r.t === highlightT ? 'NEW BEST!' : 'you') : ''; nm.appendChild(tag);
     const sc = document.createElement('span'); sc.className = 'sc'; sc.textContent = r.s.toLocaleString();
@@ -3891,6 +3990,11 @@ function recordRun(score, dist) {
 
 /* ---------------- CHASE: whatever you bump chases you ---------------- */
 const CHASE_TIME = 10;
+// round 18: every stumble brings the same chaser, the hall monitor, so the rule is easy to learn: stumble once and he's
+// on your heels (the bar at the top shows how long), stumble again before he gives up and you're caught. The people you
+// bumped still react (they fall over), they just don't chase you any more.
+const MONITOR_CHASE = { role: 'monitor', line: 'NO RUNNING IN THE HALLS!', name: 'the hall monitor' };
+function knockAside(o) { if (o && o.acts && o.acts.length) o.acts.forEach((a, i) => setTimeout(() => { try { a.pose('die', 1.4, 0.06); } catch (e) {} }, i * 60)); }
 const chaseTime = () => Math.max(4, (charDef().perk === 'chase' ? 7 : CHASE_TIME) - (petDef().help === 'calm' ? 3 : 0));
 const chaseLayer = new THREE.Group(); scene.add(chaseLayer);
 const CHASER_ROLE = { robot: 'teacher', lunchtable: 'monitor', paintladder: 'janitor', cone: 'janitor', bucket: 'janitor', trash: 'janitor', backpack: 'student', banner: 'janitor', mop: 'janitor', basketball: 'coach', hurdle: 'coach', sprinkler: 'coach' };
@@ -4019,15 +4123,15 @@ function houseAd(tag) {
 
 
 /* ---------- interstitial ads between runs ----------
-   Every 3rd finished run (not in your first 3 runs, never right after you chose to watch a rewarded ad, never in
+   Every 5th finished run (not in your first 3 runs or on your first day, never right after you chose to watch a rewarded ad, never in
    the tutorial), shown when you leave the game-over screen. Android: AdMob interstitial. Browser: a Google H5 "next" ad if one is ready (13+ only), otherwise the 5-second house ad. These breaks and the rewarded buttons are the only places ads show. */
-const INTER_EVERY = 3, ADS_BETWEEN_RUNS = false; // for now ads only ever show when the player picks one (revive, double coins, free star...)
+const INTER_EVERY = 5, ADS_BETWEEN_RUNS = false; // for now ads only ever show when the player picks one (revive, double coins, free star...)
 function maybeInterstitial(then) {
   save.runsSinceAd = (save.runsSinceAd || 0) + 1; const total = (save.runsTotal = (save.runsTotal || 0) + 1);
   if (total === 2 && save.remind !== false && window.HallwayNotify) { try { HallwayNotify.requestPermission(); } catch (e) {} }
   if (!ADS_BETWEEN_RUNS) { persist(); then(); return; }
   const recentReward = Date.now() - (save.lastRewardAd || 0) < 90000;
-  if (total <= 3 || save.runsSinceAd < INTER_EVERY || recentReward || G.mode === 'tutorial' || save.noAds) { persist(); then(); return; }
+  if (total <= 3 || playDays() < 1 || save.runsSinceAd < INTER_EVERY || recentReward || G.mode === 'tutorial' || save.noAds) { persist(); then(); return; }
   save.runsSinceAd = 0; persist();
   let done = false; const fin = () => { if (done) return; done = true; G.adOpen = false; appShown(); then(); };
   window.onInterstitialDone = () => fin();
@@ -4100,7 +4204,7 @@ const TOUR_STEPS = [ // the simple home has only a few buttons, so the tour is s
   ['bModes', 'Modes', 'The campaign, daily challenge, duels and fun modes.'],
   ['bRanks', 'Ranks', 'Beat your school, your friends and the world.'],
   ['bMore', 'More', 'Free gift, missions, spin, pass and more. A number means something is waiting for you.'],
-  ['bSaveHome', 'Save code', 'Copy your code to keep your progress, or paste one to carry on in any browser.']
+  ['bSaveHome', 'Saved', 'Your progress saves by itself. Tap here to sign in with Google and carry it to other browsers.']
 ];
 function startAppTour(force) {
   if (!force && save.appTour) return; save.appTour = 1; persist(); let i = 0;
@@ -4414,7 +4518,7 @@ function useBoost(id) {
   else if (id === 'score2') { G.score2 = true; toast('SCORE x2!', 'For this whole run', 1300); }
   else if (id === 'coins2') { G.coins2 = true; toast('COINS x2!', 'For this whole run', 1300); }
   else if (id === 'shield') { G.pw.pass = Math.max(G.pw.pass, 10); toast('HALL PASS!', '10s invincible', 1300); }
-  else if (id === 'pads') { G.padsT = 15; G.pushCd = 0; toast('FOOTBALL PADS!', 'Run right through people for 15s', 1400); }
+  else if (id === 'pads') { G.pw.pass = Math.max(G.pw.pass, 12); G.pushCd = 0; pwBurst('pass'); toast('FOOTBALL PADS!', 'Hall Pass for 12s: smash through anything', 1400); }
 }
 const TRICKS = [{ kind: 'spin', name: '360 SPIN', pts: 150 }, { kind: 'flip', name: 'BACKFLIP', pts: 250 }, { kind: 'cork', name: 'CORK 540', pts: 350 }, { kind: 'grab', name: 'TOE GRAB', pts: 120 }, { kind: 'superman', name: 'SUPERMAN', pts: 200 }];
 function startTrick() {
@@ -4522,7 +4626,7 @@ const Online = {
   async remove() {
     if (!(window.ONLINE_BOARD && ONLINE_BOARD.projectId && ONLINE_BOARD.apiKey) || !save.fbAuth) return true;
     try { const a = await this.token(), H = { method: 'DELETE', headers: { Authorization: 'Bearer ' + a.idToken } }; const r = await fetch(this.url('/scores/' + encodeURIComponent(a.uid)), H);
-      await Promise.allSettled(ALL_BK.map(k => fetch(this.url('/runs/' + encodeURIComponent(a.uid + '_' + k)), H)).concat([fetch(this.url('/schoolRequests/' + encodeURIComponent(a.uid)), H)])); return r.ok; } catch (e) { return false; }
+      await Promise.allSettled(ALL_BK.map(k => fetch(this.url('/runs/' + encodeURIComponent(a.uid + '_' + k)), H)).concat(['players', 'saves', 'schoolRequests'].map(c => fetch(this.url('/' + c + '/' + encodeURIComponent(a.uid)), H)))); return r.ok; } catch (e) { return false; }
   },
   async byCode(code) {
     const r = await fetch(this.url(':runQuery'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ structuredQuery: { from: [{ collectionId: 'scores' }], where: { fieldFilter: { field: { fieldPath: 'code' }, op: 'EQUAL', value: { stringValue: code } } }, limit: 1 } }) });
@@ -4541,21 +4645,56 @@ const Online = {
       if (r.ok) { p.sent = Date.now(); persist(); } else if (r.status === 403 && mySchool() && !this._retry) { await loadSchools(true).catch(() => {}); if (!mySchool()) { this._retry = 1; try { await this.submitRun(name, dist); } finally { this._retry = 0; } } }
     } catch (e) { /* offline or rules not updated yet: ignore */ }
   },
+  // One leaderboard row per player (players/{uid}): best on any setting, plus best today / this week / this month.
+  // Every board (All players, My school, School vs school, world + school records) reads it. Sent after any run that
+  // beats one of those, and retried on the next launch if the phone was offline.
+  async syncPlayer(force) {
+    if (!this.ready() || save.age === 'child') return false; const r = myRow(), name = safeName(save.name || 'Runner'), sch = mySchool();
+    if (!r.best) return false; if (!force && !r.dirty && r.sentName === name && r.sentSchool === sch) return true;
+    if (this._syncing) { this._again = 1; return this._syncing; }
+    const go = async () => { const a = await this.token(); const K = perKeys(), cur = per => r[per] === K[per] ? (r[per + 'S'] || 0) : 0;
+      const body = { name, code: myCode(), school: sch, best: r.best, bestDist: r.bestDist || 0, bestDiff: String(r.bestDiff || 'normal'), day: K.day, dayS: Math.min(cur('day'), r.best), week: K.week, weekS: Math.min(cur('week'), r.best), month: K.month, monthS: Math.min(cur('month'), r.best), ts: new Date() };
+      try { await fsReq('PATCH', docPath('players', a.uid), a.idToken, fsEnc(body)); }
+      catch (e) { if (e.status !== 403) throw e;
+        if (sch) { await loadSchools(true).catch(() => {}); if (mySchool() !== sch) return go(); } // your school was hidden: send without it
+        const old = await fsReq('GET', docPath('players', a.uid)).then(fsDoc).catch(() => null); // the board already has a higher best (restored an older save)
+        if (old && (old.best || 0) > r.best) { r.best = old.best; r.bestDist = old.bestDist || 0; r.bestDiff = old.bestDiff || r.bestDiff; return go(); }
+        throw e; }
+      r.dirty = 0; r.sentName = name; r.sentSchool = sch; r.sentT = Date.now(); persist(); return true; };
+    this._syncing = go().catch(() => false).finally(() => { this._syncing = null; if (this._again) { this._again = 0; this.syncPlayer(); } });
+    return this._syncing;
+  },
+  // rows from players/: everyone (all-time comes back ordered by best), or one period and/or one school (sorted here,
+  // so no extra Firestore index is needed)
+  async players(per, school, limit) {
+    const K = perKeys(), fl = []; if (per !== 'all') fl.push(fsEq(per, K[per])); if (school) fl.push(fsEq('school', school));
+    const q = { from: [{ collectionId: 'players' }], limit: limit || 500 };
+    if (fl.length) q.where = fl.length === 1 ? fl[0] : { compositeFilter: { op: 'AND', filters: fl } };
+    else { q.orderBy = [{ field: { fieldPath: 'best' }, direction: 'DESCENDING' }]; q.limit = limit || 200; }
+    const uid = save.fbAuth && save.fbAuth.uid, rows = await fsReq('POST', ':runQuery', null, { structuredQuery: q });
+    const err = rows.find(x => x.error); if (err) { const e = new Error(err.error.message || 'query failed'); e.status = err.error.code; throw e; }
+    return rows.filter(x => x.document).map(x => fsDoc(x.document)).map(f => ({ n: f.name || 'Runner', s: per === 'all' ? f.best || 0 : f[per + 'S'] || 0, d: per === 'all' ? f.bestDist || 0 : 0, diff: f.bestDiff || '', uid: f.id, sch: f.school || '', me: !!uid && f.id === uid }))
+      .filter(r => r.s > 0 && !isBlocked(r.uid));
+  },
+  // dk = 'all' (every setting, the default) or one difficulty + speed board (runs/{uid}_{dk})
   async board(dk, per, school) {
-    const K = perKeys(), eq = (f, v) => ({ fieldFilter: { field: { fieldPath: f }, op: 'EQUAL', value: { stringValue: v } } });
-    const fl = [eq('diff', dk)]; if (per !== 'all') fl.push(eq(per, K[per])); if (school) fl.push(eq('school', school));
-    const where = fl.length === 1 ? fl[0] : { compositeFilter: { op: 'AND', filters: fl } };
     const uid = save.fbAuth && save.fbAuth.uid, best = new Map(), add = (id, row) => { const o = best.get(id); if (!o || row.s > o.s) best.set(id, row); };
-    const q = fetch(this.url(':runQuery'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ structuredQuery: { from: [{ collectionId: 'runs' }], where, limit: 300 } }) })
-      .then(async r => { if (!r.ok) throw new Error('HTTP ' + r.status); for (const x of await r.json()) { if (!x.document) continue; const f = x.document.fields, id = f.uid ? f.uid.stringValue : '';
-        const sc = +((per === 'all' ? f.best : f[per + 'S']) || {}).integerValue || 0; if (sc > 0 && !isBlocked(id)) add(id, { n: f.name.stringValue, s: sc, d: per === 'all' ? +(f.bestDist && f.bestDist.integerValue || 0) : 0, diff: dk, uid: id, sch: f.school ? f.school.stringValue : '', me: !!uid && id === uid }); } return true; });
-    if (per !== 'all' || school) await q; // daily / weekly / monthly come only from the new rows
-    else { // all-time also keeps everyone already on the original board
-      const [a, b] = await Promise.allSettled([q, this.top(100)]);
-      if (b.status === 'fulfilled') for (const r of b.value) if ((r.diff || 'normal') === dk && !isBlocked(r.uid)) add(r.uid || r.n + '|' + r.s, r);
-      if (a.status === 'rejected' && b.status === 'rejected') throw a.reason;
+    if (dk === 'all') {
+      const [a, b] = await Promise.allSettled([this.players(per, school), per === 'all' && !school ? this.top(100) : Promise.resolve([])]);
+      if (a.status === 'fulfilled') for (const r of a.value) add(r.uid, r);
+      if (b.status === 'fulfilled') for (const r of b.value) if (!isBlocked(r.uid)) add(r.uid || r.n + '|' + r.s, r); // players from before this board (older app versions)
+      if (a.status === 'rejected' && (b.status === 'rejected' || per !== 'all' || school)) throw a.reason;
+      const me = myRow(), myS = per === 'all' ? me.best : myPeriodBest('all', per); // your own row shows straight away, even before it reaches the server
+      if (uid && myS > 0 && (!school || school === mySchool()) && !(best.get(uid) && best.get(uid).s >= myS)) add(uid, { n: safeName(save.name), s: myS, d: per === 'all' ? me.bestDist || 0 : 0, uid, sch: mySchool(), me: true });
+      return [...best.values()].sort((x, y) => y.s - x.s);
     }
-    return [...best.values()].sort((a, b) => b.s - a.s);
+    const K = perKeys(), fl = [fsEq('diff', dk)]; if (per !== 'all') fl.push(fsEq(per, K[per])); if (school) fl.push(fsEq('school', school));
+    const where = fl.length === 1 ? fl[0] : { compositeFilter: { op: 'AND', filters: fl } };
+    const rows = await fsReq('POST', ':runQuery', null, { structuredQuery: { from: [{ collectionId: 'runs' }], where, limit: 300 } });
+    for (const x of rows) { if (!x.document) continue; const f = fsDoc(x.document), id = f.uid || '', sc = (per === 'all' ? f.best : f[per + 'S']) || 0;
+      if (sc > 0 && !isBlocked(id)) add(id, { n: f.name || 'Runner', s: sc, d: per === 'all' ? f.bestDist || 0 : 0, diff: dk, uid: id, sch: f.school || '', me: !!uid && id === uid }); }
+    if (per === 'all' && !school) { try { for (const r of await this.top(100)) if ((r.diff || 'normal') === dk && !isBlocked(r.uid)) add(r.uid || r.n + '|' + r.s, r); } catch (e) {} }
+    return [...best.values()].sort((x, y) => y.s - x.s);
   },
   async top(n = 25) {
     const r = await fetch(this.url(':runQuery'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ structuredQuery: { from: [{ collectionId: 'scores' }], orderBy: [{ field: { fieldPath: 'score' }, direction: 'DESCENDING' }], limit: n } }) });
@@ -4617,7 +4756,7 @@ function openAgeGate(then) {
     save.age = v < 13 ? 'child' : v < 16 ? 'teen' : 'adult'; persist(); m.classList.remove('show');
     applyPrivacy(); sfx('click');
     if (save.age === 'child') toast('Kid-safe mode on', 'No data collection, online features off', 2200);
-    if (then) then(); else { if (!save.tutDone) startTutorial(); else startRun('infinite'); }
+    if (then) then(); else startRun('infinite'); // straight into a real run: the first one shows swipe hints as things come up
   };
 }
 async function deleteMyData() {
@@ -4961,7 +5100,7 @@ function startTutorial() {
 }
 function skipTutorial() {
   if (G.mode !== 'tutorial') return; save.tutDone = 1; persist(); $('tutCard').classList.remove('show'); $('tutPrompt').classList.remove('show'); $('tutSkip').classList.remove('show'); G.tutHold = false;
-  goMenu(); setTimeout(() => startAppTour(), 400); toast('TUTORIAL SKIPPED', 'Settings → Replay tutorial any time', 1600);
+  goMenu(); toast('TUTORIAL SKIPPED', 'Settings → Replay tutorial any time', 1600);
 }
 function tutCard(key, then) {
   const [t, b] = TUT_CARDS[key]; G.tutHold = true;
@@ -5012,6 +5151,26 @@ function tutUpdate() {
   else if (o && !G.objs.includes(o) && !G.dying && o.K.cat === 'pick') tutNext();
 }
 
+/* ---------- FIRST RUN: hints built into a real run (round 18) ----------
+   No separate tutorial and no menu before your first run. The first time a jump, a slide or a lane change is needed in
+   your lane, the game slows right down and shows which way to swipe; it speeds back up the moment you do it. */
+const FR_HINTS = { low: ['Swipe UP to JUMP', 'over low stuff on the floor', 'up'], high: ['Swipe DOWN to SLIDE', 'under things hanging down', 'down'], block: ['Swipe LEFT or RIGHT', 'to get around people', 'side'] };
+function frPrompt(t, sub, hand) { $('tutTitle').textContent = t; $('tutSub').textContent = sub; $('tutHand').className = 'tutHand h-' + hand; $('tutPrompt').classList.add('show'); }
+function firstRunHints() {
+  const F = G.fr || (G.fr = { done: {}, cur: null, introT: 2.6 });
+  if (G.intro > 0 || G.dying) { G.tutSlow = 1; return; }
+  if (F.introT > 0) { if (F.introT === 2.6) frPrompt('Swipe LEFT and RIGHT', 'to change lanes and grab coins', 'left'); F.introT -= FRAME_DT; if (F.introT <= 0 || G.tpLane) { F.introT = 0; if (!F.cur) $('tutPrompt').classList.remove('show'); } }
+  if (F.cur) {
+    const o = F.cur.o, d = o.z - PZ, k = F.cur.k;
+    const ok = k === 'low' ? P.y > 0.25 : k === 'high' ? P.slide > 0 : Math.abs(P.lane * laneW - o.x) > laneW * 0.5;
+    if (ok || d < -1 || !G.objs.includes(o)) { F.done[k] = 1; F.cur = null; G.tutSlow = 1; $('tutPrompt').classList.remove('show', 'frozen'); if (ok) { popup('NICE!', '#7dff9a'); sfx('coin'); } if (F.done.low && F.done.high && F.done.block) { G.firstRun = false; setTimeout(() => { if (G.scene === 'play') toast('YOU\'VE GOT IT!', 'Now run as far as you can', 1600); }, 500); } }
+    else { G.tutSlow = d < 10 ? 0.22 : 0.65; $('tutPrompt').classList.toggle('frozen', d < 10); }
+    return;
+  }
+  for (const o of G.objs) { if (o.K.cat !== 'obs' || o.ignore || o.K.cross) continue; const k = o.K.type; if (!FR_HINTS[k] || F.done[k]) continue; const d = o.z - PZ; if (d > 24 || d < 5) continue; if (Math.abs(o.x - P.lane * laneW) > laneW * 0.5) continue;
+    F.cur = { o, k }; F.introT = 0; frPrompt(...FR_HINTS[k]); break; }
+}
+
 /* ---------------- GAME STATE ---------------- */
 const G = {
   scene: 'menu', mode: 'infinite', levelIdx: 0, cfg: INF_CFG, paused: false, t: 0,
@@ -5031,7 +5190,7 @@ function baseSpeed() {
   // gets faster the longer you survive, capped where it's still playable
   SPEED_MAX = diff().max * sm;
   if (G.fun === 'hardcore') return Math.min(SPEED_MAX + 3, (diff().start + 6) * sm + G.dist * diff().ramp);
-  return Math.min(SPEED_MAX, diff().start * sm + G.dist * diff().ramp);
+  return Math.min(SPEED_MAX, diff().start * sm + G.dist * diff().ramp) * (G.easyRun ? 0.88 : 1);
 }
 const DIFF = {
   easy: { name: 'Easy', dens: -0.16, safe: -0.12, start: 13, max: 25, ramp: 0.0028, camp: 0.9, gap: 1.2, score: 1 },
@@ -5044,7 +5203,9 @@ const diff = () => (G && G.fixed) ? DIFF.normal : DIFF[save.difficulty] || DIFF.
 const SPEEDS = { chill: { name: 'Chill', mul: 0.88, score: 0.8 }, normal: { name: 'Normal', mul: 1, score: 1 }, fast: { name: 'Fast', mul: 1.15, score: 1.25 }, turbo: { name: 'Turbo', mul: 1.3, score: 1.6 } };
 const speedMode = () => (G && G.fixed) ? SPEEDS.normal : SPEEDS[save.speedMode] || SPEEDS.normal;
 let SPEED_MAX = 27;
-const wN = () => clamp((G.weight - 0.2) / 0.8, 0, 1);
+// Round 18: every runner gets the same quick, light controls. The backpack load used to slow lane changes, lower jumps and
+// lengthen slides, so brand-new players (full pack) got the worst handling. It is now only how the backpack looks.
+const wN = () => 0;
 // HEAD HOP targets: every person (and person with a cart or umbrella). Only the 3-high cheer pyramid can't be hopped
 // (and a swinging door, which has no head to land on).
 const NO_HOP = { pyramid: 1, doorswing: 1 };
@@ -5249,7 +5410,10 @@ function startRun(mode, idx) {
   G.daily = mode === 'infinite' && !!G.dailyNext; G.dailyNext = false; G.trip = mode === 'infinite' && !G.daily ? (G.tripNext || null) : null; G.tripNext = null; G.lockTheme = null;
   if (mode === 'campaign') { const L = LEVELS[G.levelIdx]; G.cfg = L; G.themeKey = L.theme; laneW = L.laneW * LANE_SCALE; const sk = diff().camp * speedMode().mul * 1.12; G.timeLeft = Math.round(L.time / Math.min(1, sk) * (sk < 1 ? 1.12 : 1)); }
   else { G.cfg = INF_CFG; G.themeKey = G.fun === 'sled' ? 'snowquad' : G.fixed ? 'high' : hallPick('locations').theme; laneW = INF_CFG.laneW * LANE_SCALE; G.infStage = 0; if (G.daily) G.lockTheme = dailyChallenge().theme; if (G.trip) G.lockTheme = 'trip_' + G.trip; if (G.lockTheme) G.themeKey = G.lockTheme; }
-  G.tut = null; G.tutHold = false; G.tutSlow = 1; $('tutPrompt').classList.remove('show');
+  G.tut = null; G.tutHold = false; G.tutSlow = 1; $('tutPrompt').classList.remove('show', 'frozen');
+  // first ever run: a real Infinite Run, a little slower, with swipe hints (and slow motion) the first time each kind of obstacle comes at you
+  G.firstRun = mode === 'infinite' && !save.tutDone && !G.fun && !G.funNext; G.easyRun = G.firstRun; G.fr = null; G.frSaved = false;
+  if (G.firstRun) { save.tutDone = 1; persist(); }
   if (!fromMenu) { G.decorSeed = 1 + Math.floor(Math.random() * 997); for (const sg of segs) sg.userData.k = null; } // new hallway layout every run (the menu already picked one)
   clearObjs(); setCamera(); rebuildPlayer();
   Object.assign(G, { dist: 0, score: 0, coins: 0, nextRow: 30, rowId: 0, rowCount: 0, prevSafe: 0, lastPower: 0, stumble: 0, dying: false, finishSpawned: false, popups: [], lastStarD: -9999, zoneNow: 'hall', cafeT: undefined, shake: 0, flash: 0, paused: false, bellWarned: false, smashed: 0, endT: 0 });
@@ -5270,7 +5434,8 @@ G.lastQuiz = 0; G.lastShortcut = 0; G.lastLetter = -999; G.tpStart = undefined; 
   if (mode !== 'tutorial') { if (cheatOn('flyer')) G.pw.cheat = pwTime('cheat') + 3; if (cheatOn('juiced')) G.pw.energy = pwTime('energy') + 3; }
   G.cheated = unfairCheats(); G.shield = mode !== 'tutorial' && charDef().ab === 'shield' ? 1 : 0; P.dj = false;
   dayBest(); setText('hTop', (save.best || 0).toLocaleString()); setText('hToday', (save.dayBest.s || 0).toLocaleString()); $('hBadges').style.display = G.mode === 'infinite' && !G.fun ? '' : 'none';
-  showScreen(null); $('popCol').innerHTML = ''; if (mode !== 'tutorial') $('tutSkip').classList.remove('show'); $('hud').classList.add('show'); $('heelyBtn').classList.toggle('show', true); $('pushBtn').classList.toggle('show', mode !== 'tutorial');
+  showScreen(null); $('popCol').innerHTML = ''; if (mode !== 'tutorial') $('tutSkip').classList.remove('show'); $('hud').classList.add('show'); $('heelyBtn').classList.toggle('show', mode === 'tutorial' || (save.heelys || 0) > 0); $('pushBtn').classList.toggle('show', mode !== 'tutorial' && pushUnlocked());
+  if (mode !== 'tutorial' && pushUnlocked() && !save.pushIntro) { save.pushIntro = 1; persist(); setTimeout(() => { if (G.scene === 'play') toast('NEW: ✋ PUSH', 'Tap it to shove people out of your lane', 2200); }, 2600); }
   if (G.fun === 'coinrush') G.timeLeft = 60;
   $('hCamp').style.visibility = mode === 'campaign' || G.fun === 'coinrush' || G.fun === 'trial' ? 'visible' : 'hidden';
   setDark(G.fun === 'dark' || (mode === 'campaign' && !!LEVELS[G.levelIdx].night));
@@ -5290,11 +5455,12 @@ function crash(o, msg) {
   if (save.admin && save.adminGod && G.mode !== 'tutorial') { if (o) o.ignore = true; return; } // admin god mode
   if (G.shield && G.mode !== 'tutorial') { G.shield = 0; if (o) o.ignore = true; G.pw.pass = Math.max(G.pw.pass, 1.5); G.caught = false; popup('🛡 SHIELD SAVED YOU!', '#7bdff2'); sfx('smash'); G.shake = 0.3; return; }
   if (petDef().help === 'guard' && !G.foxSaved && G.mode !== 'tutorial') { G.foxSaved = true; if (o) o.ignore = true; G.pw.pass = Math.max(G.pw.pass, 1.5); G.caught = false; popup('🦊 FOX TO THE RESCUE!', '#ff9f1c'); sfx('power'); clearChase(); G.stumble = 0; return; }
+  if (G.easyRun && !G.frSaved && G.dist < 900) { G.frSaved = true; if (o) o.ignore = true; G.pw.pass = Math.max(G.pw.pass, 1.5); G.caught = false; G.stumble = 0; clearChase(); G.shake = 0.25; sfx('bump'); popup('OOPS! FREE SAVE', '#ffd60a'); toast('First run bonus', 'Your first crash is on us. Next one counts!', 1800); return; }
   if (G.mode !== 'tutorial') breakChain(true);
   if (heelySave(o)) { if (G.tut) G.tut.saved = true; return; }
   if (G.mode === 'tutorial') { sfx('crash'); G.shake = 0.4; const k = G.caught || G.stumble > 0 ? 'caught' : (o && o.K.type) || 'block'; tutRetry(k === 'block' || k === 'low' || k === 'high' || k === 'caught' ? k : 'block'); return; }
   G.dying = true; G.dyingT = 1.3; G.shake = 0.5; G.flash = 0.6; P.fall = 0.001; P.slide = 0; P.slideQ = false; // a crash always ends the slide (no lying-down lean mixed into the fall)
-  G.deathMsg = msg; sfx('crash'); vibrate(200);
+  G.deathMsg = msg; sfx('crash'); vibrate(200); if (G.caught) { G.dyingT = 1.6; popup('CAUGHT!', '#ef476f'); }
   emit(P.x, 1.6, 0, 16, '#ffe066', 3.5, 0.9, 0.4, 3, true);
   if (o && o.K.say !== undefined) o.shout = 2;
   if (o && o.acts && o.acts.length) { o.knocked = true; o.vz = 0; o.acts.forEach((a, i) => setTimeout(() => a.pose('die', 1.3 + i * 0.1, 0.06), i * 60)); }
@@ -5347,7 +5513,7 @@ function oneMoreRun(sc) {
 }
 function endRun(win, reason) {
   if (G.scene !== 'play') return;
-  G.scene = 'over'; $('hud').classList.remove('show'); $('pwSide').classList.remove('show'); $('pushBtn').classList.remove('show');
+  G.scene = 'over'; $('hud').classList.remove('show'); $('pwSide').classList.remove('show'); $('pushBtn').classList.remove('show'); $('heelyBtn').classList.remove('show'); $('chaseMeter').classList.remove('show');
   const L = LEVELS[G.levelIdx];
   let bonus = 0, stars = 0;
   if (win && G.mode === 'campaign') {
@@ -5369,16 +5535,16 @@ function endRun(win, reason) {
   if (G.tourney && !G.cheated) { const T = tourneySave(); T.tries++; if (sc > T.best) { T.best = sc; toast('NEW TOURNAMENT BEST!', sc.toLocaleString(), 1800); } persist(); }
   let dcLine = '';
   if (G.daily) { const c = dailyChallenge(), sc0 = Math.floor(G.score); if (sc0 > save.dc.best) save.dc.best = sc0; if (!save.dc.done && sc0 >= c.target) { save.dc.done = 1; grant({ gs: 3, cash: 500 }); dcLine = 'DAILY CHALLENGE BEATEN! +3★ +$500'; Analytics.log('daily_challenge_complete', { score: sc0 }); } else dcLine = save.dc.done ? 'Daily challenge done ✓ · today\'s best ' + save.dc.best.toLocaleString() : 'Daily target: ' + c.target.toLocaleString() + ' · today\'s best ' + save.dc.best.toLocaleString(); }
-  mission('runs', 1); mission('coins_total', G.coins); setTimeout(() => Cloud.save(), 500); mission('dist_run', Math.floor(G.dist)); mission('score_run', Math.floor(G.score));
+  mission('runs', 1); mission('coins_total', G.coins); setTimeout(() => { Cloud.save(); GSync.push(); }, 500); mission('dist_run', Math.floor(G.dist)); mission('score_run', Math.floor(G.score));
   const sc = Math.floor(G.score);
   if (G.mode === 'infinite' && !G.fun && !G.tourney) { save.lastCode = challengeCode(sc); if (sc > dayBest().s) save.dayBest.s = sc; }
   if (G.mode === 'infinite' && !G.fun && tourOn() && G.dist >= 1000 && save.tourStamp !== tourWeek()) { save.tourStamp = tourWeek(); save.tourStamps = (save.tourStamps || 0) + 1; grant({ cash: 1000, gs: 1 }); setTimeout(() => toast(tourStop().flag + ' TOUR STAMP!', tourStop().name + ' · +$1,000 +1★ (' + save.tourStamps + ' stamps)', 2600), 1600); }
   let newBest = false;
   let placed = null;
-  if (G.mode === 'infinite' && !G.fun) { if (sc > 0) { const nb = logRunByDiff(sc, Math.floor(G.dist)), np = logRunPeriods(sc); if ((nb || np) && !G.cheated) { const dd = G.dist, w = WREC[runBK()], wr = Online.ready() && w && (!w.r || sc > w.r.s);
-      if (wr) { WREC[runBK()] = { r: { n: save.name || 'You', s: sc, d: Math.floor(dd), me: true }, t: Date.now() }; }
-      if (wr && !save.name) setTimeout(() => askName(() => { Online.submitRun(save.name || 'Runner', dd); toast('👑 WORLD RECORD!', (save.name || 'Runner') + ' is #1 in the world', 2400); }, true), 1200); // no nickname yet: ask for one for the record
-      else { Online.submitRun(save.name || 'Runner', dd); if (wr) setTimeout(() => toast('👑 NEW WORLD RECORD!', 'You\'re #1 on the world board', 2400), 1200); } schoolRecordAfterRun(sc, runBK(), wr ? 4000 : 1200); } } duelEnd(sc); if (sc > save.best) { save.best = sc; newBest = true; } save.bestDist = Math.max(save.bestDist, Math.floor(G.dist)); if (sc > 0 && !G.fun) { placed = recordRun(sc, Math.floor(G.dist)); if (sc >= save.best && !G.cheated) Online.submit(save.name || 'Runner', sc, G.dist); } }
+  if (G.mode === 'infinite' && !G.fun) { if (sc > 0) { const nb = logRunByDiff(sc, Math.floor(G.dist)), np = logRunPeriods(sc), nr = !G.cheated && noteBoardRun(sc, Math.floor(G.dist), runBK()); if ((nb || np || nr) && !G.cheated) { const dd = G.dist, w = WREC.all, wr = Online.ready() && w && (!w.r || sc > w.r.s);
+      if (wr) { WREC.all = { r: { n: save.name || 'You', s: sc, d: Math.floor(dd), me: true }, t: Date.now() }; }
+      if (wr && !save.name) setTimeout(() => askName(() => { Online.submitRun(save.name || 'Runner', dd); Online.syncPlayer(); toast('👑 WORLD RECORD!', (save.name || 'Runner') + ' is #1 in the world', 2400); }, true), 1200); // no nickname yet: ask for one for the record
+      else { Online.submitRun(save.name || 'Runner', dd); Online.syncPlayer(); if (wr) setTimeout(() => toast('👑 NEW WORLD RECORD!', 'You\'re #1 on the world board', 2400), 1200); } schoolRecordAfterRun(sc, 'all', wr ? 4000 : 1200); } } duelEnd(sc); if (sc > save.best) { save.best = sc; newBest = true; } save.bestDist = Math.max(save.bestDist, Math.floor(G.dist)); if (sc > 0 && !G.fun) { placed = recordRun(sc, Math.floor(G.dist)); if (sc >= save.best && !G.cheated) Online.submit(save.name || 'Runner', sc, G.dist); } }
   persist();
   let funLine = '';
   if (G.fun) {
@@ -5400,7 +5566,7 @@ function endRun(win, reason) {
   $('oReason').textContent = (tokLine && !G.fun && !G.trip && !dcLine) ? (win ? 'You made it!' : G.deathMsg) + tokLine : dcLine ? dcLine + (win ? '' : ' · ' + G.deathMsg) : G.trip ? currentTrip().item + ' this run: ' + (G.run.souv || 0) + ' · total ' + tripSave().got + (win ? '' : ' · ' + G.deathMsg) : G.fun ? funLine + (win ? '' : ' · ' + G.deathMsg) : win && G.mode === 'campaign' ? 'You reached ' + L.dest + ' with ' + Math.ceil(G.timeLeft) + 's to spare! (+$' + bonus + ')' + (L.goal && L.goal.t !== 'boss' ? (G.goalOk ? ' · Goal done ★' : ' · Goal missed: ' + goalText(L)) : '') : win ? 'You made it!' : (reason === 'late' ? 'The bell rang before you reached ' + L.dest + '. Tardy slip!' : G.deathMsg);
   $('oStars').textContent = win && G.mode === 'campaign' ? '★'.repeat(stars) + '☆'.repeat(3 - stars) : '';
   $('oStars').style.display = win && G.mode === 'campaign' ? 'block' : 'none';
-  $('oScore').textContent = sc.toLocaleString();
+  $('oScore').textContent = '0'; { const el = $('oScore'), t0 = performance.now(), dur = clamp(sc / 4000, 0.5, 1.2) * 1000; const step = now => { const k = clamp((now - t0) / dur, 0, 1), e = 1 - Math.pow(1 - k, 3); el.textContent = Math.round(sc * e).toLocaleString(); if (k < 1 && G.scene === 'over') requestAnimationFrame(step); else el.textContent = sc.toLocaleString(); }; setTimeout(() => requestAnimationFrame(step), 250); }
   $('oDist').textContent = Math.floor(G.dist) + 'm';
   $('oCoins').textContent = '$' + earned;
   if (G.mode === 'infinite') { $('oBestL').textContent = newBest ? '★ New best!' : 'Best score'; $('oBest').textContent = save.best.toLocaleString(); }
@@ -5510,9 +5676,9 @@ function act(a) {
   else if (a === 'jump') {
     if (P.y <= (P.fl || 0) + 0.001) { P.vy = hopAssist(jumpV() * (G.heely > 0 ? 1.12 : 1) * (G.pw.spring > 0 ? 1.55 : 1)); if (G.pw.spring > 0) { emit(P.x, 0.1, 0.2, 14, '#7dff9a', 4, 0.5, 0.2, 0, true, true); sfx('power'); } P.slide = 0; P.slideQ = false; sfx('jump'); if (G.heely > 0) startTrick(); G.lastJumpT = G.t; }
     else if (charDef().ab === 'djump' && !P.dj && P.vy < jumpV() * 0.7) { P.dj = true; P.vy = jumpV() * 0.88; sfx('jump'); popup('DOUBLE JUMP!', '#7bdff2'); emit(P.x, P.y, 0.2, 10, '#ffffff', 2.5, 0.4, 0.15, 0, true, true); }
-    else if (G.t - (G.lastJumpT || -9) < 0.7 && !(G.burstCd > 0) && G.mode !== 'tutorial') { G.burstT = 1.8; G.burstCd = 6; P.vy = Math.min(P.vy, 2); popup('SPRINT!', '#ff9f1c'); sfx('whistle'); voice('go_go_go', 8); buzz('power'); } // swipe up twice = sprint burst
+    else if (P.vy <= 0) P.jumpBuf = G.t; // swiped up a moment before landing: jump the instant your feet touch down
   } else if (a === 'slide') {
-    if (P.y > (P.fl || 0) + 0.001) { P.vy = Math.min(P.vy, -22); P.slideQ = true; }
+    if (P.y > (P.fl || 0) + 0.001) { P.vy = Math.min(P.vy, -22); P.slideQ = true; P.rollQ = true; }
     else if (P.slide <= 0.1) { P.slide = slideDur(); sfx('slide'); }
   }
 }
@@ -5527,7 +5693,7 @@ function lockerSlam(dir) {
   if (G.mode === 'tutorial') { popup('CLANG!', '#ef476f'); return; }
   if (G.stumble > 0 || G.fun === 'hardcore') { G.caught = true; crash(null, (G.chase ? G.chase.name[0].toUpperCase() + G.chase.name.slice(1) : 'They') + ' caught you after you slammed into the lockers!'); return; }
   G.stumble = chaseTime(); popup('CLANG!', '#ef476f');
-  startChase(null, { role: 'student', line: "HEY, THAT'S MY LOCKER!", name: 'the kid whose locker you slammed' });
+  P.stumbleT = 0.45; startChase(null, Object.assign({}, MONITOR_CHASE, { line: 'HEY! NO SLAMMING LOCKERS!' }));
 }
 let lastTap = 0;
 const KEYMAP = { ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'right', ArrowUp: 'jump', KeyW: 'jump', Space: 'jump', ArrowDown: 'slide', KeyS: 'slide' };
@@ -5675,7 +5841,7 @@ function update(dt) {
   } else if (P.y > P.fl + 0.0001 || P.vy > 0) {
     const g = 26 * (save.up.helium && P.vy < 0 ? 0.72 : 1) * (cheatOn('moon') ? 0.45 : 1) * (charDef().ab === 'glide' && P.vy < 0 ? 0.55 : 1);
     P.vy -= g * dt; P.y += P.vy * dt;
-    if (P.y <= P.fl) { P.y = P.fl; P.dj = false; if (G.hopN > 1 && P.fl < 0.3) { G.hopT = 0; } G.hopN = P.fl < 0.3 ? 0 : G.hopN; P.vy = 0; sfx('land'); if (G.trick) landTrick(); emit(P.x, 0.1, 0.2, 6, '#cfc6b4', 1.8, 0.4, 0.25, 2, false, true); if (P.slideQ) { P.slideQ = false; P.slide = slideDur(); sfx('slide'); } }
+    if (P.y <= P.fl) { P.y = P.fl; P.dj = false; if (G.hopN > 1 && P.fl < 0.3) { G.hopT = 0; } G.hopN = P.fl < 0.3 ? 0 : G.hopN; P.vy = 0; sfx('land'); if (G.trick) landTrick(); emit(P.x, 0.1, 0.2, 10, '#e8e0cc', 2.4, 0.45, 0.28, 2, false, true); P.landT = 0.2; if (P.slideQ) { P.slideQ = false; P.slide = slideDur(); sfx('slide'); if (P.rollQ) P.rollT = Math.min(0.5, P.slide); } else if (P.jumpBuf && G.t - P.jumpBuf < 0.22) { P.jumpBuf = 0; act('jump'); } P.rollQ = false; }
   }
   else if (P.y < P.fl) P.y = P.fl; // walking up a ramp
   if (P.fl > 0.5) G.highAir = true; else if (P.y <= 0.01) G.highAir = false; // jumped from a table
@@ -5707,6 +5873,7 @@ function update(dt) {
   const lvl = G.mode === 'campaign' ? LEVELS[G.levelIdx] : null;
   G.nextRow -= move;
   if (G.mode === 'tutorial') { G.nextRow = 1e9; tutUpdate(); }
+  if (G.firstRun) firstRunHints();
   while (G.nextRow < SPAWN_Z) {
     if (lvl && G.dist + G.nextRow - PZ > lvl.target - 18) {
       if (!G.finishSpawned) { G.finishSpawned = true; addObj('finish', 0, lvl.target - G.dist + PZ, { dest: lvl.dest.toUpperCase() }); }
@@ -5806,7 +5973,7 @@ function update(dt) {
           if (G.fun !== 'hardcore' && moving && P.fromLane !== P.lane && Math.abs(o.x - P.lane * laneW) < Math.abs(o.x - P.fromLane * laneW)) {
             o.ignore = true; o.bumped = true; P.lane = P.fromLane;
             if (G.stumble > 0 || (G.chase && G.chase.boss)) { G.caught = true; crash(o, (G.chase ? G.chase.name[0].toUpperCase() + G.chase.name.slice(1) : 'They') + ' caught you!'); }
-            else { breakChain(); G.tpBump = true; G.stumble = chaseTime(); G.shake = 0.25; sfx('bump'); vibrate(60); popup('BUMPED! RUN!', '#ef476f'); startChase(o); }
+            else { breakChain(); G.tpBump = true; G.stumble = chaseTime(); G.shake = 0.25; sfx('bump'); vibrate(60); popup('BUMPED! RUN!', '#ef476f'); P.stumbleT = 0.45; knockAside(o); startChase(null, MONITOR_CHASE); }
           } else {
             const msgs = { robot: 'CLANK! The robotics club robot ran you over. Switch lanes!', pie: 'SPLAT! A pie to the face. Slide under flying pies!', door: 'A classroom door swung open right into you! Watch for the flashing light.', locker: 'BONK! A locker door popped open. Slide under next time!', tape: 'You ran into the Principal\'s caution tape!', puddle: 'SPLASH! You slipped in a puddle. Jump it!', tray: 'You slipped on a spilled lunch tray! Jump it next time!', chair: 'A runaway rolling chair took you out! Jump it!', volcano: 'You crashed into the science fair volcano. Jump over it!', walkers: 'You crashed into two students walking to class!', kidline: 'You plowed through a whole class walking in line!', lockerkid: 'You slammed into a kid at their locker!', cart: "You crashed into the janitor's cart!", teacher: 'You ran right into a teacher! Switch lanes next time.', professor: 'You ran right into the professor! Switch lanes next time.', monitor: 'You ran right into the hall monitor! Switch lanes next time.', coach: 'You ran right into the coach! Switch lanes next time.', group: 'You plowed right into a group of chatting students!', kid: 'You bumped into a little kid. Off to the principal!', student: 'You ran smack into another student!', sleepy: 'You woke up a sleepy student the hard way!' };
             if (K.who === 'tray') sfx('tray');
@@ -5851,7 +6018,7 @@ function collect(o) {
     G.run.power++; mission('powerups', 1); voice('power_up', 6);
     G.pw[o.kind] = dur[o.kind];
     const before = G.weight; G.weight = Math.max(0.2, G.weight - 0.1);
-    toast(names[o.kind][0], names[o.kind][1] + (G.weight < before ? ' · Backpack -10%' : ''), 1400);
+    toast(names[o.kind][0], names[o.kind][1], 1400); pwBurst(o.kind);
     sfx('power'); vibrate(40); G.score += 100;
   }
 }
@@ -5882,8 +6049,10 @@ function updateHUD() {
   setText('hScore', Math.floor(G.score).toLocaleString());
   { const cb = $('hCombo'), on = (G.chain || 0) > 0; cb.style.display = on ? 'block' : 'none'; if (on) { setText('hComboT', 'COMBO x' + comboMul() + ' · ' + G.chain); $('hComboBar').style.width = clamp(G.chainT / COMBO_TIME * 100, 0, 100) + '%'; cb.classList.toggle('hot', comboMul() >= 3); } }
   setText('hDist', Math.floor(G.dist) + ' m'); setText('hMult', 'x' + scoreMult());
-  setText('heelyCount', String(save.heelys || 0)); $('heelyBtn').classList.toggle('on', G.heely > 0);
-  setText('hCoins', '$' + G.coins);
+  setText('heelyCount', String(save.heelys || 0)); $('heelyBtn').classList.toggle('on', G.heely > 0); $('heelyBtn').classList.toggle('show', G.scene === 'play' && (G.mode === 'tutorial' || (save.heelys || 0) > 0 || G.heely > 0));
+  { const on = G.scene === 'play' && G.stumble > 0 && !G.dying; $('chaseMeter').classList.toggle('show', on); if (on) $('chaseFill').style.width = clamp(G.stumble / chaseTime() * 100, 0, 100) + '%'; }
+  { const m = scoreMult(); if (hudCache.mult !== m) { if (hudCache.mult !== undefined && G.scene === 'play') bumpEl('hMult', 1.5); hudCache.mult = m; } }
+  setText('hCoins', '$' + G.coins); if (hudCache.coins !== G.coins) { if (G.coins > (hudCache.coins || 0) && G.scene === 'play') bumpEl('hCoins', 1.22); hudCache.coins = G.coins; }
   $('finBtn').classList.toggle('show', G.scene === 'play' && comboMul() >= 3);
   { const pb = $('pushBtn'), cd = G.pushCd || 0; pb.classList.toggle('cool', cd > 0); pb.style.setProperty('--p', (1 - cd / pushCD()) * 360 + 'deg'); pb.classList.toggle('pads', G.padsT > 0); }
   const showTok = G.mode === 'infinite' && !G.trip && (G.eventRun || G.runTok > 0); $('hTok').style.display = showTok ? 'block' : 'none'; if (showTok) setText('hTok', (EV_ICON[currentEvent().id] || '🎟') + ' ' + G.runTok + ' · ' + eventSave().tokens + '/' + EVENT_TRACK[EVENT_TRACK.length - 1][0]);
@@ -5903,7 +6072,7 @@ function updateHUD() {
   if (G.heely > 0) html += '<div class="hudBox pw' + (G.heely < 3 ? ' low' : '') + '">👟<div class="pbar"><i style="width:' + (G.heely / (G.heelyMax || HEELY_TIME) * 100).toFixed(0) + '%;background:#ffb703"></i></div></div>';
   for (const [k, ic, col, d] of pws) if (G.pw[k] > 0) html += '<div class="hudBox pw' + (G.pw[k] < 2 ? ' low' : '') + '">' + ic + '<div class="pbar"><i style="width:' + (G.pw[k] / d * 100).toFixed(0) + '%;background:' + col + '"></i></div></div>';
   if (G.shield) html += '<div class="hudBox pw">🛡 Shield</div>';
-  if (G.stumble > 0) html += '<div class="hudBox pw chaseBox"><span>Being chased! ' + Math.ceil(G.stumble) + 's</span><div class="pbar"><i style="width:' + (G.stumble / CHASE_TIME * 100).toFixed(0) + '%;background:#ef476f"></i></div></div>';
+  // being chased now shows as the HALL MONITOR bar at the top of the screen (round 18)
   if (hudCache.pw !== html) { hudCache.pw = html; $('hPw').innerHTML = html; $('pwSide').classList.toggle('show', !!html); }
   layoutStack();
 }
@@ -5945,8 +6114,9 @@ function goMenu() { $('tutSkip').classList.remove('show'); $('pwSide').classList
   if (G.mode !== 'campaign') G.themeKey = hallPick('locations').theme;
   laneW = 2.1 * LANE_SCALE; setCamera(); Object.assign(P, { x: 0, y: 0, vy: 0, slide: 0, fall: 0, lane: 0 }); rebuildPlayer();
   refreshMenu(); showScreen('sMenu'); checkCrown();
+  if (!save.appTour && (save.runsTotal || 0) >= 1) setTimeout(() => { if (G.scene === 'menu' && curScreen === 'sMenu' && !document.querySelector('.modal.show')) startAppTour(); }, 700);
 }
-const TIPS = ['Time your jump to land on someone\'s head: HEAD HOP!', 'Jump onto a row of lunch tables and run along the top!', 'Swipe UP twice for a SPRINT burst!', 'Duck into a SHORTCUT classroom for free coins!', 'Tap PUSH to shove people out of your lane!', 'Swipe ↓ to slide under banners!', 'Grab a Hall Pass to go invincible!', 'Lighter backpack = higher jumps!', 'Claim your FREE reward daily!', 'Beat Maya on the leaderboard!', 'Bump something and it chases you for 10s!', 'Slam the lockers and their owner comes after you!'];
+const TIPS = ['Time your jump to land on someone\'s head: HEAD HOP!', 'Jump onto a row of lunch tables and run along the top!', 'Duck into a SHORTCUT classroom for free coins!', 'Tap PUSH to shove people out of your lane!', 'Swipe ↓ to slide under banners!', 'Grab a Hall Pass to go invincible!', 'Claim your FREE reward daily!', 'Beat Maya on the leaderboard!', 'Bump something and it chases you for 10s!', 'Slam the lockers and their owner comes after you!'];
 function refreshMenu() {
   $('mBank').textContent = save.bank.toLocaleString(); $('mStars').textContent = (save.gs || 0).toLocaleString();
   ensureMissions(); const md = save.missions.filter(m => m.done).length; $('missBadge').textContent = missionsAllDone() ? '!' : md + '/3'; $('missBadge').classList.add('on');
@@ -5954,7 +6124,7 @@ function refreshMenu() {
   $('mMult').textContent = '×' + scoreMult(); $('mWord').textContent = wordShown().replace(/ /g, '');
   ['lBank', 'sBank'].forEach(id => $(id).textContent = '$' + save.bank); $('sStars').textContent = '★ ' + (save.gs || 0);
   $('mBest').textContent = save.best.toLocaleString();
-  $('mTop').textContent = save.bestDist.toLocaleString() + ' m'; try { syncWorldCard(); } catch (e) {} try { syncSchoolCard(); } catch (e) {}
+  $('mTop').textContent = save.bestDist.toLocaleString() + ' m'; try { syncWorldCard(); } catch (e) {} try { syncSchoolCard(); } catch (e) {} try { menuOnlineTick(); } catch (e) {} try { syncHomeSide(); } catch (e) {}
   const rk = myRank(); $('mRankTxt').textContent = rk ? '#' + rk : '–'; try { buildSideModes(); } catch (e) {}
   const stS = streakState(); $('freeTxt').textContent = stS.can ? 'FREE' : 'Day ' + stS.day + ' ✓'; $('bFree').classList.toggle('wait', !stS.can);
   $('campTxt').textContent = 'Stage ' + Math.min(save.unlocked, LEVELS.length) + '/' + LEVELS.length;
@@ -6212,7 +6382,7 @@ function buildShop() {
 document.querySelectorAll('.tab').forEach(t => t.onclick = () => { document.querySelectorAll('.tab').forEach(x => x.classList.remove('on')); t.classList.add('on'); shopTab = t.dataset.tab; sfx('click'); buildShop(); });
 document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => { sfx('click'); goMenu(); });
 const openCampaign = () => { initAudio(); sfx('click'); buildLevels(); refreshMenu(); showScreen('sLevels'); };
-const openRanks = () => { initAudio(); sfx('click'); boardDK = runBK(); if (!openRanks.done) { openRanks.done = 1; boardMode = Online.ready() ? 'world' : 'local'; } buildBoard(); showScreen('sRanks'); };
+const openRanks = () => { initAudio(); sfx('click'); boardDK = boardDK || 'all'; if (!openRanks.done) { openRanks.done = 1; boardMode = Online.ready() ? 'world' : 'local'; } buildBoard(); showScreen('sRanks'); };
 $('mWorld').onclick = e => { e.stopPropagation(); boardMode = 'world'; openRanks.done = 1; openRanks(); };
 $('mSchool').onclick = e => { e.stopPropagation(); sfx('click'); if (!save.school) { save.schoolAsked = 0; openSchoolIntro(() => refreshMenu()); return; } boardMode = 'school'; save.schoolView = 'kids'; openRanks.done = 1; openRanks(); };
 const openSettings = () => { initAudio(); sfx('click'); buildSettings(); showScreen('sSettings'); };
@@ -6236,15 +6406,15 @@ function askName(then, record) {
 // click anywhere on the start screen that isn't a button to play (browser and phone)
 $('sMenu').addEventListener('click', e => { if (curScreen !== 'sMenu' || e.target.closest('#tapZone')) return; if (e.target.closest('button,a,input,select,label,.card,.side,.sideSq,.nav,.mWallet,.mTopR,.mCash,.pill,.iconBtn,[data-tab]')) return; $('tapZone').click(); });
 glCanvas.addEventListener('click', () => { if (G.scene === 'menu' && curScreen === 'sMenu') $('tapZone').click(); });
-$('tapZone').onclick = () => { initAudio(); sfx('click'); if (!save.age) { openAgeGate(); return; } if (!save.tutDone) startTutorial(); else startRun('infinite'); }; // a nickname is optional: you're asked for one if you set a world record
+$('tapZone').onclick = () => { initAudio(); sfx('click'); if (!save.age) { openAgeGate(); return; } startRun('infinite'); }; // a nickname is optional: you're asked for one if you set a world record
 $('bTut').onclick = () => { sfx('click'); startTutorial(); };
 const LOCKER_MS = 4 * 3600000;
 const lockerLeft = () => Math.max(0, (save.mlocker || 0) + LOCKER_MS - Date.now());
 $('bMLocker').onclick = () => { initAudio(); if (lockerLeft() > 0) { sfx('deny'); toast('Mystery Locker', 'Opens again in ' + fmtLeft(lockerLeft()), 1300); return; }
   save.mlocker = Date.now(); const r = Math.random(), rw = r < 0.1 ? { gs: 1 } : r < 0.25 ? { heelys: 1 } : r < 0.35 ? { otok: 1 } : { cash: pick([80, 120, 150, 200, 300]) }; grant(rw); sfx('locker'); setTimeout(() => sfx('win'), 250); toast('MYSTERY LOCKER!', rewardText(rw), 1800); refreshMenu(); };
-$('bTourney').onclick = () => { initAudio(); sfx('click'); buildTourney(); showScreen('sTourney'); };
+$('bTourney').onclick = () => { initAudio(); sfx('click'); { const lk = moreLocked('bLeague'); if (lk) { sfx('deny'); toast('🔒 Weekly Tournament', 'Unlocks after ' + lk + ' more run' + (lk > 1 ? 's' : ''), 1600); return; } } buildTourney(); showScreen('sTourney'); };
 $('bTrnPlay').onclick = () => { sfx('click'); G.tourneyNext = true; startRun('infinite'); };
-$('bClubs').onclick = () => { initAudio(); sfx('click'); buildClubs(); showScreen('sClubs'); };
+$('bClubs').onclick = () => { initAudio(); sfx('click'); { const lk = moreLocked('bLeague'); if (lk) { sfx('deny'); toast('🔒 Clubs', 'Unlocks after ' + lk + ' more run' + (lk > 1 ? 's' : ''), 1600); return; } } buildClubs(); showScreen('sClubs'); };
 $('bReplay').onclick = () => { sfx('click'); startReplay(); };
 $('replayTag').onclick = () => stopReplay();
 $('bPhoto').onclick = () => { sfx('click'); startPhoto(); };
@@ -6311,7 +6481,7 @@ $('bLefty').onclick = () => { save.lefty = save.lefty ? 0 : 1; persist(); docume
 document.body.classList.toggle('lefty', !!save.lefty);
 document.querySelectorAll('#vibeSeg button').forEach(b => b.onclick = () => { save.vibe = b.dataset.v; persist(); syncVibeSeg(); if (b.dataset.v !== 'off') buzz('bump'); });
 function syncVibeSeg() { document.querySelectorAll('#vibeSeg button').forEach(b => b.classList.toggle('on', (save.vibe || 'light') === b.dataset.v)); }
-document.querySelectorAll('.spdSeg button').forEach(b => b.onclick = () => { save.speedMode = b.dataset.sp; persist(); sfx('click'); syncSpeedSeg(); boardDK = runBK(); try { refreshMenu(); } catch (e) {} });
+document.querySelectorAll('.spdSeg button').forEach(b => b.onclick = () => { save.speedMode = b.dataset.sp; persist(); sfx('click'); syncSpeedSeg(); try { refreshMenu(); } catch (e) {} });
 function syncSpeedSeg() { document.querySelectorAll('.spdSeg button').forEach(b => b.classList.toggle('on', (save.speedMode || 'normal') === b.dataset.sp)); }
 $('bMissions').onclick = () => { initAudio(); sfx('click'); buildMissions(); showScreen('sMissions'); };
 $('bEvents').onclick = () => { initAudio(); sfx('click'); buildEvents(); showScreen('sEvents'); };
@@ -6373,30 +6543,30 @@ var DIFF_KEYS = ['easy', 'normal', 'hard', 'insane'], SPEED_KEYS = ['chill', 'no
 // every difficulty + speed pair is its own leaderboard: 'insane' (normal speed) and 'insane_turbo' are different records
 const boardKey = (d, sp) => (DIFF[d] ? d : 'normal') + (sp && sp !== 'normal' && SPEEDS[sp] ? '_' + sp : '');
 const bkDiff = bk => String(bk || 'normal').split('_')[0], bkSpd = bk => String(bk || '').split('_')[1] || 'normal';
-const bkName = bk => (DIFF[bkDiff(bk)] || DIFF.normal).name + ' · ' + SPEEDS[bkSpd(bk)].name + ' speed';
+const bkName = bk => bk === 'all' ? 'All settings' : (DIFF[bkDiff(bk)] || DIFF.normal).name + ' · ' + SPEEDS[bkSpd(bk)].name + ' speed';
 const ALL_BK = DIFF_KEYS.flatMap(d => SPEED_KEYS.map(sp => boardKey(d, sp)));
 function runSpeed() { return (G && G.fixed && G.scene !== 'menu') ? 'normal' : (SPEEDS[save.speedMode] ? save.speedMode : 'normal'); }
 function runBK() { return boardKey(runDiff(), runSpeed()); }
 function runDiff() { return (G && G.fixed && G.scene !== 'menu') ? 'normal' : (DIFF[save.difficulty] ? save.difficulty : 'normal'); }
 function migrateBest() { if (save.bestBy) return; save.bestBy = {}; if (save.best > 0) save.bestBy[DIFF[save.difficulty] ? save.difficulty : 'normal'] = { s: save.best, d: save.bestDist || 0, t: save.bestT || 0 }; }
-function bestFor(dk) { migrateBest(); return save.bestBy[dk] || null; }
+function bestFor(dk) { migrateBest(); if (dk === 'all') { const r = myRow(); return r.best ? { s: r.best, d: r.bestDist || 0, t: 0 } : null; } return save.bestBy[dk] || null; }
 function logRunByDiff(sc, dist) { migrateBest(); const dk = runBK(), b = save.bestBy[dk]; if (!b || sc > b.s) { save.bestBy[dk] = { s: sc, d: dist, t: Date.now() }; return true; } return false; }
 function allTimeBest() { migrateBest(); let top = null; for (const k of Object.keys(save.bestBy)) { const b = save.bestBy[k]; if (b && (!top || b.s > top.s)) top = Object.assign({ k }, b); } return top; }
 var boardDK = null; // which difficulty the leaderboard shows (starts on the one you play)
-function setDifficulty(k) { if (!DIFF[k]) return; save.difficulty = k; persist(); sfx('click'); try { buildModes(); buildSettings(); } catch (e) {} boardDK = boardKey(k, runSpeed()); refreshMenu(); toast('Difficulty: ' + DIFF[k].name, DIFF[k].score > 1 ? 'Scores x' + DIFF[k].score : '', 1000); }
+function setDifficulty(k) { if (!DIFF[k]) return; save.difficulty = k; persist(); sfx('click'); try { buildModes(); buildSettings(); } catch (e) {} refreshMenu(); toast('Difficulty: ' + DIFF[k].name, DIFF[k].score > 1 ? 'Scores x' + DIFF[k].score : '', 1000); }
 function syncBoardDiff() {
-  const dk = boardDK || runBK();
+  const dk = boardDK || 'all';
   document.querySelectorAll('#boardDiff button').forEach(b => b.classList.toggle('on', b.dataset.bd === bkDiff(dk)));
   document.querySelectorAll('#boardSpd button').forEach(b => b.classList.toggle('on', b.dataset.bs === bkSpd(dk)));
-  $('boardDiff').style.display = boardMode === 'friends' ? 'none' : ''; $('boardSpd').style.display = boardMode === 'friends' ? 'none' : ''; syncBoardPer();
+  $('boardDiff').style.display = boardMode === 'friends' ? 'none' : ''; $('boardSpd').style.display = boardMode === 'friends' || dk === 'all' ? 'none' : ''; syncBoardPer();
   const at = allTimeBest();
   $('allBest').innerHTML = '<div><small>🏅 HIGHEST SCORE EVER</small><span></span></div><b></b>';
   $('allBest').querySelector('span').textContent = at ? bkName(at.k) + ' · ' + (at.d || 0).toLocaleString() + ' m' + (at.t ? ' · ' + new Date(at.t).toLocaleDateString() : '') : 'Play an Infinite Run to set one';
   $('allBest').querySelector('b').textContent = at ? at.s.toLocaleString() : '-';
   return dk;
 }
-document.querySelectorAll('#boardDiff button').forEach(b => b.onclick = () => { sfx('click'); boardDK = boardKey(b.dataset.bd, bkSpd(boardDK || runBK())); buildBoard(); });
-document.querySelectorAll('#boardSpd button').forEach(b => b.onclick = () => { sfx('click'); boardDK = boardKey(bkDiff(boardDK || runBK()), b.dataset.bs); buildBoard(); });
+document.querySelectorAll('#boardDiff button').forEach(b => b.onclick = () => { sfx('click'); boardDK = b.dataset.bd === 'all' ? 'all' : boardKey(b.dataset.bd, boardDK && boardDK !== 'all' ? bkSpd(boardDK) : 'normal'); buildBoard(); });
+document.querySelectorAll('#boardSpd button').forEach(b => b.onclick = () => { sfx('click'); boardDK = boardKey(boardDK && boardDK !== 'all' ? bkDiff(boardDK) : runDiff(), b.dataset.bs); buildBoard(); });
 /* ---- leaderboard periods: All-time (default) / This month / This week / Today, plus the run to beat ---- */
 var BOARD_PER = { all: 'All-time', month: 'This month', week: 'This week', day: 'Today' };
 function boardPer() { return BOARD_PER[save.boardPer] ? save.boardPer : 'all'; }
@@ -6405,7 +6575,17 @@ function perKeys(t) { // UTC, so every player in the world is on the same day / 
   return { day: iso.slice(0, 10), week: 'W' + mon.toISOString().slice(0, 10), month: iso.slice(0, 7) }; }
 function logRunPeriods(sc) { const dk = runBK(), K = perKeys(); save.pb = save.pb || {}; const p = save.pb[dk] || (save.pb[dk] = {}); let ch = false;
   for (const per of ['day', 'week', 'month']) { if (p[per] !== K[per]) { p[per] = K[per]; p[per + 'S'] = sc; ch = true; } else if (sc > (p[per + 'S'] || 0)) { p[per + 'S'] = sc; ch = true; } } return ch; }
-function myPeriodBest(dk, per) { if (per === 'all') { const b = bestFor(dk); return b ? b.s : 0; } const p = (save.pb || {})[dk], K = perKeys(); return p && p[per] === K[per] ? p[per + 'S'] || 0 : 0; }
+// your row on the main (all settings) board; kept up to date after every Infinite Run that counts
+function myRow() { if (save.pRow && save.pRow.v === 2) return save.pRow;
+  const at = allTimeBest(), K = perKeys(), r = { v: 2, best: at ? at.s : 0, bestDist: at ? at.d || 0 : 0, bestDiff: at ? at.k : 'normal', day: K.day, dayS: 0, week: K.week, weekS: 0, month: K.month, monthS: 0, dirty: at ? 1 : 0 };
+  for (const k in (save.pb || {})) { const p = save.pb[k]; if (p) for (const per of ['day', 'week', 'month']) if (p[per] === K[per]) r[per + 'S'] = Math.min(r.best, Math.max(r[per + 'S'], p[per + 'S'] || 0)); }
+  return (save.pRow = r); }
+function noteBoardRun(sc, dist, dk) { const r = myRow(), K = perKeys(); let ch = false;
+  if (sc > r.best) { r.best = sc; r.bestDist = dist; r.bestDiff = dk; ch = true; }
+  for (const per of ['day', 'week', 'month']) { if (r[per] !== K[per]) { r[per] = K[per]; r[per + 'S'] = sc; ch = true; } else if (sc > (r[per + 'S'] || 0)) { r[per + 'S'] = sc; ch = true; } }
+  if (ch) r.dirty = 1; return ch; }
+function myPeriodBest(dk, per) { if (dk === 'all') { const r = myRow(), K = perKeys(); return per === 'all' ? r.best : r[per] === K[per] ? r[per + 'S'] || 0 : 0; }
+  if (per === 'all') { const b = bestFor(dk); return b ? b.s : 0; } const p = (save.pb || {})[dk], K = perKeys(); return p && p[per] === K[per] ? p[per + 'S'] || 0 : 0; }
 function syncBoardPer() { const per = boardPer(); document.querySelectorAll('#boardPer button').forEach(b => b.classList.toggle('on', b.dataset.bp === per)); $('boardPer').style.display = boardMode === 'friends' ? 'none' : ''; return per; }
 document.querySelectorAll('#boardPer button').forEach(b => b.onclick = () => { sfx('click'); save.boardPer = b.dataset.bp; persist(); buildBoard(); });
 function showToBeat(rows, dk) {
@@ -6533,18 +6713,40 @@ const MORE_TILES = [ // [icon, label, button it presses, element with its live s
   ['❓', 'How to Play', 'bHow', null, null, null],
   ['⌨️', 'Controls', 'bCtrlMenu', null, null, null, 'web']
 ];
+// round 18: a brand-new player sees the free gift, missions, Mystery Locker and how-to-play first; the rest unlocks after a
+// few days or a number of runs (whichever comes first), so the More screen grows with you instead of all at once
+const MORE_UNLOCK = { bSpin: [2, 8], bEvents: [2, 8], bTrophies: [2, 10], bPass: [3, 15], bLeague: [3, 15] };
+function moreLocked(btn) { const u = MORE_UNLOCK[btn]; if (!u) return 0; const runs = save.runsTotal || 0; return playDays() >= u[0] || runs >= u[1] ? 0 : u[1] - runs; }
 let moreReturn = false; // Back on a screen opened from More goes back to More
+function moreTile([icon, label, btn], fromHome) {
+  const t = document.createElement('button'); t.className = 'mTile'; t.dataset.btn = btn; t.innerHTML = '<i></i><b></b><small></small><em class="badge"></em>';
+  t.querySelector('i').textContent = icon; t.querySelector('b').textContent = label;
+  t.onclick = e => { e.stopPropagation(); initAudio(); const lk = moreLocked(btn); if (lk) { sfx('deny'); toast('🔒 ' + label, 'Unlocks after ' + lk + ' more run' + (lk > 1 ? 's' : '') + ' (or come back tomorrow)', 1600); return; } $(btn).click(); if (!fromHome && curScreen && curScreen !== 'sMenu' && curScreen !== 'sMore') moreReturn = true; setTimeout(syncMore, 50); };
+  return t; }
 function buildMore() { const g = $('moreGrid'); if (!g) return; g.innerHTML = '';
-  for (const [icon, label, btn, sub, badge, hot, only] of MORE_TILES) { if (only === 'web' && !IS_WEB) continue; if (!$(btn)) continue;
-    const t = document.createElement('button'); t.className = 'mTile'; t.dataset.btn = btn; t.innerHTML = '<i></i><b></b><small></small><em class="badge"></em>';
-    t.querySelector('i').textContent = icon; t.querySelector('b').textContent = label;
-    t.onclick = e => { e.stopPropagation(); $(btn).click(); if (curScreen && curScreen !== 'sMenu' && curScreen !== 'sMore') moreReturn = true; setTimeout(syncMore, 50); };
-    g.appendChild(t); }
+  for (const tl of MORE_TILES) { if (tl[6] === 'web' && !IS_WEB) continue; if (!$(tl[2])) continue; g.appendChild(moreTile(tl)); }
   syncMore(); }
-function moreHot() { let n = 0; for (const tl of MORE_TILES) { try { if (tl[5] && tl[5]()) n++; } catch (e) {} } return n; }
+// ---- wide browser windows: records on the left of the runner, today's extras on the right ----
+const HOME_QUICK = ['bFree', 'bMissions', 'bSpin', 'bEvents', 'bMLocker', 'bPass'];
+const WIDE_MQ = window.matchMedia ? matchMedia('(min-width: 1100px) and (min-height: 600px)') : { matches: false };
+function placeHomeCards() { const wide = IS_WEB && WIDE_MQ.matches, slot = $('mRecSlot'), hg = document.querySelector('.hGoal'); if (!slot || !hg) return;
+  document.body.classList.toggle('homeWide', wide);
+  // the world and school record cards move into the left column (both show there); back in the middle on small screens
+  for (const id of wide ? ['mWorld', 'mSchool'] : ['mSchool', 'mWorld']) { const el = $(id), to = wide ? slot : hg; if (el && el.parentNode !== to) to.appendChild(el); }
+  if (wide && $('mQuick') && !$('mQuick').children.length) buildQuick(); }
+function buildQuick() { const g = $('mQuick'); if (!g) return; g.innerHTML = ''; for (const b of HOME_QUICK) { const tl = MORE_TILES.find(x => x[2] === b); if (tl && $(b)) g.appendChild(moreTile(tl, true)); } syncMore(); }
+function syncHomeSide() { if (!document.body.classList.contains('homeWide')) return;
+  const t = myPeriodBest('all', 'day'); $('mTodayTxt').textContent = t > 0 ? t.toLocaleString() : 'Play to set one!';
+  $('mSideDiff').textContent = DIFF[runDiff()].name + ' · ' + SPEEDS[runSpeed()].name + ' speed ›'; }
+try { if (WIDE_MQ.addEventListener) WIDE_MQ.addEventListener('change', () => { placeHomeCards(); syncHomeSide(); }); placeHomeCards(); } catch (e) {}
+$('mSideRanks').onclick = e => { e.stopPropagation(); boardMode = Online.ready() ? 'world' : 'local'; openRanks.done = 1; openRanks(); };
+$('mSideDiff').onclick = e => { e.stopPropagation(); $('bModes').click(); };
+$('mSideMore').onclick = e => { e.stopPropagation(); $('bMore').click(); };
+$('mTodayCard').onclick = e => { e.stopPropagation(); save.boardPer = 'day'; $('mSideRanks').click(); };
+function moreHot() { let n = 0; for (const tl of MORE_TILES) { if (moreLocked(tl[2])) continue; try { if (tl[5] && tl[5]()) n++; } catch (e) {} } return n; }
 function syncMore() { const n = moreHot(), b = $('moreBadge'); if (b) { b.textContent = n ? String(n) : ''; b.classList.toggle('on', n > 0); }
-  const g = $('moreGrid'); if (!g) return;
-  for (const t of g.children) { const tl = MORE_TILES.find(x => x[2] === t.dataset.btn); if (!tl) continue;
+  for (const g of [$('moreGrid'), $('mQuick')]) if (g) for (const t of g.children) { const tl = MORE_TILES.find(x => x[2] === t.dataset.btn); if (!tl) continue;
+    { const lk = moreLocked(tl[2]); t.classList.toggle('locked', !!lk); if (lk) { t.querySelector('small').textContent = '🔒 ' + lk + ' more run' + (lk > 1 ? 's' : ''); const tb = t.querySelector('.badge'); tb.textContent = ''; tb.classList.remove('on'); t.classList.remove('hot'); continue; } }
     const sub = tl[3] && $(tl[3]); t.querySelector('small').textContent = sub ? sub.textContent : '';
     const bd = tl[4] && $(tl[4]), tb = t.querySelector('.badge'); const on = !!(bd && bd.classList.contains('on') && bd.textContent); tb.textContent = on ? bd.textContent : ''; tb.classList.toggle('on', on);
     let h = false; try { h = !!(tl[5] && tl[5]()); } catch (e) {} t.classList.toggle('hot', h); } }
@@ -6566,8 +6768,9 @@ async function saveCryptoKey() { if (_saveKey) return _saveKey; const raw = awai
 const b64u = u => { let bin = ''; for (let i = 0; i < u.length; i += 8192) bin += String.fromCharCode.apply(null, u.subarray(i, i + 8192)); return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); };
 const unb64u = t => { const bin = atob(t.replace(/-/g, '+').replace(/_/g, '/')), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return u; };
 const gz = async (u, dir) => new Uint8Array(await new Response(new Blob([u]).stream().pipeThrough(dir ? new CompressionStream('gzip') : new DecompressionStream('gzip'))).arrayBuffer());
-async function packSave() {
+async function packSave(forCloud) {
   const raw = JSON.parse(JSON.stringify(save)); delete raw.admin; delete raw.adminGod;
+  if (forCloud) { delete raw.fbAuth; delete raw.gLink; delete raw.age; delete raw.quality; } // the cloud copy never holds a login or this device's settings
   // keep who you are online (your player id and leaderboard login) but not the one-hour access token: the new browser
   // swaps the long-lived login for a fresh token, so your scores, school and friend code stay yours
   if (raw.fbAuth) raw.fbAuth = { uid: raw.fbAuth.uid, refresh: raw.fbAuth.refresh, exp: 0 };
@@ -6575,12 +6778,74 @@ async function packSave() {
   const iv = crypto.getRandomValues(new Uint8Array(12)), data = await gz(new TextEncoder().encode(JSON.stringify(raw)), true);
   const ct = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv, additionalData: new TextEncoder().encode('HD3') }, await saveCryptoKey(), data));
   const out = new Uint8Array(12 + ct.length); out.set(iv); out.set(ct, 12); return 'HD3.' + b64u(out); }
+async function readSave(code) { const t = String(code || '').trim().replace(/\s+/g, ''); if (!t.startsWith('HD3.')) return null;
+  try { const u = unb64u(t.slice(4)); if (u.length < 30) return null;
+    const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: u.subarray(0, 12), additionalData: new TextEncoder().encode('HD3') }, await saveCryptoKey(), u.subarray(12));
+    const d = JSON.parse(new TextDecoder().decode(await gz(new Uint8Array(pt), false))); return d && typeof d === 'object' && typeof d.bank === 'number' && d.owned ? d : null; } catch (e) { return null; } }
 async function unpackSave(code) { const t = String(code || '').trim().replace(/\s+/g, ''); if (!t.startsWith('HD3.')) return false;
   try { const u = unb64u(t.slice(4)); if (u.length < 30) return false;
     const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: u.subarray(0, 12), additionalData: new TextEncoder().encode('HD3') }, await saveCryptoKey(), u.subarray(12));
     const d = JSON.parse(new TextDecoder().decode(await gz(new Uint8Array(pt), false)));
     return loadSaveCode('HD1.' + btoa(unescape(encodeURIComponent(JSON.stringify(d))))); } catch (e) { return false; } }
-async function openSaveCode() { initAudio(); sfx('click'); $('svIn').value = ''; $('svOut').value = '…'; showScreen('sSave'); $('svOut').value = await packSave(); }
+async function openSaveCode() { initAudio(); sfx('click'); $('svIn').value = ''; $('svOut').value = '…'; GSync.paint(); showScreen('sSave'); $('svOut').value = await packSave(); }
+/* ---------- automatic saving ----------
+   Every change is written to this browser at once (localStorage, with IndexedDB and cookie copies), so there is nothing
+   to press. Players 13+ can also tap "Continue with Google": their Hallway Dash player is linked to that Google account
+   and the (encrypted) save is kept in saves/{uid} and synced by itself after every run, so any browser where they sign in
+   picks up the same progress. On a new browser, Google can sign them back in by itself (One Tap with auto-select). */
+var GSync = {
+  clientId: () => (window.GOOGLE_SIGNIN && GOOGLE_SIGNIN.clientId) || '',
+  on() { return IS_WEB && !!this.clientId() && Online.ready() && !!save.age && save.age !== 'child' && location.protocol === 'https:'; },
+  linked: () => !!save.gLink,
+  gis: null,
+  loadGis() { if (this.gis) return this.gis; this.gis = new Promise((res, rej) => { if (window.google && google.accounts && google.accounts.id) return res(); const sc = document.createElement('script'); sc.src = 'https://accounts.google.com/gsi/client'; sc.async = true; sc.onload = () => res(); sc.onerror = () => { this.gis = null; rej(new Error('gis')); }; document.head.appendChild(sc); }); return this.gis; },
+  async init() { await this.loadGis(); if (this.inited) return; this.inited = 1;
+    google.accounts.id.initialize({ client_id: this.clientId(), callback: r => this.onCred(r && r.credential), auto_select: true, itp_support: true, use_fedcm_for_prompt: true, cancel_on_tap_outside: true, context: 'signin' }); },
+  // On a new browser, offer (and with auto-select, do) the sign-in by itself, at most once every 3 days, for 16+ players
+  async autoPrompt() { if (!this.on() || this.linked() || save.age !== 'adult' || Date.now() - (save.gAsk || 0) < 3 * 86400000) return;
+    save.gAsk = Date.now(); persist(); try { await this.init(); google.accounts.id.prompt(); } catch (e) {} },
+  async button(host) { if (!host) return; host.innerHTML = ''; try { await this.init(); google.accounts.id.renderButton(host, { theme: 'filled_blue', size: 'large', text: 'continue_with', shape: 'pill', width: 280 }); } catch (e) { host.textContent = 'Google sign-in couldn\'t load. Check your connection.'; } },
+  async idp(cred, linkTok) { const r = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key=' + encodeURIComponent(ONLINE_BOARD.apiKey), { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(Object.assign({ postBody: 'id_token=' + encodeURIComponent(cred) + '&providerId=google.com', requestUri: location.origin, returnSecureToken: true, returnIdpCredential: true }, linkTok ? { idToken: linkTok } : {})) });
+    const j = await r.json().catch(() => ({})); return r.ok && !j.errorMessage && j.idToken ? j : null; },
+  async onCred(cred) { if (!cred) return;
+    try { let a = null; try { a = await Online.token(); } catch (e) {}
+      // link this browser's player to the Google account; if that account already has a player, sign in as that one
+      let j = a ? await this.idp(cred, a.idToken) : null; if (!j) j = await this.idp(cred); if (!j) throw new Error('sign-in');
+      const switched = !a || j.localId !== a.uid;
+      save.fbAuth = { uid: j.localId, idToken: j.idToken, refresh: j.refreshToken, exp: Date.now() + (+j.expiresIn || 3600) * 1000 };
+      save.gLink = { t: Date.now(), syncT: 0 }; if (switched && save.pRow) save.pRow.dirty = 1; persist(); Analytics.log('google_link', { switched: switched ? 1 : 0 });
+      await this.pull(true); this.paint(); syncSavePill();
+    } catch (e) { toast('Couldn\'t sign in with Google', 'Check your connection and try again', 2000); } },
+  progress: sv => Cloud.progress(sv),
+  async pull(fromSignIn) { if (!this.linked() || !Online.ready()) return;
+    let doc = null; try { const a = await Online.token(); doc = fsDoc(await fsReq('GET', docPath('saves', a.uid), a.idToken)); } catch (e) { if (e.status === 404) { await this.push(true); if (fromSignIn) toast('☁️ Signed in with Google', 'Your progress now saves to your account by itself', 2400); return; } return; }
+    const remote = await readSave(doc.d); if (!remote) return this.push(true);
+    // the save with more progress wins (no questions): signing in on a new browser loads your account's save
+    const mine = this.progress(save), theirs = this.progress(remote), newer = (doc.t || 0) > ((save.gLink && save.gLink.syncT) || 0);
+    if (theirs > mine && (newer || fromSignIn)) {
+      return this.adopt(remote, doc.t); }
+    if (fromSignIn) toast('☁️ Signed in with Google', 'Your progress now saves to your account by itself', 2400);
+    return this.push(true); },
+  adopt(remote, t) { const keep = { age: save.age, quality: save.quality, fbAuth: save.fbAuth, gLink: { t: save.gLink.t, syncT: t || Date.now() } };
+    const d = Object.assign(loadSave(), remote, keep); if (d.pRow) d.pRow.dirty = 1;
+    if (loadSaveCode('HD1.' + btoa(unescape(encodeURIComponent(JSON.stringify(d)))))) { toast('☁️ Welcome back!', 'Loading your saved progress…', 1400); setTimeout(() => location.reload(), 1000); } },
+  async push(force) { if (!this.linked() || !Online.ready() || saveSwapped) return; if (!force && Date.now() - (this.lastPush || 0) < 20000) return this.soon(); this.lastPush = Date.now();
+    try { const a = await Online.token(), t = Date.now(); await fsReq('PATCH', docPath('saves', a.uid), a.idToken, { fields: { d: { stringValue: await packSave(true) }, t: { integerValue: String(t) }, p: { doubleValue: this.progress(save) } } });
+      save.gLink.syncT = t; persist(true); syncSavePill(); } catch (e) {} },
+  soon() { if (!this.linked()) return; clearTimeout(this.soonT); this.soonT = setTimeout(() => this.push(), 15000); },
+  signOut() { if (!confirm('Sign out of Google on this browser? Your progress stays here, but stops saving to your Google account.')) return; try { google.accounts.id.disableAutoSelect(); } catch (e) {} delete save.gLink; persist(); this.paint(); syncSavePill(); },
+  paint() { const box = $('svGoogle'); if (!box) return; const can = this.on(); box.style.display = can ? '' : 'none'; if (!can) return;
+    $('svGIn').style.display = this.linked() ? 'none' : ''; $('svGOn').style.display = this.linked() ? '' : 'none';
+    if (this.linked()) $('svGWhen').textContent = save.gLink.syncT ? 'Last synced ' + new Date(save.gLink.syncT).toLocaleString() : 'Syncing…'; else this.button($('svGBtn')); }
+};
+function syncSavePill() { const b = $('bSaveHome'); if (!b) return; const g = GSync.linked(); b.classList.toggle('synced', g); $('saveIco').textContent = g ? '☁️' : '✓'; $('saveTxt').textContent = g ? 'Synced' : 'Saved';
+  b.title = g ? 'Your progress saves to your Google account by itself' : 'Your progress saves in this browser by itself'; }
+$('svGSync').onclick = async () => { sfx('click'); await GSync.push(true); GSync.paint(); toast('☁️ Synced', 'Your progress is saved to your Google account', 1400); };
+$('svGOut').onclick = () => { sfx('click'); GSync.signOut(); };
+syncSavePill();
+setTimeout(() => { if (GSync.linked()) GSync.pull(false); else if (save.runsTotal > 0) GSync.autoPrompt(); }, 4000);
+addEventListener('visibilitychange', () => { if (document.hidden && GSync.linked()) GSync.push(); });
 $('bSaveHome').onclick = e => { e.stopPropagation(); openSaveCode(); };
 $('svOut').onclick = () => $('svOut').select();
 $('svCopy').onclick = async () => { const c = $('svOut').value.length > 8 ? $('svOut').value : await packSave(); const ok = await copyText(c); sfx(ok ? 'coin' : 'deny');
@@ -6662,22 +6927,29 @@ const docPath = (c, id) => '/' + c + '/' + encodeURIComponent(id);
 
 /* ---- schools list + moderator switches (cached) ---- */
 var SCHOOL_SEED = [{ id: 'nahs', name: 'NAHS', status: 'approved' }];
-var SCHOOLS = { list: SCHOOL_SEED.slice(), t: 0 }, APPCFG = { schools: true, requests: true, t: 0 };
+var SCHOOLS = { list: SCHOOL_SEED.slice(), t: 0 }, APPCFG = { schools: true, requests: true, autoApprove: true, t: 0 };
 async function loadSchools(force) {
   if (!force && SCHOOLS.t && Date.now() - SCHOOLS.t < 120000) return SCHOOLS.list;
-  const j = await fsReq('GET', '/schools', null, null, 'pageSize=300'); const all = (j.documents || []).map(fsDoc);
-  const list = all.filter(x => x.status === 'approved'); for (const s of SCHOOL_SEED) if (!all.find(x => x.id === s.id)) list.push(s);
-  list.sort((a, b) => a.id === 'nahs' ? -1 : b.id === 'nahs' ? 1 : a.name.localeCompare(b.name));
-  SCHOOLS = { list, t: Date.now() };
-  if (save.school && !list.find(x => x.id === save.school)) { save.school = ''; persist(); toast('Your school was taken off the boards', 'Pick another one any time', 2200); }
-  return list;
+  if (loadSchools.p) return loadSchools.p;
+  loadSchools.p = (async () => {
+    const all = []; let tok = '';
+    for (let i = 0; i < 10; i++) { let j; try { j = await fsReq('GET', '/schools', null, null, 'pageSize=300' + (tok ? '&pageToken=' + encodeURIComponent(tok) : '')); } catch (e) { if (e.status === 403) { SCHOOLS.denied = 1; try { syncSchoolCard(); } catch (e2) {} } throw e; } all.push(...(j.documents || []).map(fsDoc)); tok = j.nextPageToken; if (!tok) break; }
+    const uid = save.fbAuth && save.fbAuth.uid, wasPending = schoolPending();
+    // approved schools, plus the one you added if it is still waiting for approval
+    const list = all.filter(x => x.status === 'approved' || (x.status === 'pending' && uid && x.by === uid)); for (const s of SCHOOL_SEED) if (!all.find(x => x.id === s.id)) list.push(s);
+    list.sort((a, b) => a.id === 'nahs' ? -1 : b.id === 'nahs' ? 1 : a.name.localeCompare(b.name));
+    const wasDenied = SCHOOLS.denied; SCHOOLS = { list, t: Date.now() }; if (wasDenied) try { syncSchoolCard(); } catch (e) {}
+    if (save.school && !list.find(x => x.id === save.school)) { save.school = ''; persist(); myRow().dirty = 1; Online.syncPlayer(); toast('Your school was taken off the boards', 'Pick another one any time', 2200); }
+    else if (save.school && wasPending && !schoolPending()) toast('🏫 ' + schoolName(save.school) + ' was approved!', 'Classmates can find it and join now', 2600);
+    return list; })();
+  try { return await loadSchools.p; } finally { loadSchools.p = null; }
 }
 function APPCFG_LOAD() { return loadAppCfg(); }
-async function loadAppCfg() { if (APPCFG.t && Date.now() - APPCFG.t < 300000) return APPCFG; try { const d = fsDoc(await fsReq('GET', '/config/app')); APPCFG = { schools: d.schools !== false, requests: d.requests !== false, t: Date.now() }; } catch (e) { APPCFG = { schools: true, requests: true, t: e.status === 404 ? Date.now() : 0 }; } return APPCFG; }
+async function loadAppCfg() { if (APPCFG.t && Date.now() - APPCFG.t < 300000) return APPCFG; try { const d = fsDoc(await fsReq('GET', '/config/app')); APPCFG = { schools: d.schools !== false, requests: d.requests !== false, autoApprove: d.autoApprove !== false, t: Date.now() }; } catch (e) { APPCFG = { schools: true, requests: true, autoApprove: true, t: e.status === 404 ? Date.now() : 0 }; } return APPCFG; }
 function mySchool() { return save.school || ''; }
 function schoolName(id) { const s = SCHOOLS.list.find(x => x.id === id); return s ? s.name : String(id || '').toUpperCase(); }
 async function retagRuns() { // your existing board rows move to the new school straight away
-  if (!Online.ready() || !save.fbAuth) return;
+  if (!Online.ready() || !save.fbAuth) return; myRow().dirty = 1; Online.syncPlayer();
   try { const a = await Online.token(); await Promise.allSettled(ALL_BK.filter(k => save.pb && save.pb[k] && save.pb[k].sent).map(k => fsReq('PATCH', docPath('runs', a.uid + '_' + k), a.idToken, fsEnc({ school: mySchool() }), 'updateMask.fieldPaths=school&currentDocument.exists=true'))); } catch (e) {}
 }
 function withSchoolRules(then) {
@@ -6687,65 +6959,87 @@ function withSchoolRules(then) {
   $('rulesNo').onclick = () => $('schoolRules').classList.remove('show');
   $('rulesTerms').onclick = () => { try { $('privTerms').click(); } catch (e) {} };
 }
-function joinSchool(id) { withSchoolRules(async () => { save.school = id; save.schoolView = 'kids'; persist(); $('boardSub').textContent = 'Joining...'; await retagRuns(); toast('🏫 You joined ' + schoolName(id) + '!', 'Your Infinite Runs now count for your school', 2000); Analytics.log('school_join', { school: id }); buildBoard(); }); }
-async function leaveSchool() { save.school = ''; persist(); buildBoard(); await retagRuns(); }
-async function requestSchool(raw) {
-  const name = cleanSchoolName(raw); if (!name) { toast('That school name isn\'t allowed', 'Use the school\'s real name (3+ letters), no bad words or numbers', 2200); return; }
-  if (SCHOOLS.list.some(s => s.name.toLowerCase() === name.toLowerCase())) { toast('That school is already on the list', 'Tap Join next to it', 1600); return; }
-  withSchoolRules(async () => {
-    try { const a = await Online.token(); await fsReq('PATCH', docPath('schoolRequests', a.uid), a.idToken, fsEnc({ name, ts: new Date() })); save.schoolReq = { name, t: Date.now() }; persist(); toast('Sent for approval', name + ' shows up once the moderator approves it', 2400); buildBoard(); }
-    catch (e) { toast('Couldn\'t send it', e.status === 403 ? 'New schools are paused right now, or the name isn\'t allowed' : 'Check your connection', 2000); }
-  });
+function joinSchool(id) { withSchoolRules(async () => { $('boardSub').textContent = 'Joining...'; await setMySchool(id); toast('🏫 You joined ' + schoolName(id) + '!', 'Your Infinite Runs now count for your school', 2000); Analytics.log('school_join', { school: id }); }); }
+async function leaveSchool() { save.school = ''; persist(); syncSchoolCard(); buildBoard(); await retagRuns(); }
+// Add your school: it becomes your school straight away. It's on the boards for everyone at once, or (if the owner turned
+// "approve new schools first" on) only for you until the moderator approves it. One new school per player.
+const docName = (c, id) => 'projects/' + ONLINE_BOARD.projectId + '/databases/(default)/documents/' + c + '/' + id;
+async function addSchool(raw, quiet) {
+  const name = cleanSchoolName(raw); if (!name) { if (!quiet) toast('That school name isn\'t allowed', 'Use the school\'s real name (3+ letters), no bad words or long numbers', 2200); return false; }
+  await loadSchools().catch(() => {});
+  const same = SCHOOLS.list.find(s => s.name.toLowerCase() === name.toLowerCase() || s.id === slugify(name));
+  if (same) { if (quiet) return false; return new Promise(res => withSchoolRules(async () => { await setMySchool(same.id); toast('🏫 You joined ' + same.name + '!', 'It was already on the list. Your runs count for it now', 2400); res(true); })); }
+  const go = async () => {
+    try { const a = await Online.token(), cfg = await loadAppCfg(); if (cfg.requests === false) { if (!quiet) toast('Adding schools is paused right now', 'Try again later', 2000); return false; }
+      let id = slugify(name); for (let k = 2; ; k++) { try { await fsReq('GET', docPath('schools', id)); } catch (e) { if (e.status === 404) break; throw e; } if (k > 9) throw new Error('no free id'); id = slugify(name).slice(0, 21) + '-' + k; }
+      const status = cfg.autoApprove === false ? 'pending' : 'approved';
+      await fsReq('POST', ':commit', a.idToken, { writes: [
+        { update: Object.assign({ name: docName('schools', id) }, fsEnc({ name, status, by: a.uid, ts: new Date() })), currentDocument: { exists: false } },
+        { update: Object.assign({ name: docName('schoolMade', a.uid) }, fsEnc({ school: id })), currentDocument: { exists: false } }] });
+      SCHOOLS.list.push({ id, name, status, by: a.uid }); SCHOOLS.list.sort((x, y) => x.id === 'nahs' ? -1 : y.id === 'nahs' ? 1 : x.name.localeCompare(y.name));
+      save.schoolReq = null; await setMySchool(id); Analytics.log('school_add', { school: id });
+      toast('🏫 ' + name + ' added!', status === 'approved' ? 'You\'re in. Every Infinite Run now counts for your school' : 'You\'re in. Classmates can find it once the moderator approves it', 2800); return true;
+    } catch (e) {
+      if (e.status === 403 || e.status === 409 || e.status === 400) { let made = null; try { const a = await Online.token(); made = fsDoc(await fsReq('GET', docPath('schoolMade', a.uid), a.idToken)); } catch (e2) {}
+        if (made && made.school) { await loadSchools(true).catch(() => {}); const mine = SCHOOLS.list.find(s => s.id === made.school);
+          if (mine) { await setMySchool(mine.id); if (!quiet) toast('🏫 You\'re back in ' + mine.name, 'You already added a school, so you were put back in it', 2400); return true; }
+          if (!quiet) toast('You already added a school', 'Each player can add one. Ask a classmate who hasn\'t yet, or pick one from the list', 2600); return false; }
+        if (!quiet) toast('Couldn\'t add that school', 'The name isn\'t allowed, or adding schools is paused right now', 2400); return false; }
+      if (!quiet) toast('Couldn\'t add it', 'Check your connection and try again', 2000); return false; }
+  };
+  if (quiet) return go();
+  return new Promise(res => withSchoolRules(async () => res(await go())));
 }
-async function checkSchoolReq() { // did the moderator approve the school you asked for?
-  if (!save.schoolReq || !save.fbAuth) return; const a = save.fbAuth;
-  try { await fsReq('GET', docPath('schoolRequests', a.uid), (await Online.token()).idToken); }
-  catch (e) { if (e.status !== 404) return; const req = save.schoolReq; save.schoolReq = null; persist();
-    const s = SCHOOLS.list.find(x => x.by === a.uid) || SCHOOLS.list.find(x => x.name.toLowerCase() === req.name.toLowerCase());
-    if (s) { toast('🏫 ' + s.name + ' was approved!', 'You\'re in. Run to put it on the map', 2600); if (!save.school) { save.school = s.id; persist(); retagRuns(); } }
-    else toast('Your school request wasn\'t approved', 'Check the spelling and use the school\'s real name', 2600); }
-}
-
+async function setMySchool(id) { save.school = id; save.schoolView = 'kids'; save.schoolAsked = 1; persist(); delete SREC[id + '|all']; syncSchoolCard(); await retagRuns(); if (curScreen === 'sRanks') buildBoard(); }
+async function checkSchoolReq() { // players who asked for a school before schools could be added straight away: add it for them now
+  if (!save.schoolReq || !save.fbAuth || save.school || !schoolsOn()) return; const req = save.schoolReq;
+  const ok = await addSchool(req.name, true).catch(() => false); if (ok || save.school) { save.schoolReq = null; persist(); toast('🏫 ' + schoolName(save.school) + ' is your school now', 'The school you asked for is on the boards', 2600); } }
 /* ---- the School tab on the leaderboard ---- */
 function mk(tag, cls, txt) { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
 function chipBtn(txt, fn, cls) { const b = mk('button', 'chip' + (cls ? ' ' + cls : ''), txt); b.onclick = e => { e.stopPropagation(); sfx('click'); fn(); }; return b; }
 var SB_GEN = 0;
+// the school picker (search, join, add yours) used on the My school tab when you don't have one yet
+function schoolPicker(box, cfg) {
+  box.appendChild(mk('div', '', 'Join your school and every Infinite Run you play counts for it. Use a nickname, never your real name.'));
+  const fr = mk('div', 'frow'), q = mk('input'); q.placeholder = 'Search schools'; q.maxLength = 40; q.autocomplete = 'off'; fr.appendChild(q); box.appendChild(fr);
+  const lst = mk('div', 'schoolPick'); box.appendChild(lst);
+  const draw = () => { lst.innerHTML = ''; const t = q.value.trim().toLowerCase(), hits = SCHOOLS.list.filter(s => !t || s.name.toLowerCase().includes(t)).slice(0, 30);
+    hits.forEach(s => { const r = mk('div', 'sRow'); r.appendChild(mk('span', '', s.name)); r.append(chipBtn('Join', () => joinSchool(s.id)), chipBtn('🚩', () => openReport({ kind: 'school', target: s.id, name: s.name }))); lst.appendChild(r); });
+    if (!hits.length && t) lst.appendChild(mk('div', '', 'No school called that yet. Add it below.')); };
+  q.oninput = () => { draw(); if (ni && !ni.dataset.touched) ni.value = q.value; }; draw();
+  let ni = null;
+  if (cfg.requests) { const ar = mk('div', 'frow'); ni = mk('input'); ni.placeholder = 'Can\'t find yours? School name'; ni.maxLength = 40; ni.autocomplete = 'off'; ni.oninput = () => { ni.dataset.touched = 1; };
+    const go = mk('button', 'btn gold small', '➕ Add my school'); go.onclick = () => addSchool(ni.value); ni.onkeydown = e => { if (e.key === 'Enter') go.click(); }; ar.append(ni, go); box.appendChild(ar); }
+}
 async function buildSchoolBoard(dk, ol) {
-  const gen = ++SB_GEN, stale = () => gen !== SB_GEN || boardMode !== 'school';
+  const mode = boardMode, gen = ++SB_GEN, stale = () => gen !== SB_GEN || boardMode !== mode || curScreen !== 'sRanks';
   const box = $('schoolBox'); box.innerHTML = ''; $('toBeat').style.display = 'none';
   if (!Online.ready()) { $('boardSub').textContent = save.age === 'child' ? 'School boards are for players 13 and up.' : 'School boards need the online leaderboard.'; return; }
   $('boardSub').textContent = 'Loading schools...';
-  const [cfg] = await Promise.all([loadAppCfg(), loadSchools().catch(() => SCHOOLS.list), checkSchoolReq()]);
-  if (stale() || curScreen !== 'sRanks') return;
-  if (!cfg.schools) { box.appendChild(mk('div', '', 'School boards are paused for a little while. Check back soon!')); $('boardSub').textContent = ''; return; }
-  const per = boardPer(), view = save.school && save.schoolView !== 'top' ? 'kids' : 'top';
-  if (save.school) {
-    const top = mk('div', 'sRow'); top.appendChild(mk('span', '', '🏫 Your school: ' + schoolName(save.school)));
-    top.append(chipBtn(view === 'kids' ? '🏆 Top schools' : '👥 My school', () => { save.schoolView = view === 'kids' ? 'top' : 'kids'; persist(); buildBoard(); }),
-      chipBtn('Change', () => { save.schoolPick = 1; leaveSchool(); }), chipBtn('🚩', () => openReport({ kind: 'school', target: save.school, name: schoolName(save.school) })));
+  const [cfg] = await Promise.all([loadAppCfg(), loadSchools(!!SCHOOLS.denied).catch(() => SCHOOLS.list), checkSchoolReq().catch(() => {})]);
+  if (stale()) return;
+  if (!cfg.schools || SCHOOLS.denied) { box.appendChild(mk('div', '', 'School boards are paused for a little while. Check back soon!')); $('boardSub').textContent = ''; return; }
+  const per = boardPer();
+  if (mode === 'school') {
+    if (!save.school) { schoolPicker(box, cfg); $('boardSub').textContent = ''; return; }
+    const top = mk('div', 'sRow'); top.appendChild(mk('span', '', '🏫 ' + schoolName(save.school) + (schoolPending() ? ' · waiting for approval' : '')));
+    top.append(chipBtn('Change school', () => { if (confirm('Leave ' + schoolName(save.school) + '? Your runs stop counting for it.')) leaveSchool(); }), chipBtn('🚩', () => openReport({ kind: 'school', target: save.school, name: schoolName(save.school) })));
     box.appendChild(top);
-  } else {
-    box.appendChild(mk('div', '', 'Join your school and every Infinite Run you play counts for it. Use a nickname, never your real name.'));
-    const fr = mk('div', 'frow'), q = mk('input'); q.placeholder = 'Search schools'; q.maxLength = 40; q.autocomplete = 'off'; fr.appendChild(q); box.appendChild(fr);
-    const lst = mk('div'); box.appendChild(lst);
-    const draw = () => { lst.innerHTML = ''; const t = q.value.trim().toLowerCase(); SCHOOLS.list.filter(s => !t || s.name.toLowerCase().includes(t)).slice(0, 30).forEach(s => { const r = mk('div', 'sRow'); r.appendChild(mk('span', '', s.name)); r.append(chipBtn('Join', () => joinSchool(s.id)), chipBtn('🚩', () => openReport({ kind: 'school', target: s.id, name: s.name }))); lst.appendChild(r); }); };
-    q.oninput = draw; draw();
-    if (save.schoolReq) box.appendChild(mk('div', '', '⏳ Waiting for approval: ' + save.schoolReq.name));
-    else if (cfg.requests) { const ar = mk('div', 'frow'), ni = mk('input'); ni.placeholder = 'Can\'t find yours? School name'; ni.maxLength = 40; ni.autocomplete = 'off'; const go = mk('button', 'btn gold small', 'Ask to add'); go.onclick = () => requestSchool(ni.value); ar.append(ni, go); box.appendChild(ar); }
   }
   $('boardSub').textContent = 'Loading...';
   try {
-    if (view === 'kids') {
+    if (mode === 'school') {
       const rows = (await Online.board(dk, per, save.school)).slice(0, 50);
       if (stale()) return; ol.innerHTML = ''; rows.forEach((r, i) => ol.appendChild(boardRow(r, i))); addReportBtns(ol, rows); showToBeat(rows, dk);
-      $('boardSub').textContent = rows.length ? 'Top ' + schoolName(save.school) + ' runners · ' + bkName(dk) + ' · ' + BOARD_PER[per] : 'Nobody from ' + schoolName(save.school) + ' is on this board ' + (per === 'all' ? 'yet' : BOARD_PER[per].toLowerCase()) + '. Be the first!';
-    } else {
+      $('boardSub').textContent = rows.length ? schoolName(save.school) + ' runners · ' + bkName(dk) + ' · ' + BOARD_PER[per] : 'Nobody from ' + schoolName(save.school) + ' is on this board ' + (per === 'all' ? 'yet' : BOARD_PER[per].toLowerCase()) + '. Play an Infinite Run to set the record!';
+    } else { // school vs school: each school's record (its best runner), with how many runners it has
       const rows = await Online.board(dk, per), by = {};
-      for (const r of rows) if (r.sch) (by[r.sch] = by[r.sch] || []).push(r.s);
-      const tops = Object.keys(by).filter(id => SCHOOLS.list.find(s => s.id === id)).map(id => { const sc = by[id].sort((a, b) => b - a); return { id, n: schoolName(id), s: sc.slice(0, 5).reduce((a, b) => a + b, 0), k: sc.length }; }).sort((a, b) => b.s - a.s).slice(0, 25);
+      for (const r of rows) if (r.sch) { const b = by[r.sch] = by[r.sch] || { id: r.sch, s: 0, n: '', k: 0 }; b.k++; if (r.s > b.s) { b.s = r.s; b.n = r.me ? (save.name || 'You') : r.n; } }
+      const tops = Object.values(by).filter(t => SCHOOLS.list.find(s => s.id === t.id && s.status !== 'pending')).sort((a, b) => b.s - a.s).slice(0, 50);
       if (stale()) return; ol.innerHTML = '';
-      tops.forEach((t, i) => { const li = boardRow({ n: t.n, s: t.s }, i); if (t.id === save.school) li.classList.add('me'); li.querySelector('.nm').appendChild(mk('small', '', t.k + ' runner' + (t.k === 1 ? '' : 's'))); ol.appendChild(li); });
-      $('boardSub').textContent = tops.length ? 'School vs school: the top 5 runs from each school added up · ' + bkName(dk) + ' · ' + BOARD_PER[per] : 'No school has a run on this board ' + (per === 'all' ? 'yet' : BOARD_PER[per].toLowerCase()) + '. Join yours and be the first!';
+      tops.forEach((t, i) => { const li = boardRow({ n: schoolName(t.id), s: t.s }, i); if (t.id === save.school) li.classList.add('me'); li.querySelector('.nm small').textContent = 'record by ' + t.n + ' · ' + t.k + ' runner' + (t.k === 1 ? '' : 's'); ol.appendChild(li); });
+      if (!save.school) { const j = mk('div', 'sRow'); j.appendChild(mk('span', '', 'Your school isn\'t on here yet.')); j.append(chipBtn('🏫 Add my school', () => { boardMode = 'school'; buildBoard(); })); box.appendChild(j); }
+      $('boardSub').textContent = tops.length ? 'School records: each school\'s best run · ' + bkName(dk) + ' · ' + BOARD_PER[per] : 'No school has a run on this board ' + (per === 'all' ? 'yet' : BOARD_PER[per].toLowerCase()) + '. Join yours and be the first!';
     }
   } catch (e) { if (!stale()) $('boardSub').textContent = 'Couldn\'t load the school board. Check your connection and try again.'; }
 }
@@ -6814,8 +7108,8 @@ function ownRow(title, sub, btns) { const r = mk('div', 'ownRow'), s = mk('span'
 const ago = t => { if (!t) return ''; const m = Math.round((Date.now() - t) / 60000); return m < 60 ? m + ' min ago' : m < 2880 ? Math.round(m / 60) + ' h ago' : Math.round(m / 1440) + ' days ago'; };
 async function ownDo(label, fn) { try { await fn(await ownTok()); toast('✓ ' + label, '', 1000); } catch (e) { toast('Didn\'t work: ' + label, e.message || '', 1800); } ownRender(ownRender.q); }
 async function runsOf(uid, tok) { return fsQuery('runs', fsEq('uid', uid), null, 50, tok); }
-async function modRename(uid, tok) { const rs = await runsOf(uid, tok); await Promise.all(rs.map(r => fsReq('PATCH', docPath('runs', r.id), tok, fsEnc({ name: 'Runner' }), 'updateMask.fieldPaths=name&currentDocument.exists=true')).concat([fsReq('PATCH', docPath('scores', uid), tok, fsEnc({ name: 'Runner' }), 'updateMask.fieldPaths=name&currentDocument.exists=true').catch(e => { if (e.status !== 404) throw e; })])); }
-async function modWipe(uid, tok) { const rs = await runsOf(uid, tok); await Promise.all(rs.map(r => fsReq('DELETE', docPath('runs', r.id), tok)).concat([fsReq('DELETE', docPath('scores', uid), tok), fsReq('DELETE', docPath('schoolRequests', uid), tok)])); }
+async function modRename(uid, tok) { const rs = await runsOf(uid, tok); await Promise.all(rs.map(r => fsReq('PATCH', docPath('runs', r.id), tok, fsEnc({ name: 'Runner' }), 'updateMask.fieldPaths=name&currentDocument.exists=true')).concat([fsReq('PATCH', docPath('players', uid), tok, fsEnc({ name: 'Runner' }), 'updateMask.fieldPaths=name&currentDocument.exists=true').catch(e => { if (e.status !== 404) throw e; }), fsReq('PATCH', docPath('scores', uid), tok, fsEnc({ name: 'Runner' }), 'updateMask.fieldPaths=name&currentDocument.exists=true').catch(e => { if (e.status !== 404) throw e; })])); }
+async function modWipe(uid, tok) { const rs = await runsOf(uid, tok); await Promise.all(rs.map(r => fsReq('DELETE', docPath('runs', r.id), tok)).concat([fsReq('DELETE', docPath('scores', uid), tok), fsReq('DELETE', docPath('players', uid), tok), fsReq('DELETE', docPath('schoolRequests', uid), tok)])); }
 async function modBan(uid, name, tok) { await fsReq('PATCH', docPath('bans', uid), tok, fsEnc({ name: String(name || '').slice(0, 40), ts: new Date() })); await modWipe(uid, tok); }
 async function modClearReports(target, tok) { const rs = await fsQuery('reports', fsEq('target', target), null, 100, tok); await Promise.all(rs.map(r => fsReq('DELETE', docPath('reports', r.id), tok))); }
 async function modSchool(id, fields, tok) { await fsReq('PATCH', docPath('schools', id), tok, fsEnc(fields), Object.keys(fields).map(k => 'updateMask.fieldPaths=' + k).join('&')); SCHOOLS.t = 0; }
@@ -6838,7 +7132,11 @@ async function ownRender(q) {
           ? [chipBtn('🙈 Hide school', () => ownDo('School hidden', async t => { await modSchool(r.target, { status: 'hidden' }, t); await modClearReports(r.target, t); }))]
           : playerBtns(r.target, r.name, t => modClearReports(r.target, t)))));
     } else if (ownTab === 'requests') {
-      const rs = await fsQuery('schoolRequests', null, 'ts', 100, tok); sub.textContent = rs.length ? 'Fix the spelling if needed, then approve. Reject anything that isn\'t a real school name.' : 'No new school requests.';
+      const [rs, pend] = await Promise.all([fsQuery('schoolRequests', null, 'ts', 100, tok), fsQuery('schools', fsEq('status', 'pending'), null, 200, tok)]);
+      sub.textContent = rs.length || pend.length ? 'Fix the spelling if needed, then approve. Reject anything that isn\'t a real school name.' : 'No new schools waiting. (New schools only wait here when "Approve new schools first" is on in Switches.)';
+      for (const r of pend) { const inp = mk('input', 'ownIn'); inp.value = r.name; inp.maxLength = 40; const row = ownRow('', 'added ' + ago(r.ts) + ' · player ' + r.by + ' · id ' + r.id, [
+        chipBtn('✅ Approve', () => { const nm = cleanSchoolName(inp.value); if (!nm) { toast('Name not allowed', '', 1200); return; } ownDo('Approved ' + nm, t => modSchool(r.id, { name: nm, status: 'approved' }, t)); }),
+        chipBtn('🙈 Reject', () => ownDo('Rejected', t => modSchool(r.id, { status: 'hidden' }, t))), chipBtn('⛔ Ban player', () => { if (confirm('Ban the player who added this?')) ownDo('Banned', async t => { await modSchool(r.id, { status: 'hidden' }, t); await modBan(r.by, r.name, t); }); })]); row.querySelector('span').prepend(inp); L.appendChild(row); }
       for (const r of rs) { const inp = mk('input', 'ownIn'); inp.value = r.name; inp.maxLength = 40; const row = ownRow('', 'asked ' + ago(r.ts) + ' · player ' + r.id, [
         chipBtn('✅ Approve', () => { const nm = cleanSchoolName(inp.value); if (!nm) { toast('Name not allowed', '', 1200); return; } ownDo('Approved ' + nm, async t => { let id = slugify(nm), k = 2; while (true) { try { await fsReq('GET', docPath('schools', id)); id = slugify(nm).slice(0, 21) + '-' + k++; } catch (e) { if (e.status === 404) break; throw e; } } await fsReq('PATCH', docPath('schools', id), t, fsEnc({ name: nm, status: 'approved', by: r.id, ts: new Date() }), 'currentDocument.exists=false'); await fsReq('DELETE', docPath('schoolRequests', r.id), t); SCHOOLS.t = 0; }); }),
         chipBtn('❌ Reject', () => ownDo('Rejected', t => fsReq('DELETE', docPath('schoolRequests', r.id), t))), chipBtn('⛔ Ban player', () => { if (confirm('Ban the player who sent this?')) ownDo('Banned', t => modBan(r.id, r.name, t)); })]); row.querySelector('span').prepend(inp); L.appendChild(row); }
@@ -6852,7 +7150,8 @@ async function ownRender(q) {
         chipBtn(r.status === 'approved' ? '🙈 Hide' : '👀 Show', () => ownDo(r.status === 'approved' ? 'Hidden' : 'Shown', t => modSchool(r.id, { status: r.status === 'approved' ? 'hidden' : 'approved' }, t))),
         chipBtn('🗑 Delete', () => { if (confirm('Delete ' + r.name + ' for good?')) ownDo('Deleted', t => fsReq('DELETE', docPath('schools', r.id), t).then(() => { SCHOOLS.t = 0; })); })]); row.querySelector('span').prepend(inp); L.appendChild(row); }
     } else if (ownTab === 'players') {
-      let rs; if (q) { const [a, b] = await Promise.all([fsQuery('runs', fsEq('name', q), null, 100, tok), fsQuery('runs', fsEq('code', q.toUpperCase()), null, 100, tok)]); rs = a.concat(b); } else rs = await fsQuery('runs', null, 'ts', 80, tok);
+      let rs; if (q) { const [a, b, c, d] = await Promise.all([fsQuery('players', fsEq('name', q), null, 100, tok), fsQuery('players', fsEq('code', q.toUpperCase()), null, 100, tok), fsQuery('runs', fsEq('name', q), null, 100, tok).catch(() => []), fsQuery('runs', fsEq('code', q.toUpperCase()), null, 100, tok).catch(() => [])]); rs = a.concat(b).map(r => Object.assign({ uid: r.id }, r)).concat(c, d); }
+      else rs = (await fsQuery('players', null, 'ts', 80, tok)).map(r => Object.assign({ uid: r.id }, r));
       const by = {}; for (const r of rs) { const o = by[r.uid] = by[r.uid] || { uid: r.uid, name: r.name, code: r.code, school: r.school, best: 0, t: 0 }; o.best = Math.max(o.best, r.best || 0); o.t = Math.max(o.t, r.ts || 0); }
       const g = Object.values(by).sort((a, b) => b.t - a.t); sub.textContent = q ? g.length + ' found for "' + q + '"' : 'Newest players on the boards. Search by exact nickname or friend code.';
       for (const p of g) L.appendChild(ownRow(p.name, 'code ' + (p.code || '-') + (p.school ? ' · ' + schoolName(p.school) : '') + ' · best ' + p.best.toLocaleString() + ' · ' + ago(p.t), playerBtns(p.uid, p.name)));
@@ -6861,9 +7160,10 @@ async function ownRender(q) {
       for (const r of rs) L.appendChild(ownRow(r.name || r.id, ago(r.ts) + ' · ' + r.id, [chipBtn('↩️ Unban', () => ownDo('Unbanned', t => fsReq('DELETE', docPath('bans', r.id), t)))]));
     } else if (ownTab === 'switches') {
       APPCFG.t = 0; const c = await loadAppCfg(); sub.textContent = 'Emergency switches. They work for every player on the website and the app within a few minutes.';
-      const set = (k, v) => ownDo('Saved', t => fsReq('PATCH', '/config/app', t, fsEnc({ schools: k === 'schools' ? v : c.schools, requests: k === 'requests' ? v : c.requests })).then(() => { APPCFG.t = 0; }));
+      const set = (k, v) => ownDo('Saved', t => fsReq('PATCH', '/config/app', t, fsEnc(Object.assign({ schools: c.schools, requests: c.requests, autoApprove: c.autoApprove }, { [k]: v }))).then(() => { APPCFG.t = 0; }));
       L.appendChild(ownRow('School boards: ' + (c.schools ? 'ON' : 'OFF'), 'Turn off to hide every school board at once.', [chipBtn(c.schools ? 'Turn off' : 'Turn on', () => set('schools', !c.schools))]));
-      L.appendChild(ownRow('New school requests: ' + (c.requests ? 'ON' : 'OFF'), 'Turn off to stop players asking for new schools.', [chipBtn(c.requests ? 'Turn off' : 'Turn on', () => set('requests', !c.requests))]));
+      L.appendChild(ownRow('Players can add schools: ' + (c.requests ? 'ON' : 'OFF'), 'Turn off to stop players adding new schools.', [chipBtn(c.requests ? 'Turn off' : 'Turn on', () => set('requests', !c.requests))]));
+      L.appendChild(ownRow('Approve new schools first: ' + (c.autoApprove ? 'OFF' : 'ON'), c.autoApprove ? 'New schools go on the boards straight away (the bad-word filter and reports still apply).' : 'New schools wait in Requests until you approve them. The player who added it can use it meanwhile.', [chipBtn(c.autoApprove ? 'Turn on' : 'Turn off', () => set('autoApprove', !c.autoApprove))]));
       L.appendChild(ownRow('Your owner UID', OWN.uid, []));
     }
   } catch (e) { if (e && e.stale) return; sub.textContent = 'Couldn\'t load: ' + (e.status === 403 ? 'the database said no (check the owner UID in the rules)' : e.message); }
