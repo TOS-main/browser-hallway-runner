@@ -809,7 +809,7 @@ body.homeWide .mSide .worldCard .cTxt{text-align:left}
       <label class="volRow"><span>Effects volume</span><input type="range" id="sfxVol" min="0" max="100" value="80"><em class="volNum" id="sfxVolN"></em></label>
     </div>
     <div class="setRow"><b>Sound effects</b><div class="soundRow" style="justify-content:flex-start"><button class="chip" id="bSfx">🔊 Sound effects</button></div></div>
-    <div class="setRow"><b>Nickname (for the leaderboard, not your real name)</b><input id="nameIn" maxlength="14" placeholder="Nickname" autocomplete="off"></div>
+    <div class="setRow"><b>Username (how other players see you, not your real name)</b><div class="frow"><input id="nameIn" maxlength="14" placeholder="Username" autocomplete="off"><button class="btn gold small" id="nameSave">Save</button></div><small id="nameNote"></small></div>
     <details class="advSet"><summary>More settings ▾</summary>
     <div class="setRow"><b>Music</b><div class="trackList" id="musicList"></div>
       <label class="volRow"><span>Coin sound</span><input type="range" id="coinVol" min="0" max="100" value="45"><em class="volNum" id="coinVolN"></em></label>
@@ -847,7 +847,7 @@ body.homeWide .mSide .worldCard .cTxt{text-align:left}
     <div class="topbar"><h2>🏆 Leaderboard</h2><span class="bankPill" id="rBest">0</span></div>
     <div class="tabs boardTabs"><button class="tab" data-board="world">🌍 Everyone</button><button class="tab" data-board="school">🏫 My school</button><button class="tab" data-board="schools">🏆 Schools</button><button class="tab" data-board="friends">👥 Friends</button><button class="tab" data-board="local">🎒 Classmates</button></div>
     <div class="friendBox schoolBox" id="schoolBox"></div>
-    <div class="friendBox" id="friendBox"><div>Your friend code: <b id="myCode">------</b></div><div style="margin-top:8px" id="chalNow"></div><div class="frow"><button class="btn green small" id="chalLive">⏱ Race now (same time)</button><button class="btn blue small" id="chalNew">🎲 New challenge hallway</button><button class="btn gold small" id="chalCopy">📋 Copy my code</button></div><small style="display:block;margin:4px 0">Codes work between phones and the browser. A code with a 3rd part (MAYA-5K2-AB3) gives your friend the exact same hallway.</small><div class="frow"><input id="chalIn" maxlength="16" placeholder="e.g. MAYA-5K2" autocomplete="off"><button class="btn gold small" id="chalAdd">Accept</button></div><div class="frow"><input id="friendIn" maxlength="6" placeholder="Friend's code" autocomplete="off"><button class="btn blue small" id="friendAdd">Add</button></div></div>
+    <div class="friendBox" id="friendBox"><div>You're <b id="myUser">Runner</b> · friend code <b>#<span id="myCode">------</span></b></div><div style="margin-top:8px" id="chalNow"></div><div class="frow"><button class="btn green small" id="chalLive">⏱ Race now (same time)</button><button class="btn blue small" id="chalNew">🎲 New challenge hallway</button><button class="btn gold small" id="chalCopy">📋 Copy my code</button></div><small style="display:block;margin:4px 0">Codes work between phones and the browser. A code with a 3rd part (MAYA-5K2-AB3) gives your friend the exact same hallway.</small><div class="frow"><input id="chalIn" maxlength="16" placeholder="e.g. MAYA-5K2" autocomplete="off"><button class="btn gold small" id="chalAdd">Accept</button></div><div class="frow"><input id="friendIn" maxlength="14" placeholder="Friend's username or code" autocomplete="off"><button class="btn blue small" id="friendAdd">Add</button></div><div id="friendPick"></div></div>
     <div class="allBest" id="allBest"></div>
     <div class="seg boardDiff" id="boardDiff"><button data-bd="all">All settings</button><button data-bd="easy">Easy</button><button data-bd="normal">Normal</button><button data-bd="hard">Hard</button><button data-bd="insane">Insane</button></div>
     <div class="seg boardDiff boardSpd" id="boardSpd"><button data-bs="chill">🐢 Chill</button><button data-bs="normal">Normal speed</button><button data-bs="fast">Fast</button><button data-bs="turbo">🚀 Turbo</button></div>
@@ -1197,9 +1197,9 @@ body.homeWide .mSide .worldCard .cTxt{text-align:left}
 <!-- USERNAME -->
 <div class="modal" id="nameModal">
   <div class="mPanel">
-    <h2 id="nameHead">Pick a nickname</h2>
-    <p id="nameWhy">Pick a nickname (not your real name). It shows on the leaderboard and you can change it later in Settings.</p>
-    <input id="nameFirst" maxlength="14" placeholder="Your name" autocomplete="off">
+    <h2 id="nameHead">Pick a username</h2>
+    <p id="nameWhy">Pick a username (not your real name). Each username belongs to one player. You can change it once a month in Settings.</p>
+    <input id="nameFirst" maxlength="14" placeholder="Username" autocomplete="off">
     <button class="btn gold" id="nameGo">Save it!</button>
     <button class="linkBtn" id="nameSkip">Skip (show as Runner)</button>
   </div>
@@ -1223,7 +1223,7 @@ body.homeWide .mSide .worldCard .cTxt{text-align:left}
 <div class="modal" id="schoolIntro">
   <div class="mPanel schoolBox">
     <h2>🏫 Add your school</h2>
-    <p style="font-size:15px;margin:4px 0 8px">Your runs count for your school, and you get a school record to chase. Use a nickname, never your real name.</p>
+    <p style="font-size:15px;margin:4px 0 8px">Your runs count for your school, and you get a school record to chase. Use a username, never your real name.</p>
     <div class="frow"><input id="siSearch" placeholder="Search schools" maxlength="40" autocomplete="off"></div>
     <div id="siList" style="max-height:34vh;overflow-y:auto"></div>
     <div class="frow" id="siAskRow"><input id="siAsk" placeholder="Can't find yours? School name" maxlength="40" autocomplete="off"><button class="btn gold small" id="siAskGo">➕ Add my school</button></div>
@@ -1234,7 +1234,7 @@ body.homeWide .mSide .worldCard .cTxt{text-align:left}
 <div class="modal" id="schoolRules">
   <div class="mPanel">
     <h2>🏫 School board rules</h2>
-    <p style="text-align:left;font-size:15px">• Use a nickname, never your real name.<br>• Don't share your address, phone, social media or anyone else's info.<br>• School names must be the school's real name. No jokes about people.<br>• No bad words, bullying or hate. Breaking the rules gets you removed.<br>• Tap 🚩 next to anyone who breaks them. A moderator checks new schools and reports, and hides anything that breaks the rules.</p>
+    <p style="text-align:left;font-size:15px">• Use a username, never your real name.<br>• Don't share your address, phone, social media or anyone else's info.<br>• School names must be the school's real name. No jokes about people.<br>• No bad words, bullying or hate. Breaking the rules gets you removed.<br>• Tap 🚩 next to anyone who breaks them. A moderator checks new schools and reports, and hides anything that breaks the rules.</p>
     <button class="btn green" id="rulesOk">I agree</button>
     <button class="linkBtn" id="rulesTerms">Read the Terms of Service</button>
     <button class="btn gray" id="rulesNo">Not now</button>
@@ -1256,7 +1256,7 @@ body.homeWide .mSide .worldCard .cTxt{text-align:left}
   <div class="mPanel admPanel ownPanel">
     <h2>🛡 Moderation</h2>
     <div class="tabs" id="ownTabs"><button class="tab on" data-own="reports">Reports</button><button class="tab" data-own="requests">New schools</button><button class="tab" data-own="schools">Schools</button><button class="tab" data-own="players">Players</button><button class="tab" data-own="bans">Bans</button><button class="tab" data-own="switches">Switches</button></div>
-    <div class="frow" id="ownFind" style="display:none"><input id="ownQ" class="ownIn" placeholder="Nickname or friend code" autocomplete="off"><button class="btn blue small" id="ownQGo">Find</button></div>
+    <div class="frow" id="ownFind" style="display:none"><input id="ownQ" class="ownIn" placeholder="Username or friend code" autocomplete="off"><button class="btn blue small" id="ownQGo">Find</button></div>
     <small id="ownSub"></small>
     <div id="ownList" class="ownList"></div>
     <button class="btn gray" id="ownClose">Close</button>
@@ -1300,7 +1300,7 @@ body.homeWide .mSide .worldCard .cTxt{text-align:left}
     <div class="oCombo" id="oCombo"></div>
     <div class="rankNote" id="oRank" style="display:none"></div>
     <div class="rankNote" id="oXp" style="display:none"></div>
-    <div id="oNameBox" style="display:none;margin-top:8px"><input id="oName" maxlength="14" placeholder="Type your name" autocomplete="off"></div>
+    <div id="oNameBox" style="display:none;margin-top:8px"><input id="oName" maxlength="14" placeholder="Pick a username" autocomplete="off"></div>
     <div class="overExtras"><button class="btn blue small" id="bDouble" style="display:none">▶ 2× cash</button><div class="boxOffer" id="boxOffer"><span class="boxMini">🎁</span><button class="btn blue small" id="boxAd">▶ Box</button><button class="btn gold small" id="boxStars">★ 2</button></div></div>
     <div class="row"><button class="btn blue small" id="bShare">📤 Share / challenge</button><button class="btn purple small" id="bReplay">🎬 Replay</button></div>
     <div class="row"><button class="btn purple small" id="bOverShop">Locker Room</button><button class="btn gray small" id="bOverMenu">Menu</button></div>
@@ -1381,6 +1381,7 @@ const pick = arr => arr[(Math.random() * arr.length) | 0];
 const hash = (k, s = 0) => { const v = Math.sin(k * 127.1 + s * 311.7) * 43758.5453; return v - Math.floor(v); };
 /* ---------------- SAVE ---------------- */
 const SAVE_KEY = 'hallwayRush.save.v1';
+const NAME_WAIT = 30 * 86400000; // usernames can change once every 30 days (the Firestore rules enforce the same)
 const DEF_SAVE = { bank: 0, best: 0, bestDist: 0, owned: { classic: 1, basic: 1, hoodie: 1, sporty: 1, nopet: 1 }, char: 'hoodie', pet: 'nopet', pack: 'classic', shoe: 'basic', up: { straps: 0, helium: 0 }, unlocked: 1, stars: [0, 0, 0, 0, 0], sound: 1, music: 1, track: 'groove', musicVol: 0.6, gs: 3, mult: 1, missions: null, heelys: 2, lv: {}, boosts: {}, difficulty: 'normal', streak: null, word: null, event: null, tutDone: 0, pid: '', quality: 'auto', name: '', board: [], daily: 0 };
 // third copy of the save in first-party cookies (split into chunks, no expiry for ~10 years): kept for browsers that
 // block or wipe localStorage (private windows, some school Chromebooks, "clear site data" for storage only)
@@ -3974,12 +3975,12 @@ function buildBoard(highlightT) {
   if ((boardMode === 'world' || boardMode === 'school' || boardMode === 'schools') && !Online.ready()) boardMode = 'local';
   document.querySelectorAll('[data-board]').forEach(x => x.classList.toggle('on', x.dataset.board === boardMode));
   const ol = $('boardList'); ol.innerHTML = ''; const dk = syncBoardDiff();
-  $('friendBox').style.display = boardMode === 'friends' ? 'block' : 'none'; $('chalNow').textContent = save.challenge ? 'Current challenge: beat ' + save.challenge.from + '\'s ' + save.challenge.score.toLocaleString() : 'Got a challenge code from a friend\'s score card? Enter it:'; $('myCode').textContent = myCode() || '------';
+  $('friendBox').style.display = boardMode === 'friends' ? 'block' : 'none'; $('chalNow').textContent = save.challenge ? 'Current challenge: beat ' + save.challenge.from + '\'s ' + save.challenge.score.toLocaleString() : 'Got a challenge code from a friend\'s score card? Enter it:'; $('myCode').textContent = myCode() || '------'; $('myUser').textContent = safeName(save.name);
   if (boardMode === 'friends') {
-    const rows = (save.friends || []).map(f => ({ n: f.n, s: f.s || 0, d: f.d })); if (save.best > 0) rows.push({ n: save.name || 'You', s: save.best, me: true });
+    const rows = (save.friends || []).map(f => ({ n: f.n, s: f.s || 0, d: f.d, code: f.code })); if (save.best > 0) rows.push({ n: save.name || 'You', s: save.best, me: true });
     rows.sort((a, b) => b.s - a.s); rows.forEach((r, i) => ol.appendChild(boardRow(r, i))); showToBeat(null, dk); addGhostBtns(ol, rows);
     $('boardSub').textContent = (save.friends || []).length ? 'You vs your friends. Their best distance shows up during your runs.' : 'Share your code and add friends by theirs. Their best runs show up as targets while you play.' + (Online.ready() ? '' : ' (Needs the online board: see README.)');
-    refreshFriends().then(() => { if (boardMode === 'friends' && curScreen === 'sRanks') { const r2 = (save.friends || []).length; if (r2) { ol.innerHTML = ''; const rr = save.friends.map(f => ({ n: f.n, s: f.s || 0, d: f.d })); if (save.best > 0) rr.push({ n: save.name || 'You', s: save.best, me: true }); rr.sort((a, b) => b.s - a.s).forEach((r, i) => ol.appendChild(boardRow(r, i))); addGhostBtns(ol, rr); } } });
+    refreshFriends().then(() => { if (boardMode === 'friends' && curScreen === 'sRanks') { const r2 = (save.friends || []).length; if (r2) { ol.innerHTML = ''; const rr = save.friends.map(f => ({ n: f.n, s: f.s || 0, d: f.d, code: f.code })); if (save.best > 0) rr.push({ n: save.name || 'You', s: save.best, me: true }); rr.sort((a, b) => b.s - a.s).forEach((r, i) => ol.appendChild(boardRow(r, i))); addGhostBtns(ol, rr); } } });
     return;
   }
   $('schoolBox').style.display = boardMode === 'school' || boardMode === 'schools' ? 'block' : 'none';
@@ -4004,7 +4005,7 @@ function boardRow(r, i, highlightT) {
     const li = document.createElement('li'); if (r.me) li.className = 'me';
     const rk = document.createElement('span'); rk.className = 'rk'; rk.textContent = r.rank || i + 1;
     const nm = document.createElement('span'); nm.className = 'nm'; nm.textContent = r.me ? (save.name || 'You') : r.n;
-    const tag = document.createElement('small'); tag.textContent = r.me ? myTitle() + (r.t && r.t === highlightT ? ' · NEW BEST!' : '') : boardMode === 'friends' && !r.me ? 'friend' : r.cpu ? 'classmate' : r.me ? (r.t && r.t === highlightT ? 'NEW BEST!' : 'you') : ''; nm.appendChild(tag);
+    const tag = document.createElement('small'); tag.textContent = r.me ? myTitle() + (r.t && r.t === highlightT ? ' · NEW BEST!' : '') : boardMode === 'friends' && !r.me ? 'friend' + (r.code ? ' #' + r.code : '') : r.cpu ? 'classmate' : r.me ? (r.t && r.t === highlightT ? 'NEW BEST!' : 'you') : ''; nm.appendChild(tag);
     const sc = document.createElement('span'); sc.className = 'sc'; sc.textContent = r.s.toLocaleString();
     li.append(rk, nm, sc); return li;
   }
@@ -4656,7 +4657,7 @@ const Online = {
   async submit(name, score, dist) {
     if (!this.ready() || score <= 0 || score < (save.onlineBest || 0)) return;
     try {
-      const a = await this.token();
+      const a = await this.token(); name = await this.claimName();
       const r = await fetch(this.url('/scores/' + encodeURIComponent(a.uid)), { method: 'PATCH', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + a.idToken }, body: JSON.stringify({ fields: {
         name: { stringValue: safeName(name) }, score: { integerValue: String(Math.floor(score)) }, dist: { integerValue: String(Math.floor(dist)) },
         code: { stringValue: myCode() }, diff: { stringValue: runDiff() }, ts: { timestampValue: new Date().toISOString() } } }) });
@@ -4665,20 +4666,64 @@ const Online = {
   },
   async remove() {
     if (!(window.ONLINE_BOARD && ONLINE_BOARD.projectId && ONLINE_BOARD.apiKey) || !save.fbAuth) return true;
-    try { const a = await this.token(), H = { method: 'DELETE', headers: { Authorization: 'Bearer ' + a.idToken } }; const r = await fetch(this.url('/scores/' + encodeURIComponent(a.uid)), H);
+    try { const a = await this.token(), H = { method: 'DELETE', headers: { Authorization: 'Bearer ' + a.idToken } };
+      await this.claimName('Runner').catch(() => {}); // forget your username and free it for others (the 30-day clock stays)
+      const r = await fetch(this.url('/scores/' + encodeURIComponent(a.uid)), H);
       await Promise.allSettled(ALL_BK.map(k => fetch(this.url('/runs/' + encodeURIComponent(a.uid + '_' + k)), H)).concat(['players', 'saves', 'schoolRequests'].map(c => fetch(this.url('/' + c + '/' + encodeURIComponent(a.uid)), H)))); return r.ok; } catch (e) { return false; }
   },
+  // Usernames are unique (upper/lower case counts as the same name). usernames/{'u-' + lowercase} says who owns each one;
+  // names/{uid} is the one you're using now and when you last changed it. The database only accepts board rows that
+  // carry that exact name and only lets it change once every 30 days, so both rules hold even for a modified game.
+  // claimName(want) tries to make `want` (default: your saved name) yours and returns the name the server has for you.
+  // this.nameErr says why it didn't work: 'taken' or 'wait'.
+  async claimName(wantArg) {
+    const a = await this.token(), want = wantArg === undefined ? safeName(save.name) : wantArg, L = save.nameLock; this.nameErr = '';
+    if (L && L.uid === a.uid && L.n === want) return want;
+    let cur = null; try { cur = fsDoc(await fsReq('GET', docPath('names', a.uid), a.idToken)); } catch (e) { if (e.status === 403) return want; if (e.status !== 404) throw e; } // 403: the database rules aren't updated yet, so post like before
+    const done = (n, at) => { save.nameLock = { uid: a.uid, n }; save.nameAt = at || 0; if (safeName(save.name) !== n) { save.name = n === 'Runner' ? '' : n; myRow().dirty = 1; try { if (curScreen === 'sSettings') buildSettings(); } catch (e) {} } persist(); return n; };
+    if (cur && cur.name === want) return done(want, cur.at);
+    const key = n => 'u-' + n.toLowerCase(), D = (c, id) => 'projects/' + ONLINE_BOARD.projectId + '/databases/(default)/documents/' + c + '/' + id;
+    const old = cur && cur.name !== 'Runner' && key(cur.name) !== key(want) ? [{ delete: D('usernames', key(cur.name)) }] : []; // let go of your old name
+    try {
+      const w = want === 'Runner' ? [{ update: Object.assign({ name: D('names', a.uid) }, fsEnc({ name: 'Runner' })), updateMask: { fieldPaths: ['name'] } }]
+        : [{ update: Object.assign({ name: D('names', a.uid) }, fsEnc({ name: want })), updateTransforms: [{ fieldPath: 'at', setToServerValue: 'REQUEST_TIME' }] }]
+          .concat(cur && key(cur.name) === key(want) ? [] : [{ update: Object.assign({ name: D('usernames', key(want)) }, fsEnc({ uid: a.uid })), currentDocument: { exists: false } }]);
+      await fsReq('POST', ':commit', a.idToken, { writes: w.concat(old) });
+      return done(want, want === 'Runner' ? cur && cur.at : Date.now());
+    } catch (e) {
+      if (![400, 403, 409].includes(e.status)) throw e;
+      let owner = null; try { owner = fsDoc(await fsReq('GET', docPath('usernames', key(want)))).uid; } catch (e2) {}
+      this.nameErr = owner && owner !== a.uid ? 'taken' : 'wait';
+      if (wantArg !== undefined) { if (cur) done(cur.name, cur.at); return cur ? cur.name : null; } // you were picking a new name: say no, keep the old one
+      if (cur) { toast('Your username is still ' + cur.name, this.nameErr === 'taken' ? 'Someone else has ' + want : cur.at ? 'You can change it again in ' + fmtDays(cur.at + NAME_WAIT - Date.now()) : '', 2600); return done(cur.name, cur.at); }
+      if (this.nameErr === 'taken') { // a name you picked offline (or in an older version) belongs to someone else now: show as Runner until you pick another
+        await fsReq('PATCH', docPath('names', a.uid), a.idToken, fsEnc({ name: 'Runner' }), 'updateMask.fieldPaths=name');
+        toast('Someone already has the username ' + want, 'Pick a new one in Settings', 3200); return done('Runner', 0);
+      }
+      throw e;
+    }
+  },
+  // is this username free (or already yours)?
+  async nameFree(n) { try { const o = fsDoc(await fsReq('GET', docPath('usernames', 'u-' + n.toLowerCase()))); return !!(save.fbAuth && o.uid === save.fbAuth.uid); } catch (e) { if (e.status === 404) return true; throw e; } },
   async byCode(code) {
+    try { const p = await fsQuery('players', fsEq('code', code), null, 1); if (p[0]) return { n: p[0].name || 'Runner', s: p[0].best || 0, d: p[0].bestDist || 0, code, uid: p[0].id, sch: p[0].school || '' }; } catch (e) {}
     const r = await fetch(this.url(':runQuery'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ structuredQuery: { from: [{ collectionId: 'scores' }], where: { fieldFilter: { field: { fieldPath: 'code' }, op: 'EQUAL', value: { stringValue: code } } }, limit: 1 } }) });
     if (!r.ok) throw new Error('HTTP ' + r.status);
     const d = (await r.json()).find(x => x.document); if (!d) return null; const f = d.document.fields;
-    return { n: f.name.stringValue, s: +f.score.integerValue, d: +(f.dist && f.dist.integerValue || 0) };
+    return { n: f.name.stringValue, s: +f.score.integerValue, d: +(f.dist && f.dist.integerValue || 0), code, uid: d.document.name.split('/').pop() };
+  },
+  // players using this exact username (usernames aren't unique, so there can be several)
+  async byName(name) {
+    try { const o = fsDoc(await fsReq('GET', docPath('usernames', 'u-' + name.toLowerCase()))), p = fsDoc(await fsReq('GET', docPath('players', o.uid)));
+      if (p.code && !isBlocked(p.id)) return [{ n: p.name, s: p.best || 0, d: p.bestDist || 0, code: p.code, uid: p.id, sch: p.school || '' }]; } catch (e) {}
+    const p = await fsQuery('players', fsEq('name', name), null, 20);
+    return p.filter(r => r.code && !isBlocked(r.id)).map(r => ({ n: r.name, s: r.best || 0, d: r.bestDist || 0, code: r.code, uid: r.id, sch: r.school || '' })).sort((x, y) => y.s - x.s);
   },
   // Per-difficulty rows with all-time, monthly, weekly and daily bests: runs/{uid}_{difficulty}
   async submitRun(name, dist) {
     if (!this.ready()) return; const dk = runBK(), b = bestFor(dk), p = (save.pb || {})[dk]; if (!b || !p) return;
     try {
-      const a = await this.token(), I = v => ({ integerValue: String(Math.floor(v || 0)) }), S = v => ({ stringValue: String(v || '') });
+      const a = await this.token(), I = v => ({ integerValue: String(Math.floor(v || 0)) }), S = v => ({ stringValue: String(v || '') }); name = await this.claimName();
       const r = await fetch(this.url('/runs/' + encodeURIComponent(a.uid + '_' + dk)), { method: 'PATCH', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + a.idToken }, body: JSON.stringify({ fields: {
         uid: S(a.uid), name: S(safeName(name)), code: S(myCode()), school: S(mySchool()), diff: S(dk), best: I(b.s), bestDist: I(b.d),
         day: S(p.day), dayS: I(p.dayS), week: S(p.week), weekS: I(p.weekS), month: S(p.month), monthS: I(p.monthS), ts: { timestampValue: new Date().toISOString() } } }) });
@@ -4692,7 +4737,7 @@ const Online = {
     if (!this.ready() || save.age === 'child') return false; const r = myRow(), name = safeName(save.name || 'Runner'), sch = mySchool();
     if (!r.best) return false; if (!force && !r.dirty && r.sentName === name && r.sentSchool === sch) return true;
     if (this._syncing) { this._again = 1; return this._syncing; }
-    const go = async () => { const a = await this.token(); const K = perKeys(), cur = per => r[per] === K[per] ? (r[per + 'S'] || 0) : 0;
+    const go = async () => { const a = await this.token(), name = await this.claimName(); const K = perKeys(), cur = per => r[per] === K[per] ? (r[per + 'S'] || 0) : 0;
       const body = { name, code: myCode(), school: sch, best: r.best, bestDist: r.bestDist || 0, bestDiff: String(r.bestDiff || 'normal'), day: K.day, dayS: Math.min(cur('day'), r.best), week: K.week, weekS: Math.min(cur('week'), r.best), month: K.month, monthS: Math.min(cur('month'), r.best), ts: new Date() };
       try { await fsReq('PATCH', docPath('players', a.uid), a.idToken, fsEnc(body)); }
       catch (e) { if (e.status !== 403) throw e;
@@ -5066,14 +5111,28 @@ function buildTrophies() {
 
 /* ---------- friends & rivals ---------- */
 const myCode = () => (save.pid || '').replace(/[^a-z0-9]/gi, '').slice(0, 6).toUpperCase();
-async function addFriend(code) {
+async function addFriend(q) {
+  q = String(q || '').trim(); if (!q) return; const box = $('friendPick'); box.innerHTML = '';
+  if (save.age === 'child') { toast('Friends are for players 13+', 'You can still race your classmates!', 1800); return; }
+  if (!Online.ready()) { toast('Friends need the online board', 'Turn it on in config.js (see README)', 2200); return; }
+  const code = q.replace(/^#/, '').toUpperCase();
+  if (/^[A-Z0-9]{6}$/.test(code)) { try { if (code === myCode() || await Online.byCode(code)) return addFriendCode(code); } catch (e) {} }
+  let hits; try { hits = await Online.byName(q); } catch (e) { toast('Couldn\'t look that up', 'Check your connection', 1400); return; }
+  hits = hits.filter(h => h.code !== myCode());
+  if (!hits.length) { toast('No player called ' + q, 'Usernames must match exactly. You can also use their friend code', 1800); return; }
+  if (hits.length === 1) return addFriendCode(hits[0].code);
+  // usernames aren't unique: show everyone with that name so you can pick the right one by school, best score or code
+  box.appendChild(mk('div', '', hits.length + ' players are called ' + q + '. Which one?'));
+  for (const h of hits.slice(0, 8)) { const row = mk('div', 'sRow'); row.appendChild(mk('span', '', h.n + ' #' + h.code + (h.sch ? ' · ' + schoolName(h.sch) : '') + ' · best ' + h.s.toLocaleString())); row.append(chipBtn('Add', () => { box.innerHTML = ''; addFriendCode(h.code); })); box.appendChild(row); }
+}
+async function addFriendCode(code) {
   if (save.age === 'child') { toast('Friends are for players 13+', 'You can still race your classmates!', 1800); return; }
   code = (code || '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
   if (code.length !== 6) { toast('Friend codes are 6 letters/numbers', '', 1400); return; }
   if (code === myCode()) { toast('That\'s your own code!', '', 1200); return; }
   save.friends = save.friends || []; if (save.friends.some(f => f.code === code)) { toast('Already friends', '', 1000); return; }
   if (!Online.ready()) { toast('Friends need the online board', 'Turn it on in config.js (see README)', 2200); return; }
-  try { const f = await Online.byCode(code); if (!f) { toast('No player with that code', '', 1400); return; } save.friends.push({ code, n: f.n, s: f.s, d: f.d }); persist(); sfx('buy'); toast('Friend added!', f.n, 1400); buildBoard(); }
+  try { const f = await Online.byCode(code); if (!f) { toast('No player with that code', '', 1400); return; } save.friends.push({ code, n: f.n, s: f.s, d: f.d, uid: f.uid }); persist(); sfx('buy'); toast('Friend added!', f.n, 1400); buildBoard(); }
   catch (e) { toast('Couldn\'t reach the server', 'Check your internet', 1400); }
 }
 async function refreshFriends() { if (!Online.ready() || !(save.friends || []).length) return; for (const f of save.friends) { try { const r = await Online.byCode(f.code); if (r) Object.assign(f, { n: r.n, s: r.s, d: r.d }); } catch (e) {} } persist(); }
@@ -6224,7 +6283,8 @@ function buildEvents() {
 function buildSettings() { try { buildTitles(); } catch (e) {}
   document.querySelectorAll('#qSeg button').forEach(b => b.classList.toggle('on', (save.quality || 'auto') === b.dataset.q));
   $('qNote').textContent = 'Now using: ' + Q.name + (AUTO_Q ? ' (picked automatically, resolution adapts to keep it smooth)' : '') + '. Lower settings run better on older phones.';
-  $('nameIn').value = save.name || '';
+  $('nameIn').value = save.name || ''; { const left = nameWaitLeft(); $('nameIn').disabled = left > 0; $('nameSave').style.display = left > 0 ? 'none' : '';
+    $('nameNote').textContent = (save.name ? 'Friends can add you by this username or your code #' + myCode() + '. ' : 'Each username belongs to one player. ') + (left > 0 ? 'You can change it again in ' + fmtDays(left) + '.' : save.name && save.nameAt ? 'You can change it once every 30 days.' : 'After your first pick you can change it once every 30 days.'); }
   $('privAge').textContent = save.age === 'child' ? 'Under 13 (kid-safe mode)' : save.age === 'teen' ? '13–15' : save.age === 'adult' ? '16 or older' : 'Not set';
   $('privAdult').style.display = save.age === 'adult' ? 'block' : 'none';
   $('privAnalytics').checked = PRIV.analytics(); $('privAds').checked = PRIV.personalAds();
@@ -6446,12 +6506,36 @@ function adStarLeft() { if (!save.adStar || save.adStar.d !== todayKey()) save.a
 function syncAdStar() { const n = adStarLeft(); $('adStarTxt').textContent = n > 0 ? '+1 ★ (' + n + ')' : 'Tomorrow'; $('bAdStar').classList.toggle('wait', n <= 0); $('bAdStar').style.display = save.age === 'child' ? '' : ''; }
 $('bAdStar').onclick = async e => { e.stopPropagation(); initAudio(); sfx('click'); if (adStarLeft() <= 0) { toast('Come back tomorrow', '3 free Gold Stars a day', 1400); return; } const ok = await Ads.show('adstar'); if (ok) { save.adStar.n++; addStars(1); persist(); toast('+1 GOLD STAR', adStarLeft() + ' left today', 1400); syncAdStar(); refreshMenuSoft(); } };
 syncAdStar();
+// Your username is how other players see you everywhere (boards, friends, schools). Each one belongs to one player
+// (the database checks), and after your first pick you can change it once every 30 days.
+function fmtDays(ms) { const d = Math.max(1, Math.ceil(ms / 86400000)); return d + ' day' + (d === 1 ? '' : 's'); }
+function nameWaitLeft() { return save.name && save.nameAt ? Math.max(0, save.nameAt + NAME_WAIT - Date.now()) : 0; }
+async function setUsername(raw, quiet) {
+  const v = cleanName(raw);
+  if (!v) { if (String(raw || '').trim()) toast('Pick a different username', 'No bad words, real names or numbers like phone numbers', 1800); return false; }
+  if (v === save.name) return true;
+  const left = nameWaitLeft(); if (left > 0) { toast('You can change your username in ' + fmtDays(left), 'Usernames can change once every 30 days', 2000); return false; }
+  if (Online.ready()) { // usernames are unique: the server has to give it to you first
+    let got; try { got = await Online.claimName(v); } catch (e) { toast('Couldn\'t save your username', 'Check your connection and try again', 1800); return false; }
+    if (got !== v) { toast(Online.nameErr === 'taken' ? v + ' is taken' : 'You can\'t change your username yet', Online.nameErr === 'taken' ? 'Someone already has that username. Try another one' : 'Usernames can change once every 30 days', 2200); return false; }
+  }
+  if (save.name !== v) { save.name = v; save.nameAt = Date.now(); } // offline, or the live database rules aren't updated yet: the game keeps the 30-day wait itself
+  save.onlineBest = 0; persist();
+  retagName(); if (!quiet) toast('Username saved: ' + v, 'Next change possible in 30 days', 1800);
+  try { if (curScreen === 'sSettings') buildSettings(); } catch (e) {} return true;
+}
+async function retagName() { // your existing board rows switch to the new username straight away
+  if (!Online.ready() || !save.fbAuth) return; myRow().dirty = 1;
+  try { const a = await Online.token(), n = await Online.claimName(); Online.syncPlayer();
+    await Promise.allSettled(ALL_BK.filter(k => save.pb && save.pb[k] && save.pb[k].sent).map(k => fsReq('PATCH', docPath('runs', a.uid + '_' + k), a.idToken, fsEnc({ name: n }), 'updateMask.fieldPaths=name&currentDocument.exists=true'))
+      .concat([fsReq('PATCH', docPath('scores', a.uid), a.idToken, fsEnc({ name: n }), 'updateMask.fieldPaths=name&currentDocument.exists=true')])); } catch (e) {}
+}
 function askName(then, record) {
   if (save.name) { then(); return; }
-  $('nameHead').textContent = record ? '👑 New world record!' : 'Pick a nickname'; $('nameWhy').textContent = record ? 'You just beat the world record! Pick a nickname for the world board (not your real name). You can change it later in Settings.' : 'Pick a nickname (not your real name). It shows on the leaderboard and you can change it later in Settings.';
+  $('nameHead').textContent = record ? '👑 New world record!' : 'Pick a username'; $('nameWhy').textContent = (record ? 'You just beat the world record! Pick a username for the world board (not your real name).' : 'Pick a username (not your real name). It\'s how other players see you on the boards and in friends.') + ' Each username belongs to one player. You can change it once a month in Settings.';
   $('nameSkip').onclick = () => { $('nameModal').classList.remove('show'); then(); };
   $('nameModal').classList.add('show'); $('nameFirst').value = ''; setTimeout(() => $('nameFirst').focus(), 50);
-  $('nameGo').onclick = () => { const raw = $('nameFirst').value, v = cleanName(raw); if (!v) { if (raw.trim()) toast('Pick a different nickname', 'No bad words, real names or numbers like phone numbers', 1800); $('nameFirst').focus(); return; } save.name = v; persist(); $('nameModal').classList.remove('show'); refreshMenu(); then(); };
+  $('nameGo').onclick = () => { const raw = $('nameFirst').value, v = cleanName(raw); if (!v) { if (raw.trim()) toast('Pick a different username', 'No bad words, real names or numbers like phone numbers', 1800); $('nameFirst').focus(); return; } $('nameGo').disabled = true; setUsername(v, true).then(ok => { $('nameGo').disabled = false; if (!ok) { $('nameFirst').focus(); return; } $('nameModal').classList.remove('show'); refreshMenu(); then(); }); };
 }
 // click anywhere on the start screen that isn't a button to play (browser and phone)
 $('sMenu').addEventListener('click', e => { if (curScreen !== 'sMenu' || e.target.closest('#tapZone')) return; if (e.target.closest('button,a,input,select,label,.card,.side,.sideSq,.nav,.mWallet,.mTopR,.mCash,.pill,.iconBtn,[data-tab]')) return; $('tapZone').click(); });
@@ -6541,9 +6625,13 @@ document.querySelectorAll('[data-board]').forEach(t => t.onclick = () => { docum
 $('bRanksPlay').onclick = () => { initAudio(); sfx('click'); startRun('infinite'); };
 $('bHow2').onclick = () => { sfx('click'); showScreen('sHow'); };
 document.querySelectorAll('#qSeg button').forEach(b => b.onclick = () => { const q = b.dataset.q; if (q === (save.quality || 'auto')) return; save.quality = q; persist(); sfx('click'); location.reload(); });
-$('nameIn').oninput = () => { save.name = cleanName($('nameIn').value); persist(); save.onlineBest = 0; };
-$('nameIn').onchange = () => { if ($('nameIn').value.trim() && !cleanName($('nameIn').value)) { $('nameIn').value = ''; toast('That nickname isn\'t allowed', 'No bad words, real names or numbers like phone numbers', 1800); } };
-$('oName').oninput = () => { save.name = cleanName($('oName').value); persist(); };
+$('nameSave').onclick = () => { sfx('click'); const v = cleanName($('nameIn').value);
+  if (!v || v === save.name) { if (!v) setUsername($('nameIn').value); $('nameIn').value = save.name || ''; return; }
+  if (save.name && !confirm('Change your username to ' + v + '? You won\'t be able to change it again for 30 days.')) { $('nameIn').value = save.name; return; }
+  setUsername(v).then(ok => { if (!ok) $('nameIn').value = save.name || ''; }); };
+$('nameIn').onkeydown = e => { if (e.key === 'Enter') $('nameSave').click(); };
+$('oName').onchange = () => { if (!save.name && $('oName').value.trim()) setUsername($('oName').value).then(ok => { if (!ok) $('oName').value = ''; }); };
+$('oName').onkeydown = e => { if (e.key === 'Enter') $('oName').blur(); };
 $('bShop').onclick = () => { initAudio(); sfx('click'); buildShop(); showScreen('sShop'); };
 $('bHow').onclick = () => { initAudio(); sfx('click'); showScreen('sHow'); };
 $('pauseBtn').onclick = () => { initAudio(); togglePause(true); };
@@ -7054,7 +7142,7 @@ function chipBtn(txt, fn, cls) { const b = mk('button', 'chip' + (cls ? ' ' + cl
 var SB_GEN = 0;
 // the school picker (search, join, add yours) used on the My school tab when you don't have one yet
 function schoolPicker(box, cfg) {
-  box.appendChild(mk('div', '', 'Join your school and every Infinite Run you play counts for it. Use a nickname, never your real name.'));
+  box.appendChild(mk('div', '', 'Join your school and every Infinite Run you play counts for it. Use a username, never your real name.'));
   const fr = mk('div', 'frow'), q = mk('input'); q.placeholder = 'Search schools'; q.maxLength = 40; q.autocomplete = 'off'; fr.appendChild(q); box.appendChild(fr);
   const lst = mk('div', 'schoolPick'); box.appendChild(lst);
   const draw = () => { lst.innerHTML = ''; const t = q.value.trim().toLowerCase(), hits = SCHOOLS.list.filter(s => !t || s.name.toLowerCase().includes(t)).slice(0, 30);
@@ -7162,7 +7250,7 @@ function ownRow(title, sub, btns) { const r = mk('div', 'ownRow'), s = mk('span'
 const ago = t => { if (!t) return ''; const m = Math.round((Date.now() - t) / 60000); return m < 60 ? m + ' min ago' : m < 2880 ? Math.round(m / 60) + ' h ago' : Math.round(m / 1440) + ' days ago'; };
 async function ownDo(label, fn) { try { await fn(await ownTok()); toast('✓ ' + label, '', 1000); } catch (e) { toast('Didn\'t work: ' + label, e.message || '', 1800); } ownRender(ownRender.q); }
 async function runsOf(uid, tok) { return fsQuery('runs', fsEq('uid', uid), null, 50, tok); }
-async function modRename(uid, tok) { const rs = await runsOf(uid, tok); await Promise.all(rs.map(r => fsReq('PATCH', docPath('runs', r.id), tok, fsEnc({ name: 'Runner' }), 'updateMask.fieldPaths=name&currentDocument.exists=true')).concat([fsReq('PATCH', docPath('players', uid), tok, fsEnc({ name: 'Runner' }), 'updateMask.fieldPaths=name&currentDocument.exists=true').catch(e => { if (e.status !== 404) throw e; }), fsReq('PATCH', docPath('scores', uid), tok, fsEnc({ name: 'Runner' }), 'updateMask.fieldPaths=name&currentDocument.exists=true').catch(e => { if (e.status !== 404) throw e; })])); }
+async function modRename(uid, tok) { const rs = await runsOf(uid, tok); const nm = await fsReq('GET', docPath('names', uid), tok).then(fsDoc).catch(() => null); await fsReq('PATCH', docPath('names', uid), tok, fsEnc({ name: 'Runner' }), 'updateMask.fieldPaths=name'); if (nm && nm.name && nm.name !== 'Runner') await fsReq('DELETE', docPath('usernames', 'u-' + nm.name.toLowerCase()), tok).catch(() => {}); await Promise.all(rs.map(r => fsReq('PATCH', docPath('runs', r.id), tok, fsEnc({ name: 'Runner' }), 'updateMask.fieldPaths=name&currentDocument.exists=true')).concat([fsReq('PATCH', docPath('players', uid), tok, fsEnc({ name: 'Runner' }), 'updateMask.fieldPaths=name&currentDocument.exists=true').catch(e => { if (e.status !== 404) throw e; }), fsReq('PATCH', docPath('scores', uid), tok, fsEnc({ name: 'Runner' }), 'updateMask.fieldPaths=name&currentDocument.exists=true').catch(e => { if (e.status !== 404) throw e; })])); }
 async function modWipe(uid, tok) { const rs = await runsOf(uid, tok); await Promise.all(rs.map(r => fsReq('DELETE', docPath('runs', r.id), tok)).concat([fsReq('DELETE', docPath('scores', uid), tok), fsReq('DELETE', docPath('players', uid), tok), fsReq('DELETE', docPath('schoolRequests', uid), tok)])); }
 async function modBan(uid, name, tok) { await fsReq('PATCH', docPath('bans', uid), tok, fsEnc({ name: String(name || '').slice(0, 40), ts: new Date() })); await modWipe(uid, tok); }
 async function modClearReports(target, tok) { const rs = await fsQuery('reports', fsEq('target', target), null, 100, tok); await Promise.all(rs.map(r => fsReq('DELETE', docPath('reports', r.id), tok))); }
@@ -7207,8 +7295,8 @@ async function ownRender(q) {
       let rs; if (q) { const [a, b, c, d] = await Promise.all([fsQuery('players', fsEq('name', q), null, 100, tok), fsQuery('players', fsEq('code', q.toUpperCase()), null, 100, tok), fsQuery('runs', fsEq('name', q), null, 100, tok).catch(() => []), fsQuery('runs', fsEq('code', q.toUpperCase()), null, 100, tok).catch(() => [])]); rs = a.concat(b).map(r => Object.assign({ uid: r.id }, r)).concat(c, d); }
       else rs = (await fsQuery('players', null, 'ts', 80, tok)).map(r => Object.assign({ uid: r.id }, r));
       const by = {}; for (const r of rs) { const o = by[r.uid] = by[r.uid] || { uid: r.uid, name: r.name, code: r.code, school: r.school, best: 0, t: 0 }; o.best = Math.max(o.best, r.best || 0); o.t = Math.max(o.t, r.ts || 0); }
-      const g = Object.values(by).sort((a, b) => b.t - a.t); sub.textContent = q ? g.length + ' found for "' + q + '"' : 'Newest players on the boards. Search by exact nickname or friend code.';
-      for (const p of g) L.appendChild(ownRow(p.name, 'code ' + (p.code || '-') + (p.school ? ' · ' + schoolName(p.school) : '') + ' · best ' + p.best.toLocaleString() + ' · ' + ago(p.t), playerBtns(p.uid, p.name)));
+      const g = Object.values(by).sort((a, b) => b.t - a.t); sub.textContent = q ? g.length + ' found for "' + q + '"' : 'Newest players on the boards. Search by exact username or friend code.';
+      for (const p of g) L.appendChild(ownRow(p.name + (p.code ? ' #' + p.code : ''), 'code ' + (p.code || '-') + (p.school ? ' · ' + schoolName(p.school) : '') + ' · best ' + p.best.toLocaleString() + ' · ' + ago(p.t), playerBtns(p.uid, p.name)));
     } else if (ownTab === 'bans') {
       const j = await fsReq('GET', '/bans', tok, null, 'pageSize=300'), rs = (j.documents || []).map(fsDoc); sub.textContent = rs.length ? rs.length + ' banned players. Banned players can still play, but nothing they post reaches the boards.' : 'Nobody is banned.';
       for (const r of rs) L.appendChild(ownRow(r.name || r.id, ago(r.ts) + ' · ' + r.id, [chipBtn('↩️ Unban', () => ownDo('Unbanned', t => fsReq('DELETE', docPath('bans', r.id), t)))]));
