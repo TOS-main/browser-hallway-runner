@@ -20,7 +20,7 @@
   if (!sv || sv.age !== 'adult' || (sv.privacy && sv.privacy.analytics === false)) return; // only players who said they're 16+ and left usage stats on
   window.dataLayer = window.dataLayer || []; window.gtag = function () { dataLayer.push(arguments); };
   gtag('js', new Date());
-  gtag('config', id, { client_storage: 'none', allow_google_signals: false, allow_ad_personalization_signals: false });
+  gtag('config', id, { client_storage: 'none', client_id: sv.pid || undefined, allow_google_signals: false, allow_ad_personalization_signals: false }); // same anonymous player id the game uses, so a returning player counts once in Active users
   var s = document.createElement('script'); s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(id); document.head.appendChild(s);
   window.GA_LOADED = true;
 })(window.GA_MEASUREMENT_ID);</script>
@@ -4946,7 +4946,7 @@ const Analytics = {
       window.dataLayer = window.dataLayer || []; window.gtag = function () { dataLayer.push(arguments); };
       gtag('js', new Date());
       // The APK runs from file://, where cookies don't work, so GA gets our own anonymous player id instead.
-      gtag('config', id, { client_storage: 'none', client_id: save.pid || undefined, send_page_view: !!(window.HALLWAY_WEB_PAGE && !window.GA_LOADED), app_name: 'Hallway Dash' }); // website: count this visit if the page's own tag didn't (it waits for the age check)
+      gtag('config', id, { client_storage: 'none', client_id: save.pid || undefined, allow_google_signals: false, allow_ad_personalization_signals: false, send_page_view: !!(window.HALLWAY_WEB_PAGE && !window.GA_LOADED), app_name: 'Hallway Dash' }); // website: count this visit if the page's own tag didn't (it waits for the age check)
       if (!window.GA_LOADED) { const sc = document.createElement('script'); sc.async = true; sc.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(id); document.head.appendChild(sc); }
       this.on = true; this.log('app_open', { runs: (save.stats && save.stats.runs) || 0 });
     } catch (e) { this.on = false; }
