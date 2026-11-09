@@ -1349,7 +1349,7 @@ body.homeWide .mSide .worldCard .cTxt{text-align:left}
 <div class="modal" id="ownerModal">
   <div class="mPanel admPanel ownPanel">
     <h2>🛡 Moderation</h2>
-    <div class="tabs" id="ownTabs"><button class="tab on" data-own="reports">Reports</button><button class="tab" data-own="requests">New schools</button><button class="tab" data-own="schools">Schools</button><button class="tab" data-own="players">Players</button><button class="tab" data-own="levels">Levels</button><button class="tab" data-own="bans">Bans</button><button class="tab" data-own="switches">Switches</button></div>
+    <div class="tabs" id="ownTabs"><button class="tab on" data-own="reports">Reports</button><button class="tab" data-own="requests">New schools</button><button class="tab" data-own="schools">Schools</button><button class="tab" data-own="players">Players</button><button class="tab" data-own="levels">Levels</button><button class="tab" data-own="bans">Bans</button><button class="tab" data-own="stats">📊 Stats</button><button class="tab" data-own="switches">Switches</button></div>
     <div class="frow" id="ownFind" style="display:none"><input id="ownQ" class="ownIn" placeholder="Username or friend code" autocomplete="off"><button class="btn blue small" id="ownQGo">Find</button></div>
     <small id="ownSub"></small>
     <div id="ownList" class="ownList"></div>
@@ -4954,6 +4954,59 @@ const Analytics = {
   log(name, params) { if (this.on && window.gtag && PRIV.analytics()) try { gtag('event', name, params || {}); } catch (e) {} }
 };
 
+/* ---------- anonymous play counts (every age, no ids) ----------
+   Google Analytics only runs for 16+ players, so these first-party counters show the owner how many visits and
+   minutes of play the game gets from EVERY age group. What's sent is only: "add 1 visit / N seconds / N runs to
+   today's total for age group X". No player id, no name, no device info, nothing that could tell two players apart.
+   Totals live in stats/{local date}_{0-4} (5 shards so a full classroom doesn't hit one document); only the owner
+   can read them (Owner panel > Stats). Adults who switch usage stats off in Settings aren't counted. */
+const PlayStats = {
+  KEY: 'hallwayRush.stats.pending', IDLE: 90000, live: { v: 0, s: 0, r: 0 }, visited: false, lastInput: Date.now(), busy: false,
+  ok: () => !!(window.ONLINE_BOARD && ONLINE_BOARD.projectId && ONLINE_BOARD.apiKey) && !(save.age === 'adult' && save.privacy && save.privacy.analytics === false),
+  group: () => save.age === 'child' ? 'kid' : save.age === 'teen' || save.age === 'adult' ? save.age : 'unset',
+  day: () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); },
+  run() { this.live.r++; },
+  tick() { if (!document.hidden && Date.now() - this.lastInput < this.IDLE) this.live.s++; },
+  // move what's been counted so far into the pending queue (kept in localStorage so a closed tab is sent next visit)
+  bank() {
+    const l = this.live; if (!this.visited && l.s >= 5) { l.v = 1; this.visited = true; }
+    if (!l.v && !l.s && !l.r) return;
+    let q = []; try { q = JSON.parse(localStorage.getItem(this.KEY) || '[]'); } catch (e) {}
+    const day = this.day(), g = this.group(); let e = q.find(x => x.d === day && x.g === g); if (!e) q.push(e = { d: day, g, v: 0, s: 0, r: 0 });
+    e.v += l.v; e.s += l.s; e.r += l.r; this.live = { v: 0, s: 0, r: 0 };
+    try { localStorage.setItem(this.KEY, JSON.stringify(q.slice(-20))); } catch (e2) {}
+  },
+  async flush(leaving) {
+    if (!this.ok()) { this.live = { v: 0, s: 0, r: 0 }; try { localStorage.removeItem(this.KEY); } catch (e) {} return; }
+    this.bank(); if (this.busy) return;
+    let q = []; try { q = JSON.parse(localStorage.getItem(this.KEY) || '[]'); } catch (e) {} if (!q.length) return;
+    const e = q[0], v = Math.min(e.v, 5), s = Math.min(e.s, 3600), r = Math.min(e.r, 50), fts = [];
+    if (v) fts.push(['v_' + e.g, v]); if (s) fts.push(['s_' + e.g, s]); if (r) fts.push(['r_' + e.g, r]);
+    const doc = 'projects/' + ONLINE_BOARD.projectId + '/databases/(default)/documents/stats/' + e.d + '_' + Math.floor(Math.random() * 5);
+    const body = { writes: [{ transform: { document: doc, fieldTransforms: fts.map(([k, n]) => ({ fieldPath: k, increment: { integerValue: String(n) } })) } }] };
+    this.busy = true;
+    try {
+      const res = await fetch(Online.url(':commit'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), keepalive: !!leaving });
+      if (res.ok || res.status === 400) { // 400: a bad entry, drop it rather than retry forever (403 = rules not published yet: keep it for later)
+        let q2 = []; try { q2 = JSON.parse(localStorage.getItem(this.KEY) || '[]'); } catch (e3) {}
+        const f = q2.find(x => x.d === e.d && x.g === e.g);
+        if (f) { f.v = Math.max(0, f.v - v); f.s = Math.max(0, f.s - s); f.r = Math.max(0, f.r - r); }
+        const left = q2.filter(x => x.v || x.s || x.r); try { localStorage.setItem(this.KEY, JSON.stringify(left)); } catch (e4) {}
+      }
+    } catch (e5) {} finally { this.busy = false; }
+  },
+  start() {
+    const seen = () => { this.lastInput = Date.now(); };
+    ['pointerdown', 'keydown', 'touchstart', 'wheel'].forEach(t => addEventListener(t, seen, { passive: true, capture: true }));
+    setInterval(() => this.tick(), 1000);
+    setInterval(() => this.flush(false), 120000);
+    setTimeout(() => this.flush(false), 30000);
+    document.addEventListener('visibilitychange', () => { if (document.hidden) this.flush(true); });
+    addEventListener('pagehide', () => this.flush(true));
+  }
+};
+PlayStats.start();
+
 /* ---------- lifetime stats (feeds trophies) ---------- */
 function stats() { return save.stats || (save.stats = { runs: 0, dist: 0, coins: 0, escapes: 0, tricks: 0, cc: 0, jumps: 0, slides: 0, boss: 0, power: 0, trips: 0 }); }
 
@@ -4985,7 +5038,7 @@ function openAgeGate(then) {
     if (!moved) return; const v = +sl.value;
     save.age = v < 13 ? 'child' : v < 16 ? 'teen' : 'adult'; persist(); m.classList.remove('show');
     applyPrivacy(); sfx('click');
-    if (save.age === 'child') toast('Kid-safe mode on', 'No data collection, online features off', 2200);
+    if (save.age === 'child') toast('Kid-safe mode on', 'No personal info collected, online features off', 2200);
     if (then) then(); else startRun('infinite'); // straight into a real run: the first one shows swipe hints as things come up
   };
 }
@@ -5697,7 +5750,7 @@ G.lastQuiz = 0; G.lastShortcut = 0; G.lastLetter = -999; G.tpStart = undefined; 
   G.bossOn = false; G.timeLeft0 = G.timeLeft;
   if (mode === 'campaign') setTimeout(() => { if (G.scene === 'play' && G.mode === 'campaign') toast('Goal for ★★★', goalText(LEVELS[G.levelIdx]), 2200); }, 2400);
   duelSetup(); quickCtlStart();
-  if (mode !== 'tutorial' && mode !== 'maker') MUSIC.intro(); else syncMusic(); if (!G.mkRetry) Analytics.log('run_start', { mode: G.fun || G.trip || (G.daily ? 'daily' : mode), level: mode === 'campaign' ? G.levelIdx + 1 : 0 });
+  if (mode !== 'tutorial' && mode !== 'maker') MUSIC.intro(); else syncMusic(); if (!G.mkRetry) PlayStats.run(); if (!G.mkRetry) Analytics.log('run_start', { mode: G.fun || G.trip || (G.daily ? 'daily' : mode), level: mode === 'campaign' ? G.levelIdx + 1 : 0 });
   if (mode === 'maker') mkOnStart(); // a player-made level: fair physics, the level's own layout (see LEVEL MAKER)
 }
 function crash(o, msg) {
@@ -7464,6 +7517,16 @@ async function ownRender(q) {
       const rs = (await live(mkQuery('ts', null, 150))).sort((a, b) => (a.status === 'pending' ? 0 : 1) - (b.status === 'pending' ? 0 : 1) || (b.ts || 0) - (a.ts || 0));
       sub.textContent = rs.length ? 'Newest shared levels (waiting ones first). Play one with its ID in Level Maker → Play levels. ⭐ Feature puts it on the Featured tab.' : 'No shared levels yet.';
       for (const r of rs) L.appendChild(ownRow((r.status === 'pending' ? '⏳ ' : r.status === 'hidden' ? '🙈 ' : r.featured ? '⭐ ' : '') + r.name, 'by ' + (r.author || 'Runner') + ' · ' + mkStar(r.stars)[2] + ' · ❤️ ' + (r.likes || 0) + ' ▶ ' + (r.plays || 0) + ' ✅ ' + (r.clears || 0) + ' · ' + ago(r.ts) + ' · ' + r.id, levelBtns(r.id, null, r)));
+    } else if (ownTab === 'stats') {
+      // anonymous play counts (see PlayStats): one row per day, every age group, newest first
+      const rs = await fsQuery('stats', null, '__name__', 150, tok), days = {}, G4 = ['kid', 'teen', 'adult', 'unset'];
+      for (const r of rs) { const d = r.id.split('_')[0], t = days[d] = days[d] || { v: {}, s: {}, r: {} }; for (const g of G4) for (const k of ['v', 's', 'r']) t[k][g] = (t[k][g] || 0) + (r[k + '_' + g] || 0); }
+      const sum = o => G4.reduce((a, g) => a + (o[g] || 0), 0), hm = sec => sec >= 3600 ? (sec / 3600).toFixed(1) + ' h' : Math.round(sec / 60) + ' min';
+      const list = Object.keys(days).sort().reverse().slice(0, 21);
+      sub.textContent = list.length ? 'Visits and play time from every age group (no ids, nobody can be told apart). Play time only counts while someone is actually tapping or pressing keys. Google Analytics shows more detail, but only for 16+ players.' : 'No play counts yet. They start once the new database rules (round 22) are published.';
+      for (const d of list) { const t = days[d], v = sum(t.v), sec = sum(t.s), runs = sum(t.r);
+        L.appendChild(ownRow(new Date(d + 'T12:00').toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }) + ' · ' + v + ' visit' + (v === 1 ? '' : 's') + ' · ' + hm(sec) + ' played',
+          'avg ' + (v ? Math.round(sec / v / 60) : 0) + ' min per visit · ' + runs + ' runs · under 13: ' + (t.v.kid || 0) + ' · 13–15: ' + (t.v.teen || 0) + ' · 16+: ' + (t.v.adult || 0) + (t.v.unset ? ' · no age picked: ' + t.v.unset : ''), [])); }
     } else if (ownTab === 'switches') {
       APPCFG.t = 0; const c = await loadAppCfg(); sub.textContent = 'Emergency switches. They work for every player on the website and the app within a few minutes.';
       const set = (k, v) => ownDo('Saved', t => fsReq('PATCH', '/config/app', t, fsEnc(Object.assign({ schools: c.schools, requests: c.requests, autoApprove: c.autoApprove, levels: c.levels, levelAuto: c.levelAuto }, { [k]: v }))).then(() => { APPCFG.t = 0; }));
