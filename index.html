@@ -606,7 +606,7 @@ body.web .savePill{display:flex}
 body.web .simpleHome .nav{font-size:19px!important}
 .simpleHome .nav .badge{top:-8px;right:-6px}
 .simpleHome .playSoon{bottom:calc(max(10px,env(safe-area-inset-bottom)) + 92px)}
-#bmTip{top:auto!important;bottom:calc(max(12px,env(safe-area-inset-bottom)) + 96px);font-size:13px;max-width:min(92vw,460px);padding:5px 8px!important}#bmTip b{font-size:13px;line-height:1.2}
+#bmTip{top:max(10px,env(safe-area-inset-top))!important;bottom:auto!important;font-size:13px;max-width:min(92vw,460px);padding:5px 8px!important}#bmTip b{font-size:13px;line-height:1.2}
 /* More: big tiles in a grid */
 .morePanel h2,.savePanel h2{text-align:center}
 .moreGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0 4px}
@@ -674,6 +674,9 @@ body.homeWide .simpleHome .nav .ic{width:40px!important;height:40px!important}
 .svOk{background:#e9fbe9!important}.svMore{margin:8px 0;text-align:left}.svMore summary{cursor:pointer;font-weight:900;font-size:16px;color:var(--ink);padding:6px 2px}
 @media (max-width:560px){.savePill #saveTxt{display:none}.savePill{padding:0 12px!important}}
 body.homeWide .mSide .worldCard .cTxt{text-align:left}
+/* the ✕ that closes a screen (top corner of the panel, stays visible while the panel scrolls) */
+.screenX{float:right;position:sticky;top:0;z-index:5;margin:-6px -6px 4px 10px;width:42px;height:42px;display:grid;place-items:center;border-radius:12px;border:3px solid var(--ink);background:#ef476f;color:#fff;font:900 22px/1 system-ui,sans-serif;box-shadow:0 3px 0 var(--ink);cursor:pointer;padding:0}
+.screenX:hover{filter:brightness(1.08)}.screenX:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
 </style>
 </head>
 <body>
@@ -2133,7 +2136,9 @@ function makeActor(spec) {
   // The women's models are skinned so the hips and seat follow the thigh: in a sprint's high knee lift the whole pelvis
   // bulged up into the waist (the glitch only the women had). Their thigh swing is kept the same up to 35 degrees from
   // standing and eased beyond that, so standing legs (and the feet on the floor) are untouched.
-  if (spec.key[0] === 'W') act.legCap = ['UpperLegL', 'UpperLegR'].filter(n => act.bones[n]).map(n => [act.bones[n], act.bones[n].quaternion.clone()]);
+  // "Standing" is the thigh in the idle clip, not the model's bind pose: the bind pose has the thighs turned differently,
+  // so measuring from it squashed every stride and folded the front leg backwards (the other runners' broken-looking legs).
+  if (spec.key[0] === 'W') { const rest = legRest(spec.key); act.legCap = ['UpperLegL', 'UpperLegR'].filter(n => act.bones[n] && rest[n]).map(n => [act.bones[n], rest[n]]); }
   const clips = CH.clips[spec.key[0]];
   act.pose = (name, speed = 1, fade = 0.2) => {
     const clipName = CLIP_ALIAS[name] || name;
@@ -2172,7 +2177,7 @@ function makeActor(spec) {
     if (act._tw && act._tw.size) { for (const [b, q] of act._tw) b.quaternion.copy(q); act._tw.clear(); } // undo last frame's twists
     act.mixer.update(dt);
     if (act.legCap) for (const [b, r] of act.legCap) { // women: a high knee lift pulled the hips and seat up into the waist
-      const ang = 2 * Math.acos(Math.min(1, Math.abs(b.quaternion.dot(r)))); if (ang > LEG_FREE) b.quaternion.copy(r).slerp(_lq.copy(b.quaternion), (LEG_FREE + (ang - LEG_FREE) * 0.45) / ang); }
+      const ang = 2 * Math.acos(Math.min(1, Math.abs(b.quaternion.dot(r)))); if (ang > LEG_FREE) { _lq.copy(b.quaternion); b.quaternion.copy(r).slerp(_lq, (LEG_FREE + (ang - LEG_FREE) * 0.45) / ang); } } // (copy the animated pose BEFORE overwriting it: the old order snapped the thigh straight back to standing on every big stride)
     if (act.bones.Head) act.bones.Head.scale.setScalar(cheatOn('bighead') ? 1.9 : 1.12); // BIGHEAD cheat: everyone, not just you
     { const ca = act.cur && act.actions[act.cur]; if (ca && !ONE_SHOT[act.cur]) act.phase[act.cur] = ca.time; }
     { // ground contact: every clip has ONE fixed lift (worked out once from the shoe soles over the whole clip), and the body
@@ -2194,6 +2199,14 @@ function makeActor(spec) {
 // Ground contact: the animations come from a slightly different skeleton, so each (model, clip) pair gets a
 // vertical correction that puts the lowest foot of the clip exactly on the floor (no sinking or floating).
 const GROUND = {}, _gv = new THREE.Vector3();
+const LEG_REST = {};
+function legRest(key) { // each thigh's rotation while standing (first frame of the idle clip), measured once per model
+  if (LEG_REST[key]) return LEG_REST[key];
+  const out = {}, clip = CH.clips[key[0]].Idle_Loop; if (!clip || !CH.tpl[key]) return (LEG_REST[key] = out);
+  const m = THREE.SkeletonUtils.clone(CH.tpl[key]), mx = new THREE.AnimationMixer(m); mx.clipAction(clip).play(); mx.setTime(0);
+  m.traverse(o => { if (o.isBone && (o.name === 'UpperLegL' || o.name === 'UpperLegR')) out[o.name] = o.quaternion.clone(); });
+  mx.stopAllAction(); return (LEG_REST[key] = out);
+}
 function groundOffset(key, clipName) {
   const id = key + '|' + clipName; if (GROUND[id] !== undefined) return GROUND[id];
   const clip = CH.clips[key[0]][clipName]; if (!clip || !CH.tpl[key]) return (GROUND[id] = 0);
@@ -4059,16 +4072,21 @@ function addCash(n) { save.bank += n; persist(); refreshMenuSoft(); }
 function refreshMenuSoft() { if (curScreen === 'sMenu' || curScreen === 'sMissions' || curScreen === 'sEvents') try { refreshMenu(); } catch (e) {} }
 
 /* ---------- rewarded ads (AdMob in the Android app, a placeholder on the web) ---------- */
+// Every ad gets an id, so a late answer from an old ad can never close (or reward) a newer one, and a watchdog makes sure
+// an ad that never answers (no ad network, AdSense not approved yet, ad blocker, no internet) always ends and gives the game back.
 const Ads = {
-  cb: null,
+  cb: null, id: 0, dog: 0,
   show(tag) {
+    if (this.cb) this.finish(false); // an older ad still waiting: close it first instead of leaving it stuck
     return new Promise(res => {
-      this.cb = res; G.adOpen = true; appHidden();
-      if (window.HallwayAds && window.HallwayAds.showRewarded) { try { window.HallwayAds.showRewarded(tag); return; } catch (e) {} }
-      fakeAd(tag);
+      const id = ++this.id; this.cb = res; G.adOpen = true; appHidden();
+      if (window.HallwayAds && window.HallwayAds.showRewarded) { try { this.guard(id, 180000); window.HallwayAds.showRewarded(tag); return; } catch (e) {} }
+      fakeAd(tag, id);
     });
   },
-  finish(ok) { const cb = this.cb; this.cb = null; G.adOpen = false; save.lastRewardAd = Date.now(); appShown(); if (cb) cb(!!ok); }
+  live(id) { return this.cb && this.id === id; },
+  guard(id, ms) { clearTimeout(this.dog); this.dog = setTimeout(() => { if (this.live(id)) { $('adModal').classList.remove('show'); this.finish(false); } }, ms); },
+  finish(ok) { clearTimeout(this.dog); const cb = this.cb; this.cb = null; G.adOpen = false; save.lastRewardAd = Date.now(); appShown(); if (cb) cb(!!ok); }
 };
 window.onAdReward = (tag, ok) => Ads.finish(ok);
 window.onAdUnavailable = () => { toast('No ad right now', 'Check your internet and try again', 1600); Ads.finish(false); };
@@ -4100,19 +4118,25 @@ function initWebAds() {
   document.head.appendChild(sc);
 }
 function webAdsWake() { if (window.adsbygoogle && adsbygoogle.pauseAdRequests) { adsbygoogle.pauseAdRequests = 0; return true; } return false; }
-function fakeAd(tag) {
-  if (h5Ready && window.adBreak && webAdsWake()) { setTimeout(() => fakeAd(tag), 1500); return; } // first ad the player asked for: let Google fetch one
+function fakeAd(tag, id) {
+  if (!Ads.live(id)) return;
+  if (h5Ready && window.adBreak && webAdsWake()) { Ads.guard(id, 8000); try { toast('Loading ad…', 'One moment', 1500); } catch (e) {} setTimeout(() => fakeAd(tag, id), 1500); return; } // first ad the player asked for: let Google fetch one
   if (h5Ready && window.adBreak) { // real rewarded ad from Google; fall back to a house ad if none is ready
     let shown = false, done = false;
-    try { adBreak({ type: 'reward', name: tag || 'reward', beforeReward: showAdFn => { shown = true; showAdFn(); }, adDismissed: () => { done = true; Ads.finish(false); }, adViewed: () => { done = true; Ads.finish(true); }, adBreakDone: () => { if (!shown && !done) houseAd(tag); } }); return; } catch (e) {}
+    const fallback = () => { if (shown || done || !Ads.live(id)) return; done = true; houseAd(tag, id); };
+    // Google has to answer within 4 seconds. If it doesn't (AdSense not approved, ads blocked, offline), stop asking it for
+    // the rest of this visit and show the house ad, so the button never leaves the player stuck.
+    Ads.guard(id, 120000); setTimeout(() => { if (!shown && !done) { h5Ready = false; fallback(); } }, 4000);
+    try { adBreak({ type: 'reward', name: tag || 'reward', beforeReward: showAdFn => { if (done || !Ads.live(id)) return; shown = true; try { showAdFn(); } catch (e) { shown = false; fallback(); } }, adDismissed: () => { if (!Ads.live(id)) return; done = true; Ads.finish(false); }, adViewed: () => { if (!Ads.live(id)) return; done = true; Ads.finish(true); }, adBreakDone: () => { if (!shown) fallback(); else if (!done && Ads.live(id)) { done = true; Ads.finish(false); } } }); return; } catch (e) { done = true; }
   }
-  houseAd(tag);
+  houseAd(tag, id);
 }
-function houseAd(tag) {
+function houseAd(tag, id) {
+  if (id != null && !Ads.live(id)) return; clearTimeout(Ads.dog);
   const m = $('adModal'), ad = HOUSE_ADS[(save.adN = ((save.adN || 0) + 1)) % HOUSE_ADS.length];
   $('adIco').textContent = ad[0]; $('adHead').textContent = ad[1]; $('adSub').textContent = ad[2]; $('adCard').style.setProperty('--adbg', ad[3]);
   m.classList.add('show'); const T = 5, t0 = performance.now(); $('adClaim').disabled = true; $('adClaim').textContent = 'Watch 5 seconds…'; $('adBar').style.width = '0%';
-  let fin = false; const end = ok => { if (fin) return; fin = true; clearInterval(iv); m.classList.remove('show'); Ads.finish(ok); };
+  let fin = false; const end = ok => { if (fin) return; fin = true; clearInterval(iv); m.classList.remove('show'); if (id == null || Ads.live(id)) Ads.finish(ok); };
   const iv = setInterval(() => {
     const el = Math.min(T, (performance.now() - t0) / 1000); $('adBar').style.width = (el / T * 100) + '%'; $('adLeft').textContent = Math.ceil(T - el);
     if (el >= T && $('adClaim').disabled) { $('adClaim').disabled = false; $('adClaim').textContent = '🎁 Claim reward'; sfx('coin'); }
@@ -5429,7 +5453,7 @@ G.lastQuiz = 0; G.lastShortcut = 0; G.lastLetter = -999; G.tpStart = undefined; 
   G.weight = baseWeight();
   Object.assign(P, { lane: 0, fromLane: 0, x: 0, y: 0, vy: 0, slide: 0, slideQ: false, fall: 0, fl: 0 }); G.highAir = false; G.onPlat = false; G.plat = null;
   G.speed = baseSpeed();
-  if (G.adOpen && !(Ads && Ads.cb)) { G.adOpen = false; $('adModal').classList.remove('show'); } // safety: a run never starts under a stuck promo
+  if (G.adOpen || Ads.cb) { $('adModal').classList.remove('show'); if (Ads.cb) Ads.finish(false); G.adOpen = false; } // safety: a new run always clears an ad that got stuck, so it can never freeze the runner
   G.scene = 'play'; G.countdown = 0; G.lastCount = 0; G.intro = fromMenu && mode !== 'campaign' ? INTRO : 0; G.caught = false; clearChase(); startChase(null, { role: 'monitor', t: 3.2, warmup: true, line: 'HEY! NO RUNNING!' }); try { schoolIntroToast(); } catch (e) {}
   if (mode !== 'tutorial') { if (cheatOn('flyer')) G.pw.cheat = pwTime('cheat') + 3; if (cheatOn('juiced')) G.pw.energy = pwTime('energy') + 3; }
   G.cheated = unfairCheats(); G.shield = mode !== 'tutorial' && charDef().ab === 'shield' ? 1 : 0; P.dj = false;
@@ -6753,6 +6777,10 @@ function syncMore() { const n = moreHot(), b = $('moreBadge'); if (b) { b.textCo
 $('bMore').onclick = e => { e.stopPropagation(); initAudio(); sfx('click'); refreshMenu(); buildMore(); showScreen('sMore'); };
 // Back: to More when the screen was opened from there, otherwise home
 document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => { sfx('click'); const m = moreReturn && curScreen !== 'sMore'; moreReturn = false; goMenu(); if (m) { buildMore(); showScreen('sMore'); } });
+// a clear ✕ in the top corner of every screen that has a Back button: it closes the screen the same way Back does
+document.querySelectorAll('.screen [data-back]').forEach(bk => { const pn = bk.closest('.panel'); if (!pn || pn.querySelector('.screenX')) return;
+  const x = document.createElement('button'); x.className = 'screenX'; x.type = 'button'; x.setAttribute('aria-label', 'Close'); x.title = 'Close'; x.textContent = '✕';
+  x.onclick = e => { e.stopPropagation(); bk.click(); }; pn.insertBefore(x, pn.firstChild); });
 { const _ss = showScreen; showScreen = function (id) { if (id === 'sMenu' || id === null) moreReturn = false; _ss(id); if (id === 'sMenu') try { syncMore(); } catch (e) {} }; }
 
 // Save code (website only): copy it, paste it in any browser to carry on where you left off
