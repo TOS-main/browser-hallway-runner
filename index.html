@@ -1814,10 +1814,21 @@ const QUALITY_PRESETS = {
   med: { name: 'Medium', pr: 1.5, minPr: 0.75, aa: true, shadows: 1024, std: false, env: false, particles: true, view: 95, joints: true },
   high: { name: 'High', pr: 2, minPr: 1, aa: true, shadows: 2048, std: true, env: true, particles: true, view: 95, joints: true }
 };
+// the graphics chip's name, when the browser shares it (used only to spot weak or software GPUs, never sent anywhere)
+function gpuName() {
+  try { const c = document.createElement('canvas'), gl = c.getContext('webgl') || c.getContext('experimental-webgl'); if (!gl) return 'none';
+    const ext = gl.getExtension('WEBGL_debug_renderer_info'), n = String(gl.getParameter(ext ? ext.UNMASKED_RENDERER_WEBGL : gl.RENDERER) || '');
+    const lose = gl.getExtension('WEBGL_lose_context'); lose && lose.loseContext(); return n; } catch (e) { return ''; }
+}
 function detectQuality() {
   const mem = navigator.deviceMemory || 4, cores = navigator.hardwareConcurrency || 4;
-  const mobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+  const mobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent), gpu = gpuName();
+  // software rendering (no GPU) or a known budget phone/tablet GPU: start on Low
+  if (gpu === 'none' || /SwiftShader|llvmpipe|softpipe|Software|Microsoft Basic/i.test(gpu)) return 'low';
+  if (/Mali-(4\d\d|T\d+|G31|G51|G52)|Adreno \(TM\) ([2-4]\d\d|50\d|51\d)|PowerVR (SGX|Rogue G[EX]?[6-8]\d{2,3})|GE8\d{3}|Intel.*GMA/i.test(gpu)) return 'low';
   if (mem <= 2 || (mobile && cores <= 4)) return 'low';
+  // mid-range phone GPUs and old laptop integrated graphics: Medium (still has shadows and smooth edges)
+  if (/Mali-G(57|68|71|72|76)|Adreno \(TM\) (5[2-9]\d|6[0-2]\d)|Intel.*HD Graphics( [2-5]\d{3})?$/i.test(gpu)) return 'med';
   if (mobile && (mem <= 4 || cores <= 6)) return 'med';
   return 'high';
 }
@@ -3021,7 +3032,8 @@ function resize() {
   DPR = Math.min(window.devicePixelRatio || 1, 2);
   W = window.innerWidth; H = window.innerHeight;
   renderer.setPixelRatio(Math.min(DPR, curPr)); renderer.setSize(W, H, false);
-  ovCanvas.width = Math.round(W * DPR); ovCanvas.height = Math.round(H * DPR); octx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  const oDpr = QKEY === 'low' ? Math.min(DPR, 1.5) : DPR; // the 2D effects layer doesn't need full phone sharpness on Low
+  ovCanvas.width = Math.round(W * oDpr); ovCanvas.height = Math.round(H * oDpr); octx.setTransform(oDpr, 0, 0, oDpr, 0, 0);
   setCamera(); fitMenu(true);
 }
 // the start screen always fits the window (short laptop screens and small phones used to cut off the bottom bar)
@@ -6517,7 +6529,7 @@ function buildEvents() {
 }
 function buildSettings() { try { buildTitles(); } catch (e) {}
   document.querySelectorAll('#qSeg button').forEach(b => b.classList.toggle('on', (save.quality || 'auto') === b.dataset.q));
-  $('qNote').textContent = 'Now using: ' + Q.name + (AUTO_Q ? ' (picked automatically, resolution adapts to keep it smooth)' : '') + '. Lower settings run better on older phones.';
+  $('qNote').textContent = 'Now using: ' + Q.name + (AUTO_Q ? ' (picked automatically, it lowers resolution, then shadows, if your device can\'t keep up)' : '') + '. Lower settings run better on older phones.';
   $('nameIn').value = save.name || ''; { const left = nameWaitLeft(); $('nameIn').disabled = left > 0; $('nameSave').style.display = left > 0 ? 'none' : '';
     $('nameNote').textContent = (save.name ? 'Friends can add you by this username or your code #' + myCode() + '. ' : 'Each username belongs to one player. ') + (left > 0 ? 'You can change it again in ' + fmtDays(left) + '.' : save.name && save.nameAt ? 'You can change it once every 30 days.' : 'After your first pick you can change it once every 30 days.'); }
   $('privAge').textContent = save.age === 'child' ? 'Under 13 (kid-safe mode)' : save.age === 'teen' ? '13–15' : save.age === 'adult' ? '16 or older' : 'Not set';
@@ -6903,12 +6915,46 @@ setInterval(() => { if (curScreen === 'sMenu') { const stS = streakState(); $('f
 /* ---------------- LOOP ---------------- */
 let lastT = performance.now();
 let fpsAcc = 0, fpsN = 0, fpsT = 0;
+// Auto graphics: every 2 s it checks the frame rate. Fast devices keep full quality (and get resolution back if it was
+// lowered); slow ones step down one notch at a time, cheapest-looking change first:
+//   1) render resolution, a little at a time, down to the preset's minimum
+//   2) a smaller shadow map   3) real shadows off (the soft blob shadow under the runner gets darker instead)
+//   4) sparkle/dust particles off
+// Steps 2 to 4 only happen during a run (menus and loading hitches don't count) and never undo themselves, so the
+// picture doesn't flicker between settings. If a lower resolution doesn't make it faster, resolution goes back up and
+// stays; and if the game's own work per frame is small while the frame rate is low, the screen is just capped (e.g. a
+// phone's 30 fps battery saver), so nothing else gets lowered either.
+const AT = { resDone: false, lastFps: 0, lastPr: 0, warm: 0, slow: 0, scene: '', work: 0 };
+function setPr(p) { curPr = p; renderer.setPixelRatio(Math.min(DPR, curPr)); renderer.setSize(W, H, false); }
+function autoTune(now) {
+  const playing = G.scene === 'play' && !G.paused && !G.dying;
+  if (G.scene !== AT.scene) { AT.scene = G.scene; AT.warm = now + 2500; fpsAcc = 0; fpsN = 0; AT.work = 0; fpsT = now; return; } // let a new screen load in first
+  if (now < AT.warm) { fpsT = now; AT.work = 0; return; }
+  const fdt = (now - lastT) / 1000; if (fdt > 0 && fdt < 1) { fpsAcc += fdt; fpsN++; }
+  if (now - fpsT < 2000 || fpsN < 8) return;
+  const fps = fpsN / fpsAcc, work = AT.work / fpsN; fpsAcc = 0; fpsN = 0; AT.work = 0; fpsT = now;
+  if (AT.lastPr) { const was = AT.lastPr; AT.lastPr = 0; // the last change was a resolution drop: did it help?
+    if (fps < AT.lastFps + 1.5 && fps < 45) { AT.resDone = true; setPr(was); return; } }
+  const top = Math.min(Q.pr, DPR), cur = Math.min(curPr, DPR); // a ratio above the screen's own does nothing, so count from what's really used
+  if (fps > 57) { AT.slow = 0; if (cur < top - 0.001) setPr(Math.min(top, cur + 0.1)); return; }
+  if (fps >= 45) { AT.slow = 0; return; }
+  if (!AT.resDone && cur > Q.minPr + 0.001) { AT.lastFps = fps; AT.lastPr = cur; setPr(Math.max(Q.minPr, cur - 0.15)); return; }
+  // past what resolution can fix: only go further if it's clearly slow in a run, twice in a row, and the game itself is busy
+  if (!playing || fps >= 40 || work < 11) { AT.slow = 0; return; }
+  if (++AT.slow < 2) return;
+  AT.slow = 0;
+  if (sun.castShadow && sun.shadow.mapSize.x > 512) { sun.shadow.mapSize.set(sun.shadow.mapSize.x / 2, sun.shadow.mapSize.y / 2); if (sun.shadow.map) { sun.shadow.map.dispose(); sun.shadow.map = null; } return; }
+  if (sun.castShadow) { sun.castShadow = false; renderer.shadowMap.enabled = false; shadowMat.opacity = 1; if (sun.shadow.map) { sun.shadow.map.dispose(); sun.shadow.map = null; } return; }
+  if (Q.particles) { Q.particles = false; return; }
+}
 let _skip = false;
 function frame(now) {
   if (save.battery) { _skip = !_skip; if (_skip) { requestAnimationFrame(frame); return; } } // ~30 fps
-  if (AUTO_Q) { const fdt = (now - lastT) / 1000; if (fdt > 0 && fdt < 0.5) { fpsAcc += fdt; fpsN++; } if (now - fpsT > 2000 && fpsN > 20) { const fps = fpsN / fpsAcc; let np = curPr; if (fps < 45) np = Math.max(Q.minPr, curPr - 0.15); else if (fps > 57) np = Math.min(Q.pr, curPr + 0.1); if (np !== curPr) { curPr = np; renderer.setPixelRatio(Math.min(DPR, curPr)); renderer.setSize(W, H, false); } fpsAcc = 0; fpsN = 0; fpsT = now; } }
+  if (AUTO_Q) autoTune(now);
   const dt = Math.min(0.05, Math.max(0, (now - lastT) / 1000)); lastT = now;
+  const w0 = performance.now();
   try { if (curScreen !== 'sMkEdit') { update(dt); render(); } if (curScreen === 'sShop') drawPreview(); } catch (e) { console.error(e); }
+  AT.work += performance.now() - w0;
   requestAnimationFrame(frame);
 }
 /* ===================== ROUND 16 =====================
