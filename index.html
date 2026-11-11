@@ -1514,10 +1514,11 @@ window.PRIVACY_URL = 'https://hallwaydash.org/privacy.html';
 window.WEB_ADS = {
   adsenseClient: 'ca-pub-9841041313313334',
   // Ads shown inside the "watch an ad" popup (revive, rewards). Website only, players 13+ only, never in the Android app.
-  // Each time the popup opens it starts with the next ad in this list; if that one comes back empty it tries the other one.
+  // The popup tries these in order: if one has nothing to show after 3.5 seconds it moves to the next.
   // Delete an entry to stop using that network.
   // w/h is the ad's size: a tall one (like 300x250) takes the house card's place, a thin banner sits under it.
   popupAds: [ // the ad codes themselves live in adframe.html
+    { ad: 'adsterra300', w: 300, h: 250 },
     { ad: 'bidvertiser', w: 300, h: 250 },
     { ad: 'adsterra', w: 468, h: 60 }
   ]
@@ -4365,7 +4366,7 @@ function adBannerShow(skip) {
   const list = ((window.WEB_ADS && WEB_ADS.popupAds) || []).filter(a => a && a.ad);
   if (!list.length || window.HallwayAds || location.protocol !== 'https:' || (save.age !== 'teen' && save.age !== 'adult')) return;
   skip = skip || 0; if (skip >= list.length) return; // every network came back empty: just the house card
-  const ad = list[((save.adN || 0) + skip) % list.length], W = ad.w || 300, H = ad.h || 250;
+  const ad = list[skip], W = ad.w || 300, H = ad.h || 250;
   const f = document.createElement('iframe'); f.title = 'Advertisement'; f.scrolling = 'no'; f.width = W; f.height = H;
   // no top-navigation: an ad can open a new tab when tapped, but can't send the game page somewhere else
   f.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox');
