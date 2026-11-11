@@ -454,7 +454,7 @@ kbd{display:inline-block;min-width:22px;text-align:center;padding:1px 6px;margin
 .ctrlChip{position:absolute;left:12px;top:calc(max(12px,env(safe-area-inset-top)) + 54px);display:none;z-index:2;font-size:12px;padding:4px 10px;opacity:.9}
 @media (hover:hover) and (pointer:fine){.ctrlChip{display:block}.tapPlay::after{content:'';}}
 
-.adPanel .adBanner{display:none;width:468px;height:60px;margin:0 auto 10px;transform-origin:top left}.adPanel .adBanner.on{display:block}.adPanel .adBanner iframe{width:468px;height:60px;border:0;display:block}
+.adPanel .adBanner{display:none;position:relative;width:100%;max-width:100%;overflow:hidden;margin:10px 0}.adPanel .adBanner.on{display:block}.adPanel .adBanner iframe{position:absolute;left:50%;top:0;border:0;display:block;transform-origin:top center}
 .adPanel .adTop{display:flex;justify-content:space-between;align-items:center;gap:8px}.adPanel .adTop .linkBtn{font-size:13px;margin:0}
 .adPanel .adFake{height:200px;display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:12px;text-align:center;position:relative;overflow:hidden;background:var(--adbg,linear-gradient(135deg,#3a86ff,#8338ec))!important}
 .adPanel .adFake b{font-family:'Luckiest Guy',sans-serif;font-weight:400;font-size:26px;letter-spacing:1px;-webkit-text-stroke:2px #1d2340;paint-order:stroke fill;color:#fff}.adPanel .adFake span{font-size:16px;color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.35)}
@@ -1508,10 +1508,14 @@ window.PRIVACY_URL = 'https://hallwaydash.org/privacy.html';
    only falls back to a house ad if none is available. */
 window.WEB_ADS = {
   adsenseClient: 'ca-pub-9841041313313334',
-  // Adsterra 468x60 banner, shown only inside the "watch an ad" popup (revive, rewards), website only, 13+ only.
-  // To turn it off, set adsterraKey to ''.
-  adsterraKey: '19de1526c59e47abd0f050cb8c216100',
-  adsterraSrc: 'https://bauval.org/22/19de1526c59e47abd0f050cb8c216100'
+  // Ads shown inside the "watch an ad" popup (revive, rewards). Website only, players 13+ only, never in the Android app.
+  // Each time the popup opens it uses the next ad in this list. Delete an entry to stop using that network.
+  // w/h is the ad's size: a tall one (like 300x250) takes the house card's place, a thin banner sits under it.
+  popupAds: [
+    { name: 'BidVertiser 300x250', w: 300, h: 250, src: 'https://bdv.bidvertiser.com/BidVertiser.dbm?pid=945843&bid=2108103' },
+    { name: 'Adsterra 468x60', w: 468, h: 60, src: 'https://bauval.org/22/19de1526c59e47abd0f050cb8c216100',
+      atOptions: { key: '19de1526c59e47abd0f050cb8c216100', format: 'iframe', height: 60, width: 468, params: {} } }
+  ]
 };
 
 </script>
@@ -4306,19 +4310,23 @@ function fakeAd(tag, id) {
 // Adsterra banner inside the house-ad popup. Website only (never the Android app), only for players the age check marked 13+.
 // It runs in a sandboxed frame, so the ad script can't read the game's save or anything else on the page.
 function adBannerShow() {
-  const box = $('adBanner'); box.innerHTML = ''; box.classList.remove('on'); box.style.transform = ''; box.style.marginBottom = '';
-  const k = window.WEB_ADS && WEB_ADS.adsterraKey, src = window.WEB_ADS && WEB_ADS.adsterraSrc;
-  if (!k || !src || window.HallwayAds || location.protocol !== 'https:' || (save.age !== 'teen' && save.age !== 'adult')) return;
-  const f = document.createElement('iframe'); f.title = 'Advertisement'; f.scrolling = 'no';
+  const box = $('adBanner'), card = $('adCard'); box.innerHTML = ''; box.classList.remove('on'); box.style.height = ''; card.style.removeProperty('display');
+  const list = ((window.WEB_ADS && WEB_ADS.popupAds) || []).filter(a => a && a.src);
+  if (!list.length || window.HallwayAds || location.protocol !== 'https:' || (save.age !== 'teen' && save.age !== 'adult')) return;
+  const ad = list[(save.adN || 0) % list.length], W = ad.w || 300, H = ad.h || 250;
+  const f = document.createElement('iframe'); f.title = 'Advertisement'; f.scrolling = 'no'; f.width = W; f.height = H;
   f.setAttribute('sandbox', 'allow-scripts allow-popups allow-popups-to-escape-sandbox');
+  const esc = v => String(v).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
   f.srcdoc = '<!DOCTYPE html><html><head><style>html,body{margin:0;padding:0;overflow:hidden;background:transparent}</style></head><body>' +
-    '<script>atOptions={key:' + JSON.stringify(k) + ",format:'iframe',height:60,width:468,params:{}};<\/script>" +
-    '<script src=' + JSON.stringify(src) + '><\/script></body></html>';
+    (ad.atOptions ? '<script>atOptions=' + JSON.stringify(ad.atOptions).replace(/</g, '\\u003c') + ';<\/script>' : '') +
+    '<script data-cfasync="false" src="' + esc(ad.src) + '"><\/script></body></html>';
   box.appendChild(f); box.classList.add('on');
-  const w = (box.parentElement.clientWidth || 468), sc = Math.min(1, w / 468); // shrink to fit narrow phones
-  if (sc < 1) { box.style.transform = 'scale(' + sc + ')'; box.style.marginBottom = (10 - 60 * (1 - sc)) + 'px'; }
+  if (H >= 200) card.style.setProperty('display', 'none', 'important');
+  // The box is always exactly as wide as the popup, so the ad can never push the popup sideways. A wider ad is shrunk to fit.
+  const sc = Math.min(1, (box.clientWidth || W) / W);
+  f.style.transform = 'translateX(-50%) scale(' + sc + ')'; box.style.height = Math.ceil(H * sc) + 'px';
 }
-function adBannerHide() { const box = $('adBanner'); if (box) { box.innerHTML = ''; box.classList.remove('on'); } }
+function adBannerHide() { const box = $('adBanner'); if (box) { box.innerHTML = ''; box.classList.remove('on'); } const c = $('adCard'); if (c) c.style.removeProperty('display'); }
 function houseAd(tag, id) {
   if (id != null && !Ads.live(id)) return; clearTimeout(Ads.dog);
   const m = $('adModal'), ad = HOUSE_ADS[(save.adN = ((save.adN || 0) + 1)) % HOUSE_ADS.length];
