@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<title>Ad</title>
+<style>html,body{margin:0;padding:0;overflow:hidden;background:transparent}</style>
+<!-- This page only shows one ad inside Hallway Dash's "watch an ad" popup (players 13+, website only).
+     It is a real page on hallwaydash.org (not an inline frame) because the ad networks check which site the ad is on.
+     The ad codes are written here, not passed in the link, so nobody can make this page run someone else's script. -->
+</head>
+<body>
+<script>
+  var AD = (location.search.match(/[?&]ad=([a-z]+)/) || [])[1];
+  if (AD === 'adsterra') {
+    atOptions = { 'key': '19de1526c59e47abd0f050cb8c216100', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {} };
+    document.write('<script src="https://bauval.org/22/19de1526c59e47abd0f050cb8c216100"><\/script>');
+  } else if (AD === 'bidvertiser') {
+    document.write('<script data-cfasync="false" src="https://bdv.bidvertiser.com/BidVertiser.dbm?pid=945843&bid=2108103"><\/script>');
+  }
+</script>
+</body>
+</html>
