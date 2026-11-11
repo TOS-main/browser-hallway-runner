@@ -1523,7 +1523,7 @@ window.WEB_ADS = {
   // w/h is the ad's size: a tall one (like 300x250) takes the house card's place, a thin banner sits under it.
   popupAds: [ // the ad codes themselves live in adframe.html
     { ad: 'adsterra300', w: 300, h: 250 },
-    { ad: 'bidvertiser', w: 300, h: 250 },
+    { ad: 'bidvertiser', w: 468, h: 60 }, // this BidVertiser code serves 468x60 ads
     { ad: 'adsterra', w: 468, h: 60 }
   ]
 };
@@ -4374,7 +4374,7 @@ function adBannerShow(skip) {
   const f = document.createElement('iframe'); f.title = 'Advertisement'; f.scrolling = 'no'; f.width = W; f.height = H;
   // no top-navigation: an ad can open a new tab when tapped, but can't send the game page somewhere else
   f.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox');
-  f.src = 'adframe.html?ad=' + encodeURIComponent(ad.ad);
+  f.src = 'adframe?ad=' + encodeURIComponent(ad.ad); // Cloudflare serves adframe.html at /adframe (the .html link only redirects there)
   box.appendChild(f); box.classList.add('on');
   if (H >= 200) card.style.setProperty('display', 'none', 'important');
   // The box is always exactly as wide as the popup, so the ad can never push the popup sideways. A wider ad is shrunk to fit.
