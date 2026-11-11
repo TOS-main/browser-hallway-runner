@@ -502,6 +502,8 @@ body.pwRight #pwSide{left:auto;right:12px}
 #pwSide .chaseBox{font-size:12px!important}
 .mTop{gap:6px}.mWallet{display:flex;gap:6px;min-width:0;flex-wrap:nowrap}.mWallet .mCash{padding:4px 6px 4px 5px!important;font-size:16px!important;gap:5px!important}.mWallet .coinIco,.mWallet .starIco{width:24px;height:24px}.mTopR{flex:none}
 .hudTop>.hudMid{min-width:0;flex:1 1 auto}.hudTop>.hudR{flex:none;max-width:48vw}.hudTop>.hudL{flex:none}
+
+.swapRow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:6px 0 4px;font-size:14px;text-align:left}.swapRow .btn{margin:0;white-space:nowrap}.swapRow .btn:disabled{opacity:.5}
 .storeH{font-family:'Luckiest Guy',sans-serif;font-weight:400;margin:6px 0 0;text-align:left;font-size:18px}.storeH small{font-family:inherit;font-size:12px;opacity:.7}
 .pack.loot{padding-bottom:0}.oddsBtn{position:absolute;right:4px;top:4px;border:2px solid #1d2340;border-radius:8px;background:#fff;font:800 10px system-ui;padding:1px 5px;cursor:pointer}
 #oddsModal{z-index:75}
@@ -1132,6 +1134,8 @@ body.homeWide .mSide .worldCard .cTxt{text-align:left}
     <h2>School Store</h2>
     <h3 class="storeH">🎁 Locker Boxes <small>(play money)</small></h3>
     <div class="storeGrid" id="lootGrid"></div>
+    <h3 class="storeH">⭐ Trade cash for Gold Stars</h3>
+    <div class="swapRow"><span id="swapTxt"></span><button class="btn gold small" id="swapBtn"></button></div>
     <div id="packWrap"><h3 class="storeH">💵 Cash &amp; Gold Stars</h3>
     <div class="storeGrid" id="storeGrid"></div>
     <div class="storeBanner" id="storeBanner"><b>ANY PURCHASE:</b> no more ads between runs + free <b>Gold Spinners</b> Heel Wheels</div>
@@ -4489,7 +4493,17 @@ function buildStore(focus) {
   $('storeNote').textContent = Billing.web() ? 'Ask a parent or guardian before you buy. Secure card checkout by Stripe; prices in US dollars. Purchases are optional: everything can be earned by playing. Your purchases stay with your save (sign in or use your save code to keep them).' : Billing.available() ? 'Prices in your local currency. Purchases are optional; everything can be earned by playing.' : 'Purchases are available in the Android app from Google Play. Everything can also be earned by playing.';
 }
 function alertBox(t, body) { $('oddsTitle').textContent = t; $('oddsBody').textContent = body; $('oddsModal').classList.add('show'); }
-function openStore(focus) { buildStore(focus); $('packWrap').style.display = save.age === 'child' ? 'none' : ''; $('storeModal').classList.add('show'); }
+/* Cash -> Gold Stars trade. One way only, and on purpose a worse deal than buying stars or opening boxes:
+   1 star = $3,000 cash, at most 5 a day. A Golden Box (12 stars = $36,000 here) pays out at most $30,000 cash,
+   so trading can never loop into more cash, and the daily cap keeps big cash savings from flooding into stars. */
+const STAR_SWAP_CASH = 3000, STAR_SWAP_DAY = 5;
+function swapLeft() { if (!save.swap || save.swap.d !== todayKey()) save.swap = { d: todayKey(), n: 0 }; return Math.max(0, STAR_SWAP_DAY - save.swap.n); }
+function syncSwap() { const left = swapLeft(), b = $('swapBtn'); if (!b) return;
+  $('swapTxt').textContent = '$' + STAR_SWAP_CASH.toLocaleString() + ' cash = 1 ★ · ' + left + ' left today';
+  b.textContent = left > 0 ? 'Trade for 1 ★' : 'Tomorrow'; b.disabled = left <= 0 || (save.bank || 0) < STAR_SWAP_CASH; }
+function doSwap() { if (swapLeft() <= 0 || (save.bank || 0) < STAR_SWAP_CASH) { sfx('deny'); syncSwap(); return; }
+  save.bank -= STAR_SWAP_CASH; save.swap.n++; addStars(1); sfx('buy'); toast('+1 GOLD STAR', swapLeft() + ' trades left today', 1200); syncSwap(); }
+function openStore(focus) { buildStore(focus); syncSwap(); $('swapBtn').onclick = doSwap; $('packWrap').style.display = save.age === 'child' ? 'none' : ''; $('storeModal').classList.add('show'); }
 function closeStore() { $('storeModal').classList.remove('show'); }
 
 
@@ -4878,12 +4892,15 @@ function heelySave(o) {
 
 /* ---------- revive (Save Me!) ---------- */
 function reviveCost() { return [1, 2, 4, 8][Math.min(3, G.revives || 0)]; }
+// Revive by watching an ad: up to 10 a day (any number of times in one run). After that, revives cost Gold Stars only.
+const REVIVE_ADS_DAY = 10;
+function reviveAdsLeft() { if (!save.revAds || save.revAds.d !== todayKey()) save.revAds = { d: todayKey(), n: 0 }; return Math.max(0, REVIVE_ADS_DAY - save.revAds.n); }
 function offerRevive() {
   if (G.mode === 'tutorial' || G.reviving || G.fun === 'hardcore') return false;
   G.reviving = true;
   const cost = reviveCost(), m = $('reviveModal');
   $('revStars').textContent = cost; $('revStarBtn').disabled = (save.gs || 0) < cost;
-  $('revAdBtn').style.display = G.adRevived ? 'none' : 'flex';
+  { const left = reviveAdsLeft(); $('revAdBtn').style.display = left > 0 ? 'flex' : 'none'; $('revAdBtn').textContent = '▶ Watch an ad to revive (' + left + ' left today)'; }
   $('revHave').textContent = 'You have ' + (save.gs || 0) + ' ⭐';
   m.classList.add('show');
   let t = 7; const ring = $('revRing'); ring.style.setProperty('--p', 1);
@@ -4903,7 +4920,7 @@ function doRevive() { P.slide = 0; P.slideQ = false; G.pushAnim = 0; G.trick = n
   G.pw.pass = Math.max(G.pw.pass, 3); sfx('power'); toast('BACK IN THE RACE!', 'Invincible for 3 seconds', 1500); vibrate(60);
 }
 function reviveWithStars() { const c = reviveCost(); if ((save.gs || 0) < c) return; save.gs -= c; persist(); doRevive(); }
-async function reviveWithAd() { const ok = await Ads.show('revive'); if (ok) { G.adRevived = true; doRevive(); } else if (G.reviving) offerRevive(); }
+async function reviveWithAd() { const ok = await Ads.show('revive'); if (ok) { G.adRevived = true; reviveAdsLeft(); save.revAds.n++; persist(); doRevive(); } else if (G.reviving) offerRevive(); }
 
 /* ---------- online leaderboard (Firebase Firestore, optional) ---------- */
 const Online = {
