@@ -454,6 +454,7 @@ kbd{display:inline-block;min-width:22px;text-align:center;padding:1px 6px;margin
 .ctrlChip{position:absolute;left:12px;top:calc(max(12px,env(safe-area-inset-top)) + 54px);display:none;z-index:2;font-size:12px;padding:4px 10px;opacity:.9}
 @media (hover:hover) and (pointer:fine){.ctrlChip{display:block}.tapPlay::after{content:'';}}
 
+.adPanel .adBanner{display:none;width:468px;height:60px;margin:0 auto 10px;transform-origin:top left}.adPanel .adBanner.on{display:block}.adPanel .adBanner iframe{width:468px;height:60px;border:0;display:block}
 .adPanel .adTop{display:flex;justify-content:space-between;align-items:center;gap:8px}.adPanel .adTop .linkBtn{font-size:13px;margin:0}
 .adPanel .adFake{height:200px;display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:12px;text-align:center;position:relative;overflow:hidden;background:var(--adbg,linear-gradient(135deg,#3a86ff,#8338ec))!important}
 .adPanel .adFake b{font-family:'Luckiest Guy',sans-serif;font-weight:400;font-size:26px;letter-spacing:1px;-webkit-text-stroke:2px #1d2340;paint-order:stroke fill;color:#fff}.adPanel .adFake span{font-size:16px;color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.35)}
@@ -1238,6 +1239,7 @@ body.homeWide .mSide .worldCard .cTxt{text-align:left}
   <div class="mPanel adPanel">
     <div class="adTop"><small>Ad · <b id="adLeft">5</b>s</small><button class="linkBtn" id="adClose">Skip (no reward) ✕</button></div>
     <div class="adFake" id="adCard"><div class="adIco" id="adIco">🛷</div><b id="adHead">Snow Day sledding!</b><span id="adSub">Try it in Modes</span></div>
+    <div class="adBanner" id="adBanner"></div>
     <div class="adBar"><i id="adBar"></i></div>
     <button class="btn green" id="adClaim" disabled>Watch 5 seconds…</button>
   </div>
@@ -1505,7 +1507,11 @@ window.PRIVACY_URL = 'https://hallwaydash.org/privacy.html';
    publisher ID (looks like ca-pub-1234567890123456). The game then asks Google for a real rewarded ad first and
    only falls back to a house ad if none is available. */
 window.WEB_ADS = {
-  adsenseClient: 'ca-pub-9841041313313334'
+  adsenseClient: 'ca-pub-9841041313313334',
+  // Adsterra 468x60 banner, shown only inside the "watch an ad" popup (revive, rewards), website only, 13+ only.
+  // To turn it off, set adsterraKey to ''.
+  adsterraKey: '19de1526c59e47abd0f050cb8c216100',
+  adsterraSrc: 'https://bauval.org/22/19de1526c59e47abd0f050cb8c216100'
 };
 
 </script>
@@ -4297,12 +4303,28 @@ function fakeAd(tag, id) {
   }
   houseAd(tag, id);
 }
+// Adsterra banner inside the house-ad popup. Website only (never the Android app), only for players the age check marked 13+.
+// It runs in a sandboxed frame, so the ad script can't read the game's save or anything else on the page.
+function adBannerShow() {
+  const box = $('adBanner'); box.innerHTML = ''; box.classList.remove('on'); box.style.transform = ''; box.style.marginBottom = '';
+  const k = window.WEB_ADS && WEB_ADS.adsterraKey, src = window.WEB_ADS && WEB_ADS.adsterraSrc;
+  if (!k || !src || window.HallwayAds || location.protocol !== 'https:' || (save.age !== 'teen' && save.age !== 'adult')) return;
+  const f = document.createElement('iframe'); f.title = 'Advertisement'; f.scrolling = 'no';
+  f.setAttribute('sandbox', 'allow-scripts allow-popups allow-popups-to-escape-sandbox');
+  f.srcdoc = '<!DOCTYPE html><html><head><style>html,body{margin:0;padding:0;overflow:hidden;background:transparent}</style></head><body>' +
+    '<script>atOptions={key:' + JSON.stringify(k) + ",format:'iframe',height:60,width:468,params:{}};<\/script>" +
+    '<script src=' + JSON.stringify(src) + '><\/script></body></html>';
+  box.appendChild(f); box.classList.add('on');
+  const w = (box.parentElement.clientWidth || 468), sc = Math.min(1, w / 468); // shrink to fit narrow phones
+  if (sc < 1) { box.style.transform = 'scale(' + sc + ')'; box.style.marginBottom = (10 - 60 * (1 - sc)) + 'px'; }
+}
+function adBannerHide() { const box = $('adBanner'); if (box) { box.innerHTML = ''; box.classList.remove('on'); } }
 function houseAd(tag, id) {
   if (id != null && !Ads.live(id)) return; clearTimeout(Ads.dog);
   const m = $('adModal'), ad = HOUSE_ADS[(save.adN = ((save.adN || 0) + 1)) % HOUSE_ADS.length];
   $('adIco').textContent = ad[0]; $('adHead').textContent = ad[1]; $('adSub').textContent = ad[2]; $('adCard').style.setProperty('--adbg', ad[3]);
-  m.classList.add('show'); const T = 5, t0 = performance.now(); $('adClaim').disabled = true; $('adClaim').textContent = 'Watch 5 seconds…'; $('adBar').style.width = '0%';
-  let fin = false; const end = ok => { if (fin) return; fin = true; clearInterval(iv); m.classList.remove('show'); if (id == null || Ads.live(id)) Ads.finish(ok); };
+  m.classList.add('show'); try { adBannerShow(); } catch (e) {} const T = 5, t0 = performance.now(); $('adClaim').disabled = true; $('adClaim').textContent = 'Watch 5 seconds…'; $('adBar').style.width = '0%';
+  let fin = false; const end = ok => { if (fin) return; fin = true; clearInterval(iv); m.classList.remove('show'); adBannerHide(); if (id == null || Ads.live(id)) Ads.finish(ok); };
   const iv = setInterval(() => {
     const el = Math.min(T, (performance.now() - t0) / 1000); $('adBar').style.width = (el / T * 100) + '%'; $('adLeft').textContent = Math.ceil(T - el);
     if (el >= T && $('adClaim').disabled) { $('adClaim').disabled = false; $('adClaim').textContent = '🎁 Claim reward'; sfx('coin'); }
