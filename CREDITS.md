@@ -6,6 +6,7 @@ All third-party art in this game is public domain (CC0 1.0). No attribution is r
 |---|---|---|---|
 | Ultimate Modular Men Pack | [Quaternius](https://quaternius.com/packs/ultimatemodularcharacters.html) | CC0 1.0 | `characters/M_*.glb` |
 | Ultimate Modular Women Pack | [Quaternius](https://quaternius.com/packs/ultimatemodularwomen.html) | CC0 1.0 | `characters/W_*.glb` |
+| Cartoon runners: Adventurers, Character Animations, Mystery Monthly characters | [Kay Lousberg (KayKit)](https://kaylousberg.com) | CC0 1.0 | `characters/K_*.glb`, `animations/kaykit.json` |
 | Ultimate Animated Animal Pack | [Quaternius](https://quaternius.com/packs/ultimateanimatedanimals.html) | CC0 1.0 | `pets/P_*.glb` (sidekicks) |
 | Universal Animation Library (free) | [Quaternius](https://quaternius.itch.io/universal-animation-library) | CC0 1.0 | `animations/*.json` (retargeted) |
 | Voiceover Pack (female announcer) | [Kenney](https://kenney.nl/assets/voiceover-pack) | CC0 1.0 | `voice/*.ogg` (real recorded voice lines) |
