@@ -11,8 +11,11 @@
 </head>
 <body>
 <script>
-  var AD = (location.search.match(/[?&]ad=([a-z]+)/) || [])[1];
-  if (AD === 'adsterra') {
+  var AD = (location.search.match(/[?&]ad=([a-z0-9]+)/) || [])[1];
+  if (AD === 'adsterra300') {
+    atOptions = { 'key': '0314293800c9c4eb2816be5d5e5dc438', 'format': 'iframe', 'height': 250, 'width': 300, 'params': {} };
+    document.write('<script src="https://bauval.org/22/0314293800c9c4eb2816be5d5e5dc438"><\/script>');
+  } else if (AD === 'adsterra') {
     atOptions = { 'key': '19de1526c59e47abd0f050cb8c216100', 'format': 'iframe', 'height': 60, 'width': 468, 'params': {} };
     document.write('<script src="https://bauval.org/22/19de1526c59e47abd0f050cb8c216100"><\/script>');
   } else if (AD === 'bidvertiser') {
