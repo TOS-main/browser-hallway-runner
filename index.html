@@ -537,6 +537,19 @@ body.pwRight #pwSide{left:auto;right:12px}
 #qcTab small{font-size:9px;font-weight:800;margin-top:2px}#qcTab.show{display:flex}
 body.pwRight #quickCtl{left:auto;right:8px}body.pwRight #qcTab{left:auto;right:0;border-left:2px solid rgba(255,255,255,.3);border-right:0;border-radius:12px 0 0 12px}
 body.web #quickCtl .qcList span,body.web #quickCtl kbd{font-size:14px}
+#goalRail{position:fixed;right:10px;top:50%;transform:translateY(-50%);z-index:6;display:none;flex-direction:column;align-items:center;gap:7px;width:84px;pointer-events:none;font-family:'Luckiest Guy',sans-serif;color:#fff;text-shadow:0 2px 0 #000}#goalRail.show{display:flex}
+body.pwRight #goalRail{right:auto;left:10px}
+#goalRail .grWave{font-size:12px;letter-spacing:.5px;background:rgba(15,20,45,.78);border:2px solid rgba(255,255,255,.35);border-radius:10px;padding:2px 7px;white-space:nowrap}#goalRail .grWave.rest{color:#7dff9a}#goalRail .grWave.push{color:#ffb347}
+#goalRail .grTop{font-size:12px;text-align:center;line-height:1.1;background:rgba(15,20,45,.6);border-radius:8px;padding:2px 5px;max-width:84px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#goalRail .grBar{position:relative;width:14px;height:30vh;max-height:240px;min-height:110px;background:rgba(15,20,45,.7);border:2px solid rgba(255,255,255,.8);border-radius:10px;overflow:visible}
+#goalRail .grBar i{position:absolute;left:0;right:0;bottom:0;border-radius:8px;background:linear-gradient(0deg,#06d6a0,#7dff9a);transition:height .15s linear}
+#goalRail.close .grBar i{background:linear-gradient(0deg,#ff9f1c,#ffd60a)}#goalRail.close .grLeft{color:#ffd60a}
+#goalRail.record .grBar i{background:linear-gradient(0deg,#ffd60a,#fff3a0);height:100%!important}#goalRail.record .grBar{box-shadow:0 0 12px #ffd60a}
+#goalRail .grDot{position:absolute;left:50%;width:20px;height:20px;margin:0 0 -10px -10px;border-radius:50%;background:#fff;border:3px solid #1d2340;transition:bottom .15s linear}
+#goalRail .grLeft{font-size:15px;text-align:center;white-space:nowrap;background:rgba(15,20,45,.78);border-radius:10px;padding:2px 7px}
+#goalRail.pop .grBar{animation:grPop .5s}@keyframes grPop{0%{transform:scale(1)}40%{transform:scale(1.35)}100%{transform:scale(1)}}
+@media (max-width:600px){#goalRail{width:70px;top:46%}#goalRail .grBar{height:24vh}#goalRail .grTop{font-size:11px}#goalRail .grLeft{font-size:13px}}
+body.lowA #goalRail .grBar{animation:none}
 #duelBox{position:fixed;right:10px;top:50%;transform:translateY(-50%);z-index:6;width:170px;background:rgba(15,20,45,.82);color:#fff;border:3px solid #1d2340;box-shadow:0 4px 0 #1d2340;border-radius:16px;padding:10px 12px;pointer-events:none;font-family:'Luckiest Guy',sans-serif}
 #duelBox .dTitle{text-align:center;color:#ffd60a;font-size:18px;letter-spacing:1px}
 #duelBox .dRow{display:flex;justify-content:space-between;align-items:baseline;gap:6px;font-size:15px;margin:4px 0}#duelBox .dRow span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -763,6 +776,7 @@ body.homeWide .mSide .worldCard .cTxt{text-align:left}
   </div>
 </div>
 <div id="chaseMeter" aria-hidden="true"><span>🚨</span><b>HALL MONITOR</b><div class="cm"><i id="chaseFill"></i></div></div>
+<div id="goalRail" aria-hidden="true"><div class="grWave" id="grWave"></div><div class="grTop" id="grTop"></div><div class="grBar"><i id="grFill"></i><span class="grDot" id="grDot"></span></div><div class="grLeft" id="grLeft"></div></div>
 <div id="pwFlash"></div>
 <div id="pwSide"><div id="hPw"></div></div>
 <div id="boostBar"></div>
@@ -3379,7 +3393,7 @@ function syncLyrics() { // the small karaoke box above the free gift, in time wi
 setInterval(syncLyrics, 120);
 const MUSIC = {
   step: 0, next: 0, timer: null,
-  start(fromStart) { const tk = TRACKS.find(t => t.id === curTrack()); if (tk && tk.theme) { if (this.timer) { clearInterval(this.timer); this.timer = null; } FILEMUS.stop(); THEMESONG.start(fromStart); return; } THEMESONG.stop(); if (tk && tk.file) { if (this.timer) { clearInterval(this.timer); this.timer = null; } FILEMUS.play(tk.file, fromStart); return; } FILEMUS.stop(); if (this.timer || !AC || curTrack() === 'off') return; this.step = 0; this.next = AC.currentTime + 0.05; this.timer = setInterval(() => this.tick(), 50); },
+  start(fromStart) { const tk = TRACKS.find(t => t.id === curTrack()); if (tk && tk.theme) { if (this.timer) { clearInterval(this.timer); this.timer = null; } FILEMUS.stop(); THEMESONG.start(fromStart); return; } THEMESONG.stop(); if (tk && tk.file) { if (this.timer) { clearInterval(this.timer); this.timer = null; } FILEMUS.play(tk.file, fromStart); return; } FILEMUS.stop(); if (this.timer || !AC || curTrack() === 'off') return; this.step = 0; this.next = AC.currentTime + 0.05; this.t0 = this.next; this.timer = setInterval(() => this.tick(), 50); },
   stop() { clearInterval(this.timer); this.timer = null; FILEMUS.stop(); THEMESONG.stop(); },
   restart() { this.stop(); THEMESONG.pos = 0; this.start(true); },
   // run intro: a short, original 'ready, set, go' fanfare on the music bus, then the chosen track starts from the top
@@ -5593,7 +5607,7 @@ async function addFriendCode(code) {
 async function refreshFriends() { if (!Online.ready() || !(save.friends || []).length) return; for (const f of save.friends) { try { const r = await Online.byCode(f.code); if (r) Object.assign(f, { n: r.n, s: r.s, d: r.d }); } catch (e) {} } persist(); }
 // next person to beat on this run (friends first, then the classmates board), shown on the HUD
 function rivals() { const out = []; for (const f of save.friends || []) if (f.d) out.push({ n: f.n, d: f.d, friend: 1 }); for (const r of boardRows()) if (!r.me && r.d) out.push({ n: r.n, d: r.d }); if (save.bestDist) out.push({ n: 'Your best', d: save.bestDist, me: 1 }); { const w = WREC[runBK()]; if (w && w.r && w.r.d > 0 && !w.r.me) out.push({ n: '🌍 ' + w.r.n + ' (world record)', d: w.r.d, world: 1 }); } return out.sort((a, b) => a.d - b.d); }
-function nextRival() { if (!G.rivals) return null; while (G.rivals.length && G.rivals[0].d <= G.dist) { const r = G.rivals.shift(); if (G.dist > 30) { popup((r.me ? 'NEW BEST DISTANCE!' : 'PASSED ' + r.n.toUpperCase() + '!'), r.friend ? '#ff9f1c' : '#7dff9a'); sfx('bill'); } } return G.rivals[0] || null; }
+function nextRival() { if (!G.rivals) return null; while (G.rivals.length && G.rivals[0].d <= G.dist) { const r = G.rivals.shift(); G.railFrom = r.d; G.railPop = 0.6; if (r.me) G.railRecord = true; if (G.dist > 30) { popup((r.me ? 'NEW BEST DISTANCE!' : 'PASSED ' + r.n.toUpperCase() + '!'), r.friend ? '#ff9f1c' : '#7dff9a'); sfx('bill'); } } return G.rivals[0] || null; }
 
 /* ---------- starter pack (Google Play Billing via the HallwayBilling bridge) ---------- */
 const STARTER = { sku: 'starter_pack', cash: 12000, heelys: 5, otok: 15 }; // no Gold Stars: real money never buys random items (loot boxes)
@@ -5821,6 +5835,84 @@ function slideDur() { return 0.95 * (G.mode === 'maker' ? 1 : shoeDef().slide); 
 function startSlide() { if (!(P.slide > 0)) { P.slideAge = 0; sfx('slide'); } P.slide = Math.max(P.slide, slideDur()); }
 function startRoll(t) { P.rollT = P.rollDur = t; if (player && player.act.cur === 'Roll') player.act.cur = ''; } // restart the clip even if the last roll just ended
 // row spacing follows the speed WITHOUT the Fast/Turbo multiplier: faster modes really are harder (less time per row), not just stretched out
+/* ---------------- WAVES ----------------
+   Endless runs come in waves instead of one long climb: a RUSH stretch with more obstacles packed closer together
+   (and the hand-made combos below), then a short BREATHER of coin lanes with a bonus for making it through.
+   Worked out from distance, so a seeded run (tournament / challenge) gets the same waves for everyone. */
+const WAVE_START = 300, WAVE_REST = 110;
+const wavesOn = () => G.mode === 'infinite' && !G.fun && !G.easyRun;
+const wavePush = n => 340 + Math.min(n, 8) * 35; // each rush is a little longer than the last
+function waveAt(d) {
+  if (!wavesOn() || d < WAVE_START) return null;
+  let t = d - WAVE_START;
+  for (let n = 0; n < 400; n++) { const L = wavePush(n); if (t < L) return { n, rest: false, k: t / L }; t -= L; if (t < WAVE_REST) return { n, rest: true, k: t / WAVE_REST }; t -= WAVE_REST; }
+  return null;
+}
+function waveTick() { // runs every frame: the banner when a wave starts and the bonus when you survive one
+  const wv = waveAt(G.dist), key = wv ? wv.n * 2 + (wv.rest ? 1 : 0) : -1;
+  if (key === G.waveKey) return; const was = G.waveKey; G.waveKey = key; if (!wv || was === -1 && wv.rest) return;
+  if (!wv.rest) { popup('⚡ WAVE ' + (wv.n + 1) + (wv.n ? ' · HARDER!' : ' · GET READY!'), '#ffb347'); sfx('go'); buzz('power'); return; }
+  const pts = Math.round((300 + wv.n * 200) * scoreMult()); G.score += pts; G.coins += 5 + wv.n * 2;
+  popup('🌊 WAVE ' + (wv.n + 1) + ' SURVIVED! +' + pts.toLocaleString(), '#7dff9a'); sfx('win'); addChain(2);
+  stats().waves = (stats().waves || 0) + 1; stats().bestWave = Math.max(stats().bestWave || 0, wv.n + 1);
+}
+/* ---------------- HAND-MADE COMBOS ----------------
+   Short designed sequences mixed into the random rows during a rush wave. Each row: left, middle, right lane.
+   B = wall (go around), L = low (jump), H = high (slide), _ = open. Every row has a way through that's at most one lane
+   from the last one, so they're always fair. Clear one without getting hit for a bonus. */
+const PATTERNS = [
+  { name: 'ZIGZAG', rows: ['_BB', 'B_B', 'BB_', 'B_B'] },
+  { name: 'JUMP · SLIDE · JUMP', rows: ['BLB', 'BHB', 'BLB'] },
+  { name: 'THE SNAKE', rows: ['LBB', 'BHB', 'BBL', 'BHB'] },
+  { name: 'PICK A SIDE', rows: ['LBH', 'HBL', 'LBH', 'B_B'] },
+  { name: 'HURDLES', rows: ['LLL', 'LLL', 'LLL'] },
+  { name: 'LIMBO', rows: ['HHB', 'BHH', 'HHB'] },
+  { name: 'STAIRCASE', rows: ['L_B', 'BL_', '_BL', 'B_B'] },
+  { name: 'SLALOM', rows: ['B__', '__B', 'B__', '__B'] }
+];
+const PAT_OBS = { B: K => K.cat === 'obs' && K.type === 'block', L: K => K.cat === 'obs' && K.type === 'low', H: K => K.cat === 'obs' && K.type === 'high' };
+function patternRow(z, row, pool, g) {
+  const lanes = [-1, 0, 1], open = [];
+  lanes.forEach((lane, i) => {
+    const c = row[i]; if (c === '_') { open.push(lane); return; }
+    const k = weightedPick(pool, K => PAT_OBS[c](K) && !K.cross && !K.vz && !K.sway && !(K.outer && lane === 0));
+    if (k) addObj(k, lane, z); else open.push(lane);
+    if (c === 'L' && Math.random() < 0.5) coinArc(lane, z); else if (c === 'H' && Math.random() < 0.4) for (let q = -2; q <= 2; q++) addObj('coin', lane, z + q * 1.3, { y: 0.35 });
+  });
+  for (const lane of open) coinLine(lane, z - g * 0.7, z - 0.5);
+  return open.length ? open[0] : lanes[row.search(/[LH]/)] || 0;
+}
+/* COMBO FX: the higher your combo, the bigger the glowing trail behind your runner, and from x2 the music gets an extra
+   beat on top (hi-hats, then a clap on x3+), locked to the song's tempo. */
+const COMBO_COL = ['', '', '#7fd3ff', '#ffd60a', '#ff9f1c', '#ff2bd6'];
+function comboTier() { const m = comboMul(); return m >= 3 ? (m >= 4 ? 5 : m >= 3.5 ? 4 : 3) : m >= 2 ? 2 : 0; }
+function comboFx(dt) {
+  const tier = G.dying ? 0 : comboTier();
+  if (tier && !(G.pw.cheat > 0)) { // trail: a few sparks a frame, more and bigger as the combo climbs
+    const n = tier >= 4 ? 2 : 1;
+    if (Math.random() < 0.45 + tier * 0.1) emit(P.x + rand(-0.25, 0.25), (P.y || 0) + rand(0.5, 1.4), 0.25, n, COMBO_COL[tier], 0.6 + tier * 0.25, 0.3 + tier * 0.05, 0.16 + tier * 0.04, -0.5, true, true);
+  }
+  if (!AC || !save.sound || AC.state !== 'running' || tier < 2 || G.paused || curTrack() === 'off' || save.music === 0) { G.cmbNext = 0; return; }
+  let bpm = 0, t0 = 0; // find the beat grid of whatever is playing
+  if (curTrack() === 'theme' && THEMESONG.playing()) { bpm = 128; t0 = THEMESONG.t0; }
+  else { const tr = TRACK_FN[curTrack()]; if (tr && MUSIC.timer) { bpm = tr.bpm; t0 = MUSIC.t0 || 0; } }
+  if (!bpm) return;
+  const e = 60 / bpm / 2, now = AC.currentTime; // eighth notes
+  if (!G.cmbNext || G.cmbNext < now) G.cmbNext = t0 + Math.ceil((now + 0.03 - t0) / e) * e;
+  while (G.cmbNext < now + 0.12) {
+    const i = Math.round((G.cmbNext - t0) / e), at = G.cmbNext - now;
+    hat(at, i % 2 ? 0.07 : 0.035);
+    if (tier >= 3 && i % 4 === 2) snare(at, 0.09, 2600);
+    if (tier >= 5 && i % 2 === 1) hat(at + e / 2, 0.03);
+    G.cmbNext += e;
+  }
+}
+function patternTick() { // bonus once you're past the last row of a combo without getting hit
+  const P2 = G.pat; if (!P2 || G.dist < P2.end) return; G.pat = null;
+  if (G.hits !== P2.hits || G.dying) return;
+  const pts = Math.round(400 * scoreMult()); G.score += pts; popup('🧩 ' + P2.name + ' CLEARED! +' + pts.toLocaleString(), '#9bf6ff'); sfx('bill'); addChain(2);
+  stats().patterns = (stats().patterns || 0) + 1;
+}
 function gap() { return clamp(G.speed / speedMode().mul * 0.95, 11, 26) * (G.cfg.gapMul || 1) * diff().gap; }
 
 /* ---------------- SPAWNING ---------------- */
@@ -5926,6 +6018,19 @@ function spawnRowInner(z) {
   const g = gap();
   // first few rows: just coins
   if (G.rowCount <= 2) { coinLine(G.prevSafe, z - g * 0.6, z); return; }
+  // WAVES: a hand-made combo in progress, or start one (rush waves only, in the plain hallway)
+  const wv = waveAt(G.dist + z - PZ);
+  if (G.patQ && (zone !== 'hall' || G.pw.cheat > 0)) G.patQ = null;
+  if (!G.patQ && wv && !wv.rest && wv.n >= 1 && wv.k > 0.15 && wv.k < 0.85 && zone === 'hall' && !G.quiz && G.dist - (G.lastPat || 0) > 160 && Math.random() < 0.3
+    && !(G.shortcut && G.objs.includes(G.shortcut)) && !(G.plat && G.objs.includes(G.plat)) && !(G.hopLane !== undefined && G.dist + z < (G.hopLineEnd || 0) + 2)) {
+    const pt = pick(PATTERNS), ok = r => [-1, 0, 1].some((l, i) => r[i] !== 'B' && Math.abs(l - G.prevSafe) <= 1), mir = !ok(pt.rows[0]);
+    G.patQ = { name: pt.name, rows: pt.rows.map(r => mir ? r.split('').reverse().join('') : r), hits: G.hits }; G.lastPat = G.dist;
+  }
+  if (G.patQ) {
+    const row = G.patQ.rows.shift(); G.prevSafe = patternRow(z, row, pool, g);
+    if (!G.patQ.rows.length) { G.pat = { name: G.patQ.name, end: G.dist + z - PZ + 2, hits: G.patQ.hits }; G.patQ = null; }
+    return;
+  }
   // crossing special
   const crossKind = lvl ? lvl.cross : (G.themeKey === 'college' ? 'scooter' : null);
   const crossChance = lvl ? (lvl.crossChance || 0) : 0.12;
@@ -5960,11 +6065,18 @@ function spawnRowInner(z) {
     if (L !== undefined) { G.lastHopLine = G.dist; const sp = G.speed * 0.45 + 0.55, n = pick([3, 3, 4, 5]); // the bounce lands mid-window on the next head
       for (let k = 0; k < n; k++) { const q = addObj('student', L, z + k * sp, { queue: true }); if (q) { q.vz = 0; q.say = k === 0 ? 'Wait your turn!' : ''; } }
       for (let k = 0; k < n - 1; k++) for (let c = 1; c <= 3; c++) addObj('coin', L, z + k * sp + sp * c / 4, { y: 2.2 + Math.sin(Math.PI * c / 4) * 1.0, x: L * laneW });
-      G.hopLane = L; G.hopLineEnd = z + n * sp; } }
-  const hopL = G.hopLane !== undefined && z < (G.hopLineEnd || 0) + 2 ? G.hopLane : null;
+      G.hopLane = L; G.hopLineEnd = G.dist + z + n * sp; } } // stored as a hallway distance: row z is always near the spawn point
+  const hopL = G.hopLane !== undefined && G.dist + z < (G.hopLineEnd || 0) + 2 ? G.hopLane : null;
   const skipL2 = skipL; const skipLx = l => skipL2(l) || l === hopL;
+  // BREATHER between waves: coin lanes and the odd hurdle, nothing to dodge
+  if (wv && wv.rest) {
+    const lanes = [-1, 0, 1].filter(l => !skipLx(l));
+    for (const lane of lanes) { if (lane !== safe && Math.random() < 0.18) { const k = weightedPick(pool, K => K.cat === 'obs' && K.type === 'low' && !K.cross && !K.vz && !(K.outer && lane === 0)); if (k) { addObj(k, lane, z); coinArc(lane, z); continue; } } if (lane === safe || Math.random() < 0.7) coinLine(lane, z - g * 0.8, z + 0.1); }
+    if (Math.random() < 0.15) addObj('bill', safe, z - g * 0.4, { y: 0.8 });
+    G.prevSafe = safe; return;
+  }
   // more stuff on harder difficulties; the safe-lane rule below still guarantees a path every row
-  const density = (save.battery ? 0.85 : 1) * clamp((G.cfg.density || 0.5) + diff().dens + (G.mode === 'infinite' ? Math.min(0.15, G.dist / 20000) : 0), 0.15, 0.95);
+  const density = (save.battery ? 0.85 : 1) * clamp((G.cfg.density || 0.5) + diff().dens + (G.mode === 'infinite' ? Math.min(0.15, G.dist / 20000) : 0) + (wv && !wv.rest ? 0.06 + Math.min(0.08, wv.n * 0.015) : 0), 0.15, 0.95);
   let blocks = 0; const occ = {};
   for (const lane of [-1, 0, 1]) {
     if (skipLx(lane)) continue; // inside the shortcut / under a platform: always clear
@@ -6065,7 +6177,7 @@ G.lastQuiz = 0; G.lastShortcut = 0; G.lastLetter = -999; G.tpStart = undefined; 
   if (G.rival) { scene.remove(G.rival.act.root); G.rival = null; }
   endGhost(); if (mode === 'infinite' && G.ghostNext) startGhost(G.ghostNext); G.ghostNext = null; if (mode === 'infinite' && G.heatNext) heatBegin(G.heatNext); G.heatNext = null;
   G.quiz = null; $('quizBox').classList.remove('show');
-  G.rivals = mode === 'infinite' && !G.fun ? rivals() : null; G.cc = 0; G.slowT = 0;
+  G.rivals = mode === 'infinite' && !G.fun ? rivals() : null; G.railFrom = 0; G.railPop = 0; G.railRecord = false; G.waveKey = -1; G.hits = 0; G.patQ = null; G.pat = null; G.lastPat = 0; G.cmbNext = 0; G.cc = 0; G.slowT = 0;
   if (G.daily) toast('DAILY CHALLENGE', 'Beat ' + dailyChallenge().target.toLocaleString() + ' points' + (G.fun ? ' · ' + FUN[G.fun].name : '') + ' for 3★', 2400); else if (G.trip) toast(currentTrip().name.toUpperCase(), 'Collect ' + currentTrip().item + '!', 2200); else if (G.fun) toast(FUN[G.fun].name.toUpperCase(), FUN[G.fun].desc, 2200); else if (mode !== 'tutorial' && mode !== 'maker') toast(mode === 'campaign' ? LEVELS[G.levelIdx].name : 'INFINITE RUN', mode === 'campaign' ? 'Get to ' + LEVELS[G.levelIdx].dest + ' before the bell!' : THEME().name, 2200);
   G.bossOn = false; G.timeLeft0 = G.timeLeft;
   if (mode === 'campaign') setTimeout(() => { if (G.scene === 'play' && G.mode === 'campaign') toast('Goal for ★★★', goalText(LEVELS[G.levelIdx]), 2200); }, 2400);
@@ -6075,6 +6187,7 @@ G.lastQuiz = 0; G.lastShortcut = 0; G.lastLetter = -999; G.tpStart = undefined; 
 }
 function crash(o, msg) {
   if (G.dying) return;
+  G.hits = (G.hits || 0) + 1;
   if (save.admin && save.adminGod && G.mode !== 'tutorial') { if (o) o.ignore = true; return; } // admin god mode
   if (G.shield && G.mode !== 'tutorial') { G.shield = 0; if (o) o.ignore = true; G.pw.pass = Math.max(G.pw.pass, 1.5); G.caught = false; popup('🛡 SHIELD SAVED YOU!', '#7bdff2'); sfx('smash'); G.shake = 0.3; return; }
   if (petDef().help === 'guard' && !G.foxSaved && G.mode !== 'tutorial' && G.mode !== 'maker') { G.foxSaved = true; if (o) o.ignore = true; G.pw.pass = Math.max(G.pw.pass, 1.5); G.caught = false; popup('🦊 FOX TO THE RESCUE!', '#ff9f1c'); sfx('power'); clearChase(); G.stumble = 0; return; }
@@ -6497,6 +6610,7 @@ function update(dt) {
   if (G.fun === 'coinrush') { G.timeLeft -= wdt; if (G.timeLeft <= 0) { G.timeLeft = 0; sfx('bell'); endRun(true, 'coinrush'); return; } }
   if (G.fun === 'trial') { G.trialT += dt; if (G.dist >= 1000) { sfx('bell'); endRun(true, 'trial'); return; } }
   if (G.ghost) updGhost(dt); if (G.heat) updHeat(dt);
+  waveTick(); patternTick(); comboFx(dt);
   if (G.fun === 'race') { if (!G.rival) startRival(); updRival(dt); if (G.dist >= 1000) { sfx('bell'); endRun(true, 'race'); return; } if (G.rival.d >= 1000) { G.deathMsg = G.rival.name + ' got to class first!'; sfx('deny'); endRun(false, 'race'); return; } }
   // infinite theme progression
   if (G.mode === 'infinite') {
@@ -6572,7 +6686,7 @@ function update(dt) {
       if (!G.finishSpawned) { G.finishSpawned = true; addObj('finish', 0, lvl.target - G.dist + PZ, { dest: lvl.dest.toUpperCase() }); }
       G.nextRow = 1e9; break;
     }
-    spawnRow(G.nextRow); G.nextRow += gap();
+    spawnRow(G.nextRow); { const wv = waveAt(G.dist + G.nextRow - PZ); G.nextRow += gap() * (G.patQ ? 1.08 : wv && !wv.rest ? 0.93 : 1); }
   }
   if (lvl && G.dist >= lvl.target) { sfx('bell'); endRun(true); return; }
 
@@ -6668,7 +6782,7 @@ function update(dt) {
           if (G.fun !== 'hardcore' && G.mode !== 'maker' && moving && P.fromLane !== P.lane && Math.abs(o.x - P.lane * laneW) < Math.abs(o.x - P.fromLane * laneW)) {
             o.ignore = true; o.bumped = true; P.lane = P.fromLane;
             if (G.stumble > 0 || (G.chase && G.chase.boss)) { G.caught = true; crash(o, (G.chase ? G.chase.name[0].toUpperCase() + G.chase.name.slice(1) : 'They') + ' caught you!'); }
-            else { breakChain(); G.tpBump = true; G.stumble = chaseTime(); G.shake = 0.25; sfx('bump'); vibrate(60); popup('BUMPED! RUN!', '#ef476f'); P.stumbleT = 0.45; knockAside(o); startChase(null, MONITOR_CHASE); }
+            else { breakChain(); G.hits = (G.hits || 0) + 1; G.tpBump = true; G.stumble = chaseTime(); G.shake = 0.25; sfx('bump'); vibrate(60); popup('BUMPED! RUN!', '#ef476f'); P.stumbleT = 0.45; knockAside(o); startChase(null, MONITOR_CHASE); }
           } else {
             const msgs = { robot: 'CLANK! The robotics club robot ran you over. Switch lanes!', pie: 'SPLAT! A pie to the face. Slide under flying pies!', door: 'A classroom door swung open right into you! Watch for the flashing light.', locker: 'BONK! A locker door popped open. Slide under next time!', tape: 'You ran into the Principal\'s caution tape!', puddle: 'SPLASH! You slipped in a puddle. Jump it!', tray: 'You slipped on a spilled lunch tray! Jump it next time!', chair: 'A runaway rolling chair took you out! Jump it!', volcano: 'You crashed into the science fair volcano. Jump over it!', walkers: 'You crashed into two students walking to class!', kidline: 'You plowed through a whole class walking in line!', lockerkid: 'You slammed into a kid at their locker!', cart: "You crashed into the janitor's cart!", teacher: 'You ran right into a teacher! Switch lanes next time.', professor: 'You ran right into the professor! Switch lanes next time.', monitor: 'You ran right into the hall monitor! Switch lanes next time.', coach: 'You ran right into the coach! Switch lanes next time.', group: 'You plowed right into a group of chatting students!', kid: 'You bumped into a little kid. Off to the principal!', student: 'You ran smack into another student!', sleepy: 'You woke up a sleepy student the hard way!' };
             if (K.who === 'tray') sfx('tray');
@@ -6730,9 +6844,33 @@ function popup(text, color) {
 /* ---------------- HUD ---------------- */
 let hudCache = {};
 function setText(id, v) { if (hudCache[id] !== v) { hudCache[id] = v; $(id).textContent = v; } }
+// GOAL RAIL: a thin meter on the side of the screen (never over the lanes) that fills up as you close in on your best
+// distance, then on each friend / classmate / the world record after it. Also shows which wave you're on.
+function updateGoalRail(r) {
+  const el = $('goalRail'); if (!el) return;
+  const on = G.mode === 'infinite' && G.scene === 'play' && !G.fun && !G.ghost && !G.heat && !(G.duel && G.duel.on) && !G.paused && !(G.intro > 0);
+  if (!on) { if (el.classList.contains('show')) el.classList.remove('show'); return; }
+  el.classList.add('show');
+  const wv = waveAt(G.dist), wt = !wv ? '' : wv.rest ? '😮‍💨 BREATHER' : '⚡ WAVE ' + (wv.n + 1);
+  setText('grWave', wt); $('grWave').style.display = wt ? '' : 'none'; $('grWave').className = 'grWave' + (wv ? (wv.rest ? ' rest' : ' push') : '');
+  let top, left, k, close = false, rec = false;
+  if (r) {
+    const from = Math.min(G.railFrom || 0, r.d - 1), togo = Math.max(0, Math.ceil(r.d - G.dist));
+    const nm = r.me ? '🏁 Your best' : (r.friend ? '👥 ' : r.world ? '' : '🎯 ') + (r.n.length > 11 ? r.n.slice(0, 10) + '…' : r.n);
+    top = nm; left = togo.toLocaleString() + ' m'; k = clamp((G.dist - from) / (r.d - from), 0, 1); close = togo <= 60;
+  } else if (G.railRecord || (save.bestDist || 0) <= 0) {
+    rec = true; top = (save.bestDist || 0) > 0 ? '👑 NEW BEST!' : '🏁 First run'; left = (save.bestDist || 0) > 0 ? '+' + Math.floor(G.dist - save.bestDist).toLocaleString() + ' m' : Math.floor(G.dist) + ' m'; k = 1;
+  } else { el.classList.remove('show'); return; }
+  setText('grTop', top); setText('grLeft', left);
+  const h = (k * 100).toFixed(1) + '%'; if (hudCache.grH !== h) { hudCache.grH = h; $('grFill').style.height = h; $('grDot').style.bottom = h; }
+  el.classList.toggle('close', close && !rec); el.classList.toggle('record', rec);
+  if (G.railPop > 0) { G.railPop -= 1 / 30; if (!el.classList.contains('pop')) el.classList.add('pop'); } else if (el.classList.contains('pop')) el.classList.remove('pop');
+}
 function updateRival() {
-  if (G.fun === 'race' || G.ghost || G.heat) return;
+  if (G.fun === 'race' || G.ghost || G.heat) { updateGoalRail(null); return; }
   const r = G.mode === 'infinite' && G.scene === 'play' ? nextRival() : null, el = $('hRival');
+  updateGoalRail(r);
+  if ($('goalRail').classList.contains('show')) { if (el.style.display !== 'none') el.style.display = 'none'; return; } // the side meter already shows it, keep the middle of the screen clear
   // only while you're actually closing in on someone (last 80m), never paused, crashing, in the menu or on the plane
   const near = r && r.d - G.dist < 80 && !G.paused && !G.dying && !(G.pw.cheat > 0);
   if (!near || G.intro > 0 || (G.duel && G.duel.on)) { if (el.style.display !== 'none') el.style.display = 'none'; return; }
