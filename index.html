@@ -648,6 +648,12 @@ body.web .simpleHome .nav{font-size:19px!important}
 #bmTip{top:max(10px,env(safe-area-inset-top))!important;bottom:auto!important;font-size:13px;max-width:min(92vw,460px);padding:5px 8px!important}#bmTip b{font-size:13px;line-height:1.2}
 /* More: big tiles in a grid */
 .morePanel h2,.savePanel h2{text-align:center}
+.hsHead{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0}.hsHead .hsBal{font-family:'Luckiest Guy',sans-serif;font-size:22px}.hsHead small{display:block;font-size:12px;opacity:.75}
+.hsList{display:flex;flex-direction:column;gap:8px;margin:8px 0}.hsRow{display:grid;grid-template-columns:38px 1fr auto;gap:8px;align-items:center;background:#fff;border:3px solid var(--ink);border-radius:14px;padding:6px 8px;box-shadow:0 3px 0 var(--ink)}
+.hsRow .hsIc{font-size:26px;text-align:center}.hsRow b{display:block;font-size:14px}.hsRow small{display:block;font-size:11px;opacity:.75}.hsRow .up{color:#06a77d;font-weight:900}.hsRow .dn{color:#ef476f;font-weight:900}
+.hsRow svg{width:90px;height:24px;display:block}.hsBtns{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;max-width:150px}.hsBtns button{font:inherit;font-size:12px;font-weight:900;border:2px solid var(--ink);border-radius:10px;padding:4px 7px;cursor:pointer;background:#06d6a0}.hsBtns button.s{background:#ffb3c1}.hsBtns button:disabled{opacity:.4}
+.hsTop{margin:8px 0;padding:0;list-style:none;font-size:13px}.hsTop li{display:flex;justify-content:space-between;padding:3px 8px;border-radius:8px}.hsTop li:nth-child(odd){background:rgba(29,35,64,.07)}.hsTop li.me{background:#ffe066;font-weight:900}
+.hsNote{font-size:11px;opacity:.75;margin:6px 0;text-align:center}
 .moreGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0 4px}
 @media (max-width:420px){.moreGrid{grid-template-columns:repeat(2,1fr)}}
 .mTile{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:96px;padding:10px 4px;border:3px solid var(--ink);border-radius:18px;box-shadow:0 4px 0 var(--ink);background:#fff;color:var(--ink);font:inherit;cursor:pointer;text-align:center}
@@ -863,6 +869,17 @@ body.homeWide .mSide .worldCard .cTxt{text-align:left}
     <button class="btn gray" data-back>Back</button>
   </div>
 </div>
+
+<!-- HALL SHARES (website only, 18+): a pretend stock market with a play-only currency that lives on the server -->
+<div class="screen" id="sShares">
+  <div class="panel">
+    <h2>📈 Hall Shares</h2>
+    <div id="hsBody"></div>
+    <div class="hsNote">Hall Shares are earned by running (1 for every 100 m, up to 100 a day). They can't be bought with money and can't be turned into cash, Gold Stars or anything in the store. Prices move with what every player buys and sells. 18+ only.</div>
+    <button class="btn gray" data-back>Back</button>
+  </div>
+</div>
+<button id="bShares" style="display:none" aria-hidden="true"></button>
 
 <!-- SAVE CODE (website only): copy your code, paste it anywhere to resume -->
 <div class="screen" id="sSave">
@@ -5310,7 +5327,7 @@ function openAgeGate(then) {
   sl.oninput = () => { moved = true; const v = +sl.value; $('ageVal').textContent = v >= 99 ? '99+' : v; $('ageGo').disabled = false; const e = v < 8 ? '🧸' : v < 11 ? '🎒' : v < 14 ? '🛹' : v < 18 ? '🎧' : v < 23 ? '🎓' : v < 40 ? '💼' : v < 60 ? '☕' : '🌻'; const hh = $('ageHero'); if (hh.textContent !== e) { hh.textContent = e; hh.classList.add('pop'); setTimeout(() => hh.classList.remove('pop'), 180); } };
   $('ageGo').onclick = () => {
     if (!moved) return; const v = +sl.value;
-    save.age = v < 13 ? 'child' : v < 16 ? 'teen' : 'adult'; persist(); m.classList.remove('show');
+    save.age = v < 13 ? 'child' : v < 16 ? 'teen' : 'adult'; save.over18 = v >= 18; persist(); m.classList.remove('show');
     applyPrivacy(); sfx('click');
     if (save.age === 'child') toast('Kid-safe mode on', 'No personal info collected, online features off', 2200);
     if (then) then(); else startRun('infinite'); // straight into a real run: the first one shows swipe hints as things come up
@@ -6373,7 +6390,7 @@ function endRun(win, reason) {
   { const h = oneMoreRun(sc); $('oHook').textContent = h; $('oHook').style.display = h ? 'block' : 'none'; }
   { const pz = newbiePrize(), el = $('oPrize'); el.classList.remove('show'); if (pz) { const nx = NEWBIE[pz.i + 1]; setText('oPrizeT', '🎁 PRIZE ' + (pz.i + 1) + ' OF 5: ' + pz.label); setText('oPrizeN', nx ? 'Next prize after 1 more run: ' + nx.label : 'That\'s all 5 starter prizes. Now climb the ranks!'); setTimeout(() => { if (G.scene === 'over') { el.classList.add('show'); sfx('buy'); } }, 500); } }
   showRank(G.mode !== 'tutorial' && G.mode !== 'maker' ? G.lastRank : null);
-  { const wgAdd = G.mode !== 'tutorial' && G.mode !== 'maker' && !G.cheated && G.dist >= 10 ? G.dist : 0; if (wgAdd) worldGoalAdd(wgAdd); showWorldGoalOver(wgAdd); }
+  { const wgAdd = G.mode !== 'tutorial' && G.mode !== 'maker' && !G.cheated && G.dist >= 10 ? G.dist : 0; if (wgAdd) worldGoalAdd(wgAdd); showWorldGoalOver(wgAdd); if (wgAdd) setTimeout(() => hsAfterRun(wgAdd), 1800); }
   $('oCombo').textContent = G.comboBonus > 50 ? 'Combo bonus +' + Math.round(G.comboBonus).toLocaleString() + ' · best combo ' + (G.bestChain || 0) : ''; 
   G.earned = earned; $('bDouble').style.display = earned >= 20 && G.mode !== 'tutorial' ? 'block' : 'none'; $('bDouble').disabled = false; $('bDouble').textContent = '▶ Watch ad: double cash (+$' + earned + ')';
   if (G.mode !== 'tutorial' && !save.starterBought && stats().runs >= 3 && (save.starterSeen || 0) < 1 + Math.floor(stats().runs / 15)) setTimeout(() => { if (G.scene === 'over') openStarter(); }, 1200);
@@ -7482,7 +7499,7 @@ $('bShop').onclick = () => { initAudio(); sfx('click'); buildShop(); showScreen(
 $('bHow').onclick = () => { initAudio(); sfx('click'); showScreen('sHow'); };
 $('pauseBtn').onclick = () => { initAudio(); togglePause(true); };
 function toggleControls(on) { const m = $('ctrlModal'); m.classList.toggle('show', on !== undefined ? on : !m.classList.contains('show')); if (m.classList.contains('show') && G.scene === 'play' && !G.paused) togglePause(true); }
-$('ctrlClose').onclick = () => toggleControls(false); $('bCtrl2').onclick = () => toggleControls(true); $('bCtrlMenu').onclick = e => { e.stopPropagation(); toggleControls(true); };
+$('ctrlClose').onclick = () => toggleControls(false); $('bCtrl2').onclick = () => toggleControls(true); $('bCtrlMenu').onclick = e => { e.stopPropagation(); toggleControls(true); }; $('bShares').onclick = e => { e.stopPropagation(); openShares(); };
 $('bResume').onclick = () => { sfx('click'); G.autoPaused = true; graceResume(); };
 $('bRestart').onclick = () => { sfx('click'); G.seedNext = G.seedRun; G.tourneyNext = G.tourney; G.funNext = G.fun; startRun(G.mode, G.levelIdx); };
 $('bQuit').onclick = () => { sfx('click'); goMenu(); syncMusic(); };
@@ -7730,6 +7747,7 @@ const MORE_TILES = [ // [icon, label, button it presses, element with its live s
   ['📺', 'Free Gold Star', 'bAdStar', 'adStarTxt', null, null],
   ['📦', 'Ad Mystery Box', 'bAdBox', 'adBoxTxt', null, () => !adBoxLeft() && save.age !== 'child'],
   ['❓', 'How to Play', 'bHow', null, null, null],
+  ['📈', 'Hall Shares', 'bShares', null, null, null, 'web'],
   ['⌨️', 'Controls', 'bCtrlMenu', null, null, null, 'web']
 ];
 // round 18: a brand-new player sees the free gift, missions, Mystery Locker and how-to-play first; the rest unlocks after a
@@ -7743,7 +7761,7 @@ function moreTile([icon, label, btn], fromHome) {
   t.onclick = e => { e.stopPropagation(); initAudio(); const lk = moreLocked(btn); if (lk) { sfx('deny'); toast('🔒 ' + label, 'Unlocks after ' + lk + ' more run' + (lk > 1 ? 's' : '') + ' (or come back tomorrow)', 1600); return; } $(btn).click(); if (!fromHome && curScreen && curScreen !== 'sMenu' && curScreen !== 'sMore') moreReturn = true; setTimeout(syncMore, 50); };
   return t; }
 function buildMore() { const g = $('moreGrid'); if (!g) return; g.innerHTML = '';
-  for (const tl of MORE_TILES) { if (tl[6] === 'web' && !IS_WEB) continue; if (tl[2] === 'bAdBox' && save.age === 'child') continue; if (!$(tl[2])) continue; g.appendChild(moreTile(tl)); }
+  for (const tl of MORE_TILES) { if (tl[6] === 'web' && !IS_WEB) continue; if (tl[2] === 'bAdBox' && save.age === 'child') continue; if (tl[2] === 'bShares' && !hsOn()) continue; if (!$(tl[2])) continue; g.appendChild(moreTile(tl)); }
   syncMore(); }
 // ---- wide browser windows: records on the left of the runner, today's extras on the right ----
 const HOME_QUICK = ['bFree', 'bMissions', 'bSpin', 'bEvents', 'bMLocker', 'bPass'];
@@ -8016,6 +8034,50 @@ async function mktBought(id) {
   try { const a = await Online.token(), D = 'projects/' + ONLINE_BOARD.projectId + '/databases/(default)/documents/market/d' + gDay();
     await fsReq('POST', ':commit', a.idToken, { writes: [{ transform: { document: D, fieldTransforms: [{ fieldPath: id, increment: { integerValue: '1' } }] } }] }); if (MKT.d) MKT.d[id] = (+MKT.d[id] || 0) + 1;
   } catch (e) { if (e.status === 403) MKT.denied = true; }
+}
+
+/* ---- HALL SHARES (website only, 18+): see functions/api/hs.js. The server keeps every balance; this is just the screen. ---- */
+const HS = { me: null, top: null, busy: false, err: '' };
+function hsOn() { return IS_WEB && save.age === 'adult' && save.over18 !== false && APPCFG.shares !== false; }
+async function hsApi(body) {
+  const r = await fetch('/api/hs', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(Object.assign(save.hs ? { id: save.hs.id, tok: save.hs.tok } : {}, body)) });
+  let j = {}; try { j = await r.json(); } catch (e) {} if (!r.ok) { const e = new Error(j.msg || j.error || 'HTTP ' + r.status); e.status = r.status; e.code = j.error; throw e; } return j;
+}
+async function hsLoad() {
+  HS.err = '';
+  try { if (save.hs) { HS.me = await hsApi({ op: 'me', name: safeName(save.name) || 'Runner' }); HS.top = (await hsApi({ op: 'top' })).top; } else { HS.me = null; HS.top = (await hsApi({ op: 'top' })).top; } }
+  catch (e) { if (e.status === 401) { save.hs = null; persist(); HS.me = null; } else HS.err = e.status === 503 ? 'Hall Shares is opening soon. Check back later!' : 'Couldn\'t reach the market. Check your connection.'; }
+  if (curScreen === 'sShares') buildShares();
+}
+function hsSpark(arr, up) { if (!arr || arr.length < 2) return ''; const mn = Math.min(...arr), mx = Math.max(...arr), w = 90, h = 24, k = mx - mn || 1;
+  return '<svg viewBox="0 0 ' + w + ' ' + h + '"><polyline fill="none" stroke="' + (up ? '#06a77d' : '#ef476f') + '" stroke-width="2" points="' + arr.map((v, i) => (i / (arr.length - 1) * w).toFixed(1) + ',' + (h - 2 - (v - mn) / k * (h - 4)).toFixed(1)).join(' ') + '"/></svg>'; }
+function buildShares() {
+  const box = $('hsBody'); box.innerHTML = '';
+  if (save.over18 === undefined) { box.innerHTML = '<p style="text-align:center;font-weight:700">Hall Shares is for players 18 and older.</p><div class="row"><button class="btn green" id="hs18y">I\'m 18 or older</button><button class="btn gray" id="hs18n">I\'m under 18</button></div>';
+    $('hs18y').onclick = () => { save.over18 = true; persist(); buildShares(); }; $('hs18n').onclick = () => { save.over18 = false; persist(); goMenu(); }; return; }
+  if (HS.err) { box.innerHTML = '<p style="text-align:center;font-weight:700"></p>'; box.firstChild.textContent = HS.err; return; }
+  if (!save.hs) { const d = document.createElement('div'); d.innerHTML = '<p style="text-align:center">Buy shares in the school\'s hottest spots. When other runners buy the same stock, its price goes up and your shares are worth more. When they sell, it drops. Climb the net-worth board!</p><button class="btn gold" id="hsJoin">Start trading (+100 free Hall Shares)</button>'; box.appendChild(d);
+    $('hsJoin').onclick = async () => { if (HS.busy) return; HS.busy = true; try { const j = await hsApi({ op: 'join', name: safeName(save.name) || 'Runner' }); save.hs = { id: j.id, tok: j.tok }; persist(); sfx('win'); await hsLoad(); } catch (e) { toast('Couldn\'t join', e.message, 2000); } HS.busy = false; }; hsTopList(box); return; }
+  const M = HS.me; if (!M) { box.innerHTML = '<p style="text-align:center">Loading the market…</p>'; return; }
+  const hd = document.createElement('div'); hd.className = 'hsHead'; hd.innerHTML = '<div><small>Your Hall Shares</small><span class="hsBal"></span></div><div style="text-align:right"><small>Net worth</small><b class="hsW"></b><small class="hsE"></small></div>';
+  hd.querySelector('.hsBal').textContent = '📈 ' + M.hs.toLocaleString(); hd.querySelector('.hsW').textContent = M.worth.toLocaleString() + ' HS'; hd.querySelector('.hsE').textContent = M.earnLeft ? 'Run to earn ' + M.earnLeft + ' more today' : 'Earned the max today'; box.appendChild(hd);
+  const L = document.createElement('div'); L.className = 'hsList'; box.appendChild(L);
+  for (const sym of Object.keys(M.market)) { const st = M.market[sym], own = M.hold[sym] || 0, up = st.ch >= 0, r = document.createElement('div'); r.className = 'hsRow';
+    r.innerHTML = '<div class="hsIc"></div><div><b></b><small class="pr"></small>' + hsSpark(st.spark, up) + '<small class="own"></small></div><div class="hsBtns"><button data-n="1">Buy 1</button><button data-n="5">Buy 5</button><button class="s" data-n="-1">Sell 1</button><button class="s" data-n="all">Sell all</button></div>';
+    r.querySelector('.hsIc').textContent = st.icon; r.querySelector('b').textContent = st.name + ' (' + sym + ')';
+    r.querySelector('.pr').innerHTML = 'Buy <b style="display:inline">' + st.buy + '</b> · sell ' + st.sell + ' · <span class="' + (up ? 'up' : 'dn') + '">' + (up ? '▲ ' : '▼ ') + Math.abs(st.ch) + '% today</span>';
+    r.querySelector('.own').textContent = own ? 'You own ' + own : 'You own none';
+    r.querySelectorAll('button').forEach(b => { const n = b.dataset.n === 'all' ? -own : +b.dataset.n; if ((n < 0 && own < -n) || n === 0 || (n > 0 && M.hs < st.buy)) b.disabled = true;
+      b.onclick = async () => { if (HS.busy) return; HS.busy = true; try { const j = await hsApi({ op: 'trade', sym, n }); HS.me = j; sfx(n > 0 ? 'buy' : 'coin'); toast((n > 0 ? 'Bought ' : 'Sold ') + Math.abs(n) + ' ' + sym, (n > 0 ? '-' : '+') + Math.abs(j.cost) + ' Hall Shares', 1200); buildShares(); } catch (e) { sfx('deny'); toast('Trade failed', e.message, 1600); } HS.busy = false; }; });
+    L.appendChild(r); }
+  hsTopList(box);
+}
+function hsTopList(box) { if (!HS.top || !HS.top.length) return; const h = document.createElement('div'); h.innerHTML = '<b>🏆 Richest traders</b><ol class="hsTop"></ol>'; const ol = h.querySelector('ol');
+  HS.top.forEach((t, i) => { const li = document.createElement('li'); if (t.me) li.className = 'me'; li.textContent = (i + 1) + '. ' + t.n; const w = document.createElement('span'); w.textContent = t.w.toLocaleString() + ' HS'; li.appendChild(w); ol.appendChild(li); }); box.appendChild(h); }
+function openShares() { if (!hsOn()) return; showScreen('sShares'); buildShares(); hsLoad(); }
+async function hsAfterRun(dist) { // finished runs earn Hall Shares (the server decides how many)
+  if (!hsOn() || !save.hs || dist < 100) return;
+  try { const j = await hsApi({ op: 'earn', dist: Math.floor(dist) }); if (j.got > 0 && G.scene === 'over') toast('📈 +' + j.got + ' Hall Shares', j.earnLeft ? j.earnLeft + ' more to earn today' : 'Max for today', 1600); } catch (e) {}
 }
 
 /* ---- schools list + moderator switches (cached) ---- */
