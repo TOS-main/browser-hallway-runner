@@ -626,6 +626,11 @@ body.web .savePill{display:flex}
 .hBest{display:flex;align-items:baseline;gap:8px;background:rgba(14,22,52,.6);color:#fff;border:3px solid var(--ink);border-radius:999px;padding:3px 16px;box-shadow:0 4px 0 var(--ink);font-family:'Luckiest Guy',sans-serif}
 .hBest small{font-size:14px;letter-spacing:1px;color:#ffd60a}.hBest b{font-size:22px;font-weight:400;letter-spacing:1px}
 .hGoal .worldCard{width:auto;max-width:min(86vw,360px);padding:3px 12px 3px 4px!important;gap:6px;background:#fff!important;color:var(--ink)}
+.hGoal .wgCard{display:block;width:min(86vw,360px);padding:5px 10px!important;text-align:left}.hGoal .wgCard .wgTop{display:flex;justify-content:space-between;gap:8px;font-size:12px;font-weight:800}.hGoal .wgCard .wgTop b{font-size:13px}
+.wgBar{height:9px;border-radius:6px;background:rgba(29,35,64,.15);overflow:hidden;margin-top:3px;position:relative}.wgBar i{display:block;height:100%;background:linear-gradient(90deg,#06d6a0,#3a86ff);border-radius:6px;transition:width .6s}.wgBar s{position:absolute;top:0;bottom:0;width:2px;background:#1d2340;opacity:.5}
+.oWorld{margin:6px 0;padding:6px 10px;border:3px solid var(--ink);border-radius:14px;background:#e6f4ff;color:#1d2340;box-shadow:0 3px 0 var(--ink);font-weight:800;font-size:13px;text-align:left}.oWorld .wgBar{background:rgba(29,35,64,.15)}
+.mktBanner{grid-column:1/-1;background:linear-gradient(90deg,#1d2340,#3a3f6b);color:#fff;border-radius:12px;padding:7px 10px;font-weight:800;font-size:13px;text-align:center}.mktBanner small{display:block;font-weight:600;opacity:.8;font-size:11px}
+.item .tag.mktUp{left:8px;right:auto;background:#ef476f;color:#fff}.item .tag.mktDn{left:8px;right:auto;background:#06d6a0;color:#1d2340}.oldPrice{text-decoration:line-through;opacity:.6;font-size:11px;margin-right:4px}
 .hGoal .worldCard .ico{width:30px;height:30px;font-size:18px}
 .hGoal .worldCard .cTxt small{font-size:11px}.hGoal .worldCard .cTxt b{font-size:15px}
 #mSchool:not([style*="none"]) ~ #mWorld{display:none!important}
@@ -813,7 +818,7 @@ body.homeWide .mSide .worldCard .cTxt{text-align:left}
     <div class="mTopR"><button class="chip ctrlChip fsChip" id="bFull" onclick="event.stopPropagation();toggleFullscreen()">⛶ Full screen (F)</button><button class="pill savePill webOnly" id="bSaveHome" aria-label="Your progress saves automatically"><span aria-hidden="true" id="saveIco">✓</span><span id="saveTxt">Saved</span></button><button class="iconBtn muteBtn" id="bMute" aria-label="Mute" title="Mute (V)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path class="mOn" d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/><path class="mOff" d="m16 9 6 6M22 9l-6 6"/></svg></button><button class="iconBtn" id="bGear" aria-label="Settings"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
   </div>
   <div class="wordmark"><span>HALLWAY</span><b>DASH</b><small>Don't be late for class.</small></div>
-  <div class="hGoal"><div class="hBest"><small>Best</small><b id="mBest">0</b></div><button class="card small worldCard" id="mSchool" style="display:none"><div class="ico">🏫</div><div class="cTxt"><small id="mSchoolSub">Your school</small><b id="mSchoolTxt">–</b></div></button><button class="card small worldCard" id="mWorld" style="display:none"><div class="ico">🌍</div><div class="cTxt"><small>World record to beat</small><b id="mWorldTxt">–</b></div></button></div>
+  <div class="hGoal"><div class="hBest"><small>Best</small><b id="mBest">0</b></div><button class="card small worldCard" id="mSchool" style="display:none"><div class="ico">🏫</div><div class="cTxt"><small id="mSchoolSub">Your school</small><b id="mSchoolTxt">–</b></div></button><button class="card small worldCard wgCard" id="mWG" style="display:none"><div class="wgTop"><span>🌍 WORLD GOAL · everyone wins</span><b id="mWGt">–</b></div><div class="wgBar"><i id="mWGf"></i></div><div class="wgTop" style="margin-top:2px;font-weight:600"><span id="mWGp"></span><span id="mWGm"></span></div></button><button class="card small worldCard" id="mWorld" style="display:none"><div class="ico">🌍</div><div class="cTxt"><small>World record to beat</small><b id="mWorldTxt">–</b></div></button></div>
   <!-- wide browser windows only: records on the left, today's extras on the right (phones keep the simple layout) -->
   <div class="mSide mSideL" id="mSideL"><div class="sideHead">🏆 Records</div><div class="sideCards" id="mRecSlot"></div><div class="card small worldCard sideCard" id="mTodayCard"><div class="ico">📅</div><div class="cTxt"><small>Your best today</small><b id="mTodayTxt">–</b></div></div>
     <button class="sideBtn" id="mSideRanks">See all leaderboards ›</button><div class="sideHead">🎮 Playing on</div><button class="sideBtn" id="mSideDiff">Normal ›</button></div>
@@ -1489,6 +1494,7 @@ body.homeWide .mSide .worldCard .cTxt{text-align:left}
     <div class="oHook" id="oHook" style="display:none"></div>
     <button class="btn gold bigAgain" id="bAgain">▶ PLAY AGAIN</button>
     <div class="oPrize" id="oPrize"><b id="oPrizeT"></b><small id="oPrizeN"></small></div>
+    <div class="oWorld" id="oWorld" style="display:none"><div id="oWorldT"></div><div class="wgBar"><i id="oWorldF"></i></div></div>
     <div class="oRankBox" id="oRankBox" style="display:none"><div class="rkTop"><span id="oRankT"></span><em id="oRankX"></em></div><div class="rkBar"><i id="oRankFill"></i></div><small id="oRankN"></small></div>
     <div class="overMini"><span>📏 <b id="oDist">0m</b></span><span>💵 <b id="oCoins">$0</b></span></div>
     <div class="oCombo" id="oCombo"></div>
@@ -6367,6 +6373,7 @@ function endRun(win, reason) {
   { const h = oneMoreRun(sc); $('oHook').textContent = h; $('oHook').style.display = h ? 'block' : 'none'; }
   { const pz = newbiePrize(), el = $('oPrize'); el.classList.remove('show'); if (pz) { const nx = NEWBIE[pz.i + 1]; setText('oPrizeT', '🎁 PRIZE ' + (pz.i + 1) + ' OF 5: ' + pz.label); setText('oPrizeN', nx ? 'Next prize after 1 more run: ' + nx.label : 'That\'s all 5 starter prizes. Now climb the ranks!'); setTimeout(() => { if (G.scene === 'over') { el.classList.add('show'); sfx('buy'); } }, 500); } }
   showRank(G.mode !== 'tutorial' && G.mode !== 'maker' ? G.lastRank : null);
+  { const wgAdd = G.mode !== 'tutorial' && G.mode !== 'maker' && !G.cheated && G.dist >= 10 ? G.dist : 0; if (wgAdd) worldGoalAdd(wgAdd); showWorldGoalOver(wgAdd); }
   $('oCombo').textContent = G.comboBonus > 50 ? 'Combo bonus +' + Math.round(G.comboBonus).toLocaleString() + ' · best combo ' + (G.bestChain || 0) : ''; 
   G.earned = earned; $('bDouble').style.display = earned >= 20 && G.mode !== 'tutorial' ? 'block' : 'none'; $('bDouble').disabled = false; $('bDouble').textContent = '▶ Watch ad: double cash (+$' + earned + ')';
   if (G.mode !== 'tutorial' && !save.starterBought && stats().runs >= 3 && (save.starterSeen || 0) < 1 + Math.floor(stats().runs / 15)) setTimeout(() => { if (G.scene === 'over') openStarter(); }, 1200);
@@ -7043,7 +7050,7 @@ function refreshMenu() {
   $('mMult').textContent = '×' + scoreMult(); $('mWord').textContent = wordShown().replace(/ /g, '');
   ['lBank', 'sBank'].forEach(id => $(id).textContent = '$' + save.bank); $('sStars').textContent = '★ ' + (save.gs || 0);
   $('mBest').textContent = save.best.toLocaleString();
-  $('mTop').textContent = save.bestDist.toLocaleString() + ' m'; try { syncWorldCard(); } catch (e) {} try { syncSchoolCard(); } catch (e) {} try { menuOnlineTick(); } catch (e) {} try { syncHomeSide(); } catch (e) {}
+  $('mTop').textContent = save.bestDist.toLocaleString() + ' m'; try { syncWorldCard(); } catch (e) {} try { syncWorldGoal(); } catch (e) {} try { syncSchoolCard(); } catch (e) {} try { menuOnlineTick(); } catch (e) {} try { syncHomeSide(); } catch (e) {}
   const rk = myRank(); $('mRankTxt').textContent = rk ? '#' + rk : '–'; try { buildSideModes(); } catch (e) {}
   const stS = streakState(); $('freeTxt').textContent = stS.can ? 'FREE' : 'Day ' + stS.day + ' ✓'; $('bFree').classList.toggle('wait', !stS.can);
   $('campTxt').textContent = 'Stage ' + Math.min(save.unlocked, LEVELS.length) + '/' + LEVELS.length;
@@ -7253,6 +7260,7 @@ function buildShop() {
   const isHall = shopTab === 'hall'; $('hallCats').style.display = isHall ? 'grid' : 'none'; $('preview').style.display = isHall || shopTab === 'inv' ? 'none' : ''; $('pW').closest('.statline').style.display = isHall ? 'none' : '';
   if (isHall) { buildHallShop(box); return; }
   if (shopTab === 'inv') { $('hallCats').style.display = 'none'; buildLockerInv(box); return; }
+  if (mktOn() && MKT_TABS.includes(shopTab)) { mktFetch(); const bn = document.createElement('div'); bn.className = 'mktBanner'; bn.innerHTML = '📊 LOCKER MARKET<small></small>'; bn.querySelector('small').textContent = Online.ready() ? 'Cash prices change every day with what runners worldwide buy. 📉 = on sale today, 📈 = trending.' : 'Cash prices change every day. 📉 = on sale today, 📈 = pricier today.'; box.appendChild(bn); }
   const wkR = weeklySlot(), items = shopTab === 'char' ? SHOP.char.filter(c => c.weekly === undefined || c.weekly === wkR || save.owned[c.id]) : SHOP[shopTab];
   for (const it of items) {
     const d = document.createElement('div');
@@ -7264,7 +7272,8 @@ function buildShop() {
     if (shopTab !== 'boost' && shopTab !== 'up' && canBuy(it) && it === items.filter(canBuy).sort((a, b) => b.price - a.price)[0]) { const t = document.createElement('span'); t.className = 'tag pick'; t.textContent = 'BEST PICK'; d.appendChild(t); }
     const sw = shopTab === 'hat' ? '<div class="sw" style="background:linear-gradient(160deg,#ffe066,#ff9f1c);font-size:40px">' + ({ hat_none: '🙂', hat_cap: '🧢', hat_beanie: '🧶', hat_phones: '🎧', hat_party: '🥳', hat_grad: '🎓', hat_heli: '🚁', hat_crayon: '🖍️', hat_goggles: '🥽', hat_helmet: '🏈', hat_gradgold: '🏅', hat_sweat: '💪', hat_explorer: '🤠', hat_shark: '🦈', hat_astro: '👨‍🚀', hat_crown_boss: '👑' }[it.id] || '🎩') + '</div>' : shopTab === 'plane' ? '<div class="sw" style="background:linear-gradient(160deg,#9bf6ff,#3a86ff)"><img alt="" src="' + planeSwatch(it.id) + '"></div>' : shopTab === 'pet' ? '<div class="sw" style="background:linear-gradient(160deg,#7fd3ff,#2c3f9e)">' + (it.key && petPortrait(it) ? '<img alt="" src="' + petPortrait(it) + '">' : '<svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5 19 19 5"/></svg>') + '</div>' : shopTab === 'char' ? '<div class="sw" style="background:' + CHAR_BG(it) + '">' + (portrait(it) ? '<img alt="" src="' + portrait(it) + '">' : '') + '</div>' : shopTab === 'up' ? tile(it.lv || it.id, svgIcon(it.lv || it.id)) : shopTab === 'boost' ? tile(it.id, svgIcon(it.id)) : shopTab === 'pack' ? '<div class="sw" style="background:rgba(255,255,255,.06);display:grid;place-items:center">' + packSvg(it) + '</div>' : shopTab === 'wheel' ? '<div class="sw" style="display:grid;place-items:center;font-size:42px;background:radial-gradient(circle,' + (it.glow === 'rainbow' ? '#ff006e,#3a86ff' : it.glow + ',' + it.tire) + ')">🛞</div>' : shopTab === 'shoe' ? '<div class="sw" style="background:rgba(255,255,255,.06);display:grid;place-items:center">' + shoeSvg(it) + '</div>' : shopTab === 'boost' ? '<div class="sw" style="background:#fff3d6">' + it.icon + '</div>' : shopTab === 'char' ? '<div class="sw" style="background:linear-gradient(135deg,' + (it.colors.top || '#888') + ' 50%,' + (it.colors.pants || it.colors.hair || '#444') + ' 50%)"><span style="width:26px;height:26px;border-radius:50%;background:' + it.colors.skin + ';border:3px solid #fff;display:block"></span></div>' : shopTab === 'up' ? '<div class="sw" style="background:#f0e6ff">' + it.icon + '</div>' : shopTab === 'pack' ? '<div class="sw" style="background:' + it.color + '"><span style="display:block;width:40%;height:40%;border-radius:6px;background:' + it.trim + '"></span></div>' : '<div class="sw" style="background:linear-gradient(transparent 60%,' + it.sole + ' 60%),' + it.color + '">👟</div>';
     let label, cls;
-    const priceTxt = it.cur === 'gs' ? '★ ' + it.price : '$' + it.price;
+    const mPrice = mktPrice(it), priceTxt = it.cur === 'gs' ? '★ ' + it.price : '$' + mPrice;
+    let mktTag = null; if (mktItem(it) && !owned && mPrice !== it.price) { const up = mPrice > it.price; mktTag = document.createElement('span'); mktTag.className = 'tag ' + (up ? 'mktUp' : 'mktDn'); mktTag.textContent = (up ? '📈 +' : '📉 ') + Math.round((mPrice / it.price - 1) * 100) + '%' + (up ? ' TRENDING' : ' SALE'); }
     if (it.lv) { const L = upLv(it.lv); label = L >= MAXLV ? 'MAX' : '$' + UP_PRICES[L]; cls = L >= MAXLV ? 'gray' : 'gold'; }
     else if (shopTab === 'boost') { label = '$' + it.price; cls = 'gold'; }
     else if (shopTab === 'up') { label = owned ? 'Owned ✓' : priceTxt; cls = owned ? 'gray' : 'gold'; }
@@ -7279,7 +7288,7 @@ function buildShop() {
     let desc = it.desc;
     if (it.lv) { const L = upLv(it.lv), [b0, st] = UP_BASE[it.lv]; desc = L >= MAXLV ? 'MAXED: ' + (it.lv === 'score' || it.lv === 'luck' ? '+' : '') + +(b0 + st * MAXLV).toFixed(1) + (it.lv === 'score' || it.lv === 'luck' ? '%' : 's') : desc.replace('{now}', +(b0 + st * L).toFixed(1)).replace('{next}', +(b0 + st * (L + 1)).toFixed(1)) + ' · max ' + (it.lv === 'score' || it.lv === 'luck' ? '+' : '') + +(b0 + st * MAXLV).toFixed(1) + (it.lv === 'score' || it.lv === 'luck' ? '%' : 's'); desc += ' · Level ' + L + '/' + MAXLV + ' ' + '●'.repeat(L) + '○'.repeat(MAXLV - L); }
     if (shopTab === 'boost') desc += ' · You have ' + boostCount(it.id);
-    d.innerHTML = sw + '<b></b><small></small>'; d.querySelector('b').textContent = it.name; d.querySelector('small').textContent = it.lv ? desc.replace(/ · [●○]+$/, '') : desc;
+    d.innerHTML = sw + '<b></b><small></small>'; if (mktTag) d.appendChild(mktTag); d.querySelector('b').textContent = it.name; d.querySelector('small').textContent = it.lv ? desc.replace(/ · [●○]+$/, '') : desc;
     if (it.lv) { const L = upLv(it.lv), bar = document.createElement('div'); bar.className = 'lvbar'; bar.innerHTML = '<i></i>'.repeat(MAXLV); [...bar.children].forEach((x, k) => k < L && x.classList.add('on')); d.insertBefore(bar, d.querySelector('small')); }
     if (shopTab === 'char' && (save.owned[it.id] || it.price === 0)) { const rl = runnerLevel(it.id), lb = document.createElement('div'); lb.className = 'rlv'; lb.innerHTML = '<span></span><div class="lvbar2"><i></i></div>'; lb.firstChild.textContent = 'Lv ' + rl.lv + (rl.next ? ' · ' + rl.pct + '% to ' + rl.next.t : ' · MAX'); lb.querySelector('i').style.width = rl.pct + '%'; d.appendChild(lb); }
     if (shopTab === 'char' || shopTab === 'pet') { const sm = d.querySelector('small'); const m = desc.match(/^(.*?)Perk: (.*)$/); if (m) { sm.textContent = m[1].trim(); const pk = document.createElement('span'); pk.className = 'perk'; pk.textContent = '★ ' + m[2]; sm.after(pk); } if (it.weekly !== undefined) { const t = document.createElement('span'); t.className = 'tag ev'; t.textContent = save.owned[it.id] ? 'WEEKLY' : 'THIS WEEK · ' + fmtLeft((7 - weekProgress() * 7) * 86400000); d.appendChild(t); } else if (it.event || it.cur === 'gs') { const t = document.createElement('span'); t.className = 'tag ' + (it.event ? 'ev' : 'star'); t.textContent = it.event ? 'EVENT' : '★'; d.appendChild(t); } }
@@ -7304,7 +7313,7 @@ function buildShop() {
         persist(); buildShop(); return;
       }
       if (shopTab === 'up') { if (owned) return; if (save.bank < it.price) { sfx('deny'); toast('Not enough cash', 'Need $' + (it.price - save.bank) + ' more', 1200); return; } save.bank -= it.price; save.up[it.id] = 1; sfx('buy'); }
-      else if (!owned) { if ((save[wallet] || 0) < it.price) { sfx('deny'); toast(wallet === 'gs' ? 'Not enough Gold Stars' : 'Not enough cash', 'Need ' + (wallet === 'gs' ? '★' : '$') + (it.price - (save[wallet] || 0)) + ' more', 1200); return; } save[wallet] -= it.price; save.owned[it.id] = 1; if (shopTab === 'pack') save.pack = it.id; else if (shopTab === 'char') save.char = it.id; else if (shopTab === 'pet') save.pet = it.id; else save.shoe = it.id; sfx('buy'); }
+      else if (!owned) { const pay = wallet === 'gs' ? it.price : mktPrice(it); if ((save[wallet] || 0) < pay) { sfx('deny'); toast(wallet === 'gs' ? 'Not enough Gold Stars' : 'Not enough cash', 'Need ' + (wallet === 'gs' ? '★' : '$') + (pay - (save[wallet] || 0)) + ' more', 1200); return; } save[wallet] -= pay; save.owned[it.id] = 1; if (mktItem(it)) mktBought(it.id); if (shopTab === 'pack') save.pack = it.id; else if (shopTab === 'char') save.char = it.id; else if (shopTab === 'pet') save.pet = it.id; else save.shoe = it.id; sfx('buy'); }
       else { if (shopTab === 'pack') save.pack = it.id; else if (shopTab === 'char') save.char = it.id; else if (shopTab === 'pet') save.pet = it.id; else if (shopTab === 'plane') save.plane = it.id; else if (shopTab === 'hat') save.hat = it.id; else if (shopTab === 'wheel') save.wheel = it.id; else save.shoe = it.id; sfx('click'); }
       if (shopTab === 'char' || shopTab === 'pack' || shopTab === 'plane' || shopTab === 'hat' || shopTab === 'wheel') rebuildPlayer();
       persist(); buildShop();
@@ -7938,6 +7947,76 @@ async function fsQuery(coll, where, order, limit, tok) {
 }
 const fsEq = (f, v) => ({ fieldFilter: { field: { fieldPath: f }, op: 'EQUAL', value: { stringValue: v } } });
 const docPath = (c, id) => '/' + c + '/' + encodeURIComponent(id);
+
+const gDay = () => Math.floor(Date.now() / 86400000), gWeek = () => Math.floor((gDay() + 3) / 7); // shared docs use UTC days so everyone writes to the same one
+/* ---- WORLD GOAL: every runner's meters this week fill one shared bar (worldgoal/w{week} = { m }).
+   Each tier it passes gives a prize to everyone who ran at least once that week. Nobody can lose anything. ---- */
+const WG_TIERS = [[250000, { cash: 1000 }, '$1,000'], [1000000, { gs: 2 }, '2 Gold Stars'], [3000000, { heelys: 5, cash: 2000 }, '5 Heel Wheels + $2,000'], [8000000, { gs: 5, cash: 5000 }, '5 Gold Stars + $5,000']];
+const WG_CAP = 20000; // most meters one run can add (the database rules check this too)
+const WG = { m: null, t: 0, wk: 0 };
+function wgSave() { const wk = gWeek(); if (!save.wg || save.wg.wk !== wk) save.wg = { wk, mine: 0, got: 0 }; return save.wg; }
+const kmTxt = m => (m >= 100000 ? Math.round(m / 1000) : Math.round(m / 100) / 10).toLocaleString() + ' km';
+function wgOn() { return Online.ready() && APPCFG.worldGoal !== false && !WG.denied; }
+async function wgFetch(force) {
+  if (!wgOn()) return null; const wk = gWeek();
+  if (!force && WG.wk === wk && WG.m !== null && Date.now() - WG.t < 90000) return WG.m;
+  try { const d = fsDoc(await fsReq('GET', docPath('worldgoal', 'w' + wk))); WG.m = +d.m || 0; } catch (e) { if (e.status === 404) WG.m = 0; else if (e.status === 403) { WG.denied = true; return null; } else return WG.m; }
+  WG.wk = wk; WG.t = Date.now(); wgClaim(); return WG.m;
+}
+async function worldGoalAdd(meters) {
+  meters = Math.min(WG_CAP, Math.floor(meters)); if (meters < 10 || !wgOn()) return;
+  const W = wgSave(); W.mine += meters; persist();
+  try { const a = await Online.token(), D = 'projects/' + ONLINE_BOARD.projectId + '/databases/(default)/documents/worldgoal/w' + W.wk;
+    await fsReq('POST', ':commit', a.idToken, { writes: [{ transform: { document: D, fieldTransforms: [{ fieldPath: 'm', increment: { integerValue: String(meters) } }] } }] });
+    if (WG.wk === W.wk && WG.m !== null) WG.m += meters; wgClaim(); syncWorldGoal();
+  } catch (e) { if (e.status === 403) WG.denied = true; }
+}
+function wgClaim() { // hand out every tier the world has reached, once each, if you ran this week
+  const W = wgSave(); if (WG.m === null || WG.wk !== W.wk || !W.mine) return;
+  while (W.got < WG_TIERS.length && WG.m >= WG_TIERS[W.got][0]) { const [goal, rw, txt] = WG_TIERS[W.got]; grant(rw); W.got++; persist(); setTimeout(() => toast('🌍 WORLD GOAL ' + kmTxt(goal) + ' REACHED!', 'Everyone who ran this week gets ' + txt, 2600), 400 + W.got * 300); sfx('win'); }
+}
+function wgLine(m) { const W = wgSave(), nx = WG_TIERS.find(t => t[0] > m); return { nx, k: nx ? clamp(m / nx[0], 0, 1) : 1, mine: W.mine }; }
+function syncWorldGoal() {
+  const el = $('mWG'); if (!el) return; if (!wgOn()) { el.style.display = 'none'; return; }
+  wgFetch().then(m => { if (m === null) { el.style.display = 'none'; return; } el.style.display = ''; const L = wgLine(m);
+    $('mWGt').textContent = L.nx ? kmTxt(m) + ' / ' + kmTxt(L.nx[0]) : kmTxt(m) + ' · ALL DONE!'; $('mWGf').style.width = (L.k * 100).toFixed(1) + '%';
+    $('mWGp').textContent = L.nx ? 'Prize for all: ' + L.nx[2] : 'Every prize unlocked this week!'; $('mWGm').textContent = L.mine ? 'You: ' + kmTxt(L.mine) : 'Run once to join'; });
+}
+function showWorldGoalOver(added) {
+  const box = $('oWorld'); if (!wgOn() || !added) { box.style.display = 'none'; return; }
+  const draw = () => { const m = WG.m || 0, L = wgLine(m); box.style.display = 'block';
+    $('oWorldT').textContent = '🌍 You added ' + Math.min(WG_CAP, Math.floor(added)).toLocaleString() + ' m to the world goal · ' + (L.nx ? kmTxt(m) + ' / ' + kmTxt(L.nx[0]) + ' for ' + L.nx[2] + ' each' : 'every prize unlocked!');
+    $('oWorldF').style.width = (L.k * 100).toFixed(1) + '%'; };
+  draw(); setTimeout(() => wgFetch(true).then(() => { if (G.scene === 'over') draw(); }), 1500);
+}
+
+/* ---- LOCKER MARKET: cash prices in the Locker move every day. Each runner's purchase adds 1 to that item's count for
+   the day (market/d{day} = { itemId: n }), so what's popular worldwide gets pricier and what nobody buys goes on sale.
+   A small daily wobble keeps it moving even offline. You only ever pay the price you see; nothing can be lost. ---- */
+const MKT = { d: null, day: -1, t: 0 };
+const MKT_TABS = ['char', 'pet', 'hat', 'plane', 'shoe', 'wheel', 'pack'];
+function mktOn() { return APPCFG.market !== false; }
+function mktItem(it) { return mktOn() && MKT_TABS.includes(shopTab) && it && it.price > 0 && it.cur !== 'gs' && !it.lv && !it.pass && !it.gold && !it.event && !it.trip && !it.svs && !it.creator && it.boss === undefined; }
+function mktHash(str) { let h = 2166136261; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0) / 4294967296; }
+async function mktFetch() {
+  const day = gDay(); if (!Online.ready() || MKT.denied || (MKT.day === day && Date.now() - MKT.t < 300000)) return;
+  MKT.t = Date.now(); try { MKT.d = fsDoc(await fsReq('GET', docPath('market', 'd' + day))); } catch (e) { if (e.status === 403) MKT.denied = true; MKT.d = e.status === 404 ? {} : MKT.d; }
+  MKT.day = day; if (curScreen === 'sShop') buildShop();
+}
+function mktMult(it) {
+  const day = gDay(), wob = (mktHash(it.id + ':' + day) - 0.5) * 0.24; // ±12% daily wobble, the same for everyone
+  let dem = 0; const d = MKT.day === day && MKT.d ? MKT.d : null;
+  if (d) { const ids = (SHOP[shopTab] || []).filter(mktItem).map(x => x.id), ns = ids.map(id => +d[id] || 0), avg = ns.reduce((a, b) => a + b, 0) / Math.max(1, ns.length), mx = Math.max(...ns, 1);
+    dem = clamp(((+d[it.id] || 0) - avg) / (mx + 2) * 0.5, -0.2, 0.2); }
+  return clamp(1 + wob + dem, 0.7, 1.35);
+}
+function mktPrice(it) { return mktItem(it) ? Math.max(10, Math.round(it.price * mktMult(it) / 10) * 10) : it.price; }
+async function mktBought(id) {
+  if (!Online.ready() || MKT.denied) return;
+  try { const a = await Online.token(), D = 'projects/' + ONLINE_BOARD.projectId + '/databases/(default)/documents/market/d' + gDay();
+    await fsReq('POST', ':commit', a.idToken, { writes: [{ transform: { document: D, fieldTransforms: [{ fieldPath: id, increment: { integerValue: '1' } }] } }] }); if (MKT.d) MKT.d[id] = (+MKT.d[id] || 0) + 1;
+  } catch (e) { if (e.status === 403) MKT.denied = true; }
+}
 
 /* ---- schools list + moderator switches (cached) ---- */
 var SCHOOL_SEED = [{ id: 'nahs', name: 'NAHS', status: 'approved' }];
