@@ -424,7 +424,16 @@ input,select{font-family:'Patrick Hand',sans-serif;font-size:18px;background:#ff
 #pushBtn.pads{background:conic-gradient(#ff7b00 360deg,#ff7b00 0);animation:tutPulse .6s ease-in-out infinite}
 #quizBox{position:fixed;top:calc(max(10px,env(safe-area-inset-top)) + 160px);left:50%;transform:translateX(-50%);z-index:7;display:none;pointer-events:none;background:#2f4f3a;color:#fff;border:4px solid #c9a26b;border-radius:12px;padding:8px 16px;font-family:'Luckiest Guy',sans-serif;font-size:24px;letter-spacing:1px;box-shadow:0 5px 0 #1b1f3b;white-space:nowrap}#quizBox.show{display:block;animation:tutPulse 1s ease-in-out infinite}
 .combo{font-size:14px;color:#fff;background:#ff8a00!important;padding:4px 10px}.combo.hot{background:#ff2bd6!important;animation:tutPulse .5s ease-in-out infinite}.cbar{height:5px;background:rgba(0,0,0,.3);border-radius:3px;margin-top:3px;overflow:hidden}.cbar i{display:block;height:100%;background:#fff;width:0}
-.oHook{background:#fff3c4;border:3px solid var(--ink);border-radius:12px;padding:8px 10px;margin:4px 0 8px;font-weight:700;text-align:center;color:#1d2340;box-shadow:0 3px 0 var(--ink)}.oCombo{text-align:center;font-size:14px;color:#c47f00;min-height:4px}
+.oHook{background:linear-gradient(180deg,#ffe066,#ffb703);border:3px solid var(--ink);border-radius:14px;padding:9px 12px;margin:6px 0 8px;font-family:'Luckiest Guy',sans-serif;font-size:clamp(16px,4.4vw,21px);letter-spacing:.3px;text-align:center;color:#1d2340;box-shadow:0 4px 0 var(--ink);animation:hookPulse 1.4s ease-in-out infinite}
+@keyframes hookPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}body.lowA .oHook{animation:none}
+.oPrize{display:none;margin:6px 0;border:3px solid var(--ink);border-radius:14px;background:linear-gradient(135deg,#9bf6ff,#c77dff);color:#1d2340;box-shadow:0 4px 0 var(--ink);padding:8px 10px;text-align:center;font-weight:800}
+.oPrize.show{display:block;animation:prizeIn .5s cubic-bezier(.2,1.6,.4,1)}@keyframes prizeIn{0%{transform:scale(.4);opacity:0}100%{transform:scale(1);opacity:1}}
+.oPrize b{display:block;font-family:'Luckiest Guy',sans-serif;font-size:19px}.oPrize small{display:block;font-size:12px;opacity:.85;margin-top:2px}
+.oRankBox{margin:6px 0;padding:6px 10px;border:3px solid var(--ink);border-radius:14px;background:#1d2340;color:#fff;box-shadow:0 3px 0 var(--ink);text-align:left}
+.oRankBox .rkTop{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:'Luckiest Guy',sans-serif;font-size:15px}.oRankBox .rkTop em{font-style:normal;color:#ffd60a}
+.oRankBox .rkBar{height:12px;border-radius:8px;background:rgba(255,255,255,.18);overflow:hidden;margin-top:4px}.oRankBox .rkBar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#06d6a0,#7dff9a);transition:width .9s ease-out}
+.oRankBox small{display:block;font-size:11px;opacity:.8;margin-top:3px}
+.oRankBox.up{animation:prizeIn .5s cubic-bezier(.2,1.6,.4,1);border-color:#ffd60a;box-shadow:0 0 16px #ffd60a,0 3px 0 var(--ink)}.oRankBox.up .rkBar i{background:linear-gradient(90deg,#ffd60a,#fff3a0)}.oCombo{text-align:center;font-size:14px;color:#c47f00;min-height:4px}
 .wheelWrap{position:relative;width:260px;height:260px;margin:6px auto 12px}#wheel{width:260px;height:260px;border-radius:50%;box-shadow:0 6px 0 var(--ink)}.wheelPtr{position:absolute;top:-14px;left:50%;transform:translateX(-50%);z-index:2;font-size:30px;color:#ff4d6d;-webkit-text-stroke:2px var(--ink)}
 .item .tag.pick{background:#3ccf6e;color:#fff;left:8px;right:auto}
 body.lefty #pushBtn{left:auto;right:12px}body.lefty #heelyBtn{right:auto;left:12px}
@@ -1477,8 +1486,10 @@ body.homeWide .mSide .worldCard .cTxt{text-align:left}
     <div class="bigStars" id="oStars"></div>
     <div class="overScore"><small>SCORE</small><b id="oScore">0</b><span><span id="oBestL">Best</span> <span id="oBest">0</span></span></div>
     <button class="btn green" id="bNext" style="display:none">Next Stage ▶</button>
-    <button class="btn gold bigAgain" id="bAgain">▶ PLAY AGAIN</button>
     <div class="oHook" id="oHook" style="display:none"></div>
+    <button class="btn gold bigAgain" id="bAgain">▶ PLAY AGAIN</button>
+    <div class="oPrize" id="oPrize"><b id="oPrizeT"></b><small id="oPrizeN"></small></div>
+    <div class="oRankBox" id="oRankBox" style="display:none"><div class="rkTop"><span id="oRankT"></span><em id="oRankX"></em></div><div class="rkBar"><i id="oRankFill"></i></div><small id="oRankN"></small></div>
     <div class="overMini"><span>📏 <b id="oDist">0m</b></span><span>💵 <b id="oCoins">$0</b></span></div>
     <div class="oCombo" id="oCombo"></div>
     <div class="rankNote" id="oRank" style="display:none"></div>
@@ -6060,9 +6071,10 @@ function spawnRowInner(z) {
   }
   const skipL = l => l === scLane || l === plLane;
   // HEAD HOP LINE: a line of students waiting (for the water fountain / the bathroom), spaced for bouncing head to head
-  if (G.mode !== 'tutorial' && !G.fun && G.dist > 400 && G.dist - (G.lastHopLine || 0) > 550 && Math.random() < 0.18) {
+  const forceHop = G.scHop && G.dist + z - PZ > G.scHop;
+  if (G.mode !== 'tutorial' && !G.fun && (forceHop || (G.dist > 400 && G.dist - (G.lastHopLine || 0) > 550 && Math.random() < 0.18))) {
     const opts2 = [-1, 0, 1].filter(l => l !== safe && !skipL(l)); const L = pick(opts2);
-    if (L !== undefined) { G.lastHopLine = G.dist; const sp = G.speed * 0.45 + 0.55, n = pick([3, 3, 4, 5]); // the bounce lands mid-window on the next head
+    if (L !== undefined) { G.lastHopLine = G.dist; G.scHop = 0; const sp = G.speed * 0.45 + 0.55, n = pick([3, 3, 4, 5]); // the bounce lands mid-window on the next head
       for (let k = 0; k < n; k++) { const q = addObj('student', L, z + k * sp, { queue: true }); if (q) { q.vz = 0; q.say = k === 0 ? 'Wait your turn!' : ''; } }
       for (let k = 0; k < n - 1; k++) for (let c = 1; c <= 3; c++) addObj('coin', L, z + k * sp + sp * c / 4, { y: 2.2 + Math.sin(Math.PI * c / 4) * 1.0, x: L * laneW });
       G.hopLane = L; G.hopLineEnd = G.dist + z + n * sp; } } // stored as a hallway distance: row z is always near the spawn point
@@ -6105,8 +6117,9 @@ function spawnRowInner(z) {
   }
   if (G.fun === 'coinrush' && Math.random() < 0.35) addObj('bill', safe, z - g * 0.4, { y: 0.8 });
   if (G.fun === 'trial' && G.rowCount % 5 === 0) addObj('energy', safe, z - g * 0.5, { y: 1.0 });
-  // power-ups
-  if (G.rowCount - G.lastPower > 26 && Math.random() < 0.25) {
+  // power-ups (a new player's first run always gets a paper plane early)
+  if (G.scPlane && G.dist + z - PZ > G.scPlane) { G.scPlane = 0; G.lastPower = G.rowCount; addObj('cheat', safe, z - g * 0.5, { y: 1.0 }); }
+  else if (G.rowCount - G.lastPower > 26 && Math.random() < 0.25) {
     G.lastPower = G.rowCount;
     addObj(pick(['pass', 'cheat', 'energy', 'pass', 'cheat', 'energy', 'heelyPick', 'spring']), pick([-1, 0, 1]), z - g * 0.5, { y: 1.0 });
   }
@@ -6177,6 +6190,8 @@ G.lastQuiz = 0; G.lastShortcut = 0; G.lastLetter = -999; G.tpStart = undefined; 
   if (G.rival) { scene.remove(G.rival.act.root); G.rival = null; }
   endGhost(); if (mode === 'infinite' && G.ghostNext) startGhost(G.ghostNext); G.ghostNext = null; if (mode === 'infinite' && G.heatNext) heatBegin(G.heatNext); G.heatNext = null;
   G.quiz = null; $('quizBox').classList.remove('show');
+  { const n = stats().runs, on = mode === 'infinite' && !G.fun && !G.fixed && n < 2; // show off the cool stuff in a new player's first 2 runs
+    G.scPlane = on ? (n === 0 ? 280 : 0) : 0; G.scHop = on ? (n === 0 ? 560 : 360) : 0; if (on && n === 1) G.nextHunt = 650; }
   G.rivals = mode === 'infinite' && !G.fun ? rivals() : null; G.railFrom = 0; G.railPop = 0; G.railRecord = false; G.waveKey = -1; G.hits = 0; G.patQ = null; G.pat = null; G.lastPat = 0; G.cmbNext = 0; G.cc = 0; G.slowT = 0;
   if (G.daily) toast('DAILY CHALLENGE', 'Beat ' + dailyChallenge().target.toLocaleString() + ' points' + (G.fun ? ' · ' + FUN[G.fun].name : '') + ' for 3★', 2400); else if (G.trip) toast(currentTrip().name.toUpperCase(), 'Collect ' + currentTrip().item + '!', 2200); else if (G.fun) toast(FUN[G.fun].name.toUpperCase(), FUN[G.fun].desc, 2200); else if (mode !== 'tutorial' && mode !== 'maker') toast(mode === 'campaign' ? LEVELS[G.levelIdx].name : 'INFINITE RUN', mode === 'campaign' ? 'Get to ' + LEVELS[G.levelIdx].dest + ' before the bell!' : THEME().name, 2200);
   G.bossOn = false; G.timeLeft0 = G.timeLeft;
@@ -6237,6 +6252,54 @@ async function doShare(url) {
 }
 function startReplay() { if (!G.replayBuf || G.replayBuf.length < 20) { toast('Nothing to replay', '', 1000); return; } G.replay = { buf: G.replayBuf.slice(), i: 0, loops: 0, end: G.dist }; showScreen(null); $('replayTag').classList.add('show'); }
 function stopReplay() { G.replay = null; G.replayOff = 0; $('replayTag').classList.remove('show'); syncObjs(); showScreen('sOver'); }
+/* ---------- FIRST FIVE RUNS: a prize after each of a new player's first 5 runs, and a peek at the next one ---------- */
+const NEWBIE = [
+  { item: 'skater', label: '🛹 Skater runner', alt: { cash: 400 } },
+  { heelys: 3, label: '👟 3 Heel Wheels' },
+  { item: 'wh_neon', label: '💡 Neon Glow wheels', alt: { cash: 1500 } },
+  { item: 'hat_party', cash: 500, label: '🥳 Party Hat + $500', alt: { cash: 900 } },
+  { item: 'beach', gs: 2, label: '🌴 Summer School runner + 2★', alt: { cash: 600 } }
+];
+function newbiePrize() { // returns { i, label } for the prize just won, or null
+  if (G.mode === 'tutorial' || G.mode === 'maker') return null;
+  if (save.nb5 === undefined) save.nb5 = stats().runs <= 1 ? 0 : 5; // players from before this update skip it
+  const i = save.nb5; if (i >= NEWBIE.length) return null;
+  const p = NEWBIE[i], rw = { cash: p.cash || 0, gs: p.gs || 0, heelys: p.heelys || 0 };
+  if (p.item) { if (save.owned[p.item]) Object.keys(p.alt).forEach(k => rw[k] = (rw[k] || 0) + p.alt[k]); else save.owned[p.item] = 1; }
+  grant(rw); save.nb5 = i + 1; persist();
+  return { i, label: p.item && rw.cash >= (p.alt.cash || 0) + (p.cash || 0) && p.alt.cash ? '$' + rw.cash.toLocaleString() + ' (you already had it)' : p.label };
+}
+/* ---------- RANK: a permanent player level from the XP of every run, with a title and a reward each level ---------- */
+const RANKS = ['New Kid', 'Hall Walker', 'Bell Beater', 'Locker Legend', 'Hallway Hero', 'Speed Demon', 'Class Act', 'Honor Roll', 'Varsity Runner', "Principal's Nightmare", 'Senior Sprinter', 'Valedictorian', 'Hall of Famer'];
+const rankNeed = L => L === 1 ? 60 : 100 + (L - 1) * 90; // rank 2 comes in the very first run
+function rankOf(xp) { let L = 1; xp = Math.max(0, xp || 0); while (xp >= rankNeed(L) && L < 999) { xp -= rankNeed(L); L++; } return { L, cur: xp, need: rankNeed(L) }; }
+const rankTitle = L => L <= RANKS.length ? RANKS[L - 1] : RANKS[RANKS.length - 1] + ' ' + (L - RANKS.length + 1);
+const rankReward = L => ({ cash: 150 * L, gs: L % 5 === 0 ? 1 : 0 });
+function rankAfterRun(xp) {
+  const before = rankOf(save.rxp); save.rxp = (save.rxp || 0) + Math.max(0, Math.round(xp)); const after = rankOf(save.rxp);
+  const rw = { cash: 0, gs: 0 }; for (let L = before.L + 1; L <= after.L; L++) { const r = rankReward(L); rw.cash += r.cash; rw.gs += r.gs; }
+  if (after.L > before.L) grant(rw); persist();
+  return { before, after, rw, up: after.L > before.L };
+}
+function showRank(R) {
+  const box = $('oRankBox'); if (!R) { box.style.display = 'none'; return; }
+  box.style.display = 'block'; box.classList.toggle('up', R.up);
+  setText('oRankT', (R.up ? '⬆ RANK UP! ' : 'RANK ') + R.after.L + ' · ' + rankTitle(R.after.L)); setText('oRankX', '+' + (G.lastXP || 0) + ' XP');
+  setText('oRankN', R.up ? 'Reward: +$' + R.rw.cash.toLocaleString() + (R.rw.gs ? ' +' + R.rw.gs + '★' : '') + ' · next: ' + rankTitle(R.after.L + 1) : (R.after.need - R.after.cur) + ' XP to Rank ' + (R.after.L + 1) + ' · ' + rankTitle(R.after.L + 1));
+  const f = $('oRankFill'); f.style.transition = 'none'; f.style.width = (R.up ? 0 : R.before.cur / R.before.need * 100) + '%';
+  setTimeout(() => { f.style.transition = ''; f.style.width = (R.after.cur / R.after.need * 100).toFixed(1) + '%'; }, 450);
+  if (R.up) setTimeout(() => { if (G.scene === 'over') { sfx('win'); buzz('power'); } }, 700);
+}
+/* ---------- SCORE MILESTONES: a big party the first time you ever reach each one ---------- */
+const MILESTONES = [1000, 5000, 10000, 25000, 50000, 100000, 250000, 500000, 1000000];
+function milestoneTick() {
+  if (G.mode !== 'infinite' || G.fun || G.dying) return;
+  const top = save.msTop || 0, next = MILESTONES.find(m => m > top); if (!next || G.score < next) return;
+  save.msTop = next; const cash = Math.min(2000, Math.round(next / 20)); save.bank += cash; persist();
+  popup('🎉 FIRST ' + next.toLocaleString() + ' POINTS! +$' + cash, '#ffd60a'); toast('🎉 ' + next.toLocaleString() + ' POINTS!', 'Your first time ever. +$' + cash, 1800);
+  sfx('win'); buzz('power'); voice('congratulations'); if (!A11Y().flash) G.flash = 0.25;
+  for (const c of ['#ff2bd6', '#ffd60a', '#06d6a0', '#7fd3ff']) emit(P.x, 1.6, 0.2, 10, c, 7, 1.0, 0.3, 6, true, true);
+}
 function oneMoreRun(sc) {
   const ideas = [];
   if (G.mode === 'infinite' && !G.fun) {
@@ -6251,13 +6314,14 @@ function oneMoreRun(sc) {
   { const left = save.missions.filter(m => !m.done).length; if (left === 1 && (save.mult || 1) < MAX_MULT) ideas.push([1, '1 mission left for a x' + ((save.mult || 1) + 1) + ' multiplier!']); }
   { const t = passTier(); if (t < PASS_TIERS) { const need = tierStart(t + 1) - passSave().xp; if (need > 0 && need < 250) ideas.push([need / 25, need + ' XP to School Year Pass tier ' + (t + 1) + '!']); } }
   { const sv = svsMine(); if (sv && sv.rank > 1 && sv.gap > 0 && G.mode === 'infinite' && !G.fun) ideas.push([sv.gap / 20, 'Your school is #' + sv.rank + ': ' + sv.gap.toLocaleString() + ' points to pass ' + schoolName(sv.above) + '!']); }
-  ideas.sort((a, b) => a[0] - b[0]); if (ideas.length) return '🎯 Next goal: ' + ideas[0][1];
+  { const R = rankOf(save.rxp), need = R.need - R.cur; if (need < 120) ideas.push([need / 12, need + ' XP to Rank ' + (R.L + 1) + ': ' + rankTitle(R.L + 1) + '!']); }
+  ideas.sort((a, b) => a[0] - b[0]); if (ideas.length) return '🔥 SO CLOSE! ' + ideas[0][1];
   if (G.mode === 'infinite' && !G.fun && save.bestDist > 0) return '🎯 Next goal: beat your best of ' + Math.floor(save.bestDist).toLocaleString() + ' m';
   return '';
 }
 function endRun(win, reason) {
   if (G.scene !== 'play') return;
-  G.scene = 'over'; $('hud').classList.remove('show'); $('pwSide').classList.remove('show'); $('pushBtn').classList.remove('show'); $('heelyBtn').classList.remove('show'); $('chaseMeter').classList.remove('show');
+  G.scene = 'over'; $('hud').classList.remove('show'); $('goalRail').classList.remove('show'); $('pwSide').classList.remove('show'); $('pushBtn').classList.remove('show'); $('heelyBtn').classList.remove('show'); $('chaseMeter').classList.remove('show');
   const L = LEVELS[G.levelIdx];
   let bonus = 0, stars = 0;
   if (win && G.mode === 'campaign') {
@@ -6268,7 +6332,7 @@ function endRun(win, reason) {
   }
   const earned = G.coins + bonus;
   save.bank += earned;
-  if (G.mode !== 'tutorial') { const xp = G.dist / 4 + G.coins + (G.run ? G.run.escapes * 20 : 0) + (G.tricksLanded || 0) * 25; addXP(xp); G.lastXP = Math.round(xp); }
+  if (G.mode !== 'tutorial') { const xp = G.dist / 4 + G.coins + (G.run ? G.run.escapes * 20 : 0) + (G.tricksLanded || 0) * 25; addXP(xp); G.lastXP = Math.round(xp); G.lastRank = rankAfterRun(xp); } else G.lastRank = null;
   if (G.mode !== 'tutorial') {
     const st = stats(); st.runs++; st.dist += Math.floor(G.dist); addRunnerDist(G.dist); st.coins += G.coins; st.escapes += G.run.escapes || 0; st.tricks += G.tricksLanded || 0; st.cc += G.run.cc || 0; st.jumps += G.run.jumps || 0; st.power += G.run.power || 0; st.trips += G.run.souv || 0;
     if (win && G.mode === 'campaign' && L.boss) { st.boss++; const last = LEVELS.filter(x => x.chapter === L.chapter).pop(); if (last === L && !save.owned[CHAPTER_HATS[L.chapter]]) { save.owned[CHAPTER_HATS[L.chapter]] = 1; const hn = SHOP.hat.find(h => h.id === CHAPTER_HATS[L.chapter]).name; setTimeout(() => toast('BOSS REWARD: ' + hn + '!', 'Wear it from Locker Room → Hats', 2600), 1200); } }
@@ -6300,7 +6364,9 @@ function endRun(win, reason) {
     else { if (sc > fb) { save.funBest[G.fun] = sc; funLine = 'New ' + FUN[G.fun].name + ' record!'; } else funLine = FUN[G.fun].name + ' best: ' + fb.toLocaleString(); }
     persist();
   }
-  $('oHook').textContent = oneMoreRun(sc); $('oHook').style.display = $('oHook').textContent ? 'block' : 'none';
+  { const h = oneMoreRun(sc); $('oHook').textContent = h; $('oHook').style.display = h ? 'block' : 'none'; }
+  { const pz = newbiePrize(), el = $('oPrize'); el.classList.remove('show'); if (pz) { const nx = NEWBIE[pz.i + 1]; setText('oPrizeT', '🎁 PRIZE ' + (pz.i + 1) + ' OF 5: ' + pz.label); setText('oPrizeN', nx ? 'Next prize after 1 more run: ' + nx.label : 'That\'s all 5 starter prizes. Now climb the ranks!'); setTimeout(() => { if (G.scene === 'over') { el.classList.add('show'); sfx('buy'); } }, 500); } }
+  showRank(G.mode !== 'tutorial' && G.mode !== 'maker' ? G.lastRank : null);
   $('oCombo').textContent = G.comboBonus > 50 ? 'Combo bonus +' + Math.round(G.comboBonus).toLocaleString() + ' · best combo ' + (G.bestChain || 0) : ''; 
   G.earned = earned; $('bDouble').style.display = earned >= 20 && G.mode !== 'tutorial' ? 'block' : 'none'; $('bDouble').disabled = false; $('bDouble').textContent = '▶ Watch ad: double cash (+$' + earned + ')';
   if (G.mode !== 'tutorial' && !save.starterBought && stats().runs >= 3 && (save.starterSeen || 0) < 1 + Math.floor(stats().runs / 15)) setTimeout(() => { if (G.scene === 'over') openStarter(); }, 1200);
@@ -6610,7 +6676,7 @@ function update(dt) {
   if (G.fun === 'coinrush') { G.timeLeft -= wdt; if (G.timeLeft <= 0) { G.timeLeft = 0; sfx('bell'); endRun(true, 'coinrush'); return; } }
   if (G.fun === 'trial') { G.trialT += dt; if (G.dist >= 1000) { sfx('bell'); endRun(true, 'trial'); return; } }
   if (G.ghost) updGhost(dt); if (G.heat) updHeat(dt);
-  waveTick(); patternTick(); comboFx(dt);
+  waveTick(); patternTick(); comboFx(dt); milestoneTick();
   if (G.fun === 'race') { if (!G.rival) startRival(); updRival(dt); if (G.dist >= 1000) { sfx('bell'); endRun(true, 'race'); return; } if (G.rival.d >= 1000) { G.deathMsg = G.rival.name + ' got to class first!'; sfx('deny'); endRun(false, 'race'); return; } }
   // infinite theme progression
   if (G.mode === 'infinite') {
