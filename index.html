@@ -424,7 +424,16 @@ input,select{font-family:'Patrick Hand',sans-serif;font-size:18px;background:#ff
 #pushBtn.pads{background:conic-gradient(#ff7b00 360deg,#ff7b00 0);animation:tutPulse .6s ease-in-out infinite}
 #quizBox{position:fixed;top:calc(max(10px,env(safe-area-inset-top)) + 160px);left:50%;transform:translateX(-50%);z-index:7;display:none;pointer-events:none;background:#2f4f3a;color:#fff;border:4px solid #c9a26b;border-radius:12px;padding:8px 16px;font-family:'Luckiest Guy',sans-serif;font-size:24px;letter-spacing:1px;box-shadow:0 5px 0 #1b1f3b;white-space:nowrap}#quizBox.show{display:block;animation:tutPulse 1s ease-in-out infinite}
 .combo{font-size:14px;color:#fff;background:#ff8a00!important;padding:4px 10px}.combo.hot{background:#ff2bd6!important;animation:tutPulse .5s ease-in-out infinite}.cbar{height:5px;background:rgba(0,0,0,.3);border-radius:3px;margin-top:3px;overflow:hidden}.cbar i{display:block;height:100%;background:#fff;width:0}
-.oHook{background:#fff3c4;border:3px solid var(--ink);border-radius:12px;padding:8px 10px;margin:4px 0 8px;font-weight:700;text-align:center;color:#1d2340;box-shadow:0 3px 0 var(--ink)}.oCombo{text-align:center;font-size:14px;color:#c47f00;min-height:4px}
+.oHook{background:linear-gradient(180deg,#ffe066,#ffb703);border:3px solid var(--ink);border-radius:14px;padding:9px 12px;margin:6px 0 8px;font-family:'Luckiest Guy',sans-serif;font-size:clamp(16px,4.4vw,21px);letter-spacing:.3px;text-align:center;color:#1d2340;box-shadow:0 4px 0 var(--ink);animation:hookPulse 1.4s ease-in-out infinite}
+@keyframes hookPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}body.lowA .oHook{animation:none}
+.oPrize{display:none;margin:6px 0;border:3px solid var(--ink);border-radius:14px;background:linear-gradient(135deg,#9bf6ff,#c77dff);color:#1d2340;box-shadow:0 4px 0 var(--ink);padding:8px 10px;text-align:center;font-weight:800}
+.oPrize.show{display:block;animation:prizeIn .5s cubic-bezier(.2,1.6,.4,1)}@keyframes prizeIn{0%{transform:scale(.4);opacity:0}100%{transform:scale(1);opacity:1}}
+.oPrize b{display:block;font-family:'Luckiest Guy',sans-serif;font-size:19px}.oPrize small{display:block;font-size:12px;opacity:.85;margin-top:2px}
+.oRankBox{margin:6px 0;padding:6px 10px;border:3px solid var(--ink);border-radius:14px;background:#1d2340;color:#fff;box-shadow:0 3px 0 var(--ink);text-align:left}
+.oRankBox .rkTop{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:'Luckiest Guy',sans-serif;font-size:15px}.oRankBox .rkTop em{font-style:normal;color:#ffd60a}
+.oRankBox .rkBar{height:12px;border-radius:8px;background:rgba(255,255,255,.18);overflow:hidden;margin-top:4px}.oRankBox .rkBar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#06d6a0,#7dff9a);transition:width .9s ease-out}
+.oRankBox small{display:block;font-size:11px;opacity:.8;margin-top:3px}
+.oRankBox.up{animation:prizeIn .5s cubic-bezier(.2,1.6,.4,1);border-color:#ffd60a;box-shadow:0 0 16px #ffd60a,0 3px 0 var(--ink)}.oRankBox.up .rkBar i{background:linear-gradient(90deg,#ffd60a,#fff3a0)}.oCombo{text-align:center;font-size:14px;color:#c47f00;min-height:4px}
 .wheelWrap{position:relative;width:260px;height:260px;margin:6px auto 12px}#wheel{width:260px;height:260px;border-radius:50%;box-shadow:0 6px 0 var(--ink)}.wheelPtr{position:absolute;top:-14px;left:50%;transform:translateX(-50%);z-index:2;font-size:30px;color:#ff4d6d;-webkit-text-stroke:2px var(--ink)}
 .item .tag.pick{background:#3ccf6e;color:#fff;left:8px;right:auto}
 body.lefty #pushBtn{left:auto;right:12px}body.lefty #heelyBtn{right:auto;left:12px}
@@ -537,6 +546,19 @@ body.pwRight #pwSide{left:auto;right:12px}
 #qcTab small{font-size:9px;font-weight:800;margin-top:2px}#qcTab.show{display:flex}
 body.pwRight #quickCtl{left:auto;right:8px}body.pwRight #qcTab{left:auto;right:0;border-left:2px solid rgba(255,255,255,.3);border-right:0;border-radius:12px 0 0 12px}
 body.web #quickCtl .qcList span,body.web #quickCtl kbd{font-size:14px}
+#goalRail{position:fixed;right:10px;top:50%;transform:translateY(-50%);z-index:6;display:none;flex-direction:column;align-items:center;gap:7px;width:84px;pointer-events:none;font-family:'Luckiest Guy',sans-serif;color:#fff;text-shadow:0 2px 0 #000}#goalRail.show{display:flex}
+body.pwRight #goalRail{right:auto;left:10px}
+#goalRail .grWave{font-size:12px;letter-spacing:.5px;background:rgba(15,20,45,.78);border:2px solid rgba(255,255,255,.35);border-radius:10px;padding:2px 7px;white-space:nowrap}#goalRail .grWave.rest{color:#7dff9a}#goalRail .grWave.push{color:#ffb347}
+#goalRail .grTop{font-size:12px;text-align:center;line-height:1.1;background:rgba(15,20,45,.6);border-radius:8px;padding:2px 5px;max-width:84px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#goalRail .grBar{position:relative;width:14px;height:30vh;max-height:240px;min-height:110px;background:rgba(15,20,45,.7);border:2px solid rgba(255,255,255,.8);border-radius:10px;overflow:visible}
+#goalRail .grBar i{position:absolute;left:0;right:0;bottom:0;border-radius:8px;background:linear-gradient(0deg,#06d6a0,#7dff9a);transition:height .15s linear}
+#goalRail.close .grBar i{background:linear-gradient(0deg,#ff9f1c,#ffd60a)}#goalRail.close .grLeft{color:#ffd60a}
+#goalRail.record .grBar i{background:linear-gradient(0deg,#ffd60a,#fff3a0);height:100%!important}#goalRail.record .grBar{box-shadow:0 0 12px #ffd60a}
+#goalRail .grDot{position:absolute;left:50%;width:20px;height:20px;margin:0 0 -10px -10px;border-radius:50%;background:#fff;border:3px solid #1d2340;transition:bottom .15s linear}
+#goalRail .grLeft{font-size:15px;text-align:center;white-space:nowrap;background:rgba(15,20,45,.78);border-radius:10px;padding:2px 7px}
+#goalRail.pop .grBar{animation:grPop .5s}@keyframes grPop{0%{transform:scale(1)}40%{transform:scale(1.35)}100%{transform:scale(1)}}
+@media (max-width:600px){#goalRail{width:70px;top:46%}#goalRail .grBar{height:24vh}#goalRail .grTop{font-size:11px}#goalRail .grLeft{font-size:13px}}
+body.lowA #goalRail .grBar{animation:none}
 #duelBox{position:fixed;right:10px;top:50%;transform:translateY(-50%);z-index:6;width:170px;background:rgba(15,20,45,.82);color:#fff;border:3px solid #1d2340;box-shadow:0 4px 0 #1d2340;border-radius:16px;padding:10px 12px;pointer-events:none;font-family:'Luckiest Guy',sans-serif}
 #duelBox .dTitle{text-align:center;color:#ffd60a;font-size:18px;letter-spacing:1px}
 #duelBox .dRow{display:flex;justify-content:space-between;align-items:baseline;gap:6px;font-size:15px;margin:4px 0}#duelBox .dRow span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -604,6 +626,11 @@ body.web .savePill{display:flex}
 .hBest{display:flex;align-items:baseline;gap:8px;background:rgba(14,22,52,.6);color:#fff;border:3px solid var(--ink);border-radius:999px;padding:3px 16px;box-shadow:0 4px 0 var(--ink);font-family:'Luckiest Guy',sans-serif}
 .hBest small{font-size:14px;letter-spacing:1px;color:#ffd60a}.hBest b{font-size:22px;font-weight:400;letter-spacing:1px}
 .hGoal .worldCard{width:auto;max-width:min(86vw,360px);padding:3px 12px 3px 4px!important;gap:6px;background:#fff!important;color:var(--ink)}
+.hGoal .wgCard{display:block;width:min(86vw,360px);padding:5px 10px!important;text-align:left}.hGoal .wgCard .wgTop{display:flex;justify-content:space-between;gap:8px;font-size:12px;font-weight:800}.hGoal .wgCard .wgTop b{font-size:13px}
+.wgBar{height:9px;border-radius:6px;background:rgba(29,35,64,.15);overflow:hidden;margin-top:3px;position:relative}.wgBar i{display:block;height:100%;background:linear-gradient(90deg,#06d6a0,#3a86ff);border-radius:6px;transition:width .6s}.wgBar s{position:absolute;top:0;bottom:0;width:2px;background:#1d2340;opacity:.5}
+.oWorld{margin:6px 0;padding:6px 10px;border:3px solid var(--ink);border-radius:14px;background:#e6f4ff;color:#1d2340;box-shadow:0 3px 0 var(--ink);font-weight:800;font-size:13px;text-align:left}.oWorld .wgBar{background:rgba(29,35,64,.15)}
+.mktBanner{grid-column:1/-1;background:linear-gradient(90deg,#1d2340,#3a3f6b);color:#fff;border-radius:12px;padding:7px 10px;font-weight:800;font-size:13px;text-align:center}.mktBanner small{display:block;font-weight:600;opacity:.8;font-size:11px}
+.item .tag.mktUp{left:8px;right:auto;background:#ef476f;color:#fff}.item .tag.mktDn{left:8px;right:auto;background:#06d6a0;color:#1d2340}.oldPrice{text-decoration:line-through;opacity:.6;font-size:11px;margin-right:4px}
 .hGoal .worldCard .ico{width:30px;height:30px;font-size:18px}
 .hGoal .worldCard .cTxt small{font-size:11px}.hGoal .worldCard .cTxt b{font-size:15px}
 #mSchool:not([style*="none"]) ~ #mWorld{display:none!important}
@@ -621,6 +648,12 @@ body.web .simpleHome .nav{font-size:19px!important}
 #bmTip{top:max(10px,env(safe-area-inset-top))!important;bottom:auto!important;font-size:13px;max-width:min(92vw,460px);padding:5px 8px!important}#bmTip b{font-size:13px;line-height:1.2}
 /* More: big tiles in a grid */
 .morePanel h2,.savePanel h2{text-align:center}
+.hsHead{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0}.hsHead .hsBal{font-family:'Luckiest Guy',sans-serif;font-size:22px}.hsHead small{display:block;font-size:12px;opacity:.75}
+.hsList{display:flex;flex-direction:column;gap:8px;margin:8px 0}.hsRow{display:grid;grid-template-columns:38px 1fr auto;gap:8px;align-items:center;background:#fff;border:3px solid var(--ink);border-radius:14px;padding:6px 8px;box-shadow:0 3px 0 var(--ink)}
+.hsRow .hsIc{font-size:26px;text-align:center}.hsRow b{display:block;font-size:14px}.hsRow small{display:block;font-size:11px;opacity:.75}.hsRow .up{color:#06a77d;font-weight:900}.hsRow .dn{color:#ef476f;font-weight:900}
+.hsRow svg{width:90px;height:24px;display:block}.hsBtns{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;max-width:150px}.hsBtns button{font:inherit;font-size:12px;font-weight:900;border:2px solid var(--ink);border-radius:10px;padding:4px 7px;cursor:pointer;background:#06d6a0}.hsBtns button.s{background:#ffb3c1}.hsBtns button:disabled{opacity:.4}
+.hsTop{margin:8px 0;padding:0;list-style:none;font-size:13px}.hsTop li{display:flex;justify-content:space-between;padding:3px 8px;border-radius:8px}.hsTop li:nth-child(odd){background:rgba(29,35,64,.07)}.hsTop li.me{background:#ffe066;font-weight:900}
+.hsNote{font-size:11px;opacity:.75;margin:6px 0;text-align:center}
 .moreGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0 4px}
 @media (max-width:420px){.moreGrid{grid-template-columns:repeat(2,1fr)}}
 .mTile{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:96px;padding:10px 4px;border:3px solid var(--ink);border-radius:18px;box-shadow:0 4px 0 var(--ink);background:#fff;color:var(--ink);font:inherit;cursor:pointer;text-align:center}
@@ -763,6 +796,7 @@ body.homeWide .mSide .worldCard .cTxt{text-align:left}
   </div>
 </div>
 <div id="chaseMeter" aria-hidden="true"><span>🚨</span><b>HALL MONITOR</b><div class="cm"><i id="chaseFill"></i></div></div>
+<div id="goalRail" aria-hidden="true"><div class="grWave" id="grWave"></div><div class="grTop" id="grTop"></div><div class="grBar"><i id="grFill"></i><span class="grDot" id="grDot"></span></div><div class="grLeft" id="grLeft"></div></div>
 <div id="pwFlash"></div>
 <div id="pwSide"><div id="hPw"></div></div>
 <div id="boostBar"></div>
@@ -790,7 +824,7 @@ body.homeWide .mSide .worldCard .cTxt{text-align:left}
     <div class="mTopR"><button class="chip ctrlChip fsChip" id="bFull" onclick="event.stopPropagation();toggleFullscreen()">⛶ Full screen (F)</button><button class="pill savePill webOnly" id="bSaveHome" aria-label="Your progress saves automatically"><span aria-hidden="true" id="saveIco">✓</span><span id="saveTxt">Saved</span></button><button class="iconBtn muteBtn" id="bMute" aria-label="Mute" title="Mute (V)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path class="mOn" d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/><path class="mOff" d="m16 9 6 6M22 9l-6 6"/></svg></button><button class="iconBtn" id="bGear" aria-label="Settings"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
   </div>
   <div class="wordmark"><span>HALLWAY</span><b>DASH</b><small>Don't be late for class.</small></div>
-  <div class="hGoal"><div class="hBest"><small>Best</small><b id="mBest">0</b></div><button class="card small worldCard" id="mSchool" style="display:none"><div class="ico">🏫</div><div class="cTxt"><small id="mSchoolSub">Your school</small><b id="mSchoolTxt">–</b></div></button><button class="card small worldCard" id="mWorld" style="display:none"><div class="ico">🌍</div><div class="cTxt"><small>World record to beat</small><b id="mWorldTxt">–</b></div></button></div>
+  <div class="hGoal"><div class="hBest"><small>Best</small><b id="mBest">0</b></div><button class="card small worldCard" id="mSchool" style="display:none"><div class="ico">🏫</div><div class="cTxt"><small id="mSchoolSub">Your school</small><b id="mSchoolTxt">–</b></div></button><button class="card small worldCard wgCard" id="mWG" style="display:none"><div class="wgTop"><span>🌍 WORLD GOAL · everyone wins</span><b id="mWGt">–</b></div><div class="wgBar"><i id="mWGf"></i></div><div class="wgTop" style="margin-top:2px;font-weight:600"><span id="mWGp"></span><span id="mWGm"></span></div></button><button class="card small worldCard" id="mWorld" style="display:none"><div class="ico">🌍</div><div class="cTxt"><small>World record to beat</small><b id="mWorldTxt">–</b></div></button></div>
   <!-- wide browser windows only: records on the left, today's extras on the right (phones keep the simple layout) -->
   <div class="mSide mSideL" id="mSideL"><div class="sideHead">🏆 Records</div><div class="sideCards" id="mRecSlot"></div><div class="card small worldCard sideCard" id="mTodayCard"><div class="ico">📅</div><div class="cTxt"><small>Your best today</small><b id="mTodayTxt">–</b></div></div>
     <button class="sideBtn" id="mSideRanks">See all leaderboards ›</button><div class="sideHead">🎮 Playing on</div><button class="sideBtn" id="mSideDiff">Normal ›</button></div>
@@ -835,6 +869,17 @@ body.homeWide .mSide .worldCard .cTxt{text-align:left}
     <button class="btn gray" data-back>Back</button>
   </div>
 </div>
+
+<!-- HALL SHARES (website only, 18+): a pretend stock market with a play-only currency that lives on the server -->
+<div class="screen" id="sShares">
+  <div class="panel">
+    <h2>📈 Hall Shares</h2>
+    <div id="hsBody"></div>
+    <div class="hsNote">Hall Shares are earned by running (1 for every 100 m, up to 100 a day). They can't be bought with money and can't be turned into cash, Gold Stars or anything in the store. Prices move with what every player buys and sells. 18+ only.</div>
+    <button class="btn gray" data-back>Back</button>
+  </div>
+</div>
+<button id="bShares" style="display:none" aria-hidden="true"></button>
 
 <!-- SAVE CODE (website only): copy your code, paste it anywhere to resume -->
 <div class="screen" id="sSave">
@@ -1463,8 +1508,11 @@ body.homeWide .mSide .worldCard .cTxt{text-align:left}
     <div class="bigStars" id="oStars"></div>
     <div class="overScore"><small>SCORE</small><b id="oScore">0</b><span><span id="oBestL">Best</span> <span id="oBest">0</span></span></div>
     <button class="btn green" id="bNext" style="display:none">Next Stage ▶</button>
-    <button class="btn gold bigAgain" id="bAgain">▶ PLAY AGAIN</button>
     <div class="oHook" id="oHook" style="display:none"></div>
+    <button class="btn gold bigAgain" id="bAgain">▶ PLAY AGAIN</button>
+    <div class="oPrize" id="oPrize"><b id="oPrizeT"></b><small id="oPrizeN"></small></div>
+    <div class="oWorld" id="oWorld" style="display:none"><div id="oWorldT"></div><div class="wgBar"><i id="oWorldF"></i></div></div>
+    <div class="oRankBox" id="oRankBox" style="display:none"><div class="rkTop"><span id="oRankT"></span><em id="oRankX"></em></div><div class="rkBar"><i id="oRankFill"></i></div><small id="oRankN"></small></div>
     <div class="overMini"><span>📏 <b id="oDist">0m</b></span><span>💵 <b id="oCoins">$0</b></span></div>
     <div class="oCombo" id="oCombo"></div>
     <div class="rankNote" id="oRank" style="display:none"></div>
@@ -3379,7 +3427,7 @@ function syncLyrics() { // the small karaoke box above the free gift, in time wi
 setInterval(syncLyrics, 120);
 const MUSIC = {
   step: 0, next: 0, timer: null,
-  start(fromStart) { const tk = TRACKS.find(t => t.id === curTrack()); if (tk && tk.theme) { if (this.timer) { clearInterval(this.timer); this.timer = null; } FILEMUS.stop(); THEMESONG.start(fromStart); return; } THEMESONG.stop(); if (tk && tk.file) { if (this.timer) { clearInterval(this.timer); this.timer = null; } FILEMUS.play(tk.file, fromStart); return; } FILEMUS.stop(); if (this.timer || !AC || curTrack() === 'off') return; this.step = 0; this.next = AC.currentTime + 0.05; this.timer = setInterval(() => this.tick(), 50); },
+  start(fromStart) { const tk = TRACKS.find(t => t.id === curTrack()); if (tk && tk.theme) { if (this.timer) { clearInterval(this.timer); this.timer = null; } FILEMUS.stop(); THEMESONG.start(fromStart); return; } THEMESONG.stop(); if (tk && tk.file) { if (this.timer) { clearInterval(this.timer); this.timer = null; } FILEMUS.play(tk.file, fromStart); return; } FILEMUS.stop(); if (this.timer || !AC || curTrack() === 'off') return; this.step = 0; this.next = AC.currentTime + 0.05; this.t0 = this.next; this.timer = setInterval(() => this.tick(), 50); },
   stop() { clearInterval(this.timer); this.timer = null; FILEMUS.stop(); THEMESONG.stop(); },
   restart() { this.stop(); THEMESONG.pos = 0; this.start(true); },
   // run intro: a short, original 'ready, set, go' fanfare on the music bus, then the chosen track starts from the top
@@ -5279,7 +5327,7 @@ function openAgeGate(then) {
   sl.oninput = () => { moved = true; const v = +sl.value; $('ageVal').textContent = v >= 99 ? '99+' : v; $('ageGo').disabled = false; const e = v < 8 ? '🧸' : v < 11 ? '🎒' : v < 14 ? '🛹' : v < 18 ? '🎧' : v < 23 ? '🎓' : v < 40 ? '💼' : v < 60 ? '☕' : '🌻'; const hh = $('ageHero'); if (hh.textContent !== e) { hh.textContent = e; hh.classList.add('pop'); setTimeout(() => hh.classList.remove('pop'), 180); } };
   $('ageGo').onclick = () => {
     if (!moved) return; const v = +sl.value;
-    save.age = v < 13 ? 'child' : v < 16 ? 'teen' : 'adult'; persist(); m.classList.remove('show');
+    save.age = v < 13 ? 'child' : v < 16 ? 'teen' : 'adult'; save.over18 = v >= 18; persist(); m.classList.remove('show');
     applyPrivacy(); sfx('click');
     if (save.age === 'child') toast('Kid-safe mode on', 'No personal info collected, online features off', 2200);
     if (then) then(); else startRun('infinite'); // straight into a real run: the first one shows swipe hints as things come up
@@ -5593,7 +5641,7 @@ async function addFriendCode(code) {
 async function refreshFriends() { if (!Online.ready() || !(save.friends || []).length) return; for (const f of save.friends) { try { const r = await Online.byCode(f.code); if (r) Object.assign(f, { n: r.n, s: r.s, d: r.d }); } catch (e) {} } persist(); }
 // next person to beat on this run (friends first, then the classmates board), shown on the HUD
 function rivals() { const out = []; for (const f of save.friends || []) if (f.d) out.push({ n: f.n, d: f.d, friend: 1 }); for (const r of boardRows()) if (!r.me && r.d) out.push({ n: r.n, d: r.d }); if (save.bestDist) out.push({ n: 'Your best', d: save.bestDist, me: 1 }); { const w = WREC[runBK()]; if (w && w.r && w.r.d > 0 && !w.r.me) out.push({ n: '🌍 ' + w.r.n + ' (world record)', d: w.r.d, world: 1 }); } return out.sort((a, b) => a.d - b.d); }
-function nextRival() { if (!G.rivals) return null; while (G.rivals.length && G.rivals[0].d <= G.dist) { const r = G.rivals.shift(); if (G.dist > 30) { popup((r.me ? 'NEW BEST DISTANCE!' : 'PASSED ' + r.n.toUpperCase() + '!'), r.friend ? '#ff9f1c' : '#7dff9a'); sfx('bill'); } } return G.rivals[0] || null; }
+function nextRival() { if (!G.rivals) return null; while (G.rivals.length && G.rivals[0].d <= G.dist) { const r = G.rivals.shift(); G.railFrom = r.d; G.railPop = 0.6; if (r.me) G.railRecord = true; if (G.dist > 30) { popup((r.me ? 'NEW BEST DISTANCE!' : 'PASSED ' + r.n.toUpperCase() + '!'), r.friend ? '#ff9f1c' : '#7dff9a'); sfx('bill'); } } return G.rivals[0] || null; }
 
 /* ---------- starter pack (Google Play Billing via the HallwayBilling bridge) ---------- */
 const STARTER = { sku: 'starter_pack', cash: 12000, heelys: 5, otok: 15 }; // no Gold Stars: real money never buys random items (loot boxes)
@@ -5821,6 +5869,84 @@ function slideDur() { return 0.95 * (G.mode === 'maker' ? 1 : shoeDef().slide); 
 function startSlide() { if (!(P.slide > 0)) { P.slideAge = 0; sfx('slide'); } P.slide = Math.max(P.slide, slideDur()); }
 function startRoll(t) { P.rollT = P.rollDur = t; if (player && player.act.cur === 'Roll') player.act.cur = ''; } // restart the clip even if the last roll just ended
 // row spacing follows the speed WITHOUT the Fast/Turbo multiplier: faster modes really are harder (less time per row), not just stretched out
+/* ---------------- WAVES ----------------
+   Endless runs come in waves instead of one long climb: a RUSH stretch with more obstacles packed closer together
+   (and the hand-made combos below), then a short BREATHER of coin lanes with a bonus for making it through.
+   Worked out from distance, so a seeded run (tournament / challenge) gets the same waves for everyone. */
+const WAVE_START = 300, WAVE_REST = 110;
+const wavesOn = () => G.mode === 'infinite' && !G.fun && !G.easyRun;
+const wavePush = n => 340 + Math.min(n, 8) * 35; // each rush is a little longer than the last
+function waveAt(d) {
+  if (!wavesOn() || d < WAVE_START) return null;
+  let t = d - WAVE_START;
+  for (let n = 0; n < 400; n++) { const L = wavePush(n); if (t < L) return { n, rest: false, k: t / L }; t -= L; if (t < WAVE_REST) return { n, rest: true, k: t / WAVE_REST }; t -= WAVE_REST; }
+  return null;
+}
+function waveTick() { // runs every frame: the banner when a wave starts and the bonus when you survive one
+  const wv = waveAt(G.dist), key = wv ? wv.n * 2 + (wv.rest ? 1 : 0) : -1;
+  if (key === G.waveKey) return; const was = G.waveKey; G.waveKey = key; if (!wv || was === -1 && wv.rest) return;
+  if (!wv.rest) { popup('⚡ WAVE ' + (wv.n + 1) + (wv.n ? ' · HARDER!' : ' · GET READY!'), '#ffb347'); sfx('go'); buzz('power'); return; }
+  const pts = Math.round((300 + wv.n * 200) * scoreMult()); G.score += pts; G.coins += 5 + wv.n * 2;
+  popup('🌊 WAVE ' + (wv.n + 1) + ' SURVIVED! +' + pts.toLocaleString(), '#7dff9a'); sfx('win'); addChain(2);
+  stats().waves = (stats().waves || 0) + 1; stats().bestWave = Math.max(stats().bestWave || 0, wv.n + 1);
+}
+/* ---------------- HAND-MADE COMBOS ----------------
+   Short designed sequences mixed into the random rows during a rush wave. Each row: left, middle, right lane.
+   B = wall (go around), L = low (jump), H = high (slide), _ = open. Every row has a way through that's at most one lane
+   from the last one, so they're always fair. Clear one without getting hit for a bonus. */
+const PATTERNS = [
+  { name: 'ZIGZAG', rows: ['_BB', 'B_B', 'BB_', 'B_B'] },
+  { name: 'JUMP · SLIDE · JUMP', rows: ['BLB', 'BHB', 'BLB'] },
+  { name: 'THE SNAKE', rows: ['LBB', 'BHB', 'BBL', 'BHB'] },
+  { name: 'PICK A SIDE', rows: ['LBH', 'HBL', 'LBH', 'B_B'] },
+  { name: 'HURDLES', rows: ['LLL', 'LLL', 'LLL'] },
+  { name: 'LIMBO', rows: ['HHB', 'BHH', 'HHB'] },
+  { name: 'STAIRCASE', rows: ['L_B', 'BL_', '_BL', 'B_B'] },
+  { name: 'SLALOM', rows: ['B__', '__B', 'B__', '__B'] }
+];
+const PAT_OBS = { B: K => K.cat === 'obs' && K.type === 'block', L: K => K.cat === 'obs' && K.type === 'low', H: K => K.cat === 'obs' && K.type === 'high' };
+function patternRow(z, row, pool, g) {
+  const lanes = [-1, 0, 1], open = [];
+  lanes.forEach((lane, i) => {
+    const c = row[i]; if (c === '_') { open.push(lane); return; }
+    const k = weightedPick(pool, K => PAT_OBS[c](K) && !K.cross && !K.vz && !K.sway && !(K.outer && lane === 0));
+    if (k) addObj(k, lane, z); else open.push(lane);
+    if (c === 'L' && Math.random() < 0.5) coinArc(lane, z); else if (c === 'H' && Math.random() < 0.4) for (let q = -2; q <= 2; q++) addObj('coin', lane, z + q * 1.3, { y: 0.35 });
+  });
+  for (const lane of open) coinLine(lane, z - g * 0.7, z - 0.5);
+  return open.length ? open[0] : lanes[row.search(/[LH]/)] || 0;
+}
+/* COMBO FX: the higher your combo, the bigger the glowing trail behind your runner, and from x2 the music gets an extra
+   beat on top (hi-hats, then a clap on x3+), locked to the song's tempo. */
+const COMBO_COL = ['', '', '#7fd3ff', '#ffd60a', '#ff9f1c', '#ff2bd6'];
+function comboTier() { const m = comboMul(); return m >= 3 ? (m >= 4 ? 5 : m >= 3.5 ? 4 : 3) : m >= 2 ? 2 : 0; }
+function comboFx(dt) {
+  const tier = G.dying ? 0 : comboTier();
+  if (tier && !(G.pw.cheat > 0)) { // trail: a few sparks a frame, more and bigger as the combo climbs
+    const n = tier >= 4 ? 2 : 1;
+    if (Math.random() < 0.45 + tier * 0.1) emit(P.x + rand(-0.25, 0.25), (P.y || 0) + rand(0.5, 1.4), 0.25, n, COMBO_COL[tier], 0.6 + tier * 0.25, 0.3 + tier * 0.05, 0.16 + tier * 0.04, -0.5, true, true);
+  }
+  if (!AC || !save.sound || AC.state !== 'running' || tier < 2 || G.paused || curTrack() === 'off' || save.music === 0) { G.cmbNext = 0; return; }
+  let bpm = 0, t0 = 0; // find the beat grid of whatever is playing
+  if (curTrack() === 'theme' && THEMESONG.playing()) { bpm = 128; t0 = THEMESONG.t0; }
+  else { const tr = TRACK_FN[curTrack()]; if (tr && MUSIC.timer) { bpm = tr.bpm; t0 = MUSIC.t0 || 0; } }
+  if (!bpm) return;
+  const e = 60 / bpm / 2, now = AC.currentTime; // eighth notes
+  if (!G.cmbNext || G.cmbNext < now) G.cmbNext = t0 + Math.ceil((now + 0.03 - t0) / e) * e;
+  while (G.cmbNext < now + 0.12) {
+    const i = Math.round((G.cmbNext - t0) / e), at = G.cmbNext - now;
+    hat(at, i % 2 ? 0.07 : 0.035);
+    if (tier >= 3 && i % 4 === 2) snare(at, 0.09, 2600);
+    if (tier >= 5 && i % 2 === 1) hat(at + e / 2, 0.03);
+    G.cmbNext += e;
+  }
+}
+function patternTick() { // bonus once you're past the last row of a combo without getting hit
+  const P2 = G.pat; if (!P2 || G.dist < P2.end) return; G.pat = null;
+  if (G.hits !== P2.hits || G.dying) return;
+  const pts = Math.round(400 * scoreMult()); G.score += pts; popup('🧩 ' + P2.name + ' CLEARED! +' + pts.toLocaleString(), '#9bf6ff'); sfx('bill'); addChain(2);
+  stats().patterns = (stats().patterns || 0) + 1;
+}
 function gap() { return clamp(G.speed / speedMode().mul * 0.95, 11, 26) * (G.cfg.gapMul || 1) * diff().gap; }
 
 /* ---------------- SPAWNING ---------------- */
@@ -5926,6 +6052,19 @@ function spawnRowInner(z) {
   const g = gap();
   // first few rows: just coins
   if (G.rowCount <= 2) { coinLine(G.prevSafe, z - g * 0.6, z); return; }
+  // WAVES: a hand-made combo in progress, or start one (rush waves only, in the plain hallway)
+  const wv = waveAt(G.dist + z - PZ);
+  if (G.patQ && (zone !== 'hall' || G.pw.cheat > 0)) G.patQ = null;
+  if (!G.patQ && wv && !wv.rest && wv.n >= 1 && wv.k > 0.15 && wv.k < 0.85 && zone === 'hall' && !G.quiz && G.dist - (G.lastPat || 0) > 160 && Math.random() < 0.3
+    && !(G.shortcut && G.objs.includes(G.shortcut)) && !(G.plat && G.objs.includes(G.plat)) && !(G.hopLane !== undefined && G.dist + z < (G.hopLineEnd || 0) + 2)) {
+    const pt = pick(PATTERNS), ok = r => [-1, 0, 1].some((l, i) => r[i] !== 'B' && Math.abs(l - G.prevSafe) <= 1), mir = !ok(pt.rows[0]);
+    G.patQ = { name: pt.name, rows: pt.rows.map(r => mir ? r.split('').reverse().join('') : r), hits: G.hits }; G.lastPat = G.dist;
+  }
+  if (G.patQ) {
+    const row = G.patQ.rows.shift(); G.prevSafe = patternRow(z, row, pool, g);
+    if (!G.patQ.rows.length) { G.pat = { name: G.patQ.name, end: G.dist + z - PZ + 2, hits: G.patQ.hits }; G.patQ = null; }
+    return;
+  }
   // crossing special
   const crossKind = lvl ? lvl.cross : (G.themeKey === 'college' ? 'scooter' : null);
   const crossChance = lvl ? (lvl.crossChance || 0) : 0.12;
@@ -5955,16 +6094,24 @@ function spawnRowInner(z) {
   }
   const skipL = l => l === scLane || l === plLane;
   // HEAD HOP LINE: a line of students waiting (for the water fountain / the bathroom), spaced for bouncing head to head
-  if (G.mode !== 'tutorial' && !G.fun && G.dist > 400 && G.dist - (G.lastHopLine || 0) > 550 && Math.random() < 0.18) {
+  const forceHop = G.scHop && G.dist + z - PZ > G.scHop;
+  if (G.mode !== 'tutorial' && !G.fun && (forceHop || (G.dist > 400 && G.dist - (G.lastHopLine || 0) > 550 && Math.random() < 0.18))) {
     const opts2 = [-1, 0, 1].filter(l => l !== safe && !skipL(l)); const L = pick(opts2);
-    if (L !== undefined) { G.lastHopLine = G.dist; const sp = G.speed * 0.45 + 0.55, n = pick([3, 3, 4, 5]); // the bounce lands mid-window on the next head
+    if (L !== undefined) { G.lastHopLine = G.dist; G.scHop = 0; const sp = G.speed * 0.45 + 0.55, n = pick([3, 3, 4, 5]); // the bounce lands mid-window on the next head
       for (let k = 0; k < n; k++) { const q = addObj('student', L, z + k * sp, { queue: true }); if (q) { q.vz = 0; q.say = k === 0 ? 'Wait your turn!' : ''; } }
       for (let k = 0; k < n - 1; k++) for (let c = 1; c <= 3; c++) addObj('coin', L, z + k * sp + sp * c / 4, { y: 2.2 + Math.sin(Math.PI * c / 4) * 1.0, x: L * laneW });
-      G.hopLane = L; G.hopLineEnd = z + n * sp; } }
-  const hopL = G.hopLane !== undefined && z < (G.hopLineEnd || 0) + 2 ? G.hopLane : null;
+      G.hopLane = L; G.hopLineEnd = G.dist + z + n * sp; } } // stored as a hallway distance: row z is always near the spawn point
+  const hopL = G.hopLane !== undefined && G.dist + z < (G.hopLineEnd || 0) + 2 ? G.hopLane : null;
   const skipL2 = skipL; const skipLx = l => skipL2(l) || l === hopL;
+  // BREATHER between waves: coin lanes and the odd hurdle, nothing to dodge
+  if (wv && wv.rest) {
+    const lanes = [-1, 0, 1].filter(l => !skipLx(l));
+    for (const lane of lanes) { if (lane !== safe && Math.random() < 0.18) { const k = weightedPick(pool, K => K.cat === 'obs' && K.type === 'low' && !K.cross && !K.vz && !(K.outer && lane === 0)); if (k) { addObj(k, lane, z); coinArc(lane, z); continue; } } if (lane === safe || Math.random() < 0.7) coinLine(lane, z - g * 0.8, z + 0.1); }
+    if (Math.random() < 0.15) addObj('bill', safe, z - g * 0.4, { y: 0.8 });
+    G.prevSafe = safe; return;
+  }
   // more stuff on harder difficulties; the safe-lane rule below still guarantees a path every row
-  const density = (save.battery ? 0.85 : 1) * clamp((G.cfg.density || 0.5) + diff().dens + (G.mode === 'infinite' ? Math.min(0.15, G.dist / 20000) : 0), 0.15, 0.95);
+  const density = (save.battery ? 0.85 : 1) * clamp((G.cfg.density || 0.5) + diff().dens + (G.mode === 'infinite' ? Math.min(0.15, G.dist / 20000) : 0) + (wv && !wv.rest ? 0.06 + Math.min(0.08, wv.n * 0.015) : 0), 0.15, 0.95);
   let blocks = 0; const occ = {};
   for (const lane of [-1, 0, 1]) {
     if (skipLx(lane)) continue; // inside the shortcut / under a platform: always clear
@@ -5993,8 +6140,9 @@ function spawnRowInner(z) {
   }
   if (G.fun === 'coinrush' && Math.random() < 0.35) addObj('bill', safe, z - g * 0.4, { y: 0.8 });
   if (G.fun === 'trial' && G.rowCount % 5 === 0) addObj('energy', safe, z - g * 0.5, { y: 1.0 });
-  // power-ups
-  if (G.rowCount - G.lastPower > 26 && Math.random() < 0.25) {
+  // power-ups (a new player's first run always gets a paper plane early)
+  if (G.scPlane && G.dist + z - PZ > G.scPlane) { G.scPlane = 0; G.lastPower = G.rowCount; addObj('cheat', safe, z - g * 0.5, { y: 1.0 }); }
+  else if (G.rowCount - G.lastPower > 26 && Math.random() < 0.25) {
     G.lastPower = G.rowCount;
     addObj(pick(['pass', 'cheat', 'energy', 'pass', 'cheat', 'energy', 'heelyPick', 'spring']), pick([-1, 0, 1]), z - g * 0.5, { y: 1.0 });
   }
@@ -6065,7 +6213,9 @@ G.lastQuiz = 0; G.lastShortcut = 0; G.lastLetter = -999; G.tpStart = undefined; 
   if (G.rival) { scene.remove(G.rival.act.root); G.rival = null; }
   endGhost(); if (mode === 'infinite' && G.ghostNext) startGhost(G.ghostNext); G.ghostNext = null; if (mode === 'infinite' && G.heatNext) heatBegin(G.heatNext); G.heatNext = null;
   G.quiz = null; $('quizBox').classList.remove('show');
-  G.rivals = mode === 'infinite' && !G.fun ? rivals() : null; G.cc = 0; G.slowT = 0;
+  { const n = stats().runs, on = mode === 'infinite' && !G.fun && !G.fixed && n < 2; // show off the cool stuff in a new player's first 2 runs
+    G.scPlane = on ? (n === 0 ? 280 : 0) : 0; G.scHop = on ? (n === 0 ? 560 : 360) : 0; if (on && n === 1) G.nextHunt = 650; }
+  G.rivals = mode === 'infinite' && !G.fun ? rivals() : null; G.railFrom = 0; G.railPop = 0; G.railRecord = false; G.waveKey = -1; G.hits = 0; G.patQ = null; G.pat = null; G.lastPat = 0; G.cmbNext = 0; G.cc = 0; G.slowT = 0;
   if (G.daily) toast('DAILY CHALLENGE', 'Beat ' + dailyChallenge().target.toLocaleString() + ' points' + (G.fun ? ' · ' + FUN[G.fun].name : '') + ' for 3★', 2400); else if (G.trip) toast(currentTrip().name.toUpperCase(), 'Collect ' + currentTrip().item + '!', 2200); else if (G.fun) toast(FUN[G.fun].name.toUpperCase(), FUN[G.fun].desc, 2200); else if (mode !== 'tutorial' && mode !== 'maker') toast(mode === 'campaign' ? LEVELS[G.levelIdx].name : 'INFINITE RUN', mode === 'campaign' ? 'Get to ' + LEVELS[G.levelIdx].dest + ' before the bell!' : THEME().name, 2200);
   G.bossOn = false; G.timeLeft0 = G.timeLeft;
   if (mode === 'campaign') setTimeout(() => { if (G.scene === 'play' && G.mode === 'campaign') toast('Goal for ★★★', goalText(LEVELS[G.levelIdx]), 2200); }, 2400);
@@ -6075,6 +6225,7 @@ G.lastQuiz = 0; G.lastShortcut = 0; G.lastLetter = -999; G.tpStart = undefined; 
 }
 function crash(o, msg) {
   if (G.dying) return;
+  G.hits = (G.hits || 0) + 1;
   if (save.admin && save.adminGod && G.mode !== 'tutorial') { if (o) o.ignore = true; return; } // admin god mode
   if (G.shield && G.mode !== 'tutorial') { G.shield = 0; if (o) o.ignore = true; G.pw.pass = Math.max(G.pw.pass, 1.5); G.caught = false; popup('🛡 SHIELD SAVED YOU!', '#7bdff2'); sfx('smash'); G.shake = 0.3; return; }
   if (petDef().help === 'guard' && !G.foxSaved && G.mode !== 'tutorial' && G.mode !== 'maker') { G.foxSaved = true; if (o) o.ignore = true; G.pw.pass = Math.max(G.pw.pass, 1.5); G.caught = false; popup('🦊 FOX TO THE RESCUE!', '#ff9f1c'); sfx('power'); clearChase(); G.stumble = 0; return; }
@@ -6124,6 +6275,54 @@ async function doShare(url) {
 }
 function startReplay() { if (!G.replayBuf || G.replayBuf.length < 20) { toast('Nothing to replay', '', 1000); return; } G.replay = { buf: G.replayBuf.slice(), i: 0, loops: 0, end: G.dist }; showScreen(null); $('replayTag').classList.add('show'); }
 function stopReplay() { G.replay = null; G.replayOff = 0; $('replayTag').classList.remove('show'); syncObjs(); showScreen('sOver'); }
+/* ---------- FIRST FIVE RUNS: a prize after each of a new player's first 5 runs, and a peek at the next one ---------- */
+const NEWBIE = [
+  { item: 'skater', label: '🛹 Skater runner', alt: { cash: 400 } },
+  { heelys: 3, label: '👟 3 Heel Wheels' },
+  { item: 'wh_neon', label: '💡 Neon Glow wheels', alt: { cash: 1500 } },
+  { item: 'hat_party', cash: 500, label: '🥳 Party Hat + $500', alt: { cash: 900 } },
+  { item: 'beach', gs: 2, label: '🌴 Summer School runner + 2★', alt: { cash: 600 } }
+];
+function newbiePrize() { // returns { i, label } for the prize just won, or null
+  if (G.mode === 'tutorial' || G.mode === 'maker') return null;
+  if (save.nb5 === undefined) save.nb5 = stats().runs <= 1 ? 0 : 5; // players from before this update skip it
+  const i = save.nb5; if (i >= NEWBIE.length) return null;
+  const p = NEWBIE[i], rw = { cash: p.cash || 0, gs: p.gs || 0, heelys: p.heelys || 0 };
+  if (p.item) { if (save.owned[p.item]) Object.keys(p.alt).forEach(k => rw[k] = (rw[k] || 0) + p.alt[k]); else save.owned[p.item] = 1; }
+  grant(rw); save.nb5 = i + 1; persist();
+  return { i, label: p.item && rw.cash >= (p.alt.cash || 0) + (p.cash || 0) && p.alt.cash ? '$' + rw.cash.toLocaleString() + ' (you already had it)' : p.label };
+}
+/* ---------- RANK: a permanent player level from the XP of every run, with a title and a reward each level ---------- */
+const RANKS = ['New Kid', 'Hall Walker', 'Bell Beater', 'Locker Legend', 'Hallway Hero', 'Speed Demon', 'Class Act', 'Honor Roll', 'Varsity Runner', "Principal's Nightmare", 'Senior Sprinter', 'Valedictorian', 'Hall of Famer'];
+const rankNeed = L => L === 1 ? 60 : 100 + (L - 1) * 90; // rank 2 comes in the very first run
+function rankOf(xp) { let L = 1; xp = Math.max(0, xp || 0); while (xp >= rankNeed(L) && L < 999) { xp -= rankNeed(L); L++; } return { L, cur: xp, need: rankNeed(L) }; }
+const rankTitle = L => L <= RANKS.length ? RANKS[L - 1] : RANKS[RANKS.length - 1] + ' ' + (L - RANKS.length + 1);
+const rankReward = L => ({ cash: 150 * L, gs: L % 5 === 0 ? 1 : 0 });
+function rankAfterRun(xp) {
+  const before = rankOf(save.rxp); save.rxp = (save.rxp || 0) + Math.max(0, Math.round(xp)); const after = rankOf(save.rxp);
+  const rw = { cash: 0, gs: 0 }; for (let L = before.L + 1; L <= after.L; L++) { const r = rankReward(L); rw.cash += r.cash; rw.gs += r.gs; }
+  if (after.L > before.L) grant(rw); persist();
+  return { before, after, rw, up: after.L > before.L };
+}
+function showRank(R) {
+  const box = $('oRankBox'); if (!R) { box.style.display = 'none'; return; }
+  box.style.display = 'block'; box.classList.toggle('up', R.up);
+  setText('oRankT', (R.up ? '⬆ RANK UP! ' : 'RANK ') + R.after.L + ' · ' + rankTitle(R.after.L)); setText('oRankX', '+' + (G.lastXP || 0) + ' XP');
+  setText('oRankN', R.up ? 'Reward: +$' + R.rw.cash.toLocaleString() + (R.rw.gs ? ' +' + R.rw.gs + '★' : '') + ' · next: ' + rankTitle(R.after.L + 1) : (R.after.need - R.after.cur) + ' XP to Rank ' + (R.after.L + 1) + ' · ' + rankTitle(R.after.L + 1));
+  const f = $('oRankFill'); f.style.transition = 'none'; f.style.width = (R.up ? 0 : R.before.cur / R.before.need * 100) + '%';
+  setTimeout(() => { f.style.transition = ''; f.style.width = (R.after.cur / R.after.need * 100).toFixed(1) + '%'; }, 450);
+  if (R.up) setTimeout(() => { if (G.scene === 'over') { sfx('win'); buzz('power'); } }, 700);
+}
+/* ---------- SCORE MILESTONES: a big party the first time you ever reach each one ---------- */
+const MILESTONES = [1000, 5000, 10000, 25000, 50000, 100000, 250000, 500000, 1000000];
+function milestoneTick() {
+  if (G.mode !== 'infinite' || G.fun || G.dying) return;
+  const top = save.msTop || 0, next = MILESTONES.find(m => m > top); if (!next || G.score < next) return;
+  save.msTop = next; const cash = Math.min(2000, Math.round(next / 20)); save.bank += cash; persist();
+  popup('🎉 FIRST ' + next.toLocaleString() + ' POINTS! +$' + cash, '#ffd60a'); toast('🎉 ' + next.toLocaleString() + ' POINTS!', 'Your first time ever. +$' + cash, 1800);
+  sfx('win'); buzz('power'); voice('congratulations'); if (!A11Y().flash) G.flash = 0.25;
+  for (const c of ['#ff2bd6', '#ffd60a', '#06d6a0', '#7fd3ff']) emit(P.x, 1.6, 0.2, 10, c, 7, 1.0, 0.3, 6, true, true);
+}
 function oneMoreRun(sc) {
   const ideas = [];
   if (G.mode === 'infinite' && !G.fun) {
@@ -6138,13 +6337,14 @@ function oneMoreRun(sc) {
   { const left = save.missions.filter(m => !m.done).length; if (left === 1 && (save.mult || 1) < MAX_MULT) ideas.push([1, '1 mission left for a x' + ((save.mult || 1) + 1) + ' multiplier!']); }
   { const t = passTier(); if (t < PASS_TIERS) { const need = tierStart(t + 1) - passSave().xp; if (need > 0 && need < 250) ideas.push([need / 25, need + ' XP to School Year Pass tier ' + (t + 1) + '!']); } }
   { const sv = svsMine(); if (sv && sv.rank > 1 && sv.gap > 0 && G.mode === 'infinite' && !G.fun) ideas.push([sv.gap / 20, 'Your school is #' + sv.rank + ': ' + sv.gap.toLocaleString() + ' points to pass ' + schoolName(sv.above) + '!']); }
-  ideas.sort((a, b) => a[0] - b[0]); if (ideas.length) return '🎯 Next goal: ' + ideas[0][1];
+  { const R = rankOf(save.rxp), need = R.need - R.cur; if (need < 120) ideas.push([need / 12, need + ' XP to Rank ' + (R.L + 1) + ': ' + rankTitle(R.L + 1) + '!']); }
+  ideas.sort((a, b) => a[0] - b[0]); if (ideas.length) return '🔥 SO CLOSE! ' + ideas[0][1];
   if (G.mode === 'infinite' && !G.fun && save.bestDist > 0) return '🎯 Next goal: beat your best of ' + Math.floor(save.bestDist).toLocaleString() + ' m';
   return '';
 }
 function endRun(win, reason) {
   if (G.scene !== 'play') return;
-  G.scene = 'over'; $('hud').classList.remove('show'); $('pwSide').classList.remove('show'); $('pushBtn').classList.remove('show'); $('heelyBtn').classList.remove('show'); $('chaseMeter').classList.remove('show');
+  G.scene = 'over'; $('hud').classList.remove('show'); $('goalRail').classList.remove('show'); $('pwSide').classList.remove('show'); $('pushBtn').classList.remove('show'); $('heelyBtn').classList.remove('show'); $('chaseMeter').classList.remove('show');
   const L = LEVELS[G.levelIdx];
   let bonus = 0, stars = 0;
   if (win && G.mode === 'campaign') {
@@ -6155,7 +6355,7 @@ function endRun(win, reason) {
   }
   const earned = G.coins + bonus;
   save.bank += earned;
-  if (G.mode !== 'tutorial') { const xp = G.dist / 4 + G.coins + (G.run ? G.run.escapes * 20 : 0) + (G.tricksLanded || 0) * 25; addXP(xp); G.lastXP = Math.round(xp); }
+  if (G.mode !== 'tutorial') { const xp = G.dist / 4 + G.coins + (G.run ? G.run.escapes * 20 : 0) + (G.tricksLanded || 0) * 25; addXP(xp); G.lastXP = Math.round(xp); G.lastRank = rankAfterRun(xp); } else G.lastRank = null;
   if (G.mode !== 'tutorial') {
     const st = stats(); st.runs++; st.dist += Math.floor(G.dist); addRunnerDist(G.dist); st.coins += G.coins; st.escapes += G.run.escapes || 0; st.tricks += G.tricksLanded || 0; st.cc += G.run.cc || 0; st.jumps += G.run.jumps || 0; st.power += G.run.power || 0; st.trips += G.run.souv || 0;
     if (win && G.mode === 'campaign' && L.boss) { st.boss++; const last = LEVELS.filter(x => x.chapter === L.chapter).pop(); if (last === L && !save.owned[CHAPTER_HATS[L.chapter]]) { save.owned[CHAPTER_HATS[L.chapter]] = 1; const hn = SHOP.hat.find(h => h.id === CHAPTER_HATS[L.chapter]).name; setTimeout(() => toast('BOSS REWARD: ' + hn + '!', 'Wear it from Locker Room → Hats', 2600), 1200); } }
@@ -6187,7 +6387,10 @@ function endRun(win, reason) {
     else { if (sc > fb) { save.funBest[G.fun] = sc; funLine = 'New ' + FUN[G.fun].name + ' record!'; } else funLine = FUN[G.fun].name + ' best: ' + fb.toLocaleString(); }
     persist();
   }
-  $('oHook').textContent = oneMoreRun(sc); $('oHook').style.display = $('oHook').textContent ? 'block' : 'none';
+  { const h = oneMoreRun(sc); $('oHook').textContent = h; $('oHook').style.display = h ? 'block' : 'none'; }
+  { const pz = newbiePrize(), el = $('oPrize'); el.classList.remove('show'); if (pz) { const nx = NEWBIE[pz.i + 1]; setText('oPrizeT', '🎁 PRIZE ' + (pz.i + 1) + ' OF 5: ' + pz.label); setText('oPrizeN', nx ? 'Next prize after 1 more run: ' + nx.label : 'That\'s all 5 starter prizes. Now climb the ranks!'); setTimeout(() => { if (G.scene === 'over') { el.classList.add('show'); sfx('buy'); } }, 500); } }
+  showRank(G.mode !== 'tutorial' && G.mode !== 'maker' ? G.lastRank : null);
+  { const wgAdd = G.mode !== 'tutorial' && G.mode !== 'maker' && !G.cheated && G.dist >= 10 ? G.dist : 0; if (wgAdd) worldGoalAdd(wgAdd); showWorldGoalOver(wgAdd); if (wgAdd) setTimeout(() => hsAfterRun(wgAdd), 1800); }
   $('oCombo').textContent = G.comboBonus > 50 ? 'Combo bonus +' + Math.round(G.comboBonus).toLocaleString() + ' · best combo ' + (G.bestChain || 0) : ''; 
   G.earned = earned; $('bDouble').style.display = earned >= 20 && G.mode !== 'tutorial' ? 'block' : 'none'; $('bDouble').disabled = false; $('bDouble').textContent = '▶ Watch ad: double cash (+$' + earned + ')';
   if (G.mode !== 'tutorial' && !save.starterBought && stats().runs >= 3 && (save.starterSeen || 0) < 1 + Math.floor(stats().runs / 15)) setTimeout(() => { if (G.scene === 'over') openStarter(); }, 1200);
@@ -6497,6 +6700,7 @@ function update(dt) {
   if (G.fun === 'coinrush') { G.timeLeft -= wdt; if (G.timeLeft <= 0) { G.timeLeft = 0; sfx('bell'); endRun(true, 'coinrush'); return; } }
   if (G.fun === 'trial') { G.trialT += dt; if (G.dist >= 1000) { sfx('bell'); endRun(true, 'trial'); return; } }
   if (G.ghost) updGhost(dt); if (G.heat) updHeat(dt);
+  waveTick(); patternTick(); comboFx(dt); milestoneTick();
   if (G.fun === 'race') { if (!G.rival) startRival(); updRival(dt); if (G.dist >= 1000) { sfx('bell'); endRun(true, 'race'); return; } if (G.rival.d >= 1000) { G.deathMsg = G.rival.name + ' got to class first!'; sfx('deny'); endRun(false, 'race'); return; } }
   // infinite theme progression
   if (G.mode === 'infinite') {
@@ -6572,7 +6776,7 @@ function update(dt) {
       if (!G.finishSpawned) { G.finishSpawned = true; addObj('finish', 0, lvl.target - G.dist + PZ, { dest: lvl.dest.toUpperCase() }); }
       G.nextRow = 1e9; break;
     }
-    spawnRow(G.nextRow); G.nextRow += gap();
+    spawnRow(G.nextRow); { const wv = waveAt(G.dist + G.nextRow - PZ); G.nextRow += gap() * (G.patQ ? 1.08 : wv && !wv.rest ? 0.93 : 1); }
   }
   if (lvl && G.dist >= lvl.target) { sfx('bell'); endRun(true); return; }
 
@@ -6668,7 +6872,7 @@ function update(dt) {
           if (G.fun !== 'hardcore' && G.mode !== 'maker' && moving && P.fromLane !== P.lane && Math.abs(o.x - P.lane * laneW) < Math.abs(o.x - P.fromLane * laneW)) {
             o.ignore = true; o.bumped = true; P.lane = P.fromLane;
             if (G.stumble > 0 || (G.chase && G.chase.boss)) { G.caught = true; crash(o, (G.chase ? G.chase.name[0].toUpperCase() + G.chase.name.slice(1) : 'They') + ' caught you!'); }
-            else { breakChain(); G.tpBump = true; G.stumble = chaseTime(); G.shake = 0.25; sfx('bump'); vibrate(60); popup('BUMPED! RUN!', '#ef476f'); P.stumbleT = 0.45; knockAside(o); startChase(null, MONITOR_CHASE); }
+            else { breakChain(); G.hits = (G.hits || 0) + 1; G.tpBump = true; G.stumble = chaseTime(); G.shake = 0.25; sfx('bump'); vibrate(60); popup('BUMPED! RUN!', '#ef476f'); P.stumbleT = 0.45; knockAside(o); startChase(null, MONITOR_CHASE); }
           } else {
             const msgs = { robot: 'CLANK! The robotics club robot ran you over. Switch lanes!', pie: 'SPLAT! A pie to the face. Slide under flying pies!', door: 'A classroom door swung open right into you! Watch for the flashing light.', locker: 'BONK! A locker door popped open. Slide under next time!', tape: 'You ran into the Principal\'s caution tape!', puddle: 'SPLASH! You slipped in a puddle. Jump it!', tray: 'You slipped on a spilled lunch tray! Jump it next time!', chair: 'A runaway rolling chair took you out! Jump it!', volcano: 'You crashed into the science fair volcano. Jump over it!', walkers: 'You crashed into two students walking to class!', kidline: 'You plowed through a whole class walking in line!', lockerkid: 'You slammed into a kid at their locker!', cart: "You crashed into the janitor's cart!", teacher: 'You ran right into a teacher! Switch lanes next time.', professor: 'You ran right into the professor! Switch lanes next time.', monitor: 'You ran right into the hall monitor! Switch lanes next time.', coach: 'You ran right into the coach! Switch lanes next time.', group: 'You plowed right into a group of chatting students!', kid: 'You bumped into a little kid. Off to the principal!', student: 'You ran smack into another student!', sleepy: 'You woke up a sleepy student the hard way!' };
             if (K.who === 'tray') sfx('tray');
@@ -6730,9 +6934,33 @@ function popup(text, color) {
 /* ---------------- HUD ---------------- */
 let hudCache = {};
 function setText(id, v) { if (hudCache[id] !== v) { hudCache[id] = v; $(id).textContent = v; } }
+// GOAL RAIL: a thin meter on the side of the screen (never over the lanes) that fills up as you close in on your best
+// distance, then on each friend / classmate / the world record after it. Also shows which wave you're on.
+function updateGoalRail(r) {
+  const el = $('goalRail'); if (!el) return;
+  const on = G.mode === 'infinite' && G.scene === 'play' && !G.fun && !G.ghost && !G.heat && !(G.duel && G.duel.on) && !G.paused && !(G.intro > 0);
+  if (!on) { if (el.classList.contains('show')) el.classList.remove('show'); return; }
+  el.classList.add('show');
+  const wv = waveAt(G.dist), wt = !wv ? '' : wv.rest ? '😮‍💨 BREATHER' : '⚡ WAVE ' + (wv.n + 1);
+  setText('grWave', wt); $('grWave').style.display = wt ? '' : 'none'; $('grWave').className = 'grWave' + (wv ? (wv.rest ? ' rest' : ' push') : '');
+  let top, left, k, close = false, rec = false;
+  if (r) {
+    const from = Math.min(G.railFrom || 0, r.d - 1), togo = Math.max(0, Math.ceil(r.d - G.dist));
+    const nm = r.me ? '🏁 Your best' : (r.friend ? '👥 ' : r.world ? '' : '🎯 ') + (r.n.length > 11 ? r.n.slice(0, 10) + '…' : r.n);
+    top = nm; left = togo.toLocaleString() + ' m'; k = clamp((G.dist - from) / (r.d - from), 0, 1); close = togo <= 60;
+  } else if (G.railRecord || (save.bestDist || 0) <= 0) {
+    rec = true; top = (save.bestDist || 0) > 0 ? '👑 NEW BEST!' : '🏁 First run'; left = (save.bestDist || 0) > 0 ? '+' + Math.floor(G.dist - save.bestDist).toLocaleString() + ' m' : Math.floor(G.dist) + ' m'; k = 1;
+  } else { el.classList.remove('show'); return; }
+  setText('grTop', top); setText('grLeft', left);
+  const h = (k * 100).toFixed(1) + '%'; if (hudCache.grH !== h) { hudCache.grH = h; $('grFill').style.height = h; $('grDot').style.bottom = h; }
+  el.classList.toggle('close', close && !rec); el.classList.toggle('record', rec);
+  if (G.railPop > 0) { G.railPop -= 1 / 30; if (!el.classList.contains('pop')) el.classList.add('pop'); } else if (el.classList.contains('pop')) el.classList.remove('pop');
+}
 function updateRival() {
-  if (G.fun === 'race' || G.ghost || G.heat) return;
+  if (G.fun === 'race' || G.ghost || G.heat) { updateGoalRail(null); return; }
   const r = G.mode === 'infinite' && G.scene === 'play' ? nextRival() : null, el = $('hRival');
+  updateGoalRail(r);
+  if ($('goalRail').classList.contains('show')) { if (el.style.display !== 'none') el.style.display = 'none'; return; } // the side meter already shows it, keep the middle of the screen clear
   // only while you're actually closing in on someone (last 80m), never paused, crashing, in the menu or on the plane
   const near = r && r.d - G.dist < 80 && !G.paused && !G.dying && !(G.pw.cheat > 0);
   if (!near || G.intro > 0 || (G.duel && G.duel.on)) { if (el.style.display !== 'none') el.style.display = 'none'; return; }
@@ -6839,7 +7067,7 @@ function refreshMenu() {
   $('mMult').textContent = '×' + scoreMult(); $('mWord').textContent = wordShown().replace(/ /g, '');
   ['lBank', 'sBank'].forEach(id => $(id).textContent = '$' + save.bank); $('sStars').textContent = '★ ' + (save.gs || 0);
   $('mBest').textContent = save.best.toLocaleString();
-  $('mTop').textContent = save.bestDist.toLocaleString() + ' m'; try { syncWorldCard(); } catch (e) {} try { syncSchoolCard(); } catch (e) {} try { menuOnlineTick(); } catch (e) {} try { syncHomeSide(); } catch (e) {}
+  $('mTop').textContent = save.bestDist.toLocaleString() + ' m'; try { syncWorldCard(); } catch (e) {} try { syncWorldGoal(); } catch (e) {} try { syncSchoolCard(); } catch (e) {} try { menuOnlineTick(); } catch (e) {} try { syncHomeSide(); } catch (e) {}
   const rk = myRank(); $('mRankTxt').textContent = rk ? '#' + rk : '–'; try { buildSideModes(); } catch (e) {}
   const stS = streakState(); $('freeTxt').textContent = stS.can ? 'FREE' : 'Day ' + stS.day + ' ✓'; $('bFree').classList.toggle('wait', !stS.can);
   $('campTxt').textContent = 'Stage ' + Math.min(save.unlocked, LEVELS.length) + '/' + LEVELS.length;
@@ -7049,6 +7277,7 @@ function buildShop() {
   const isHall = shopTab === 'hall'; $('hallCats').style.display = isHall ? 'grid' : 'none'; $('preview').style.display = isHall || shopTab === 'inv' ? 'none' : ''; $('pW').closest('.statline').style.display = isHall ? 'none' : '';
   if (isHall) { buildHallShop(box); return; }
   if (shopTab === 'inv') { $('hallCats').style.display = 'none'; buildLockerInv(box); return; }
+  if (mktOn() && MKT_TABS.includes(shopTab)) { mktFetch(); const bn = document.createElement('div'); bn.className = 'mktBanner'; bn.innerHTML = '📊 LOCKER MARKET<small></small>'; bn.querySelector('small').textContent = Online.ready() ? 'Cash prices change every day with what runners worldwide buy. 📉 = on sale today, 📈 = trending.' : 'Cash prices change every day. 📉 = on sale today, 📈 = pricier today.'; box.appendChild(bn); }
   const wkR = weeklySlot(), items = shopTab === 'char' ? SHOP.char.filter(c => c.weekly === undefined || c.weekly === wkR || save.owned[c.id]) : SHOP[shopTab];
   for (const it of items) {
     const d = document.createElement('div');
@@ -7060,7 +7289,8 @@ function buildShop() {
     if (shopTab !== 'boost' && shopTab !== 'up' && canBuy(it) && it === items.filter(canBuy).sort((a, b) => b.price - a.price)[0]) { const t = document.createElement('span'); t.className = 'tag pick'; t.textContent = 'BEST PICK'; d.appendChild(t); }
     const sw = shopTab === 'hat' ? '<div class="sw" style="background:linear-gradient(160deg,#ffe066,#ff9f1c);font-size:40px">' + ({ hat_none: '🙂', hat_cap: '🧢', hat_beanie: '🧶', hat_phones: '🎧', hat_party: '🥳', hat_grad: '🎓', hat_heli: '🚁', hat_crayon: '🖍️', hat_goggles: '🥽', hat_helmet: '🏈', hat_gradgold: '🏅', hat_sweat: '💪', hat_explorer: '🤠', hat_shark: '🦈', hat_astro: '👨‍🚀', hat_crown_boss: '👑' }[it.id] || '🎩') + '</div>' : shopTab === 'plane' ? '<div class="sw" style="background:linear-gradient(160deg,#9bf6ff,#3a86ff)"><img alt="" src="' + planeSwatch(it.id) + '"></div>' : shopTab === 'pet' ? '<div class="sw" style="background:linear-gradient(160deg,#7fd3ff,#2c3f9e)">' + (it.key && petPortrait(it) ? '<img alt="" src="' + petPortrait(it) + '">' : '<svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5 19 19 5"/></svg>') + '</div>' : shopTab === 'char' ? '<div class="sw" style="background:' + CHAR_BG(it) + '">' + (portrait(it) ? '<img alt="" src="' + portrait(it) + '">' : '') + '</div>' : shopTab === 'up' ? tile(it.lv || it.id, svgIcon(it.lv || it.id)) : shopTab === 'boost' ? tile(it.id, svgIcon(it.id)) : shopTab === 'pack' ? '<div class="sw" style="background:rgba(255,255,255,.06);display:grid;place-items:center">' + packSvg(it) + '</div>' : shopTab === 'wheel' ? '<div class="sw" style="display:grid;place-items:center;font-size:42px;background:radial-gradient(circle,' + (it.glow === 'rainbow' ? '#ff006e,#3a86ff' : it.glow + ',' + it.tire) + ')">🛞</div>' : shopTab === 'shoe' ? '<div class="sw" style="background:rgba(255,255,255,.06);display:grid;place-items:center">' + shoeSvg(it) + '</div>' : shopTab === 'boost' ? '<div class="sw" style="background:#fff3d6">' + it.icon + '</div>' : shopTab === 'char' ? '<div class="sw" style="background:linear-gradient(135deg,' + (it.colors.top || '#888') + ' 50%,' + (it.colors.pants || it.colors.hair || '#444') + ' 50%)"><span style="width:26px;height:26px;border-radius:50%;background:' + it.colors.skin + ';border:3px solid #fff;display:block"></span></div>' : shopTab === 'up' ? '<div class="sw" style="background:#f0e6ff">' + it.icon + '</div>' : shopTab === 'pack' ? '<div class="sw" style="background:' + it.color + '"><span style="display:block;width:40%;height:40%;border-radius:6px;background:' + it.trim + '"></span></div>' : '<div class="sw" style="background:linear-gradient(transparent 60%,' + it.sole + ' 60%),' + it.color + '">👟</div>';
     let label, cls;
-    const priceTxt = it.cur === 'gs' ? '★ ' + it.price : '$' + it.price;
+    const mPrice = mktPrice(it), priceTxt = it.cur === 'gs' ? '★ ' + it.price : '$' + mPrice;
+    let mktTag = null; if (mktItem(it) && !owned && mPrice !== it.price) { const up = mPrice > it.price; mktTag = document.createElement('span'); mktTag.className = 'tag ' + (up ? 'mktUp' : 'mktDn'); mktTag.textContent = (up ? '📈 +' : '📉 ') + Math.round((mPrice / it.price - 1) * 100) + '%' + (up ? ' TRENDING' : ' SALE'); }
     if (it.lv) { const L = upLv(it.lv); label = L >= MAXLV ? 'MAX' : '$' + UP_PRICES[L]; cls = L >= MAXLV ? 'gray' : 'gold'; }
     else if (shopTab === 'boost') { label = '$' + it.price; cls = 'gold'; }
     else if (shopTab === 'up') { label = owned ? 'Owned ✓' : priceTxt; cls = owned ? 'gray' : 'gold'; }
@@ -7075,7 +7305,7 @@ function buildShop() {
     let desc = it.desc;
     if (it.lv) { const L = upLv(it.lv), [b0, st] = UP_BASE[it.lv]; desc = L >= MAXLV ? 'MAXED: ' + (it.lv === 'score' || it.lv === 'luck' ? '+' : '') + +(b0 + st * MAXLV).toFixed(1) + (it.lv === 'score' || it.lv === 'luck' ? '%' : 's') : desc.replace('{now}', +(b0 + st * L).toFixed(1)).replace('{next}', +(b0 + st * (L + 1)).toFixed(1)) + ' · max ' + (it.lv === 'score' || it.lv === 'luck' ? '+' : '') + +(b0 + st * MAXLV).toFixed(1) + (it.lv === 'score' || it.lv === 'luck' ? '%' : 's'); desc += ' · Level ' + L + '/' + MAXLV + ' ' + '●'.repeat(L) + '○'.repeat(MAXLV - L); }
     if (shopTab === 'boost') desc += ' · You have ' + boostCount(it.id);
-    d.innerHTML = sw + '<b></b><small></small>'; d.querySelector('b').textContent = it.name; d.querySelector('small').textContent = it.lv ? desc.replace(/ · [●○]+$/, '') : desc;
+    d.innerHTML = sw + '<b></b><small></small>'; if (mktTag) d.appendChild(mktTag); d.querySelector('b').textContent = it.name; d.querySelector('small').textContent = it.lv ? desc.replace(/ · [●○]+$/, '') : desc;
     if (it.lv) { const L = upLv(it.lv), bar = document.createElement('div'); bar.className = 'lvbar'; bar.innerHTML = '<i></i>'.repeat(MAXLV); [...bar.children].forEach((x, k) => k < L && x.classList.add('on')); d.insertBefore(bar, d.querySelector('small')); }
     if (shopTab === 'char' && (save.owned[it.id] || it.price === 0)) { const rl = runnerLevel(it.id), lb = document.createElement('div'); lb.className = 'rlv'; lb.innerHTML = '<span></span><div class="lvbar2"><i></i></div>'; lb.firstChild.textContent = 'Lv ' + rl.lv + (rl.next ? ' · ' + rl.pct + '% to ' + rl.next.t : ' · MAX'); lb.querySelector('i').style.width = rl.pct + '%'; d.appendChild(lb); }
     if (shopTab === 'char' || shopTab === 'pet') { const sm = d.querySelector('small'); const m = desc.match(/^(.*?)Perk: (.*)$/); if (m) { sm.textContent = m[1].trim(); const pk = document.createElement('span'); pk.className = 'perk'; pk.textContent = '★ ' + m[2]; sm.after(pk); } if (it.weekly !== undefined) { const t = document.createElement('span'); t.className = 'tag ev'; t.textContent = save.owned[it.id] ? 'WEEKLY' : 'THIS WEEK · ' + fmtLeft((7 - weekProgress() * 7) * 86400000); d.appendChild(t); } else if (it.event || it.cur === 'gs') { const t = document.createElement('span'); t.className = 'tag ' + (it.event ? 'ev' : 'star'); t.textContent = it.event ? 'EVENT' : '★'; d.appendChild(t); } }
@@ -7100,7 +7330,7 @@ function buildShop() {
         persist(); buildShop(); return;
       }
       if (shopTab === 'up') { if (owned) return; if (save.bank < it.price) { sfx('deny'); toast('Not enough cash', 'Need $' + (it.price - save.bank) + ' more', 1200); return; } save.bank -= it.price; save.up[it.id] = 1; sfx('buy'); }
-      else if (!owned) { if ((save[wallet] || 0) < it.price) { sfx('deny'); toast(wallet === 'gs' ? 'Not enough Gold Stars' : 'Not enough cash', 'Need ' + (wallet === 'gs' ? '★' : '$') + (it.price - (save[wallet] || 0)) + ' more', 1200); return; } save[wallet] -= it.price; save.owned[it.id] = 1; if (shopTab === 'pack') save.pack = it.id; else if (shopTab === 'char') save.char = it.id; else if (shopTab === 'pet') save.pet = it.id; else save.shoe = it.id; sfx('buy'); }
+      else if (!owned) { const pay = wallet === 'gs' ? it.price : mktPrice(it); if ((save[wallet] || 0) < pay) { sfx('deny'); toast(wallet === 'gs' ? 'Not enough Gold Stars' : 'Not enough cash', 'Need ' + (wallet === 'gs' ? '★' : '$') + (pay - (save[wallet] || 0)) + ' more', 1200); return; } save[wallet] -= pay; save.owned[it.id] = 1; if (mktItem(it)) mktBought(it.id); if (shopTab === 'pack') save.pack = it.id; else if (shopTab === 'char') save.char = it.id; else if (shopTab === 'pet') save.pet = it.id; else save.shoe = it.id; sfx('buy'); }
       else { if (shopTab === 'pack') save.pack = it.id; else if (shopTab === 'char') save.char = it.id; else if (shopTab === 'pet') save.pet = it.id; else if (shopTab === 'plane') save.plane = it.id; else if (shopTab === 'hat') save.hat = it.id; else if (shopTab === 'wheel') save.wheel = it.id; else save.shoe = it.id; sfx('click'); }
       if (shopTab === 'char' || shopTab === 'pack' || shopTab === 'plane' || shopTab === 'hat' || shopTab === 'wheel') rebuildPlayer();
       persist(); buildShop();
@@ -7269,7 +7499,7 @@ $('bShop').onclick = () => { initAudio(); sfx('click'); buildShop(); showScreen(
 $('bHow').onclick = () => { initAudio(); sfx('click'); showScreen('sHow'); };
 $('pauseBtn').onclick = () => { initAudio(); togglePause(true); };
 function toggleControls(on) { const m = $('ctrlModal'); m.classList.toggle('show', on !== undefined ? on : !m.classList.contains('show')); if (m.classList.contains('show') && G.scene === 'play' && !G.paused) togglePause(true); }
-$('ctrlClose').onclick = () => toggleControls(false); $('bCtrl2').onclick = () => toggleControls(true); $('bCtrlMenu').onclick = e => { e.stopPropagation(); toggleControls(true); };
+$('ctrlClose').onclick = () => toggleControls(false); $('bCtrl2').onclick = () => toggleControls(true); $('bCtrlMenu').onclick = e => { e.stopPropagation(); toggleControls(true); }; $('bShares').onclick = e => { e.stopPropagation(); openShares(); };
 $('bResume').onclick = () => { sfx('click'); G.autoPaused = true; graceResume(); };
 $('bRestart').onclick = () => { sfx('click'); G.seedNext = G.seedRun; G.tourneyNext = G.tourney; G.funNext = G.fun; startRun(G.mode, G.levelIdx); };
 $('bQuit').onclick = () => { sfx('click'); goMenu(); syncMusic(); };
@@ -7517,6 +7747,7 @@ const MORE_TILES = [ // [icon, label, button it presses, element with its live s
   ['📺', 'Free Gold Star', 'bAdStar', 'adStarTxt', null, null],
   ['📦', 'Ad Mystery Box', 'bAdBox', 'adBoxTxt', null, () => !adBoxLeft() && save.age !== 'child'],
   ['❓', 'How to Play', 'bHow', null, null, null],
+  ['📈', 'Hall Shares', 'bShares', null, null, null, 'web'],
   ['⌨️', 'Controls', 'bCtrlMenu', null, null, null, 'web']
 ];
 // round 18: a brand-new player sees the free gift, missions, Mystery Locker and how-to-play first; the rest unlocks after a
@@ -7530,7 +7761,7 @@ function moreTile([icon, label, btn], fromHome) {
   t.onclick = e => { e.stopPropagation(); initAudio(); const lk = moreLocked(btn); if (lk) { sfx('deny'); toast('🔒 ' + label, 'Unlocks after ' + lk + ' more run' + (lk > 1 ? 's' : '') + ' (or come back tomorrow)', 1600); return; } $(btn).click(); if (!fromHome && curScreen && curScreen !== 'sMenu' && curScreen !== 'sMore') moreReturn = true; setTimeout(syncMore, 50); };
   return t; }
 function buildMore() { const g = $('moreGrid'); if (!g) return; g.innerHTML = '';
-  for (const tl of MORE_TILES) { if (tl[6] === 'web' && !IS_WEB) continue; if (tl[2] === 'bAdBox' && save.age === 'child') continue; if (!$(tl[2])) continue; g.appendChild(moreTile(tl)); }
+  for (const tl of MORE_TILES) { if (tl[6] === 'web' && !IS_WEB) continue; if (tl[2] === 'bAdBox' && save.age === 'child') continue; if (tl[2] === 'bShares' && !hsOn()) continue; if (!$(tl[2])) continue; g.appendChild(moreTile(tl)); }
   syncMore(); }
 // ---- wide browser windows: records on the left of the runner, today's extras on the right ----
 const HOME_QUICK = ['bFree', 'bMissions', 'bSpin', 'bEvents', 'bMLocker', 'bPass'];
@@ -7734,6 +7965,120 @@ async function fsQuery(coll, where, order, limit, tok) {
 }
 const fsEq = (f, v) => ({ fieldFilter: { field: { fieldPath: f }, op: 'EQUAL', value: { stringValue: v } } });
 const docPath = (c, id) => '/' + c + '/' + encodeURIComponent(id);
+
+const gDay = () => Math.floor(Date.now() / 86400000), gWeek = () => Math.floor((gDay() + 3) / 7); // shared docs use UTC days so everyone writes to the same one
+/* ---- WORLD GOAL: every runner's meters this week fill one shared bar (worldgoal/w{week} = { m }).
+   Each tier it passes gives a prize to everyone who ran at least once that week. Nobody can lose anything. ---- */
+const WG_TIERS = [[250000, { cash: 1000 }, '$1,000'], [1000000, { gs: 2 }, '2 Gold Stars'], [3000000, { heelys: 5, cash: 2000 }, '5 Heel Wheels + $2,000'], [8000000, { gs: 5, cash: 5000 }, '5 Gold Stars + $5,000']];
+const WG_CAP = 20000; // most meters one run can add (the database rules check this too)
+const WG = { m: null, t: 0, wk: 0 };
+function wgSave() { const wk = gWeek(); if (!save.wg || save.wg.wk !== wk) save.wg = { wk, mine: 0, got: 0 }; return save.wg; }
+const kmTxt = m => (m >= 100000 ? Math.round(m / 1000) : Math.round(m / 100) / 10).toLocaleString() + ' km';
+function wgOn() { return Online.ready() && APPCFG.worldGoal !== false && !WG.denied; }
+async function wgFetch(force) {
+  if (!wgOn()) return null; const wk = gWeek();
+  if (!force && WG.wk === wk && WG.m !== null && Date.now() - WG.t < 90000) return WG.m;
+  try { const d = fsDoc(await fsReq('GET', docPath('worldgoal', 'w' + wk))); WG.m = +d.m || 0; } catch (e) { if (e.status === 404) WG.m = 0; else if (e.status === 403) { WG.denied = true; return null; } else return WG.m; }
+  WG.wk = wk; WG.t = Date.now(); wgClaim(); return WG.m;
+}
+async function worldGoalAdd(meters) {
+  meters = Math.min(WG_CAP, Math.floor(meters)); if (meters < 10 || !wgOn()) return;
+  const W = wgSave(); W.mine += meters; persist();
+  try { const a = await Online.token(), D = 'projects/' + ONLINE_BOARD.projectId + '/databases/(default)/documents/worldgoal/w' + W.wk;
+    await fsReq('POST', ':commit', a.idToken, { writes: [{ transform: { document: D, fieldTransforms: [{ fieldPath: 'm', increment: { integerValue: String(meters) } }] } }] });
+    if (WG.wk === W.wk && WG.m !== null) WG.m += meters; wgClaim(); syncWorldGoal();
+  } catch (e) { if (e.status === 403) WG.denied = true; }
+}
+function wgClaim() { // hand out every tier the world has reached, once each, if you ran this week
+  const W = wgSave(); if (WG.m === null || WG.wk !== W.wk || !W.mine) return;
+  while (W.got < WG_TIERS.length && WG.m >= WG_TIERS[W.got][0]) { const [goal, rw, txt] = WG_TIERS[W.got]; grant(rw); W.got++; persist(); setTimeout(() => toast('🌍 WORLD GOAL ' + kmTxt(goal) + ' REACHED!', 'Everyone who ran this week gets ' + txt, 2600), 400 + W.got * 300); sfx('win'); }
+}
+function wgLine(m) { const W = wgSave(), nx = WG_TIERS.find(t => t[0] > m); return { nx, k: nx ? clamp(m / nx[0], 0, 1) : 1, mine: W.mine }; }
+function syncWorldGoal() {
+  const el = $('mWG'); if (!el) return; if (!wgOn()) { el.style.display = 'none'; return; }
+  wgFetch().then(m => { if (m === null) { el.style.display = 'none'; return; } el.style.display = ''; const L = wgLine(m);
+    $('mWGt').textContent = L.nx ? kmTxt(m) + ' / ' + kmTxt(L.nx[0]) : kmTxt(m) + ' · ALL DONE!'; $('mWGf').style.width = (L.k * 100).toFixed(1) + '%';
+    $('mWGp').textContent = L.nx ? 'Prize for all: ' + L.nx[2] : 'Every prize unlocked this week!'; $('mWGm').textContent = L.mine ? 'You: ' + kmTxt(L.mine) : 'Run once to join'; });
+}
+function showWorldGoalOver(added) {
+  const box = $('oWorld'); if (!wgOn() || !added) { box.style.display = 'none'; return; }
+  const draw = () => { const m = WG.m || 0, L = wgLine(m); box.style.display = 'block';
+    $('oWorldT').textContent = '🌍 You added ' + Math.min(WG_CAP, Math.floor(added)).toLocaleString() + ' m to the world goal · ' + (L.nx ? kmTxt(m) + ' / ' + kmTxt(L.nx[0]) + ' for ' + L.nx[2] + ' each' : 'every prize unlocked!');
+    $('oWorldF').style.width = (L.k * 100).toFixed(1) + '%'; };
+  draw(); setTimeout(() => wgFetch(true).then(() => { if (G.scene === 'over') draw(); }), 1500);
+}
+
+/* ---- LOCKER MARKET: cash prices in the Locker move every day. Each runner's purchase adds 1 to that item's count for
+   the day (market/d{day} = { itemId: n }), so what's popular worldwide gets pricier and what nobody buys goes on sale.
+   A small daily wobble keeps it moving even offline. You only ever pay the price you see; nothing can be lost. ---- */
+const MKT = { d: null, day: -1, t: 0 };
+const MKT_TABS = ['char', 'pet', 'hat', 'plane', 'shoe', 'wheel', 'pack'];
+function mktOn() { return APPCFG.market !== false; }
+function mktItem(it) { return mktOn() && MKT_TABS.includes(shopTab) && it && it.price > 0 && it.cur !== 'gs' && !it.lv && !it.pass && !it.gold && !it.event && !it.trip && !it.svs && !it.creator && it.boss === undefined; }
+function mktHash(str) { let h = 2166136261; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0) / 4294967296; }
+async function mktFetch() {
+  const day = gDay(); if (!Online.ready() || MKT.denied || (MKT.day === day && Date.now() - MKT.t < 300000)) return;
+  MKT.t = Date.now(); try { MKT.d = fsDoc(await fsReq('GET', docPath('market', 'd' + day))); } catch (e) { if (e.status === 403) MKT.denied = true; MKT.d = e.status === 404 ? {} : MKT.d; }
+  MKT.day = day; if (curScreen === 'sShop') buildShop();
+}
+function mktMult(it) {
+  const day = gDay(), wob = (mktHash(it.id + ':' + day) - 0.5) * 0.24; // ±12% daily wobble, the same for everyone
+  let dem = 0; const d = MKT.day === day && MKT.d ? MKT.d : null;
+  if (d) { const ids = (SHOP[shopTab] || []).filter(mktItem).map(x => x.id), ns = ids.map(id => +d[id] || 0), avg = ns.reduce((a, b) => a + b, 0) / Math.max(1, ns.length), mx = Math.max(...ns, 1);
+    dem = clamp(((+d[it.id] || 0) - avg) / (mx + 2) * 0.5, -0.2, 0.2); }
+  return clamp(1 + wob + dem, 0.7, 1.35);
+}
+function mktPrice(it) { return mktItem(it) ? Math.max(10, Math.round(it.price * mktMult(it) / 10) * 10) : it.price; }
+async function mktBought(id) {
+  if (!Online.ready() || MKT.denied) return;
+  try { const a = await Online.token(), D = 'projects/' + ONLINE_BOARD.projectId + '/databases/(default)/documents/market/d' + gDay();
+    await fsReq('POST', ':commit', a.idToken, { writes: [{ transform: { document: D, fieldTransforms: [{ fieldPath: id, increment: { integerValue: '1' } }] } }] }); if (MKT.d) MKT.d[id] = (+MKT.d[id] || 0) + 1;
+  } catch (e) { if (e.status === 403) MKT.denied = true; }
+}
+
+/* ---- HALL SHARES (website only, 18+): see functions/api/hs.js. The server keeps every balance; this is just the screen. ---- */
+const HS = { me: null, top: null, busy: false, err: '' };
+function hsOn() { return IS_WEB && save.age === 'adult' && save.over18 !== false && APPCFG.shares !== false; }
+async function hsApi(body) {
+  const r = await fetch('/api/hs', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(Object.assign(save.hs ? { id: save.hs.id, tok: save.hs.tok } : {}, body)) });
+  let j = {}; try { j = await r.json(); } catch (e) {} if (!r.ok) { const e = new Error(j.msg || j.error || 'HTTP ' + r.status); e.status = r.status; e.code = j.error; throw e; } return j;
+}
+async function hsLoad() {
+  HS.err = '';
+  try { if (save.hs) { HS.me = await hsApi({ op: 'me', name: safeName(save.name) || 'Runner' }); HS.top = (await hsApi({ op: 'top' })).top; } else { HS.me = null; HS.top = (await hsApi({ op: 'top' })).top; } }
+  catch (e) { if (e.status === 401) { save.hs = null; persist(); HS.me = null; } else HS.err = e.status === 503 ? 'Hall Shares is opening soon. Check back later!' : 'Couldn\'t reach the market. Check your connection.'; }
+  if (curScreen === 'sShares') buildShares();
+}
+function hsSpark(arr, up) { if (!arr || arr.length < 2) return ''; const mn = Math.min(...arr), mx = Math.max(...arr), w = 90, h = 24, k = mx - mn || 1;
+  return '<svg viewBox="0 0 ' + w + ' ' + h + '"><polyline fill="none" stroke="' + (up ? '#06a77d' : '#ef476f') + '" stroke-width="2" points="' + arr.map((v, i) => (i / (arr.length - 1) * w).toFixed(1) + ',' + (h - 2 - (v - mn) / k * (h - 4)).toFixed(1)).join(' ') + '"/></svg>'; }
+function buildShares() {
+  const box = $('hsBody'); box.innerHTML = '';
+  if (save.over18 === undefined) { box.innerHTML = '<p style="text-align:center;font-weight:700">Hall Shares is for players 18 and older.</p><div class="row"><button class="btn green" id="hs18y">I\'m 18 or older</button><button class="btn gray" id="hs18n">I\'m under 18</button></div>';
+    $('hs18y').onclick = () => { save.over18 = true; persist(); buildShares(); }; $('hs18n').onclick = () => { save.over18 = false; persist(); goMenu(); }; return; }
+  if (HS.err) { box.innerHTML = '<p style="text-align:center;font-weight:700"></p>'; box.firstChild.textContent = HS.err; return; }
+  if (!save.hs) { const d = document.createElement('div'); d.innerHTML = '<p style="text-align:center">Buy shares in the school\'s hottest spots. When other runners buy the same stock, its price goes up and your shares are worth more. When they sell, it drops. Climb the net-worth board!</p><button class="btn gold" id="hsJoin">Start trading (+100 free Hall Shares)</button>'; box.appendChild(d);
+    $('hsJoin').onclick = async () => { if (HS.busy) return; HS.busy = true; try { const j = await hsApi({ op: 'join', name: safeName(save.name) || 'Runner' }); save.hs = { id: j.id, tok: j.tok }; persist(); sfx('win'); await hsLoad(); } catch (e) { toast('Couldn\'t join', e.message, 2000); } HS.busy = false; }; hsTopList(box); return; }
+  const M = HS.me; if (!M) { box.innerHTML = '<p style="text-align:center">Loading the market…</p>'; return; }
+  const hd = document.createElement('div'); hd.className = 'hsHead'; hd.innerHTML = '<div><small>Your Hall Shares</small><span class="hsBal"></span></div><div style="text-align:right"><small>Net worth</small><b class="hsW"></b><small class="hsE"></small></div>';
+  hd.querySelector('.hsBal').textContent = '📈 ' + M.hs.toLocaleString(); hd.querySelector('.hsW').textContent = M.worth.toLocaleString() + ' HS'; hd.querySelector('.hsE').textContent = M.earnLeft ? 'Run to earn ' + M.earnLeft + ' more today' : 'Earned the max today'; box.appendChild(hd);
+  const L = document.createElement('div'); L.className = 'hsList'; box.appendChild(L);
+  for (const sym of Object.keys(M.market)) { const st = M.market[sym], own = M.hold[sym] || 0, up = st.ch >= 0, r = document.createElement('div'); r.className = 'hsRow';
+    r.innerHTML = '<div class="hsIc"></div><div><b></b><small class="pr"></small>' + hsSpark(st.spark, up) + '<small class="own"></small></div><div class="hsBtns"><button data-n="1">Buy 1</button><button data-n="5">Buy 5</button><button class="s" data-n="-1">Sell 1</button><button class="s" data-n="all">Sell all</button></div>';
+    r.querySelector('.hsIc').textContent = st.icon; r.querySelector('b').textContent = st.name + ' (' + sym + ')';
+    r.querySelector('.pr').innerHTML = 'Buy <b style="display:inline">' + st.buy + '</b> · sell ' + st.sell + ' · <span class="' + (up ? 'up' : 'dn') + '">' + (up ? '▲ ' : '▼ ') + Math.abs(st.ch) + '% today</span>';
+    r.querySelector('.own').textContent = own ? 'You own ' + own : 'You own none';
+    r.querySelectorAll('button').forEach(b => { const n = b.dataset.n === 'all' ? -own : +b.dataset.n; if ((n < 0 && own < -n) || n === 0 || (n > 0 && M.hs < st.buy)) b.disabled = true;
+      b.onclick = async () => { if (HS.busy) return; HS.busy = true; try { const j = await hsApi({ op: 'trade', sym, n }); HS.me = j; sfx(n > 0 ? 'buy' : 'coin'); toast((n > 0 ? 'Bought ' : 'Sold ') + Math.abs(n) + ' ' + sym, (n > 0 ? '-' : '+') + Math.abs(j.cost) + ' Hall Shares', 1200); buildShares(); } catch (e) { sfx('deny'); toast('Trade failed', e.message, 1600); } HS.busy = false; }; });
+    L.appendChild(r); }
+  hsTopList(box);
+}
+function hsTopList(box) { if (!HS.top || !HS.top.length) return; const h = document.createElement('div'); h.innerHTML = '<b>🏆 Richest traders</b><ol class="hsTop"></ol>'; const ol = h.querySelector('ol');
+  HS.top.forEach((t, i) => { const li = document.createElement('li'); if (t.me) li.className = 'me'; li.textContent = (i + 1) + '. ' + t.n; const w = document.createElement('span'); w.textContent = t.w.toLocaleString() + ' HS'; li.appendChild(w); ol.appendChild(li); }); box.appendChild(h); }
+function openShares() { if (!hsOn()) return; showScreen('sShares'); buildShares(); hsLoad(); }
+async function hsAfterRun(dist) { // finished runs earn Hall Shares (the server decides how many)
+  if (!hsOn() || !save.hs || dist < 100) return;
+  try { const j = await hsApi({ op: 'earn', dist: Math.floor(dist) }); if (j.got > 0 && G.scene === 'over') toast('📈 +' + j.got + ' Hall Shares', j.earnLeft ? j.earnLeft + ' more to earn today' : 'Max for today', 1600); } catch (e) {}
+}
 
 /* ---- schools list + moderator switches (cached) ---- */
 var SCHOOL_SEED = [{ id: 'nahs', name: 'NAHS', status: 'approved' }];
