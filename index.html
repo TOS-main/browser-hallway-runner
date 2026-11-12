@@ -3646,7 +3646,7 @@ const KINDS = {
       const dr = cyl(g, 0.3, 0.32, MS('#f8f9fa', 0.5, 0.1), 0, 0.95, 0.3); dr.rotation.x = Math.PI / 2; for (const z of [0.14, 0.46]) { const r = cyl(g, 0.31, 0.04, MS('#c1121f', 0.5, 0.2), 0, 0.95, z); r.rotation.x = Math.PI / 2; }
       cyl(g, 0.12, 0.12, '#1d3557', 0, 1.88, 0); box(g, 0.06, 0.22, 0.04, '#ffd60a', 0, 2.05, 0); return g; },
     anim(o, t) { o.acts[0].pose('walk', 1.3); } },
-  lunchtable: { cat: 'obs', type: 'low', h: 0.8, hw: 0.95, d: 0.9, label: 'a cafeteria table', who: 'tray',
+  lunchtable: { cat: 'obs', type: 'low', h: 0.8, hw: 0.95, d: 0.9, label: 'a cafeteria table',
     build(o) { const g = new THREE.Group(); box(g, 1.85, 0.07, 0.8, '#5f9ea0', 0, 0.74, 0); for (const x of [-0.8, 0.8]) for (const z of [-0.32, 0.32]) cyl(g, 0.03, 0.72, '#777', x, 0.36, z);
       for (const z of [-0.6, 0.6]) box(g, 1.85, 0.05, 0.28, '#5f9ea0', 0, 0.45, z);
       for (let i = 0; i < 3; i++) { box(g, 0.42, 0.03, 0.3, '#e9c46a', -0.6 + i * 0.6, 0.79, i % 2 ? 0.15 : -0.15); ball(g, 0.07, pick(['#e63946', '#f1faee', '#6a994e']), -0.6 + i * 0.6, 0.84, i % 2 ? 0.15 : -0.15); }
@@ -5752,6 +5752,17 @@ function addObj(kind, lane, z, extra) {
   try { if (K.build) { o.mesh = K.build(o); if (K.power && o.spin) { const ring = mesh(GEO.torusP || (GEO.torusP = new THREE.TorusGeometry(0.62, 0.045, 6, 28)), MGlow('#ffffff', 0.85), o.mesh, 0, 0, 0, 1, 1, 1); o.ring = ring; } bake(o.mesh, !!K.deep, o.bell ? new Set([o.bell]) : null); for (const sub of [o.spin, o.sw, o.handle]) if (sub) bake(sub, true); if (K.cat === 'pick') addPickGlow(o); if (K.cat === 'obs') { setShadow(o.mesh, true, false); fitHitbox(o); if ((K.type === 'low' || K.type === 'high') && !K.cross) floorMark(o); } objLayer.add(o.mesh); } } finally { Math.random = seeded; }
   G.objs.push(o); return o;
 }
+// Things dropped in on the fly (cafeteria trays, the bully's balls) used to land wherever the runner was, even right where
+// a row of lunch tables ends or on top of something already there. A low tray just past the end of a table row is hidden
+// behind the table edge and the runner's own back until you drop onto it, so it felt like hitting something invisible.
+// Pick the wanted lane if it's clear there, otherwise another clear lane, or null to skip this one.
+function laneClear(l, z) {
+  const pl = G.plat && G.objs.includes(G.plat) ? G.plat : null;
+  if (pl && l === pl.lane && z > pl.z - 3 && z < pl.z + pl.len + 8) return false; // under, or hidden just past, the tables
+  for (const q of G.objs) if (q.K.cat === 'obs' && !q.flying && !q.knocked && Math.abs(q.x - l * laneW) < laneW * 0.6 && Math.abs(q.z - z) < 3) return false; // stacked inside/behind another obstacle
+  return true;
+}
+function freeLane(want, z) { if (laneClear(want, z)) return want; const others = [-1, 0, 1].filter(l => l !== want && laneClear(l, z)); return others.length ? pick(others) : null; }
 function killObj(i) { const o = G.objs[i]; if (o.mesh) { objLayer.remove(o.mesh); disposeMerged(o.mesh); } G.objs.splice(i, 1); }
 function clearObjs() { for (const o of G.objs) if (o.mesh) { objLayer.remove(o.mesh); disposeMerged(o.mesh); } G.objs = [];
 }
@@ -6153,7 +6164,7 @@ function startHunt() {
 function bossMoves(dt, type) {
   G.bossMoveT = (G.bossMoveT === undefined ? 2.5 : G.bossMoveT) - dt; if (G.bossMoveT > 0 || G.dying) return;
   const d = G.speed * 2.2 + 4; // always ~2.2s of warning
-  if (type === 'bully') { const l = Math.random() < 0.6 ? P.lane : pick([-1, 0, 1]); addObj('basketball', l, PZ + d, { dodge: true }); popup('BALL IN THE HALL!', '#ff7b00'); sfx('whistle'); G.bossMoveT = 4.2; }
+  if (type === 'bully') { const l = freeLane(Math.random() < 0.6 ? P.lane : pick([-1, 0, 1]), PZ + d); if (l !== null) addObj('basketball', l, PZ + d, { dodge: true }); popup('BALL IN THE HALL!', '#ff7b00'); sfx('whistle'); G.bossMoveT = 4.2; }
   else if (type === 'principal') { const l = pick([-1, 0, 1]); addObj('tape', l, PZ + d + 6); popup('WHISTLE! Lane closed!', '#ffd60a'); sfx('whistle'); G.bossMoveT = 5.2; }
   else G.bossMoveT = 99;
 }
@@ -6374,7 +6385,7 @@ function update(dt) {
     if (zn !== (G.zoneNow || 'hall')) { G.zoneNow = zn; if (zonesOn()) { toast(ZONE_NAME[zn], zn === 'cafe' ? 'Jump the spilled lunch trays!' : zn === 'yard' ? 'Recess! Watch for balls and little kids' : '', 1500); sfx(zn === 'cafe' ? 'tray' : 'bell'); if (zn !== 'hall') mission('zones', 1); } }
     if (zn === 'cafe' && !G.dying) {
       G.cafeT = (G.cafeT === undefined ? 1.2 : G.cafeT) - dt;
-      if (G.cafeT <= 0) { G.cafeT = rand(1.4, 2.3); const l = Math.random() < 0.5 ? P.lane : pick([-1, 0, 1]); addObj('tray', l, PZ + G.speed * 1.7 + 8); } // spilled trays only: nothing flies at you any more
+      if (G.cafeT <= 0) { G.cafeT = rand(1.4, 2.3); const z = PZ + G.speed * 1.7 + 8, l = freeLane(Math.random() < 0.5 ? P.lane : pick([-1, 0, 1]), z); if (l !== null) addObj('tray', l, z); } // spilled trays only: nothing flies at you any more
       if (!save.battery && Math.random() < dt * 6) { const sd = Math.random() < 0.5 ? -1 : 1; emit(sd * (HW + 1.5), rand(1.2, 2.4), rand(-6, -18), 1, pick(['#e63946', '#ffb703', '#6a994e', '#f1faee', '#f4a261']), 6, 1.1, 0.18, 6, false, true); }
     } else G.cafeT = undefined;
   }
@@ -6496,7 +6507,7 @@ function update(dt) {
             else { breakChain(); G.tpBump = true; G.stumble = chaseTime(); G.shake = 0.25; sfx('bump'); vibrate(60); popup('BUMPED! RUN!', '#ef476f'); P.stumbleT = 0.45; knockAside(o); startChase(null, MONITOR_CHASE); }
           } else {
             const msgs = { robot: 'CLANK! The robotics club robot ran you over. Switch lanes!', pie: 'SPLAT! A pie to the face. Slide under flying pies!', door: 'A classroom door swung open right into you! Watch for the flashing light.', locker: 'BONK! A locker door popped open. Slide under next time!', tape: 'You ran into the Principal\'s caution tape!', puddle: 'SPLASH! You slipped in a puddle. Jump it!', tray: 'You slipped on a spilled lunch tray! Jump it next time!', chair: 'A runaway rolling chair took you out! Jump it!', volcano: 'You crashed into the science fair volcano. Jump over it!', walkers: 'You crashed into two students walking to class!', kidline: 'You plowed through a whole class walking in line!', lockerkid: 'You slammed into a kid at their locker!', cart: "You crashed into the janitor's cart!", teacher: 'You ran right into a teacher! Switch lanes next time.', professor: 'You ran right into the professor! Switch lanes next time.', monitor: 'You ran right into the hall monitor! Switch lanes next time.', coach: 'You ran right into the coach! Switch lanes next time.', group: 'You plowed right into a group of chatting students!', kid: 'You bumped into a little kid. Off to the principal!', student: 'You ran smack into another student!', sleepy: 'You woke up a sleepy student the hard way!' };
-            if (K.who === 'tray') sfx('tray');
+            if (K.who === 'tray' || o.kind === 'lunchtable') sfx('tray');
     crash(o, (K.type === 'block' || !/^(teacher|professor|monitor|coach)$/.test(K.who) ? msgs[K.who] : null) || (K.type === 'high' ? 'Bonk! You ran into ' + K.label + '. Slide under next time!' : 'You tripped over ' + K.label + '. Jump next time!'));
             return;
           }
