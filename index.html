@@ -824,6 +824,15 @@ body.homeWide .mSide .worldCard .cTxt{text-align:left}
   .screen:not(#sMenu):not(#sOver)>.panel>.screenX{position:fixed;top:max(10px,env(safe-area-inset-top));right:12px;margin:0;z-index:8}
   .screen:not(#sMenu):not(#sOver)>.panel>.topbar{padding-right:64px}
 }
+
+/* round 28: Compete tab + live races */
+#sModes #bTourney{display:none!important}
+.raceCodeBig{font:400 44px/1 'Luckiest Guy',sans-serif;letter-spacing:8px;text-align:center;margin:6px 0 10px;color:#1d2340}
+.raceList{list-style:none;padding:0;margin:0 0 12px;display:flex;flex-direction:column;gap:6px}.raceList li{display:flex;justify-content:space-between;padding:10px 12px;border:3px solid var(--ink);border-radius:12px;background:#fff;font-weight:800}
+.raceList li.me{background:#fff3c4}
+.raceHud{position:fixed;left:8px;top:calc(env(safe-area-inset-top) + 120px);z-index:30;pointer-events:none;display:flex;flex-direction:column;gap:3px;font:800 13px/1.2 system-ui,sans-serif}
+.raceHud div{background:rgba(20,24,52,.72);color:#fff;border-radius:10px;padding:4px 8px;min-width:120px;display:flex;justify-content:space-between;gap:8px}.raceHud div.me{background:rgba(255,190,11,.9);color:#1d2340}.raceHud div.out{opacity:.55;text-decoration:line-through}
+body.newbie .hGoal .worldCard,body.newbie .hGoal .hHot{display:none!important}
 </style>
 </head>
 <body>
@@ -891,7 +900,7 @@ body.homeWide .mSide .worldCard .cTxt{text-align:left}
   <div class="mNav">
     <button class="nav" id="bShop"><svg class="ic" viewBox="0 0 24 24"><path d="M8 6V5a4 4 0 0 1 8 0v1"/><rect x="5" y="6" width="14" height="15" rx="4"/><path d="M9 14h6v4H9z"/></svg><span>Locker</span><em class="badge" id="shopBadge"></em></button>
     <button class="nav" id="bModes"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="4"/><path d="M6 12h4M8 10v4M15 11h.01M18 13h.01"/></svg><span>Modes</span></button>
-    <button class="nav" id="bRanks"><svg class="ic" viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg><span>Ranks</span></button>
+    <button class="nav" id="bRanks"><svg class="ic" viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg><span>Compete</span></button>
     <button class="nav" id="bMore"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg><span>More</span><em class="badge" id="moreBadge"></em></button>
   </div>
   <div class="playSoon" id="bGetApp" style="display:none">▶ Coming soon to Google Play</div>
@@ -1076,6 +1085,26 @@ body.homeWide .mSide .worldCard .cTxt{text-align:left}
 </div>
 
 <!-- FUN MODES -->
+<div class="screen" id="sCompete">
+  <div class="panel">
+    <h2>Compete</h2>
+    <p class="sub" style="margin:0 0 10px">Every way to race other players, in one place.</p>
+    <div id="competeList" style="display:flex;flex-direction:column;gap:10px"></div>
+    <button class="btn gray" data-back>Back</button>
+  </div>
+</div>
+<div class="screen" id="sRace">
+  <div class="panel">
+    <h2>Live Race</h2>
+    <p class="sub" id="raceSub" style="margin:0 0 10px">Race up to 3 friends at the same time on the same hallway.</p>
+    <div id="raceStart"><button class="btn gold" id="bRaceMake">Make a room</button>
+      <div class="row" style="margin-top:10px;gap:8px"><input id="raceCode" maxlength="4" placeholder="CODE" autocomplete="off" style="flex:1;text-transform:uppercase;font-size:20px;text-align:center;letter-spacing:4px"><button class="btn blue" id="bRaceJoin" style="width:auto">Join</button></div></div>
+    <div id="raceLobby" style="display:none"><div class="raceCodeBig" id="raceCodeBig"></div><ol id="raceList" class="raceList"></ol>
+      <button class="btn gold" id="bRaceGo">Start the race</button><button class="btn blue" id="bRaceShare">Send the code</button><button class="btn gray small" id="bRaceLeave">Leave room</button></div>
+    <button class="btn gray" data-back>Back</button>
+  </div>
+</div>
+<div id="raceHud" class="raceHud" style="display:none"></div>
 <div class="screen" id="sModes">
   <div class="panel">
     <h2>Play Modes</h2>
@@ -1667,7 +1696,7 @@ window.WEB_PAY = {
 };
 
 </script>
-<script src="game-data/assets-cbd80557f4.js"></script>
+<script>window.ASSETS_X_URL="game-data/assets-extra-dcd9a1eada.js"</script><script src="game-data/assets-a15467af62.js"></script>
 <script>
 'use strict';
 /* ============================================================
@@ -1806,6 +1835,7 @@ const SHOP = {
     { id: 'marshal', name: 'Fire Marshal', key: 'M_Worker', event: 'firedrill', colors: { vest: '#ff7b00', cap: '#e63946' }, perk: 'chase', desc: 'Fire Drill exclusive. Perk: chases only last 7 seconds.' },
     { id: 'speedster', name: 'Speedster', key: 'W_Casual', event: 'hallpass', colors: { top: '#06d6a0', pants: '#118ab2', hair: '#141414', skin: '#c68642' }, perk: 'lanes', desc: 'Hall Pass Rush exclusive. Perk: 20% faster lane switching.' },
     { id: 'chefkid', name: 'Lunch Hero', key: 'M_Casual2', event: 'foodfight', colors: { top: '#ffffff', pants: '#e63946', hair: '#3b2414', skin: '#c68642' }, perk: 'magnet', desc: 'Food Fight exclusive. Perk: Juice Box magnet lasts 3s longer.' },
+    { id: 'turkeytrot', name: 'Turkey Trot Champ', key: 'M_Casual2', event: 'thanksgiving', colors: { top: '#e07a1f', pants: '#7c2d12', hair: '#3b2414', skin: '#c68642' }, perk: 'coins15', desc: 'Thanksgiving event exclusive. Perk: +15% coins.' },
     { id: 'promking', name: 'Prom King', key: 'M_Suit', event: 'prom', colors: { suit: '#1b1b1b', top: '#ffd60a', hair: '#3b2414', skin: '#d9a066' }, perk: 'coins15', desc: 'Prom Night event exclusive. Perk: +15% coins.' }
   ],
   pet: [
@@ -2397,7 +2427,7 @@ async function loadCharacters() {
   try {
     await THREE.MeshoptDecoder.ready;
     const loader = new THREE.GLTFLoader().setMeshoptDecoder(THREE.MeshoptDecoder);
-    await Promise.all(Object.keys(A.chars).map(key => new Promise((res, rej) => loader.parse(b64buf(A.chars[key]), '', g => {
+    await Promise.all(Object.keys(A.chars).filter(key => !CH.tpl[key]).map(key => new Promise((res, rej) => loader.parse(b64buf(A.chars[key]), '', g => {
       g.scene.traverse(m => {
         if (!m.isMesh) return;
         if (isK(key)) { // textured cartoon models: keep their painted texture, toon-shade it like everyone else
@@ -2417,9 +2447,9 @@ async function loadCharacters() {
     }, rej))));
     // every clip needs its own id: three.js caches one action per clip id, and the packed clips all had a blank id,
     // so every character got stuck on whichever animation it played first
-    for (const g of ['M', 'W', 'K']) if (A.clips[g]) for (const c of JSON.parse(A.clips[g])) { if (g !== 'K') smoothHips(c); const clip = THREE.AnimationClip.parse(c); clip.uuid = THREE.MathUtils.generateUUID(); CH.clips[g][c.name] = clip; }
-    CH.pets = {};
-    await Promise.all(Object.keys(A.pets || {}).map(key => new Promise(res => loader.parse(b64buf(A.pets[key]), '', g => {
+    for (const g of ['M', 'W', 'K']) if (A.clips[g] && !CH.clipsDone?.[g] && ((CH.clipsDone = CH.clipsDone || {})[g] = 1)) for (const c of JSON.parse(A.clips[g])) { if (g !== 'K') smoothHips(c); const clip = THREE.AnimationClip.parse(c); clip.uuid = THREE.MathUtils.generateUUID(); CH.clips[g][c.name] = clip; }
+    CH.pets = CH.pets || {};
+    await Promise.all(Object.keys(A.pets || {}).filter(key => !CH.pets[key]).map(key => new Promise(res => loader.parse(b64buf(A.pets[key]), '', g => {
       g.scene.traverse(m => { if (!m.isMesh) return; const src = m.material; const mat = Q.std ? new THREE.MeshStandardMaterial({ color: src.color, map: src.map || null, roughness: 0.8, metalness: 0, envMapIntensity: 0.4 }) : new THREE.MeshLambertMaterial({ color: src.color, map: src.map || null }); addRim(mat); m.material = mat; m.castShadow = !!Q.shadows; });
       // skinned bounds ignore the armature's scale, so measure the skeleton itself
       g.scene.updateMatrixWorld(true); const bb = new THREE.Box3(), v = new THREE.Vector3(); g.scene.traverse(o => { if (o.isBone) bb.expandByPoint(o.getWorldPosition(v)); });
@@ -2471,6 +2501,8 @@ function smoothHips(c) { if (!c.tracks) return; const loop = /_Loop$/.test(c.nam
   if (n < t.times.length) for (let d = 0; d < 3; d++) out[n * 3 + d] = out[d];
   t.values = out; }
 function makeActor(spec) {
+  // round 28: the cartoon runners and pets arrive a few seconds after the game starts; until then a stand-in model is used
+  if (CH.ready && spec && spec.key && !CH.tpl[spec.key]) spec = Object.assign({}, spec, { key: spec.key[0] === 'W' ? 'W_Casual' : 'M_Casual', colors: spec.colors || {}, standIn: spec.key });
   const root = new THREE.Group();
   const act = { root, spec, cur: null, speed: 1, actions: {} };
   act.shadow = blob(root, 0.42 * (spec.scale || 1));
@@ -3597,10 +3629,14 @@ const letterTex = ch => canvasTex('letter' + ch, 128, 128, (x, w, h) => { const 
 // themed decorations added to each hallway segment while an event is running
 function eventDecor(g, slots, th) {
   const ev = currentEvent(); const d = grp(g); slots.eventDecor = d;
-  const lightCols = ev.id === 'halloween' ? ['#ff7b00', '#7b2cbf', '#39ff14'] : ev.id === 'snow' ? ['#7fd3ff', '#ffffff', '#4d96ff'] : ev.id === 'firedrill' ? ['#ff2020', '#ffb703', '#ff2020'] : ev.id === 'hallpass' ? ['#06d6a0', '#ffffff', '#118ab2'] : ['#ff4d8d', '#ffd60a', '#c77dff'];
+  const lightCols = ev.id === 'thanksgiving' ? ['#e07a1f', '#c1121f', '#f4c430'] : ev.id === 'halloween' ? ['#ff7b00', '#7b2cbf', '#39ff14'] : ev.id === 'snow' ? ['#7fd3ff', '#ffffff', '#4d96ff'] : ev.id === 'firedrill' ? ['#ff2020', '#ffb703', '#ff2020'] : ev.id === 'hallpass' ? ['#06d6a0', '#ffffff', '#118ab2'] : ['#ff4d8d', '#ffd60a', '#c77dff'];
   if (!th.outdoor) for (const sd of [-1, 1]) {
     for (let i = 0; i < 10; i++) { const z = -0.5 - i; ball(d, 0.07, MB(lightCols[i % 3]), sd * (HW - 0.12), 3.2 - Math.sin(i * 0.9) * 0.08, z); }
-    if (ev.id === 'halloween') { for (const z of [-2.5, -7.5]) { const p = grp(d, sd * (HW - 0.35), 2.95, z); for (let i = 0; i < 5; i++) mesh(GEO.sph, M('#ff7b00'), p, 0, 0.16, 0, 0.16, 0.2, 0.26).rotation.y = i * 0.6; cyl(p, 0.03, 0.1, '#3a5a1f', 0, 0.38, 0); }
+    if (ev.id === 'thanksgiving') { // a garland of autumn leaves along each wall and a paper turkey on the lockers
+      for (let i = 0; i < 14; i++) { const lf = box(d, 0.03, 0.16, 0.22, MB(['#e07a1f', '#c1121f', '#f4c430', '#8d5524'][i & 3]), sd * (HW - 0.1), 3.45 - Math.sin(i * 0.7) * 0.12, -0.35 - i * 0.7); lf.rotation.x = i * 0.9; }
+      for (const z of [-3, -8]) { const t = grp(d, sd * (HW - 0.08), 2.1, z); for (let k = 0; k < 5; k++) { const f = mesh(GEO.cone, MB(['#c1121f', '#e07a1f', '#f4c430', '#e07a1f', '#c1121f'][k]), t, 0, 0.18, 0, 0.12, 0.42, 0.04); f.rotation.x = (k - 2) * 0.42; f.rotation.y = sd * Math.PI / 2; }
+        ball(t, 0.16, '#8d5524', 0, 0, 0); ball(t, 0.08, '#8d5524', 0, 0.2, 0); ball(t, 0.03, '#ffd60a', -sd * 0.06, 0.18, 0); } }
+    else if (ev.id === 'halloween') { for (const z of [-2.5, -7.5]) { const p = grp(d, sd * (HW - 0.35), 2.95, z); for (let i = 0; i < 5; i++) mesh(GEO.sph, M('#ff7b00'), p, 0, 0.16, 0, 0.16, 0.2, 0.26).rotation.y = i * 0.6; cyl(p, 0.03, 0.1, '#3a5a1f', 0, 0.38, 0); }
       const web = mesh(GEO.circle, MGlow('#ffffff', 0.25), d, sd * (HW - 0.05), WALLH - 1.2, -5, 1.2, 1.2, 1); web.rotation.y = -sd * Math.PI / 2; }
     else if (ev.id === 'snow') { box(d, 0.5, 0.18, SEG, MS('#f4fbff', 0.7, 0), sd * (HW - 0.65), 0.09, -SEG / 2); for (const z of [-2, -6]) for (let k = 0; k < 3; k++) mesh(GEO.cone, MS('#dff4ff', 0.2, 0.3), d, sd * (HW - 0.45) + k * 0.12 * -sd, 2.83, z - k * 0.4, 0.04, 0.25, 0.04).rotation.z = Math.PI; }
     else if (ev.id === 'firedrill') { for (const z of [-1.5, -6.5]) { const st = grp(d, sd * (HW - 0.1), 3.0, z); box(st, 0.12, 0.18, 0.28, '#b00020'); mesh(GEO.sph, MGlow('#ff2020', 0.7), st, -sd * 0.08, -0.12, 0, 0.12, 0.12, 0.12); } box(d, 0.05, 0.3, 0.5, MGlow('#ff3b30', 0.9), sd * (HW - 0.05), 4.0, -4); }
@@ -3881,7 +3917,8 @@ const KINDS = {
     anim(o, t) { o.spin.rotation.y = Math.sin(t * 2) * 0.8; o.spin.position.y = Math.sin(t * 4) * 0.08; } },
   token: { cat: 'pick', r: 0.85,
     build(o) { const g = new THREE.Group(); o.spin = grp(g); const ev = currentEvent();
-      if (ev.id === 'halloween') { const c = mesh(GEO.cone, M('#ffd60a'), o.spin, 0, 0.05, 0, 0.16, 0.42, 0.16); c.rotation.z = Math.PI; mesh(GEO.cone, M('#ff7b00'), o.spin, 0, -0.07, 0, 0.13, 0.16, 0.13).rotation.z = Math.PI; mesh(GEO.sph, M('#ffffff'), o.spin, 0, -0.2, 0, 0.07, 0.05, 0.07); }
+      if (ev.id === 'thanksgiving') { const pie = cyl(o.spin, 0.24, 0.08, M('#d4a373'), 0, 0, 0); pie.rotation.x = Math.PI / 2; const fill = cyl(o.spin, 0.2, 0.09, M('#e07a1f'), 0, 0, 0.005); fill.rotation.x = Math.PI / 2; ball(o.spin, 0.06, '#ffffff', 0, 0.05, 0.05); }
+      else if (ev.id === 'halloween') { const c = mesh(GEO.cone, M('#ffd60a'), o.spin, 0, 0.05, 0, 0.16, 0.42, 0.16); c.rotation.z = Math.PI; mesh(GEO.cone, M('#ff7b00'), o.spin, 0, -0.07, 0, 0.13, 0.16, 0.13).rotation.z = Math.PI; mesh(GEO.sph, M('#ffffff'), o.spin, 0, -0.2, 0, 0.07, 0.05, 0.07); }
       else if (ev.id === 'firedrill') { const b = cyl(o.spin, 0.2, 0.05, MS('#e63946', 0.3, 0.6, { emissive: 0x440000 }), 0, 0, 0); b.rotation.x = Math.PI / 2; mesh(starGeo(), MS('#ffd60a', 0.3, 0.8), o.spin, 0, 0, 0.03, 0.13, 0.13, 0.13); }
       else if (ev.id === 'foodfight') { const sl = mesh(GEO.cone, M('#ffbe0b'), o.spin, 0, 0, 0, 0.22, 0.4, 0.04); sl.rotation.z = Math.PI; for (let i = 0; i < 3; i++) ball(o.spin, 0.04, '#c1121f', -0.06 + i * 0.06, 0.05 - i * 0.06, 0.03); }
       else if (ev.id === 'hallpass') { box(o.spin, 0.42, 0.22, 0.03, '#06d6a0'); box(o.spin, 0.3, 0.06, 0.035, '#ffffff', 0, 0.03, 0); }
@@ -4190,6 +4227,8 @@ function drawOverlay() {
       if (fx === 'drizzle') { ctx.strokeStyle = 'rgba(200,220,255,.45)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x - 3, y + 14); ctx.stroke(); continue; }
       ctx.fillStyle = fx === 'petals' ? 'rgba(255,183,197,.85)' : fx === 'leaves' ? ['#e76f51', '#f4a261', '#e9c46a'][i % 3] : fx === 'sand' ? 'rgba(224,168,0,.45)' : ['#ff006e', '#ffd60a', '#3a86ff', '#06d6a0'][i % 4];
       ctx.save(); ctx.translate(x, y); ctx.rotate(G.t * 2 + i); ctx.fillRect(-4, -2, fx === 'sand' ? 3 : 8, fx === 'sand' ? 3 : 5); ctx.restore(); } }
+  if (G.scene === 'play' && !G.fun && !save.battery && !G.rain && QKEY !== 'low' && tgOn() && !(tourOn() && tourStop().fx !== 'none')) { for (let i = 0; i < 9; i++) { const x = (i * 97.13 + Math.sin(G.t * 0.8 + i) * 40 + W) % W, y = (i * 211.7 + G.t * (60 + (i % 4) * 18)) % H;
+    ctx.fillStyle = ['#e07a1f', '#c1121f', '#f4c430'][i % 3]; ctx.save(); ctx.translate(x, y); ctx.rotate(G.t * 2 + i); ctx.fillRect(-5, -3, 10, 6); ctx.restore(); } }
   if (G.fun === 'sled' && G.scene === 'play') { ctx.fillStyle = 'rgba(255,255,255,.85)'; const n = save.battery ? 40 : 90; for (let i = 0; i < n; i++) { const x = (i * 97.13 + Math.sin(G.t + i) * 30) % W, y = (i * 211.7 + G.t * (60 + (i % 4) * 25)) % H; ctx.fillRect(x, y, 3, 3); } }
   if (G.rain && G.scene === 'play') { ctx.strokeStyle = 'rgba(200,225,255,.55)'; ctx.lineWidth = 1.5; ctx.beginPath(); const n = save.battery ? 40 : 90; for (let i = 0; i < n; i++) { const x = (i * 97.13 + G.t * 60 * (i % 3 + 1)) % W, y = (i * 211.7 + G.t * 900) % H; ctx.moveTo(x, y); ctx.lineTo(x - 4, y + 16); } ctx.stroke(); }
   if (fireDrill() && G.scene === 'play' && !A11Y().flash) { ctx.fillStyle = 'rgba(255,0,0,' + Math.max(0, Math.sin(G.t * 5)) * 0.08 + ')'; ctx.fillRect(0, 0, W, H); }
@@ -4222,7 +4261,7 @@ function ensurePrev() {
     const cam = new THREE.PerspectiveCamera(30, 1, 0.1, 50);
     prev = { r, sc, cam, model: null, key: '' };
   }
-  const key = save.char + save.pack + save.shoe + save.up.helium + bagStyle() + outfitOf().id + hatDef().id;
+  const key = save.char + save.pack + save.shoe + save.up.helium + bagStyle() + outfitOf().id + hatDef().id + (CH.extra ? 'x' : '');
   if (prev.key !== key) { if (prev.model) { prev.sc.remove(prev.model.wrap); disposeMerged(prev.model.wrap); } prev.model = buildPlayerModel(); prev.sc.add(prev.model.wrap); prev.key = key; }
 }
 function drawAvatar() {
@@ -5009,20 +5048,25 @@ const EVENTS = [
   { id: 'firedrill', name: 'Fire Drill Week', token: 'Fire Badges', col: '#e63946', col2: '#ffb703', char: 'marshal', obs: 'hose', blurb: 'The alarm is going off! Everybody is rushing the same way you are. Weave through the crowd and grab Fire Badges.' },
   { id: 'hallpass', name: 'Hall Pass Rush', token: 'Hall Passes', col: '#06d6a0', col2: '#118ab2', char: 'speedster', obs: 'hurdle', blurb: 'Hurdles in the halls and Hall Passes to grab. Collect them all week!' },
   { id: 'foodfight', name: 'Cafeteria Food Fight', token: 'Pizza Slices', col: '#ff7b00', col2: '#e63946', char: 'chefkid', obs: 'tray', blurb: 'The cafeteria is a mess! Jump the spilled lunch trays and collect pizza slices.' },
+  { id: 'thanksgiving', name: 'Thanksgiving Turkey Trot', token: 'Pumpkin Pies', col: '#e07a1f', col2: '#7c2d12', char: 'turkeytrot', obs: 'tray', blurb: 'Autumn leaves in the halls, paper turkeys on the lockers, and pumpkin pies to collect. Runs until the week after Thanksgiving.' },
   { id: 'prom', name: 'Prom Night', token: 'Roses', col: '#ff4d8d', col2: '#ffd60a', char: 'promking', obs: 'balloons', blurb: 'Balloons, streamers and roses everywhere. Dress to impress.' }
 ];
 const EVENT_TRACK = [[10, { cash: 300 }], [25, { gs: 3 }], [40, { box: 1 }], [60, { char: 1 }]];
 // one event per week, rotating; each week starts Monday
 const EVENT_ORDER = ['firedrill', 'halloween', 'hallpass', 'foodfight', 'snow', 'prom'];
 const eventFor = wk => EVENTS.find(e => e.id === EVENT_ORDER[((wk % EVENT_ORDER.length) + EVENT_ORDER.length) % EVENT_ORDER.length]);
-function currentEvent() { return eventFor(weekNum()); }
-function upcomingEvents(n) { const out = [], left = eventEndsIn(); for (let i = 1; i <= n; i++) out.push({ ev: eventFor(weekNum() + i), startsIn: left + (i - 1) * 7 * 86400000 }); return out; }
+// Thanksgiving takes over the weekly rotation from Nov 14 through the end of the week after Thanksgiving week (Sun Dec 6, 2026)
+const TG_START = new Date(2026, 10, 14).getTime(), TG_END = new Date(2026, 11, 7).getTime(); // local midnights
+const tgOn = () => { const n = Date.now(); return n >= TG_START && n < TG_END; };
+function currentEvent() { return tgOn() ? EVENTS.find(e => e.id === 'thanksgiving') : eventFor(weekNum()); }
+function upcomingEvents(n) { const out = [], left = eventEndsIn(), base = weekNum() + (tgOn() ? Math.round(left / (7 * 86400000)) : 0); for (let i = 1; i <= n; i++) out.push({ ev: eventFor(base + i), startsIn: left + (i - 1) * 7 * 86400000 }); return out; }
 function eventEndsIn() {
+  if (tgOn()) return Math.max(0, TG_END - Date.now());
   const d = new Date(); let end = new Date(d); end.setHours(24, 0, 0, 0); while (end.getDay() !== 1) end.setDate(end.getDate() + 1); // until next Monday
   return Math.max(0, end - d);
 }
 function eventSave() { const ev = currentEvent(); if (!save.event || save.event.id !== ev.id) save.event = { id: ev.id, tokens: 0, claimed: [] }; return save.event; }
-const EV_ICON = { foodfight: '🍕', halloween: '🍬', snow: '❄️', prom: '🌹', firedrill: '🚒', hallpass: '🎫' };
+const EV_ICON = { thanksgiving: '🥧', foodfight: '🍕', halloween: '🍬', snow: '❄️', prom: '🌹', firedrill: '🚒', hallpass: '🎫' };
 const fireDrill = () => G.mode === 'infinite' && !G.fun && currentEvent().id === 'firedrill';
 // (the ghost run was removed in round 8: it didn't add anything)
 function gotToken(n) {
@@ -6481,6 +6525,8 @@ function endRun(win, reason) {
   showRank(G.mode !== 'tutorial' && G.mode !== 'maker' ? G.lastRank : null);
   try { r24AfterRun(sc, win, earned); } catch (e) { console.warn(e); }
   try { r25AfterRun(sc, win, newBest); } catch (e) { console.warn(e); }
+  try { raceEnd(sc); } catch (e) { console.warn(e); }
+  if (G.rebuildAfterRun) { G.rebuildAfterRun = false; setTimeout(() => { if (G.scene !== 'play') rebuildPlayer(); }, 1200); }
   { const wgAdd = G.mode !== 'tutorial' && G.mode !== 'maker' && !G.cheated && G.dist >= 10 ? G.dist : 0; if (wgAdd) worldGoalAdd(wgAdd); showWorldGoalOver(wgAdd); if (wgAdd) setTimeout(() => hsAfterRun(wgAdd), 1800); }
   $('oCombo').textContent = G.comboBonus > 50 ? 'Combo bonus +' + Math.round(G.comboBonus).toLocaleString() + ' · best combo ' + (G.bestChain || 0) : ''; 
   G.earned = earned; $('bDouble').style.display = earned >= 20 && G.mode !== 'tutorial' ? 'block' : 'none'; $('bDouble').disabled = false; $('bDouble').textContent = '▶ Watch ad: double cash (+$' + earned + ')';
@@ -7176,7 +7222,7 @@ function buildModes() {
   const feat = (cls, icon, title, desc, em, go) => { const d = document.createElement('button'); d.className = 'modeCard ' + cls; d.innerHTML = '<span class="mi"></span><div><b></b><small></small><em></em></div>'; d.querySelector('.mi').textContent = icon; d.querySelector('b').textContent = title; d.querySelector('small').textContent = desc; d.querySelector('em').textContent = em; d.onclick = () => { sfx('click'); go(); }; box.appendChild(d); };
   { const h = hotdSave(), md = hotdMedal(h.best); feat('daily', '📅', 'Hallway of the Day #' + hotdNo(), 'One hallway, the same for everyone in the world, for 24 hours. Run it as often as you like: your best distance wins medals and goes on today\'s board.', (md ? MEDALS[md - 1].i + ' ' : '') + (h.best ? 'Best ' + h.best.toLocaleString() + ' m' : 'Not run yet') + ' · new hallway in ' + fmtLeft(hotdLeft()), openHotd); }
   feat('camp', '🎓', 'Campaign', '150 stages from elementary school to college. Beat the bell for stars, with a boss every 10th stage.', $('campTxt').textContent || '', openCampaign);
-  { const hs = save.heat || {}; feat('heat', '🔥', 'Hallway Heat', 'A 6-runner race. 5 runners at your level run beside you as ghosts, and each drops out where their best run ended. Outlast them for the podium.', hs.runs ? 'Wins: ' + (hs.wins || 0) + ' · podiums: ' + (hs.pods || 0) + ' · 1st place: +3★ +$800' : '1st place: +3★ +$800 + league points', startHeat); }
+  if (false) { const hs = save.heat || {}; feat('heat', '🔥', 'Hallway Heat', 'A 6-runner race. 5 runners at your level run beside you as ghosts, and each drops out where their best run ended. Outlast them for the podium.', hs.runs ? 'Wins: ' + (hs.wins || 0) + ' · podiums: ' + (hs.pods || 0) + ' · 1st place: +3★ +$800' : '1st place: +3★ +$800 + league points', startHeat); }
   { const cs = csSave(), got = cs.reduce((a, b) => a + (b || 0), 0); feat('sched', '🗓️', 'Class Schedule', '30 hand-built hallways, one for every class period of the week. Finish for ★, grab the coins for ★★, beat the class goal for ★★★.', got + ' / 90 ★' + (csNext() < CS_N ? ' · next: ' + csLevel(csNext()).name : ' · all classes passed!'), openSchedule); }
   feat('duel', '⚔️', 'Duel a Friend', 'Run the same hallway as a friend. Their score shows next to yours the whole run.', save.challenge ? 'Now: beat ' + save.challenge.from + ' (' + save.challenge.score.toLocaleString() + ')' : 'Start a duel or enter a friend\'s code', openDuel);
   feat('daily', '📅', 'Daily Challenge', THEMES[dc.theme].name + (dc.fun ? ' · ' + FUN[dc.fun].name : '') + ' · Beat ' + dc.target.toLocaleString() + ' points · ' + (function () { const s = dcStreakNext(); return s.done ? '🔥 ' + s.n + '-day streak' : '🔥 day ' + s.n + ': ' + rewardText(dcStreakRw(s.n)) + (dcStreakRw(s.n).box ? ' + chest' : ''); })(), dc.done ? 'Done today ✓ · best ' + dc.best.toLocaleString() + ' · new one in ' + fmtLeft(86400000 - (Date.now() - new Date().getTimezoneOffset() * 60000) % 86400000) : 'Today\'s best: ' + (dc.best ? dc.best.toLocaleString() : '-') + ' · Rank #' + (dcBoard().findIndex(r => r.me) + 1) + ' of 10', startDaily);
@@ -7833,11 +7879,9 @@ function hotkey(e) {
 const MORE_TILES = [ // [icon, label, button it presses, element with its live sub-text, its badge, "hot" when]
   ['🎁', 'Free Gift', 'bFree', 'freeTxt', null, () => streakState().can],
   ['🎯', 'Missions', 'bMissions', null, 'missBadge', () => missionsAllDone()],
-  ['🎉', 'Event', 'bEvents', null, null, null],
   ['🔐', 'Mystery Locker', 'bMLocker', 'mLockTxt', null, () => !lockerLeft()],
   ['🎡', 'Daily Spin', 'bSpin', null, 'spinBadge', () => spinFree()],
   ['🎟️', 'School Pass', 'bPass', 'passTierTxt', 'passBadge', () => passClaimable() > 0],
-  ['🛡️', 'League', 'bLeague', 'lgBtnTxt', null, null],
   ['🏆', 'Trophies', 'bTrophies', null, 'trBadge', () => trophyClaimable() > 0],
   ['📺', 'Free Gold Star', 'bAdStar', 'adStarTxt', null, null],
   ['📦', 'Ad Mystery Box', 'bAdBox', 'adBoxTxt', null, () => !adBoxLeft() && save.age !== 'child'],
@@ -8002,6 +8046,11 @@ try { applyA11y(); } catch (e) {}
 try { const away = AWAY_MS; if (save.tutDone && away > 3 * 86400000) setTimeout(() => { grant({ cash: 1000, gs: 3, heelys: 2 }); $('backDays').textContent = Math.floor(away / 86400000); $('backModal').classList.add('show'); refreshMenu(); }, 1500); save.lastSeen = Date.now(); persist(); } catch (e) {}
 try { G.themeKey = hallPick('locations').theme; } catch (e) {}
 loadCharacters().then(() => {
+  // round 28: fetch the rest (cartoon runners, sidekicks, voice lines) in the background, then swap them in
+  if (window.ASSETS_X_URL && !window.GAME_ASSETS_X) { const sc = document.createElement('script'); sc.src = ASSETS_X_URL; sc.async = true;
+    sc.onload = async () => { const X = window.GAME_ASSETS_X, A = window.GAME_ASSETS; if (!X || !A) return; Object.assign(A.chars, X.chars || {}); Object.assign(A.clips, X.clips || {}); A.pets = Object.assign(A.pets || {}, X.pets || {}); A.voice = Object.assign(A.voice || {}, X.voice || {});
+      await loadCharacters(); CH.extra = true; if (G.scene !== 'play') rebuildPlayer(); else G.rebuildAfterRun = true; if (curScreen === 'sShop') buildShop(); };
+    document.head.appendChild(sc); }
   rebuildPlayer(); refreshMenu(); try { initWebAds(); } catch (e) {}
   requestAnimationFrame(() => { fitMenu(); requestAnimationFrame(fitMenu); }); setTimeout(fitMenu, 250); if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitMenu);
   if (IS_WEB && !save.bmTipOff) setTimeout(() => { // the "bookmark us" tip (browser only), easy to close for good
@@ -9289,6 +9338,77 @@ $('bClip').onclick = async () => {
 // round 27: the Locker's tabs stick right under its title bar, whatever height the bar ends up on this phone
 function r27Hdr() { const pn = document.querySelector('#sShop .panel'), tb = pn && pn.querySelector('.topbar'); if (tb && tb.offsetHeight) pn.style.setProperty('--hdr', tb.offsetHeight + 'px'); }
 { const _ss2 = showScreen; showScreen = function (id) { _ss2.apply(this, arguments); if (id === 'sShop') requestAnimationFrame(r27Hdr); }; window.addEventListener('resize', () => requestAnimationFrame(r27Hdr)); }
+
+/* ---- round 28: one Compete tab. Leaderboards, League, Weekly Tournament, the event, Hallway Heat, Hallway of the Day
+   and live friend races used to be spread over Ranks, Modes and More; now the Ranks button opens all of them together. ---- */
+function buildCompete() { const box = $('competeList'); if (!box) return; box.innerHTML = '';
+  const card = (cls, icon, title, desc, em, go) => { const d = document.createElement('button'); d.className = 'modeCard ' + cls; d.innerHTML = '<span class="mi"></span><div><b></b><small></small><em></em></div>';
+    d.querySelector('.mi').textContent = icon; d.querySelector('b').textContent = title; d.querySelector('small').textContent = desc; d.querySelector('em').textContent = em || ''; d.onclick = e => { e.stopPropagation(); sfx('click'); moreReturn = false; go(); }; box.appendChild(d); };
+  const ev = currentEvent(), es = eventSave();
+  card('daily', '🏁', 'Live Race', 'Race up to 3 friends at the same time on the same hallway. Make a room and send the code.', Online.ready() ? 'Make or join a room' : 'Needs the online board (13+)', openRace);
+  card('tourney', '🏆', 'Weekly Tournament', 'Same hallway for everyone this week. Top 3 win Gold Stars.', 'See the board', () => $('bTourney').click());
+  card('daily', '📅', 'Hallway of the Day #' + hotdNo(), 'One hallway for the whole world today. Medals for distance.', (() => { const h = hotdSave(), md = hotdMedal(h.best); return (md ? MEDALS[md - 1].i + ' ' : '') + (h.best ? 'Best ' + h.best.toLocaleString() + ' m' : 'Not run yet'); })(), openHotd);
+  { const hs = save.heat || {}; card('heat', '🔥', 'Hallway Heat', 'A 6-runner race against ghosts at your level. Outlast them for the podium.', hs.runs ? 'Wins: ' + (hs.wins || 0) + ' · podiums: ' + (hs.pods || 0) : '1st place: +3★ +$800 + league points', startHeat); }
+  card('trip', '🛡️', 'League', 'Climb from Bronze up through the divisions every week.', ($('lgBtnTxt') && $('lgBtnTxt').textContent) || '', () => $('bLeague').click());
+  card('trip', EV_ICON[ev.id] || '🎉', ev.name, ev.blurb, (es.tokens || 0) + ' ' + ev.token + ' · ends in ' + fmtLeft(eventEndsIn()), () => $('bEvents').click());
+  card('camp', '📊', 'Leaderboards', 'World, school and friends boards: today, this week, this month and all time.', 'Open the boards', () => { openRanks.done = 1; openRanks(); });
+}
+function openCompete() { initAudio(); sfx('click'); buildCompete(); showScreen('sCompete'); }
+$('bRanks').onclick = e => { if (e) e.stopPropagation(); openCompete(); };
+
+/* ---- round 28: LIVE RACES. A host makes a 4-letter room; up to 4 players join, the host starts it, and everyone runs the same
+   seeded hallway at the same moment. Each racer writes their distance every 2 seconds and reads the others', so the board on the
+   left shows who's ahead. races/{CODE} = { host, seed, startAt, ts }; racers/{CODE}_{uid} = { code, uid, name, d, sc, dead, ts } ---- */
+const RACE = { code: '', host: false, seed: 0, startAt: 0, rows: [], poll: null, live: false, done: false };
+const raceMe = () => (save.fbAuth && save.fbAuth.uid) || '';
+function raceCodeNew() { const A = 'ABCDEFGHJKLMNPQRSTUVWXYZ'; let c = ''; for (let i = 0; i < 4; i++) c += A[Math.floor(Math.random() * A.length)]; return c; }
+async function raceWriteMe(extra) { const a = await Online.token(), name = await Online.claimName().catch(() => save.name);
+  await fsReq('PATCH', docPath('racers', RACE.code + '_' + a.uid), a.idToken, fsEnc(Object.assign({ code: RACE.code, uid: a.uid, name: safeName(name || save.name || 'Runner'), d: 0, sc: 0, dead: false, ts: Date.now() }, extra || {}))); }
+async function raceRead() { const a = await Online.token(); const [doc, rows] = await Promise.all([fsReq('GET', docPath('races', RACE.code), a.idToken).then(fsDoc).catch(() => null), fsQuery('racers', fsEq('code', RACE.code), null, 8, a.idToken).catch(() => [])]);
+  if (doc) { RACE.seed = doc.seed || RACE.seed; RACE.startAt = doc.startAt || 0; RACE.hostId = doc.host; } RACE.rows = rows.slice(0, 4); return RACE.rows; }
+function openRace() { initAudio(); if (!Online.ready()) { sfx('deny'); toast('Live races need the online board', 'Ask a parent, or play Hallway Heat', 2000); return; } raceShow(); showScreen('sRace'); }
+function raceShow() { const inRoom = !!RACE.code; $('raceStart').style.display = inRoom ? 'none' : ''; $('raceLobby').style.display = inRoom ? '' : 'none'; if (!inRoom) return;
+  $('raceCodeBig').textContent = RACE.code; $('bRaceGo').style.display = RACE.host ? '' : 'none';
+  $('raceSub').textContent = RACE.startAt ? 'Starting…' : RACE.host ? 'Send the code to up to 3 friends, then press Start.' : 'Waiting for the host to start the race…';
+  const ul = $('raceList'); ul.innerHTML = ''; for (const r of RACE.rows) { const li = document.createElement('li'); if (r.uid === raceMe()) li.className = 'me'; li.innerHTML = '<span></span><span></span>'; li.children[0].textContent = r.name || 'Runner'; li.children[1].textContent = r.uid === RACE.hostId ? 'host' : 'ready'; ul.appendChild(li); } }
+function racePoll(ms) { clearInterval(RACE.poll); RACE.poll = setInterval(raceTick, ms); }
+async function raceTick() { if (!RACE.code) return clearInterval(RACE.poll);
+  try {
+    if (RACE.live && G.scene === 'play' && G.raceOn) await raceWriteMe({ d: Math.floor(G.dist), sc: Math.floor(G.score) });
+    await raceRead();
+    if (!RACE.live && RACE.startAt && !RACE.armed) { RACE.armed = true; const wait = Math.max(0, RACE.startAt - Date.now()); toast('🏁 RACE IN ' + Math.ceil(wait / 1000), 'Same hallway for everyone', 1500); setTimeout(raceGo, wait); }
+    if (curScreen === 'sRace') raceShow(); raceHud();
+  } catch (e) {} }
+function raceGo() { if (!RACE.code) return; RACE.live = true; RACE.done = false; G.raceNext = true; G.seedNext = RACE.seed; G.funNext = null; showScreen(null); startRun('infinite'); racePoll(2000); }
+function raceHud() { const el = $('raceHud'); const show = RACE.live && (G.scene === 'play' || G.scene === 'over') && G.raceOn; el.style.display = show ? 'flex' : 'none'; if (!show) return;
+  const rows = RACE.rows.map(r => r.uid === raceMe() ? Object.assign({}, r, { d: Math.max(r.d || 0, Math.floor(G.dist)), dead: r.dead || G.scene === 'over' }) : r).sort((a, b) => (b.d || 0) - (a.d || 0));
+  el.innerHTML = ''; rows.forEach((r, i) => { const d = document.createElement('div'); d.className = (r.uid === raceMe() ? 'me' : '') + (r.dead ? ' out' : ''); d.innerHTML = '<span></span><b></b>'; d.children[0].textContent = (i + 1) + '. ' + (r.name || 'Runner'); d.children[1].textContent = (r.d || 0) + ' m'; el.appendChild(d); }); }
+async function raceEnd(sc) { if (!G.raceOn || RACE.done) return; RACE.done = true; const myD = Math.floor(G.dist);
+  try { await raceWriteMe({ d: myD, sc, dead: true }); await raceRead(); } catch (e) {}
+  const check = () => { const rows = RACE.rows.slice().sort((a, b) => (b.d || 0) - (a.d || 0)), place = rows.findIndex(r => r.uid === raceMe()) + 1, allOut = rows.every(r => r.dead);
+    const el = $('oHot'); if (el) { const l = document.createElement('div'); l.textContent = '🏁 Live race: ' + (allOut ? 'you finished #' + place + ' of ' + rows.length : 'you\'re #' + place + ' so far, others still running…'); el.appendChild(l); el.style.display = ''; }
+    if (allOut) { clearInterval(RACE.poll); RACE.live = false; if (place === 1 && rows.length > 1) { const r = save.r28 || (save.r28 = {}); if (r.raceDay !== gDay()) { r.raceDay = gDay(); r.raceWins = 0; } if (r.raceWins < 3) { r.raceWins++; save.bank = (save.bank || 0) + 300; persist(); toast('🏆 YOU WON THE RACE!', '+$300', 2200); } } }
+    return allOut; };
+  if (!check()) { let n = 0; const iv = setInterval(async () => { n++; try { await raceRead(); } catch (e) {} raceHud(); if (check() || n > 20) { clearInterval(iv); clearInterval(RACE.poll); RACE.live = false; } }, 3000); } }
+function raceLeave() { clearInterval(RACE.poll); Object.assign(RACE, { code: '', host: false, seed: 0, startAt: 0, rows: [], live: false, armed: false, done: false }); G.raceOn = false; $('raceHud').style.display = 'none'; raceShow(); }
+$('bRaceMake').onclick = async () => { sfx('click'); try { const a = await Online.token(); RACE.code = raceCodeNew(); RACE.host = true; RACE.seed = newSeed(); RACE.startAt = 0; RACE.armed = false;
+  await fsReq('PATCH', docPath('races', RACE.code), a.idToken, fsEnc({ host: a.uid, seed: RACE.seed, startAt: 0, ts: Date.now() })); await raceWriteMe(); await raceRead(); raceShow(); racePoll(1500); }
+  catch (e) { RACE.code = ''; toast('Couldn\'t make a room', e.status === 403 ? 'The database rules need updating (see the setup notes)' : 'Check your connection', 2200); } };
+$('bRaceJoin').onclick = async () => { sfx('click'); const c = ($('raceCode').value || '').toUpperCase().replace(/[^A-Z]/g, ''); if (c.length !== 4) { toast('Enter the 4-letter code', '', 1400); return; }
+  try { const a = await Online.token(); const doc = fsDoc(await fsReq('GET', docPath('races', c), a.idToken)); if (!doc || Date.now() - (doc.ts || 0) > 3600000) throw new Error('old');
+    RACE.code = c; RACE.host = false; RACE.armed = false; await raceRead(); if (RACE.rows.length >= 4 && !RACE.rows.some(r => r.uid === a.uid)) { RACE.code = ''; toast('That room is full', '', 1500); return; }
+    if (RACE.startAt && RACE.startAt < Date.now()) { RACE.code = ''; toast('That race already started', '', 1500); return; }
+    await raceWriteMe(); await raceRead(); raceShow(); racePoll(1500); }
+  catch (e) { RACE.code = ''; toast('No room with that code', 'Check the code with your friend', 1800); } };
+$('bRaceGo').onclick = async () => { sfx('click'); if (RACE.rows.length < 2) { toast('Wait for a friend to join', 'Send them the code first', 1600); return; }
+  try { const a = await Online.token(); const at = Date.now() + 6000; await fsReq('PATCH', docPath('races', RACE.code), a.idToken, fsEnc({ host: a.uid, seed: RACE.seed, startAt: at, ts: Date.now() })); RACE.startAt = at; raceTick(); } catch (e) { toast('Couldn\'t start', 'Try again', 1400); } };
+$('bRaceShare').onclick = () => shareText('Race me live in Hallway Dash! Room code: ' + RACE.code + '\n' + siteUrl(), 'Send it to your friends');
+$('bRaceLeave').onclick = () => { sfx('click'); raceLeave(); };
+// a run started by the race is a race run; anything else (Play again, menu) leaves the room's run
+{ const _sr = startRun; startRun = function () { G.raceOn = !!G.raceNext; G.raceNext = false; if (!G.raceOn) $('raceHud').style.display = 'none'; return _sr.apply(this, arguments); }; }
+
+// round 28: brand-new players (before their 2nd run) see just the title, Play and the four buttons: no goal cards yet
+{ const _rm = refreshMenu; refreshMenu = function () { const r = _rm.apply(this, arguments); try { document.body.classList.toggle('newbie', (save.runsTotal || 0) < 2); } catch (e) {} return r; }; }
 
 </script>
 </body>
