@@ -994,7 +994,7 @@ body.homeWide .mSide .worldCard .cTxt{text-align:left}
     <div class="topbar"><h2>Locker Room</h2><span class="pills"><span class="bankPill" id="sBank">$0</span><span class="bankPill starPill" id="sStars">★ 0</span></span></div>
     <canvas id="preview" width="300" height="300"></canvas>
     <div class="statline"><span>Backpack load: <span class="meter"><i id="pW"></i></span> <span id="pWt">100%</span></span></div>
-    <div class="tabs"><button class="tab on" data-tab="char">Runners</button><button class="tab" data-tab="inv">My Locker</button><button class="tab" data-tab="up">Upgrades</button><button class="tab" data-tab="pet">Sidekicks</button><button class="tab" data-tab="boost">Boosts</button><button class="tab" data-tab="pack">Packs</button><button class="tab" data-tab="hat">Hats</button><button class="tab" data-tab="plane">Planes</button><button class="tab" data-tab="shoe">Shoes</button><button class="tab" data-tab="wheel">Wheels</button><button class="tab" data-tab="hall">Hallway</button></div>
+    <div class="tabs"><button class="tab on" data-tab="char">Runners</button><button class="tab" data-tab="inv">My Locker</button><button class="tab" data-tab="up">Upgrades</button><button class="tab" data-tab="pet">Sidekicks</button><button class="tab" data-tab="boost">Boosts</button><button class="tab" data-tab="pack">Packs</button><button class="tab" data-tab="trail">Trails</button><button class="tab" data-tab="hat">Hats</button><button class="tab" data-tab="plane">Planes</button><button class="tab" data-tab="shoe">Shoes</button><button class="tab" data-tab="wheel">Wheels</button><button class="tab" data-tab="hall">Hallway</button></div>
     <div class="bagStyles" id="bagStyles"></div>
     <div class="hallCats" id="hallCats"><button data-hc="locations">Location</button><button data-hc="lockers">Lockers</button><button data-hc="banners">Banners</button><button data-hc="floors">Floors</button><button data-hc="lights">Lights</button></div>
     <div class="items" id="shopItems"></div>
@@ -1622,7 +1622,7 @@ window.WEB_PAY = {
 };
 
 </script>
-<script src="game-data/assets-cbd80557f4.js"></script>
+<script src="game-data/assets-c083b96658.js"></script>
 <script>
 'use strict';
 /* ============================================================
@@ -1757,6 +1757,13 @@ const SHOP = {
     { id: 'k_ranger', name: 'Star Ranger', key: 'K_Ranger', weekly: 7, price: 3000, colors: {}, perk: 'jump', desc: 'Featured cartoon runner. Perk: jumps 8% higher.' },
     { id: 'k_robo', name: 'Robo Buddy', key: 'K_Robo', weekly: 8, price: 16, cur: 'gs', colors: {}, perk: 'mult', desc: 'Featured cartoon runner. Perk: +1 score multiplier. · ABILITY: Starts every run with a shield that blocks one crash', ab: 'shield' },
     { id: 'k_jingle', name: 'Jingle', key: 'K_Jingle', weekly: 9, price: 3000, colors: {}, perk: 'coins', desc: 'Featured cartoon runner. Perk: +10% coins.' },
+    // Club runners (Quaternius costume models, CC0): earned with cash or Gold Stars like the rest
+    { id: 'trail', name: 'Trail Blazer', key: 'M_Adventurer', price: 900, colors: { top: '#2d6a4f', hair: '#4a2e16', skin: '#c68642' }, perk: 'magnet', desc: 'Outdoor Club runner, backpack and all. Perk: Juice Box magnet lasts 3s longer.' },
+    { id: 'scoutlead', name: 'Scout Leader', key: 'W_Adventurer', price: 900, colors: { top: '#40916c', hair: '#6a3d1f', skin: '#f1c27d' }, perk: 'jump', desc: 'Outdoor Club runner. Perk: jumps 8% higher.' },
+    { id: 'agclub', name: 'Ag Club', key: 'M_Farmer', price: 750, colors: { pants: '#1d3557', skin: '#8d5524' }, perk: 'weight', desc: 'Up before the bell every day. Perk: backpack starts 15% lighter.' },
+    { id: 'coder', name: 'Code Club', key: 'W_SciFi', price: 1200, colors: { top: '#4cc9f0', hair: '#141414', skin: '#a0673c' }, perk: 'lanes', desc: 'Hackathon winner. Perk: 20% faster lane switching.' },
+    { id: 'dramawitch', name: 'Drama Club Witch', key: 'W_Witch', price: 12, cur: 'gs', colors: { top: '#7209b7', hair: '#141414', skin: '#f6d0b1' }, perk: 'chase', desc: 'Still in costume from the school play. Perk: chases only last 7 seconds. · ABILITY: Glides: falls slowly after a jump', ab: 'glide' },
+    { id: 'spacecamp', name: 'Space Camp', key: 'M_Spacesuit', price: 16, cur: 'gs', colors: {}, perk: 'jump', desc: 'Came straight from Space Camp. Perk: jumps 8% higher. · ABILITY: Double jump (swipe up again in the air)', ab: 'djump' },
     { id: 'champ', name: 'School Champion', key: 'M_Casual', svs: 1, colors: { top: '#ffd60a', pants: '#1d3557', hair: '#141414', skin: '#c68642' }, perk: 'mult', desc: 'For every runner at the School of the Month (School vs School). Perk: +1 score multiplier.' },
     { id: 'marshal', name: 'Fire Marshal', key: 'M_Worker', event: 'firedrill', colors: { vest: '#ff7b00', cap: '#e63946' }, perk: 'chase', desc: 'Fire Drill exclusive. Perk: chases only last 7 seconds.' },
     { id: 'speedster', name: 'Speedster', key: 'W_Casual', event: 'hallpass', colors: { top: '#06d6a0', pants: '#118ab2', hair: '#141414', skin: '#c68642' }, perk: 'lanes', desc: 'Hall Pass Rush exclusive. Perk: 20% faster lane switching.' },
@@ -2297,7 +2304,14 @@ const SLOTS = {
   W_Punk: { Pink: 'top', Hair_Brown: 'hair' },
   W_Suit: { Black: 'suit', Hair_Blond: 'hair', Hair_Brown: 'hair' },
   W_Worker: {},
-  W_Formal: { LimeGreen: 'top', Red: 'hair' }
+  W_Formal: { LimeGreen: 'top', Red: 'hair' },
+  M_Adventurer: { Green: 'top', Hair: 'hair' },
+  W_Adventurer: { Green: 'top', Hair_Brown: 'hair' },
+  M_Farmer: { LightBlue: 'pants' },
+  M_King: { Blue: 'top', Hair_White: 'hair' },
+  M_Spacesuit: { SciFi_Main: 'top' },
+  W_SciFi: { LightBlue: 'top', Hair_Black: 'hair' },
+  W_Witch: { Purple: 'top', Hair_Black: 'hair' }
 };
 // Soften the low-poly look: weld duplicate vertices and recompute smooth normals (skin weights are kept).
 function smoothSkin(m) {
@@ -2599,7 +2613,7 @@ function readV(attr, i, v) { return v.fromBufferAttribute(attr, i); } // three r
 function mapSole(sole, model) { if (!sole) return null; const m = { pts: [] }; model.traverse(o => { if (o.isBone && sole[o.name]) for (const p of sole[o.name]) m.pts.push({ bone: o, p }); }); return m.pts.length ? m : null; }
 // Simple cartoon eyes + brows parented to the head bone (the source models have almost no facial features).
 const EYE = { M: { x: 0.0345, y: 0.068, z: 0.102, r: 0.0168 }, W: { x: 0.034, y: 0.072, z: 0.113, r: 0.0166 } }; // round 13: bigger, closer-set eyes
-const HAS_EYES = { W_SciFi: 1, W_Soldier: 1, W_Witch: 1, W_Adventurer: 1 };
+const HAS_EYES = { W_SciFi: 1, W_Soldier: 1, W_Witch: 1, W_Adventurer: 1, M_Spacesuit: 1 };
 let _eyeMats = null, _smileGeo = null;
 const IRIS = ['#5a3a1e', '#3d2614', '#7a5a2a', '#3f6fa8', '#4c7a4a', '#6b4a2a'];
 // measure each model's real face once: nose tip, and the face surface where the eyes and mouth go,
@@ -3978,7 +3992,7 @@ function syncPlayer() {
   if (menuView) {
     pp.root.rotation.set(0, -0.55, 0); pp.wrap.scale.setScalar(1); pp.wrap.rotation.set(0, 0, 0); pp.wrap.position.set(MENU_POS.x, 0, MENU_POS.z);
     { const R = MENU_ROUTINE, tot = R.reduce((q, r) => q + r[1], 0); let tt = G.t % tot, st = R[0]; for (const r of R) { if (tt < r[1]) { st = r; break; } tt -= r[1]; }
-      const env = Math.min(1, tt / 0.45, (st[1] - tt) / 0.45); a.pose(st[0], st[2] || 1, 0.35); a.post = st[3] ? (A => { const tw = window.twist; window.twist = (A2, b, x, y, z, ang) => tw(A2, b, x, y, z, ang * env); try { st[3](A, tt); } finally { window.twist = tw; } }) : null; if (st[0] === 'jump') pp.wrap.position.y = Math.sin(Math.min(1, tt / st[1]) * Math.PI) * 0.45; }
+      const env = Math.min(1, tt / 0.45, (st[1] - tt) / 0.45); const cel = (G.celebT || 0) > performance.now(); a.pose(cel ? 'dance' : st[0], cel ? 1.1 : st[2] || 1, 0.35); if (cel) st = [st[0], st[1]]; a.post = st[3] ? (A => { const tw = window.twist; window.twist = (A2, b, x, y, z, ang) => tw(A2, b, x, y, z, ang * env); try { st[3](A, tt); } finally { window.twist = tw; } }) : null; if (st[0] === 'jump') pp.wrap.position.y = Math.sin(Math.min(1, tt / st[1]) * Math.PI) * 0.45; }
     a.update(FRAME_DT);
     keepAboveFloor(pp, 0); pp.backpack.scale.setScalar(0.82 + 0.38 * baseWeight()); pp.aura.visible = false; pp.shadow.position.y = 0.003; followChest(pp); return;
   }
@@ -4000,7 +4014,7 @@ function syncPlayer() {
   else if (G.pushAnim > 0 && G.scene === 'play') a.pose('push', 2.2, 0.14); // shoving through (a softer blend: the 0.06s snap dropped the hips 30cm in ~3 frames)
   else if (G.heely > 0 && G.scene === 'play') a.pose('idle', 0.6, 0.1); // rolling on the heel wheels
   else if (G.scene === 'play' && G.countdown > 0) a.pose('idle');
-  else if (G.scene === 'over') a.pose('die');
+  else if (G.scene === 'over') a.pose(G.wonRun ? 'dance' : 'die');
   else a.pose('run', clamp(G.speed / 11.5, 1.0, 2.2), 0.2);
   if (!pp.sled) { pp.sled = grp(null); box(pp.sled, 0.62, 0.06, 1.35, MS('#e63946', 0.4, 0.1), 0, 0.12, 0); const tip = cyl(pp.sled, 0.31, 0.06, MS('#e63946', 0.4, 0.1), 0, 0.2, -0.68); tip.rotation.z = Math.PI / 2; tip.scale.set(0.12, 0.6, 0.12); for (const x of [-0.27, 0.27]) box(pp.sled, 0.04, 0.04, 1.5, MS('#c0c4cc', 0.3, 0.9), x, 0.04, 0); scene.add(pp.sled); }
   pp.sled.visible = sledding; if (sledding) { pp.sled.position.set(P.x, P.y, 0.1); pp.sled.rotation.set(0, 0, clamp((P.x - P.lane * laneW) / laneW, -1, 1) * 0.35); if (Math.random() < 0.5) emit(P.x + rand(-0.3, 0.3), 0.1, 0.6, 1, '#ffffff', 1.6, 0.4, 0.14, 0, false, true); }
@@ -6428,6 +6442,7 @@ function endRun(win, reason) {
   { const pz = newbiePrize(), el = $('oPrize'); el.classList.remove('show'); if (pz) { const nx = NEWBIE[pz.i + 1]; setText('oPrizeT', '🎁 PRIZE ' + (pz.i + 1) + ' OF 5: ' + pz.label); setText('oPrizeN', nx ? 'Next prize after 1 more run: ' + nx.label : 'That\'s all 5 starter prizes. Now climb the ranks!'); setTimeout(() => { if (G.scene === 'over') { el.classList.add('show'); sfx('buy'); } }, 500); } }
   showRank(G.mode !== 'tutorial' && G.mode !== 'maker' ? G.lastRank : null);
   try { r24AfterRun(sc, win, earned); } catch (e) { console.warn(e); }
+  try { r25AfterRun(sc, win, newBest); } catch (e) { console.warn(e); }
   { const wgAdd = G.mode !== 'tutorial' && G.mode !== 'maker' && !G.cheated && G.dist >= 10 ? G.dist : 0; if (wgAdd) worldGoalAdd(wgAdd); showWorldGoalOver(wgAdd); if (wgAdd) setTimeout(() => hsAfterRun(wgAdd), 1800); }
   $('oCombo').textContent = G.comboBonus > 50 ? 'Combo bonus +' + Math.round(G.comboBonus).toLocaleString() + ' · best combo ' + (G.bestChain || 0) : ''; 
   G.earned = earned; $('bDouble').style.display = earned >= 20 && G.mode !== 'tutorial' ? 'block' : 'none'; $('bDouble').disabled = false; $('bDouble').textContent = '▶ Watch ad: double cash (+$' + earned + ')';
@@ -8992,6 +9007,7 @@ const SECRETS = [
   { id: 'sc_lucky', name: 'Lucky Lu', key: 'W_Formal', colors: { top: '#2ec4b6', pants: '#ffd60a', hair: '#7b2cbf', skin: '#f6d0b1' }, perk: 'coins', hint: 'End a run with a score that ends in 77', ok: (sc) => sc > 100 && sc % 100 === 77 },
   { id: 'sc_hot', name: 'Hot Hand Hal', key: 'M_Suit', colors: { top: '#ff3d6e', pants: '#1d2340', hair: '#ff7b00', skin: '#8d5524' }, perk: 'pass', hint: 'Reach a Hot Streak of 5', ok: () => hotN() >= 5 },
   { id: 'sc_gold', name: 'Gold Medal Gia', key: 'W_Suit', colors: { top: '#ffd60a', pants: '#1d2340', hair: '#3b2414', skin: '#c68642' }, perk: 'heelys', hint: 'Win gold on the Hallway of the Day', ok: () => G.hotd && hotdMedal(Math.floor(G.dist)) >= 3 },
+  { id: 'sc_king', name: 'Homecoming King', key: 'M_King', colors: {}, perk: 'coins', hint: 'Land 12 air tricks in one run', ok: () => (G.tricksLanded || 0) >= 12 },
   { id: 'sc_rival', name: 'Rival Rex', key: 'M_Beach', colors: { top: '#e63946', pants: '#457b9d', hair: '#141414', skin: '#d9a066' }, perk: 'coins', hint: 'Beat a friend\'s challenge link', ok: (sc) => G.chalScore > 0 && sc > G.chalScore }
 ];
 const PERK_TXT = { pass: 'Hall Pass lasts a bit longer.', jump: 'jumps 8% higher.', magnet: 'Juice Box magnet lasts 3s longer.', heelys: 'Heel Wheels last 50% longer.', coins: '+10% coins.' };
@@ -9126,6 +9142,109 @@ $('bClip').onclick = async () => {
     try { if (navigator.canShare && navigator.canShare({ files: [file] }) && !IS_WEB_DESKTOP()) { await navigator.share({ files: [file], text: shareLine() + '\n' + duelLink(save.lastCode || '') }); return; } } catch (e) { if (e && e.name === 'AbortError') return; }
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = file.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); toast('📹 Clip saved', 'Post it, or send it with your challenge link', 2200); };
   toast('📹 Recording your run', '10 seconds…', 1400); startReplay(); try { rec.start(250); } catch (e) { G.clipping = false; return; }
+  const stop = () => { try { if (rec.state !== 'inactive') rec.stop(); } catch (e) {} try { stream.getTracks().forEach(t => t.stop()); } catch (e) {} if (G.replay) stopReplay(); };
+  const t0 = Date.now(), iv = setInterval(() => { if (!G.replay || Date.now() - t0 > 10000) { clearInterval(iv); stop(); } }, 200);
+};
+
+
+/* ================= ROUND 25: tap tricks, earned trails, celebrations, clip overlay ================= */
+// TAP TRICKS: tap the screen (or press T) while you're in the air to throw a trick. Land it clean for full points;
+// land halfway through it and it's a sloppy landing (half points, no crash: nobody gets punished for trying).
+function airLeft() { const g = 26, h = Math.max(0, P.y - (P.fl || 0)), v = P.vy; return (v + Math.sqrt(Math.max(0, v * v + 2 * g * h))) / g; }
+function tapTrick() {
+  if (G.scene !== 'play' || G.paused || G.dying || G.countdown > 0 || G.intro > 0 || G.pw.cheat > 0 || G.fun === 'sled') return false;
+  if (G.trick || P.y - (P.fl || 0) < 0.35) return false;
+  const left = airLeft(); if (left < 0.22) return false;
+  const t = pick(TRICKS); G.trick = Object.assign({ t: 0, dur: Math.max(0.28, left * 0.82), tap: 1 }, t); sfx('jump'); return true;
+}
+// landTrick: sloppy if you were still mid-trick
+{ const _lt = landTrick; landTrick = function () { const T = G.trick; if (T && T.tap && T.t < T.dur * 0.75) { G.trick = null; const pts = Math.round(T.pts * 0.5 * scoreMult()); G.score += pts; popup('SLOPPY ' + T.name + '  +' + pts, '#ffb3c1'); G.tricksLanded = (G.tricksLanded || 0) + 1; return; } _lt(); stats().tricks = (stats().tricks || 0) + 1; }; }
+window.addEventListener('touchend', e => { if (G.scene !== 'play' || G.paused) return; if (touch && !touch.done && tapTrick()) { touch = null; lastTap = 0; } }, { passive: true, capture: true });
+window.addEventListener('keydown', e => { if (e.code === 'KeyT' && G.scene === 'play' && !(e.target && e.target.tagName === 'INPUT')) tapTrick(); });
+{ let md = null; glCanvas.addEventListener('mousedown', e => { md = [e.clientX, e.clientY]; }); glCanvas.addEventListener('click', e => { if (G.scene === 'play' && md && Math.hypot(e.clientX - md[0], e.clientY - md[1]) < 12) tapTrick(); }); }
+// first time a new player jumps (from their 3rd run on), tell them about tap tricks
+{ const _act = act; act = function (a) { _act.apply(this, arguments); try { if (a === 'jump' && G.scene === 'play' && P.vy > 0 && !(save.r25 && save.r25.trickTip) && stats().runs >= 2 && G.mode !== 'tutorial') { (save.r25 = save.r25 || {}).trickTip = 1; persist(); toast('🛹 TAP while you\'re in the air', 'to do a trick (or press T)', 2400); } } catch (e) {} }; }
+
+// EARNED TRAILS: a glowing trail behind your runner. Every one is earned by playing, none can be bought.
+const TRAILS = [
+  { id: 'none', name: 'No Trail', col: null, icon: '🚫', how: 'Just you and the hallway.', ok: () => true },
+  { id: 'chalk', name: 'Chalk Dust', col: ['#ffffff', '#e0e7ff'], icon: '🖍️', how: 'Finish 10 runs', ok: () => stats().runs >= 10 },
+  { id: 'spark', name: 'Spark Trail', col: ['#ffd60a', '#ffef99'], icon: '✨', how: 'Land 25 air tricks (tap while jumping)', ok: () => (stats().tricks || 0) >= 25 },
+  { id: 'bubble', name: 'Bubble Trail', col: ['#9bf6ff', '#caffbf'], icon: '🫧', how: 'Run 20,000 m in total', ok: () => stats().dist >= 20000 },
+  { id: 'fire', name: 'Fire Trail', col: ['#ff7b00', '#ffd60a', '#ff3d00'], icon: '🔥', how: 'Reach a Hot Streak of 3', ok: () => ((save.hot && save.hot.best) || 0) >= 3 },
+  { id: 'comet', name: 'Comet Trail', col: ['#7bdff2', '#b388ff'], icon: '☄️', how: 'Get 150 close calls in total', ok: () => (stats().cc || 0) >= 150 },
+  { id: 'star', name: 'Gold Star Trail', col: ['#ffd60a', '#ffffff'], icon: '⭐', how: 'Win 3 gold medals on the Hallway of the Day', ok: () => ((save.r25 && save.r25.golds) || 0) >= 3 },
+  { id: 'rainbow', name: 'Rainbow Trail', col: ['#ff595e', '#ffca3a', '#8ac926', '#1982c4', '#6a4c93'], icon: '🌈', how: 'Finish 100 runs', ok: () => stats().runs >= 100 }
+];
+const trailDef = () => { const t = TRAILS.find(x => x.id === save.trail); return t && t.ok() ? t : TRAILS[0]; };
+function trailsNew() { const r = save.r25 || (save.r25 = {}); r.seen = r.seen || {}; const out = []; for (const t of TRAILS) if (t.col && t.ok() && !r.seen[t.id]) { r.seen[t.id] = 1; out.push(t); } return out; }
+let _trT = 0;
+function trailTick() {
+  if (G.scene === 'play') G.wonRun = false;
+  const T = trailDef(); if (!T.col || G.scene !== 'play' || G.paused || G.dying || G.countdown > 0 || G.replay) return;
+  _trT += FRAME_DT || 1 / 60; const gap = save.battery ? 0.08 : 0.035; if (_trT < gap) return; _trT = 0;
+  const c = T.col[Math.floor(Math.random() * T.col.length)];
+  emit(P.x + (Math.random() - 0.5) * 0.25, P.y + 0.35 + Math.random() * 0.5, 0.35, 1, c, 0.35, 0.5, T.id === 'bubble' ? 0.2 : 0.14, T.id === 'fire' ? -1.5 : T.id === 'chalk' ? 0.8 : 0, T.id !== 'chalk', true);
+}
+{ const _sp = syncPlayer; syncPlayer = function () { _sp.apply(this, arguments); try { trailTick(); } catch (e) {} }; }
+function buildTrailShop(box) {
+  const hd = document.createElement('div'); hd.className = 'mktBanner'; hd.innerHTML = '✨ TRAILS<small>Earned by playing. Trails can\'t be bought.</small>'; box.appendChild(hd);
+  for (const t of TRAILS) {
+    const ok = t.ok(), eq = trailDef().id === t.id, d = document.createElement('div'); d.className = 'item' + (eq ? ' eq' : '');
+    const bg = t.col ? 'linear-gradient(160deg,' + (t.col.length > 1 ? t.col.join(',') : t.col[0] + ',' + t.col[0]) + ')' : '#3d405b';
+    d.innerHTML = '<div class="sw" style="font-size:40px"></div><b></b><small></small>'; d.querySelector('.sw').style.background = bg; d.querySelector('.sw').textContent = ok ? t.icon : '🔒';
+    d.querySelector('b').textContent = t.name; d.querySelector('small').textContent = ok ? (t.id === 'none' ? t.how : 'Earned: ' + t.how.toLowerCase()) : 'To earn: ' + t.how;
+    const b = document.createElement('button'); b.className = 'btn ' + (eq ? 'green' : ok ? 'blue' : 'gray'); b.textContent = eq ? 'Equipped' : ok ? 'Equip' : '🔒 Locked';
+    b.onclick = () => { if (!ok) { sfx('deny'); toast('🔒 ' + t.name, t.how, 1800); return; } save.trail = t.id; persist(); sfx('click'); buildShop(); };
+    d.appendChild(b); box.appendChild(d);
+  }
+}
+{ const _bs = buildShop; buildShop = function () { if (shopTab !== 'trail') return _bs.apply(this, arguments);
+  refreshMenu(); const box = $('shopItems'); box.innerHTML = ''; ['hallCats', 'preview', 'bagStyles'].forEach(id => $(id) && ($(id).style.display = 'none')); const sl = $('pW') && $('pW').closest('.statline'); if (sl) sl.style.display = 'none';
+  buildTrailShop(box); }; }
+
+// After a run: celebrate wins and new bests (the runner dances on the home screen), count gold medals, announce new trails
+function r25AfterRun(sc, win, newBest) {
+  G.wonRun = !!win; G.finalScore = sc; if (win || newBest) G.celebT = performance.now() + 7000;
+  if (G.hotd && typeof hotdMedal === 'function' && hotdMedal(Math.floor(G.dist)) >= 3) { const r = save.r25 || (save.r25 = {}); if (r.goldDay !== gDay()) { r.goldDay = gDay(); r.golds = (r.golds || 0) + 1; } }
+  const nt = trailsNew(); nt.forEach((t, i) => setTimeout(() => { sfx('win'); notice(t.icon, 'New trail: ' + t.name, 'Equip it in the Locker under Trails'); }, 2200 + i * 2600));
+  if (G.tricksLanded >= 3) { const el = $('oHot'); if (el) { const l = document.createElement('div'); l.textContent = '🛹 ' + G.tricksLanded + ' tricks landed this run'; el.appendChild(l); el.style.display = ''; } }
+  persist();
+}
+
+// CLIPS: burn the score, your name and the link into the video, so a clip posted anywhere says where to play
+function clipCanvas() {
+  const src = glCanvas, sc = Math.min(1, 720 / Math.max(src.width, src.height)), w = Math.round(src.width * sc / 2) * 2, h = Math.round(src.height * sc / 2) * 2;
+  const cv = document.createElement('canvas'); cv.width = w; cv.height = h; const ctx = cv.getContext('2d');
+  const score = (G.finalScore || Math.floor(G.score) || 0).toLocaleString(), who = (save.name || 'A runner').slice(0, 16), site = siteUrl().replace(/^https?:\/\//, '').replace(/\/$/, '');
+  const draw = () => {
+    try { ctx.drawImage(src, 0, 0, w, h); } catch (e) {}
+    const u = Math.max(12, Math.round(w / 26));
+    ctx.fillStyle = 'rgba(15,12,40,0.62)'; ctx.fillRect(0, h - u * 3.3, w, u * 3.3); ctx.fillRect(0, 0, w, u * 2.2);
+    ctx.textBaseline = 'middle'; ctx.textAlign = 'left'; ctx.fillStyle = '#ffd60a'; ctx.font = '900 ' + Math.round(u * 1.1) + 'px system-ui,sans-serif'; ctx.fillText('HALLWAY DASH', u * 0.7, u * 1.1);
+    ctx.textAlign = 'right'; ctx.fillStyle = '#fff'; ctx.font = '800 ' + Math.round(u * 1.05) + 'px system-ui,sans-serif'; ctx.fillText(score, w - u * 0.7, u * 1.1);
+    ctx.textAlign = 'center'; ctx.font = '800 ' + Math.round(u * 0.95) + 'px system-ui,sans-serif'; ctx.fillStyle = '#fff'; ctx.fillText(who + ' scored ' + score + '. Can you beat it?', w / 2, h - u * 2.15);
+    ctx.fillStyle = '#7bdff2'; ctx.font = '900 ' + Math.round(u * 1.0) + 'px system-ui,sans-serif'; ctx.fillText('Play free: ' + site, w / 2, h - u * 0.9);
+  };
+  return { cv, draw };
+}
+{ // render hook: copy each finished frame into the clip canvas right after it's drawn (WebGL clears it afterwards)
+  const _r = renderer.render.bind(renderer); renderer.render = function (sc, cam) { _r(sc, cam); if (G.clipC) G.clipC.draw(); };
+}
+$('bClip').onclick = async () => {
+  if (!clipOk() || G.clipping) return; sfx('click'); G.clipping = true;
+  let stream, rec, chunks = [], C = null;
+  try { C = clipCanvas(); G.clipC = C; C.draw(); stream = C.cv.captureStream ? C.cv.captureStream(30) : glCanvas.captureStream(30);
+    const mt = ['video/mp4;codecs=avc1', 'video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm', 'video/mp4'].find(t => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) || '';
+    rec = new MediaRecorder(stream, mt ? { mimeType: mt, videoBitsPerSecond: 2500000 } : undefined); }
+  catch (e) { G.clipping = false; G.clipC = null; toast('Clips don\'t work in this browser', 'Try Chrome or Edge', 1800); return; }
+  rec.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+  rec.onstop = async () => { G.clipping = false; G.clipC = null; const type = rec.mimeType || 'video/webm', ext = /mp4/.test(type) ? 'mp4' : 'webm', blob = new Blob(chunks, { type }); if (!blob.size) { toast('Nothing recorded', '', 1200); return; }
+    PlayStats.add && PlayStats.add('sh');
+    const file = new File([blob], 'hallway-dash-clip.' + ext, { type });
+    try { if (navigator.canShare && navigator.canShare({ files: [file] }) && !IS_WEB_DESKTOP()) { await navigator.share({ files: [file], text: shareLine() + '\n' + duelLink(save.lastCode || '') }); return; } } catch (e) { if (e && e.name === 'AbortError') return; }
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = file.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); toast('📹 Clip saved', 'Your score and the link are in the video', 2200); };
+  toast('📹 Recording your run', '10 seconds…', 1400); startReplay(); try { rec.start(250); } catch (e) { G.clipping = false; G.clipC = null; return; }
   const stop = () => { try { if (rec.state !== 'inactive') rec.stop(); } catch (e) {} try { stream.getTracks().forEach(t => t.stop()); } catch (e) {} if (G.replay) stopReplay(); };
   const t0 = Date.now(), iv = setInterval(() => { if (!G.replay || Date.now() - t0 > 10000) { clearInterval(iv); stop(); } }, 200);
 };
