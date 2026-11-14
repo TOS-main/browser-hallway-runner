@@ -803,6 +803,27 @@ body.homeWide .mSide .worldCard .cTxt{text-align:left}
   #sOver .overScore{margin:8px 0 2px}
   #sOver .oHook,#sOver .oHot{font-size:14px;padding:6px 10px}
 }
+
+/* ---- round 27: open, scrollable screens on phones (like the big mobile runners): menus fill the whole screen edge to edge,
+   the title bar and tabs stay pinned while everything under them scrolls at full size. Nothing is shrunk to fit. ---- */
+@media (max-width:640px){
+  .screen:not(#sMenu):not(#sOver){padding:0!important;justify-content:flex-start}
+  .screen:not(#sMenu):not(#sOver)>.panel{width:100%!important;max-width:none!important;height:100%;max-height:none;border-radius:0;border:none;box-shadow:none;
+    padding:0 14px max(24px,env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch;scroll-padding-top:120px}
+  .screen:not(#sMenu):not(#sOver)>.panel>.topbar{position:sticky;top:0;z-index:5;margin:0 -14px 8px;padding:max(12px,env(safe-area-inset-top)) 14px 10px;background:var(--paper);border-bottom:3px solid var(--ink);box-shadow:0 6px 12px -8px rgba(0,0,0,.35)}
+  .screen:not(#sMenu):not(#sOver)>.panel>.topbar h2{font-size:26px;white-space:nowrap}
+  .screen:not(#sMenu):not(#sOver)>.panel>h2:first-of-type{position:sticky;top:0;z-index:5;margin:0 -14px 10px;padding:max(14px,env(safe-area-inset-top)) 64px 12px 14px;background:var(--paper);border-bottom:3px solid var(--ink);box-shadow:0 6px 12px -8px rgba(0,0,0,.35);font-size:26px}
+  #sShop .panel>.tabs{position:sticky;top:calc(var(--hdr,62px) - 1px);z-index:4;margin:8px -14px;border-radius:0;border-left:none;border-right:none;padding:6px 10px;
+    scroll-snap-type:x proximity;-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}
+  #sShop .panel>.tabs .tab{flex:0 0 auto;padding:10px 14px;font-size:15px;scroll-snap-align:start}
+  #sShop #preview{width:190px;height:190px}
+  #sShop .items{gap:12px}
+  #sShop .item{min-height:0}
+  .screen:not(#sMenu):not(#sOver)>.panel>.btn[data-back]{margin-top:18px}
+  .moreGrid{gap:12px!important}
+  .screen:not(#sMenu):not(#sOver)>.panel>.screenX{position:fixed;top:max(10px,env(safe-area-inset-top));right:12px;margin:0;z-index:8}
+  .screen:not(#sMenu):not(#sOver)>.panel>.topbar{padding-right:64px}
+}
 </style>
 </head>
 <body>
@@ -9264,6 +9285,10 @@ $('bClip').onclick = async () => {
   const stop = () => { try { if (rec.state !== 'inactive') rec.stop(); } catch (e) {} try { stream.getTracks().forEach(t => t.stop()); } catch (e) {} if (G.replay) stopReplay(); };
   const t0 = Date.now(), iv = setInterval(() => { if (!G.replay || Date.now() - t0 > 10000) { clearInterval(iv); stop(); } }, 200);
 };
+
+// round 27: the Locker's tabs stick right under its title bar, whatever height the bar ends up on this phone
+function r27Hdr() { const pn = document.querySelector('#sShop .panel'), tb = pn && pn.querySelector('.topbar'); if (tb && tb.offsetHeight) pn.style.setProperty('--hdr', tb.offsetHeight + 'px'); }
+{ const _ss2 = showScreen; showScreen = function (id) { _ss2.apply(this, arguments); if (id === 'sShop') requestAnimationFrame(r27Hdr); }; window.addEventListener('resize', () => requestAnimationFrame(r27Hdr)); }
 
 </script>
 </body>
