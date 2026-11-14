@@ -4,7 +4,7 @@
 
 A 3D school-hallway endless runner. Dodge crowds, teachers and bosses on the way to class. It runs in any modern browser on phone or computer. Swipe on a phone, or use the arrow keys / WASD on a computer (Q push, E heel wheels, X combo finisher, P pause, R restart, M menu, L leaderboard, O modes, U duel a friend, 1-4 difficulty, N music, V sound effects).
 
-- `index.html` is the whole game in one self-contained file (three.js, models, sounds and fonts embedded). It works offline once loaded, and you can also just download it and open it.
+- `index.html` is the game code. The big files live next to it in `game-data/`: `assets-<hash>.js` (runners, pets, animations, voice lines) and `music/*.mp3` (each track loads only when it plays). Their names change whenever their contents change, so browsers can keep them cached for a year (see `_headers`).
 - `privacy.html` is the privacy policy (also used by the Google Play listing).
 
 ## Turning on the website (one time)

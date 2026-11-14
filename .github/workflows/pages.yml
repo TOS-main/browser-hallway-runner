@@ -28,6 +28,7 @@ jobs:
         run: |
           mkdir -p _site
           cp index.html privacy.html terms.html _site/
+          cp -r game-data _site/
           touch _site/.nojekyll
       - uses: actions/upload-pages-artifact@v3
         with:
