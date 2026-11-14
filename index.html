@@ -5379,42 +5379,59 @@ const Analytics = {
    Totals live in stats/{local date}_{0-4} (5 shards so a full classroom doesn't hit one document); only the owner
    can read them (Owner panel > Stats). Adults who switch usage stats off in Settings aren't counted. */
 const PlayStats = {
-  KEY: 'hallwayRush.stats.pending', IDLE: 90000, live: { v: 0, s: 0, r: 0, x: {} }, visited: false, lastInput: Date.now(), busy: false,
+  KEY: 'hallwayRush.stats.pending', IDLE: 90000, live: { v: 0, s: 0, r: 0, t: 0, x: {} }, visited: false, lastInput: Date.now(), busy: false, visT: 0, hidAt: 0, sid: Array.from({ length: 12 }, () => 'abcdefghijklmnopqrstuvwxyz0123456789'[Math.floor(Math.random() * 36)]).join(''),
   ok: () => !!(window.ONLINE_BOARD && ONLINE_BOARD.projectId && ONLINE_BOARD.apiKey) && !(save.age === 'adult' && save.privacy && save.privacy.analytics === false),
   group: () => save.age === 'child' ? 'kid' : save.age === 'teen' || save.age === 'adult' ? save.age : 'unset',
   day: () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); },
   run() { this.live.r++; },
   add(k, n = 1) { const x = this.live.x || (this.live.x = {}); x[k] = (x[k] || 0) + n; }, // round 24: one-off counters (no ids), see R24_STAT_KEYS
-  tick() { if (!document.hidden && Date.now() - this.lastInput < this.IDLE) this.live.s++; },
+  tick() {
+    if (document.hidden) return; const now = Date.now();
+    if (now - this.lastInput < this.IDLE) this.live.s++;
+    if (now - this.lastInput < 1800000) { // round 29: time on site = tab open and on screen (stops after 30 min with no input)
+      this.live.t = (this.live.t || 0) + 1; const vt = ++this.visT;
+      for (const [k, m] of R29_STAY) if (vt === m * 60) { this.add(k); this.flushSoon(); } // "stayed 1+ / 5+ / 15+ / 30+ / 60+ min" (counted once per visit)
+    }
+  },
+  newVisit() { this.bank(); this.visited = false; this.visT = 0; },
+  flushSoon() { clearTimeout(this.fsT); this.fsT = setTimeout(() => this.flush(false), 3000); },
+  // round 29: "playing right now". One tiny doc per open tab (random id, made fresh each page load, nothing else in it),
+  // touched every 2 minutes while someone is on the page. The owner panel counts docs touched in the last 3 minutes.
+  async ping() {
+    if (!this.ok() || document.hidden || Date.now() - this.lastInput > 300000 || this.noLive) return;
+    const doc = 'projects/' + ONLINE_BOARD.projectId + '/databases/(default)/documents/live/' + this.sid;
+    try { const r = await fetch(Online.url(':commit'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ writes: [{ transform: { document: doc, fieldTransforms: [{ fieldPath: 'ts', setToServerValue: 'REQUEST_TIME' }] } }] }) }); if (r.status === 403) this.noLive = true; } catch (e) {}
+  },
   // move what's been counted so far into the pending queue (kept in localStorage so a closed tab is sent next visit)
   bank() {
-    const l = this.live; if (!this.visited && l.s >= 5) { l.v = 1; this.visited = true; }
+    const l = this.live; if (!this.visited && l.s >= 5) { l.v = 1; this.visited = true; this.add('h' + new Date().getHours()); } // round 29: which hour of the day visits start
     const lx = l.x || {}, hasX = Object.keys(lx).length > 0;
-    if (!l.v && !l.s && !l.r && !hasX) return;
+    if (!l.v && !l.s && !l.r && !l.t && !hasX) return;
     let q = []; try { q = JSON.parse(localStorage.getItem(this.KEY) || '[]'); } catch (e) {}
-    const day = this.day(), g = this.group(); let e = q.find(x => x.d === day && x.g === g); if (!e) q.push(e = { d: day, g, v: 0, s: 0, r: 0 });
-    e.v += l.v; e.s += l.s; e.r += l.r; if (hasX) { e.x = e.x || {}; for (const k in lx) e.x[k] = (e.x[k] || 0) + lx[k]; } this.live = { v: 0, s: 0, r: 0, x: {} };
+    const day = this.day(), g = this.group(); let e = q.find(x => x.d === day && x.g === g); if (!e) q.push(e = { d: day, g, v: 0, s: 0, r: 0, t: 0 });
+    e.v += l.v; e.s += l.s; e.r += l.r; e.t = (e.t || 0) + (l.t || 0); if (hasX) { e.x = e.x || {}; for (const k in lx) e.x[k] = (e.x[k] || 0) + lx[k]; } this.live = { v: 0, s: 0, r: 0, t: 0, x: {} };
     try { localStorage.setItem(this.KEY, JSON.stringify(q.slice(-20))); } catch (e2) {}
   },
   async flush(leaving) {
-    if (!this.ok()) { this.live = { v: 0, s: 0, r: 0, x: {} }; try { localStorage.removeItem(this.KEY); } catch (e) {} return; }
+    if (!this.ok()) { this.live = { v: 0, s: 0, r: 0, t: 0, x: {} }; try { localStorage.removeItem(this.KEY); } catch (e) {} return; }
     this.bank(); if (this.busy) return;
     let q = []; try { q = JSON.parse(localStorage.getItem(this.KEY) || '[]'); } catch (e) {} if (!q.length) return;
-    const e = q[0], v = Math.min(e.v, 5), s = Math.min(e.s, 3600), r = Math.min(e.r, 50), fts = [];
-    if (v) fts.push(['v_' + e.g, v]); if (s) fts.push(['s_' + e.g, s]); if (r) fts.push(['r_' + e.g, r]);
-    const xs = {}; if (!this.noX) for (const k of R24_STAT_KEYS) { const n = Math.min((e.x && e.x[k]) || 0, 5); if (n) { xs[k] = n; fts.push([k, n]); } }
+    const e = q[0], v = Math.min(e.v, 5), s = Math.min(e.s, 3600), r = Math.min(e.r, 50), t = this.noT ? 0 : Math.min(e.t || 0, 3600), fts = [];
+    if (v) fts.push(['v_' + e.g, v]); if (s) fts.push(['s_' + e.g, s]); if (r) fts.push(['r_' + e.g, r]); if (t) fts.push(['t_' + e.g, t]);
+    const xs = {}; if (!this.noX) for (const k of R24_STAT_KEYS.concat(this.noT ? [] : R29_STAT_KEYS)) { const n = Math.min((e.x && e.x[k]) || 0, 5); if (n) { xs[k] = n; fts.push([k, n]); } }
     if (!fts.length) { if (e.x) { q = q.filter(z => z !== e); try { localStorage.setItem(this.KEY, JSON.stringify(q)); } catch (e0) {} } return; }
     const doc = 'projects/' + ONLINE_BOARD.projectId + '/databases/(default)/documents/stats/' + e.d + '_' + Math.floor(Math.random() * 5);
     const body = { writes: [{ transform: { document: doc, fieldTransforms: fts.map(([k, n]) => ({ fieldPath: k, increment: { integerValue: String(n) } })) } }] };
     this.busy = true;
     try {
       const res = await fetch(Online.url(':commit'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), keepalive: !!leaving });
+      if (res.status === 403 && !this.noT && (t || R29_STAT_KEYS.some(k => xs[k]))) { this.noT = true; return; } // rules from before round 29: send the older counters, keep the new ones for later
       if (res.status === 403 && Object.keys(xs).length && !this.noX) { this.noX = true; return; } // rules from before round 24: keep the new counters for later
       if (res.ok || res.status === 400) { // 400: a bad entry, drop it rather than retry forever (403 = rules not published yet: keep it for later)
         let q2 = []; try { q2 = JSON.parse(localStorage.getItem(this.KEY) || '[]'); } catch (e3) {}
         const f = q2.find(x => x.d === e.d && x.g === e.g);
-        if (f) { f.v = Math.max(0, f.v - v); f.s = Math.max(0, f.s - s); f.r = Math.max(0, f.r - r); if (f.x) for (const k in xs) f.x[k] = Math.max(0, (f.x[k] || 0) - xs[k]); }
-        const left = q2.filter(x => x.v || x.s || x.r || (x.x && Object.values(x.x).some(Boolean))); try { localStorage.setItem(this.KEY, JSON.stringify(left)); } catch (e4) {}
+        if (f) { f.v = Math.max(0, f.v - v); f.s = Math.max(0, f.s - s); f.r = Math.max(0, f.r - r); f.t = Math.max(0, (f.t || 0) - t); if (f.x) for (const k in xs) f.x[k] = Math.max(0, (f.x[k] || 0) - xs[k]); }
+        const left = q2.filter(x => x.v || x.s || x.r || x.t || (x.x && Object.values(x.x).some(Boolean))); try { localStorage.setItem(this.KEY, JSON.stringify(left)); } catch (e4) {}
       }
     } catch (e5) {} finally { this.busy = false; }
   },
@@ -5422,9 +5439,10 @@ const PlayStats = {
     const seen = () => { this.lastInput = Date.now(); };
     ['pointerdown', 'keydown', 'touchstart', 'wheel'].forEach(t => addEventListener(t, seen, { passive: true, capture: true }));
     setInterval(() => this.tick(), 1000);
-    setInterval(() => this.flush(false), 120000);
-    setTimeout(() => this.flush(false), 30000);
-    document.addEventListener('visibilitychange', () => { if (document.hidden) this.flush(true); });
+    setInterval(() => { this.flush(false); this.ping(); }, 120000);
+    setTimeout(() => this.flush(false), 30000); setTimeout(() => this.ping(), 8000);
+    document.addEventListener('visibilitychange', () => { if (document.hidden) { this.hidAt = Date.now(); this.flush(true); } else { if (this.hidAt && Date.now() - this.hidAt > 1800000) this.newVisit(); // back after 30+ min away = a new visit
+      this.hidAt = 0; this.ping(); } });
     addEventListener('pagehide', () => this.flush(true));
   }
 };
@@ -8478,14 +8496,27 @@ async function ownRender(q) {
     } else if (ownTab === 'stats') {
       // anonymous play counts (see PlayStats): one row per day, every age group, newest first
       const rs = await fsQuery('stats', null, '__name__', 150, tok), days = {}, G4 = ['kid', 'teen', 'adult', 'unset'];
-      for (const r of rs) { const d = r.id.split('_')[0], t = days[d] = days[d] || { v: {}, s: {}, r: {}, x: {} }; for (const g of G4) for (const k of ['v', 's', 'r']) t[k][g] = (t[k][g] || 0) + (r[k + '_' + g] || 0); for (const k of R24_STAT_KEYS) t.x[k] = (t.x[k] || 0) + (r[k] || 0); }
+      for (const r of rs) { const d = r.id.split('_')[0], t = days[d] = days[d] || { v: {}, s: {}, r: {}, t: {}, x: {} }; for (const g of G4) for (const k of ['v', 's', 'r', 't']) t[k][g] = (t[k][g] || 0) + (r[k + '_' + g] || 0); for (const k of R24_STAT_KEYS.concat(R29_STAT_KEYS)) t.x[k] = (t.x[k] || 0) + (r[k] || 0); }
+      { // round 29: playing right now (open tabs that checked in during the last 3 minutes). Docs older than a day get tidied away here.
+        let lv = []; try { lv = await fsQuery('live', null, 'ts', 300, tok); } catch (e) {}
+        const now = Date.now(), on = lv.filter(x => now - (x.ts || 0) < 180000).length, h1 = lv.filter(x => now - (x.ts || 0) < 3600000).length;
+        L.appendChild(ownRow('🟢 On the site right now: ' + on, lv.length || on ? h1 + ' different visits in the last hour. Counts open tabs that someone used in the last few minutes.' : 'Nothing yet. This starts once the round 29 rules are published.', [chipBtn('🔄', () => showOwner())]));
+        const old = lv.filter(x => now - (x.ts || 0) > 86400000).slice(0, 40); for (const o of old) fsReq('DELETE', docPath('live', o.id), tok).catch(() => {});
+      }
       const sum = o => G4.reduce((a, g) => a + (o[g] || 0), 0), hm = sec => sec >= 3600 ? (sec / 3600).toFixed(1) + ' h' : Math.round(sec / 60) + ' min';
       const list = Object.keys(days).sort().reverse().slice(0, 21);
       sub.textContent = list.length ? 'Visits and play time from every age group (no ids, nobody can be told apart). Play time only counts while someone is actually tapping or pressing keys. Google Analytics shows more detail, but only for 16+ players.' : 'No play counts yet. They start once the new database rules (round 22) are published.';
       { const R = retentionSummary(days); L.appendChild(ownRow('📈 Do players come back? (last 14 days)', R, [])); }
-      for (const d of list) { const t = days[d], v = sum(t.v), sec = sum(t.s), runs = sum(t.r);
-        L.appendChild(ownRow(new Date(d + 'T12:00').toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }) + ' · ' + v + ' visit' + (v === 1 ? '' : 's') + ' · ' + hm(sec) + ' played',
-          'avg ' + (v ? Math.round(sec / v / 60) : 0) + ' min per visit · ' + runs + ' runs · under 13: ' + (t.v.kid || 0) + ' · 13–15: ' + (t.v.teen || 0) + ' · 16+: ' + (t.v.adult || 0) + (t.v.unset ? ' · no age picked: ' + t.v.unset : '') + (t.x.n || t.x.d1 || t.x.d7 || t.x.sh ? ' · new players: ' + (t.x.n || 0) + ' · back next day: ' + (t.x.d1 || 0) + ' · back within a week: ' + (t.x.d7 || 0) + ' · shares: ' + (t.x.sh || 0) + ' · duel links opened: ' + (t.x.dl || 0) : ''), [])); }
+      { // round 29: how long visits last and when people play (last 7 days with data)
+        const wk = list.slice(0, 7), X = k => wk.reduce((a, d) => a + (days[d].x[k] || 0), 0), V = wk.reduce((a, d) => a + sum(days[d].v), 0), T = wk.reduce((a, d) => a + sum(days[d].t), 0);
+        if (X('m1')) { const pc = k => V ? Math.min(100, Math.round(X(k) / V * 100)) + '%' : X(k);
+          L.appendChild(ownRow('⏱️ How long visits last (last 7 days)', 'average time on site ' + (V ? (T / V / 60).toFixed(1) : 0) + ' min per visit · stayed 1+ min: ' + pc('m1') + ' · 5+ min: ' + pc('m5') + ' · 15+ min: ' + pc('m15') + ' · 30+ min: ' + pc('m30') + ' · 1+ hour: ' + pc('m60'), []));
+          const hrs = Array.from({ length: 24 }, (_, i) => X('h' + i)), mx = Math.max(1, ...hrs), top = hrs.map((n, i) => [n, i]).sort((a, b) => b[0] - a[0]).slice(0, 3).filter(x => x[0]).map(x => (x[1] % 12 || 12) + (x[1] < 12 ? ' am' : ' pm'));
+          L.appendChild(ownRow('🕒 When people play (players\' own time)', 'busiest: ' + top.join(', ') + ' · ' + hrs.map(n => ' ▁▂▃▄▅▆▇█'[Math.round(n / mx * 8)]).join('') + ' (midnight → 11 pm)', [])); }
+      }
+      for (const d of list) { const t = days[d], v = sum(t.v), sec = sum(t.s), runs = sum(t.r), ts = sum(t.t);
+        L.appendChild(ownRow(new Date(d + 'T12:00').toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }) + ' · ' + v + ' visit' + (v === 1 ? '' : 's') + ' · ' + (ts ? hm(ts) + ' on site · ' : '') + hm(sec) + ' played',
+          (ts ? 'avg ' + (v ? (ts / v / 60).toFixed(1) : 0) + ' min on site per visit · ' : '') + 'avg ' + (v ? Math.round(sec / v / 60) : 0) + ' min actively playing per visit · ' + runs + ' runs · under 13: ' + (t.v.kid || 0) + ' · 13–15: ' + (t.v.teen || 0) + ' · 16+: ' + (t.v.adult || 0) + (t.v.unset ? ' · no age picked: ' + t.v.unset : '') + (t.x.n || t.x.d1 || t.x.d7 || t.x.sh ? ' · new players: ' + (t.x.n || 0) + ' · back next day: ' + (t.x.d1 || 0) + ' · back within a week: ' + (t.x.d7 || 0) + ' · shares: ' + (t.x.sh || 0) + ' · duel links opened: ' + (t.x.dl || 0) : ''), [])); }
     } else if (ownTab === 'creators') {
       let list = []; try { list = await creatorList(); } catch (e) {}
       sub.textContent = 'Creator outfits. Give a YouTuber or TikToker who covers Hallway Dash a code: their fans type it in Settings → Secret codes and unlock a runner in the creator\'s colours.';
@@ -9036,7 +9067,8 @@ setTimeout(() => { try { Billing.webReturn(); } catch (e) {} }, 1200);
 
 /* ===================== ROUND 24: fewer steps, more reasons to come back, and a way to measure it =====================
    Everything here is earned by playing. Nothing that keeps a player going (streaks, freezes, head starts) can be bought. */
-var R24_STAT_KEYS = ['n', 'd1', 'd7', 'd30', 'f1', 'f3', 'f10', 'sh', 'dl']; // anonymous counters added to stats/{day}_{shard}
+var R24_STAT_KEYS = ['n', 'd1', 'd7', 'd30', 'f1', 'f3', 'f10', 'sh', 'dl'];
+var R29_STAY = [['m1', 1], ['m5', 5], ['m15', 15], ['m30', 30], ['m60', 60]], R29_STAT_KEYS = R29_STAY.map(x => x[0]).concat(Array.from({ length: 24 }, (_, i) => 'h' + i)); // round 29: how long visits last + which hour they start // anonymous counters added to stats/{day}_{shard}
 const R24 = { cn: 0, cT: 0, cLast: 0, sess0: Date.now(), breakShown: false };
 
 /* ---- return tracking (no ids): on the first visit of each day, count "new player", "back the next day",
