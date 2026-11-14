@@ -1646,7 +1646,7 @@ window.WEB_PAY = {
 };
 
 </script>
-<script src="game-data/assets-c083b96658.js"></script>
+<script src="game-data/assets-cbd80557f4.js"></script>
 <script>
 'use strict';
 /* ============================================================
@@ -1781,13 +1781,6 @@ const SHOP = {
     { id: 'k_ranger', name: 'Star Ranger', key: 'K_Ranger', weekly: 7, price: 3000, colors: {}, perk: 'jump', desc: 'Featured cartoon runner. Perk: jumps 8% higher.' },
     { id: 'k_robo', name: 'Robo Buddy', key: 'K_Robo', weekly: 8, price: 16, cur: 'gs', colors: {}, perk: 'mult', desc: 'Featured cartoon runner. Perk: +1 score multiplier. · ABILITY: Starts every run with a shield that blocks one crash', ab: 'shield' },
     { id: 'k_jingle', name: 'Jingle', key: 'K_Jingle', weekly: 9, price: 3000, colors: {}, perk: 'coins', desc: 'Featured cartoon runner. Perk: +10% coins.' },
-    // Club runners (Quaternius costume models, CC0): earned with cash or Gold Stars like the rest
-    { id: 'trail', name: 'Trail Blazer', key: 'M_Adventurer', price: 900, colors: { top: '#2d6a4f', hair: '#4a2e16', skin: '#c68642' }, perk: 'magnet', desc: 'Outdoor Club runner, backpack and all. Perk: Juice Box magnet lasts 3s longer.' },
-    { id: 'scoutlead', name: 'Scout Leader', key: 'W_Adventurer', price: 900, colors: { top: '#40916c', hair: '#6a3d1f', skin: '#f1c27d' }, perk: 'jump', desc: 'Outdoor Club runner. Perk: jumps 8% higher.' },
-    { id: 'agclub', name: 'Ag Club', key: 'M_Farmer', price: 750, colors: { pants: '#1d3557', skin: '#8d5524' }, perk: 'weight', desc: 'Up before the bell every day. Perk: backpack starts 15% lighter.' },
-    { id: 'coder', name: 'Code Club', key: 'W_SciFi', price: 1200, colors: { top: '#4cc9f0', hair: '#141414', skin: '#a0673c' }, perk: 'lanes', desc: 'Hackathon winner. Perk: 20% faster lane switching.' },
-    { id: 'dramawitch', name: 'Drama Club Witch', key: 'W_Witch', price: 12, cur: 'gs', colors: { top: '#7209b7', hair: '#141414', skin: '#f6d0b1' }, perk: 'chase', desc: 'Still in costume from the school play. Perk: chases only last 7 seconds. · ABILITY: Glides: falls slowly after a jump', ab: 'glide' },
-    { id: 'spacecamp', name: 'Space Camp', key: 'M_Spacesuit', price: 16, cur: 'gs', colors: {}, perk: 'jump', desc: 'Came straight from Space Camp. Perk: jumps 8% higher. · ABILITY: Double jump (swipe up again in the air)', ab: 'djump' },
     { id: 'champ', name: 'School Champion', key: 'M_Casual', svs: 1, colors: { top: '#ffd60a', pants: '#1d3557', hair: '#141414', skin: '#c68642' }, perk: 'mult', desc: 'For every runner at the School of the Month (School vs School). Perk: +1 score multiplier.' },
     { id: 'marshal', name: 'Fire Marshal', key: 'M_Worker', event: 'firedrill', colors: { vest: '#ff7b00', cap: '#e63946' }, perk: 'chase', desc: 'Fire Drill exclusive. Perk: chases only last 7 seconds.' },
     { id: 'speedster', name: 'Speedster', key: 'W_Casual', event: 'hallpass', colors: { top: '#06d6a0', pants: '#118ab2', hair: '#141414', skin: '#c68642' }, perk: 'lanes', desc: 'Hall Pass Rush exclusive. Perk: 20% faster lane switching.' },
@@ -4069,18 +4062,6 @@ function syncPlayer() {
         twist(A, 'UpperArmL', 0, 0, 1, DODGE.arm * w * (s > 0 ? 1.4 : 0.6)); twist(A, 'UpperArmR', 0, 0, 1, -DODGE.arm * w * (s > 0 ? 0.6 : 1.4));
         twist(A, 'Chest', 0, 1, 0, DODGE.chest * w * s); }
     });
-  }
-  { // round 26 body language, like the big mobile runners: lean into the sprint (more the faster you go, head up to
-    // look ahead), and tuck the knees up at the top of a jump. Weights ease in and out so nothing snaps.
-    const R = pp.r26 || (pp.r26 = { run: 0, tuck: 0 }), play = G.scene === 'play' && !G.dying && !flying && !sledding && !G.paused;
-    const air = P.y - (P.fl || 0), onRun = play && !inAir && !sliding && !(P.rollT > 0) && !(G.heely > 0) && !(G.pushAnim > 0);
-    const apex = play && inAir && !G.trick && !(P.rollT > 0) ? clamp(1 - Math.abs(P.vy) / 9, 0, 1) * clamp(air / 0.6, 0, 1) : 0;
-    const st = G.paused ? 0 : FRAME_DT * 6; R.run += clamp((onRun ? 1 : 0) - R.run, -st, st); R.tuck += clamp(apex - R.tuck, -st * 1.5, st * 1.5);
-    if (R.run + R.tuck > 0.001) { const base = a.post, sp = clamp((G.speed - 9) / 12, 0, 1), bob = Math.sin(G.t * 9.5);
-      a.post = A => { if (base) base(A);
-        if (R.run > 0.001) { const w = R.run; twist(A, 'Spine', 1, 0, 0, (0.07 + 0.06 * sp) * w); twist(A, 'Chest', 1, 0, 0, (0.06 + 0.05 * sp) * w); twist(A, 'Head', 1, 0, 0, -(0.1 + 0.08 * sp) * w); twist(A, 'Chest', 0, 1, 0, bob * 0.05 * w); }
-        if (R.tuck > 0.001) { const w = R.tuck; twist(A, 'UpperLegL', 1, 0, 0, -0.55 * w); twist(A, 'UpperLegR', 1, 0, 0, -0.3 * w); twist(A, 'LowerLegL', 1, 0, 0, 0.85 * w); twist(A, 'LowerLegR', 1, 0, 0, 0.6 * w);
-          twist(A, 'UpperArmL', 0, 0, 1, 0.45 * w); twist(A, 'UpperArmR', 0, 0, 1, -0.45 * w); twist(A, 'Chest', 1, 0, 0, 0.1 * w); } }; }
   }
   a.update(G.paused ? 0 : FRAME_DT);
   if (a.bones.Head) a.bones.Head.scale.setScalar(cheatOn('bighead') ? 1.9 : a.kHead ? 1 : 1.12);
@@ -9043,7 +9024,6 @@ const SECRETS = [
   { id: 'sc_lucky', name: 'Lucky Lu', key: 'W_Formal', colors: { top: '#2ec4b6', pants: '#ffd60a', hair: '#7b2cbf', skin: '#f6d0b1' }, perk: 'coins', hint: 'End a run with a score that ends in 77', ok: (sc) => sc > 100 && sc % 100 === 77 },
   { id: 'sc_hot', name: 'Hot Hand Hal', key: 'M_Suit', colors: { top: '#ff3d6e', pants: '#1d2340', hair: '#ff7b00', skin: '#8d5524' }, perk: 'pass', hint: 'Reach a Hot Streak of 5', ok: () => hotN() >= 5 },
   { id: 'sc_gold', name: 'Gold Medal Gia', key: 'W_Suit', colors: { top: '#ffd60a', pants: '#1d2340', hair: '#3b2414', skin: '#c68642' }, perk: 'heelys', hint: 'Win gold on the Hallway of the Day', ok: () => G.hotd && hotdMedal(Math.floor(G.dist)) >= 3 },
-  { id: 'sc_king', name: 'Homecoming King', key: 'M_King', colors: {}, perk: 'coins', hint: 'Land 12 air tricks in one run', ok: () => (G.tricksLanded || 0) >= 12 },
   { id: 'sc_rival', name: 'Rival Rex', key: 'M_Beach', colors: { top: '#e63946', pants: '#457b9d', hair: '#141414', skin: '#d9a066' }, perk: 'coins', hint: 'Beat a friend\'s challenge link', ok: (sc) => G.chalScore > 0 && sc > G.chalScore }
 ];
 const PERK_TXT = { pass: 'Hall Pass lasts a bit longer.', jump: 'jumps 8% higher.', magnet: 'Juice Box magnet lasts 3s longer.', heelys: 'Heel Wheels last 50% longer.', coins: '+10% coins.' };
