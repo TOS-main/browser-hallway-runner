@@ -1,0 +1,375 @@
+rules_version = '2';
+// Hallway Dash database rules. Paste this whole file into Firebase console > Firestore Database > Rules > Publish.
+// Steps (and what each collection is for) are in FIREBASE_SETUP.md.
+// Round 28: adds races/ and racers/ (Live Race rooms in the Compete tab). Everything else is the same as round 24.
+// Round 24: adds hotd/ (Hallway of the Day board) and new anonymous counters in stats/ (new players, returns, first runs, shares, duel links).
+// Round 23: adds worldgoal/ (the shared World Goal bar) and market/ (Locker Market purchase counts). Your owner UID line is the same as before.
+// Round 22: adds stats/ (anonymous play counts for the Owner panel's Stats tab).
+service cloud.firestore {
+  match /databases/{db}/documents {
+
+    // ===== OWNER: paste your owner UID between the quotes (the game shows it in Settings > Owner sign-in) =====
+    function isOwner() {
+      return request.auth != null
+        && request.auth.uid == 'PASTE_OWNER_UID_HERE'
+        && request.auth.token.firebase.sign_in_provider == 'password';
+    }
+    function signedIn() { return request.auth != null; }
+    function notBanned() { return !exists(/databases/$(db)/documents/bans/$(request.auth.uid)); }
+    // no swears, slurs, sexual words or social-media handles (the game has a longer list; this is the backstop)
+    function cleanText(t) {
+      return !t.lower().replace('0', 'o').replace('[1!|]', 'i').replace('3', 'e').replace('[4@]', 'a')
+        .replace('[5$]', 's').replace('7', 't').replace('8', 'b').replace('[^a-z]', '').matches('.*(fuck|shit|cunt|nigger|nigga|faggot|bitch|whore|slut|penis|vagina|porn|nazi|hitler|pussy|dildo|retard|rapist|molest|bastard|asshole|jizz|cocksuck|motherf|wanker|twat|blowjob|handjob|horny|sexy|nude|naked|kkk|pedophile|onlyfans|instagram|snapchat|tiktok|discord).*');
+    }
+    // usernames: letters, numbers, space . _ ' - only (so no emails or links), no long numbers (phone numbers),
+    // no spaces at the ends or doubled (so "Maya" and "Maya " can't both exist)
+    function okName(n) {
+      return n is string && n.size() >= 1 && n.size() <= 14
+        && n.matches("[A-Za-z0-9 ._'-]+") && !n.matches('.*[0-9]{6,}.*') && !n.matches('^ .*|.* $|.*  .*') && cleanText(n);
+    }
+    // usernames are unique (ignoring upper/lower case): usernames/{'u-' + lowercase name} = { uid } says who owns one.
+    // names/{uid} holds the one you're using now and when you last changed it; every leaderboard row you write must
+    // carry that exact name. "Runner" is the shared default and isn't owned by anyone.
+    function namePath() { return /databases/$(db)/documents/names/$(request.auth.uid); }
+    function nameIs(n) { return existsAfter(namePath()) && getAfter(namePath()).data.name == n; }
+    function nameKey(n) { return 'u-' + n.lower(); }
+    function userPath(n) { return /databases/$(db)/documents/usernames/$(nameKey(n)); }
+    function ownsName(n) { return n == 'Runner' || (existsAfter(userPath(n)) && getAfter(userPath(n)).data.uid == request.auth.uid); }
+    function okSchoolName(n) {
+      return n is string && n.size() >= 3 && n.size() <= 40
+        && n.matches("[A-Za-z0-9 .'&-]+") && !n.matches('.*[0-9]{5,}.*') && cleanText(n);
+    }
+    function cfgPath() { return /databases/$(db)/documents/config/app; }
+    function cfgOn(k) { return !exists(cfgPath()) || get(cfgPath()).data.get(k, true) == true; }
+    // new schools go straight on the boards unless the owner turns "approve new schools first" on (config/app.autoApprove = false)
+    function newSchoolStatus() { return cfgOn('autoApprove') ? 'approved' : 'pending'; }
+    function schoolPath(s) { return /databases/$(db)/documents/schools/$(s); }
+    // a run can be tagged with an approved school, or with a school you added that is still waiting for approval
+    // (NAHS works even before its card is created)
+    function okSchool(s) {
+      return s is string && (s == '' || (s.matches('[a-z0-9-]{1,24}')
+        && ((s == 'nahs' && !exists(schoolPath(s)))
+          || (exists(schoolPath(s)) && (get(schoolPath(s)).data.status == 'approved'
+            || (get(schoolPath(s)).data.status == 'pending' && get(schoolPath(s)).data.by == request.auth.uid))))));
+    }
+
+    // ===== the leaderboard: one row per player (row id = their anonymous uid) =====
+    // best = highest Infinite Run score on any setting; dayS / weekS / monthS = best this UTC day / week / month.
+    // The All players, My school and School vs school boards are all read from here.
+    match /players/{uid} {
+      allow read: if true;
+      allow create, update: if signedIn() && request.auth.uid == uid && notBanned()
+        && request.resource.data.keys().hasOnly(['name','code','school','best','bestDist','bestDiff','day','dayS','week','weekS','month','monthS','ts'])
+        && okName(request.resource.data.name) && nameIs(request.resource.data.name)
+        && okSchool(request.resource.data.get('school', ''))
+        && request.resource.data.best is int && request.resource.data.best >= 0 && request.resource.data.best < 5000000
+        && request.resource.data.dayS is int && request.resource.data.dayS <= request.resource.data.best
+        && request.resource.data.weekS is int && request.resource.data.weekS <= request.resource.data.best
+        && request.resource.data.monthS is int && request.resource.data.monthS <= request.resource.data.best
+        && request.resource.data.day is string && request.resource.data.week is string && request.resource.data.month is string
+        && (resource == null || request.resource.data.best >= resource.data.best);
+      allow delete: if signedIn() && request.auth.uid == uid;   // "Delete all my data"
+      allow update, delete: if isOwner();                       // moderation
+    }
+
+    // names/{uid} = { name, at } (at = when you last picked a name). Your first pick is free; after that
+    // you can change it once every 30 days. Going back to the default "Runner" is always allowed (it keeps the clock
+    // running, so it can't be used to skip the wait). Only you and the owner can read it.
+    match /names/{uid} {
+      allow get: if signedIn() && (request.auth.uid == uid || isOwner());
+      allow create: if signedIn() && request.auth.uid == uid && notBanned()
+        && request.resource.data.keys().hasOnly(['name','at'])
+        && okName(request.resource.data.name) && ownsName(request.resource.data.name)
+        && ((!('at' in request.resource.data) && request.resource.data.name == 'Runner')
+          || request.resource.data.at == request.time);
+      allow update: if signedIn() && request.auth.uid == uid && notBanned()
+        && request.resource.data.keys().hasOnly(['name','at'])
+        && okName(request.resource.data.name) && ownsName(request.resource.data.name)
+        && ((request.resource.data.name == 'Runner' && request.resource.data.get('at', null) == resource.data.get('at', null))
+          || (request.resource.data.at == request.time
+            && (!('at' in resource.data) || request.time >= resource.data.at + duration.value(30, 'd'))));
+      allow write: if isOwner();                                // moderation: reset a bad name to Runner
+    }
+    // who owns each username. Claimed in the same write as names/{uid} (a taken name can't be claimed again), and
+    // released in the same write when you switch to another name. Anyone can check if a name is taken.
+    match /usernames/{key} {
+      allow get: if true;
+      allow create: if signedIn() && notBanned()
+        && request.resource.data.keys().hasOnly(['uid']) && request.resource.data.uid == request.auth.uid
+        && existsAfter(namePath()) && key == nameKey(getAfter(namePath()).data.name);
+      allow delete: if signedIn() && resource.data.uid == request.auth.uid
+        && (!existsAfter(namePath()) || key != nameKey(getAfter(namePath()).data.name));
+      allow write: if isOwner();
+    }
+
+    // automatic cloud save for players who signed in with Google (only they can read or write it)
+    match /saves/{uid} {
+      allow read, delete: if signedIn() && request.auth.uid == uid;
+      allow create, update: if signedIn() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['d','t','p'])
+        && request.resource.data.d is string && request.resource.data.d.size() < 500000
+        && request.resource.data.t is int && request.resource.data.p is number;
+    }
+
+    // original all-time board (older app versions still write here)
+    match /scores/{uid} {
+      allow read: if true;
+      allow create, update: if signedIn() && request.auth.uid == uid && notBanned()
+        && request.resource.data.keys().hasOnly(['name','score','dist','code','diff','ts'])
+        && (!('diff' in request.resource.data) || request.resource.data.diff in ['easy','normal','hard','insane'])
+        && okName(request.resource.data.name) && nameIs(request.resource.data.name)
+        && request.resource.data.score is int && request.resource.data.score < 5000000
+        && (resource == null || request.resource.data.score >= resource.data.score);
+      allow delete: if signedIn() && request.auth.uid == uid;
+      allow update, delete: if isOwner();
+    }
+
+    // per-setting bests (row id = uid_difficulty[_speed]) for the "Setting" filter on the boards
+    match /runs/{id} {
+      allow read: if true;
+      allow create, update: if signedIn() && notBanned()
+        && request.resource.data.uid == request.auth.uid
+        && id == request.auth.uid + '_' + request.resource.data.diff
+        && request.resource.data.keys().hasOnly(['uid','name','code','school','diff','best','bestDist','day','dayS','week','weekS','month','monthS','ts'])
+        && request.resource.data.diff.matches('^(easy|normal|hard|insane)(_(chill|fast|turbo))?$')
+        && okName(request.resource.data.name) && nameIs(request.resource.data.name)
+        && okSchool(request.resource.data.get('school', ''))
+        && request.resource.data.best is int && request.resource.data.best < 5000000
+        && request.resource.data.dayS <= request.resource.data.best
+        && request.resource.data.weekS <= request.resource.data.best
+        && request.resource.data.monthS <= request.resource.data.best
+        && (resource == null || request.resource.data.best >= resource.data.best);
+      allow delete: if signedIn() && resource.data.uid == request.auth.uid;
+      allow update, delete: if isOwner();
+    }
+
+    // schools everyone can see. A player can add ONE school (a schoolMade/{uid} marker is written in the same batch).
+    // It goes on the boards straight away, or waits for the owner if "approve new schools first" is on.
+    // Only the owner renames, hides or deletes schools.
+    match /schools/{id} {
+      allow read: if true;
+      allow create: if signedIn() && notBanned() && cfgOn('requests')
+        && id.matches('[a-z0-9-]{1,24}')
+        && request.resource.data.keys().hasOnly(['name','status','by','ts'])
+        && okSchoolName(request.resource.data.name)
+        && request.resource.data.by == request.auth.uid
+        && request.resource.data.status == newSchoolStatus()
+        && request.resource.data.ts is timestamp
+        && !exists(/databases/$(db)/documents/schoolMade/$(request.auth.uid))
+        && existsAfter(/databases/$(db)/documents/schoolMade/$(request.auth.uid));
+      allow write: if isOwner();
+    }
+    match /schoolMade/{uid} {
+      allow get: if signedIn() && (request.auth.uid == uid || isOwner());
+      allow create: if signedIn() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['school'])
+        && request.resource.data.school is string
+        && existsAfter(schoolPath(request.resource.data.school))
+        && getAfter(schoolPath(request.resource.data.school)).data.by == uid;
+      allow delete: if isOwner();
+    }
+
+    // "please add my school" from older app versions: one request per player, only the owner can see the list
+    match /schoolRequests/{uid} {
+      allow get: if signedIn() && (request.auth.uid == uid || isOwner());
+      allow list: if isOwner();
+      allow create, update: if signedIn() && request.auth.uid == uid && notBanned() && cfgOn('requests')
+        && request.resource.data.keys().hasOnly(['name','ts'])
+        && okSchoolName(request.resource.data.name)
+        && request.resource.data.ts is timestamp;
+      allow delete: if (signedIn() && request.auth.uid == uid) || isOwner();
+    }
+
+    // reports: one per player per target, fixed reasons only (no free text), only the owner can read them
+    match /reports/{id} {
+      allow create: if signedIn() && notBanned()
+        && request.resource.data.keys().hasOnly(['by','kind','target','name','reason','ts'])
+        && request.resource.data.by == request.auth.uid
+        && request.resource.data.target is string && request.resource.data.target.size() <= 64
+        && id == request.auth.uid + '_' + request.resource.data.target
+        && request.resource.data.kind in ['player','school','level']
+        && request.resource.data.reason in ['name','bully','personal','cheat','other']
+        && request.resource.data.name is string && request.resource.data.name.size() <= 40
+        && request.resource.data.ts is timestamp;
+      allow read, delete: if isOwner();
+    }
+
+    // ===== LEVEL MAKER: levels players built and shared =====
+    // levels/{id} holds the level (data = the obstacles as compact text) plus its counters. Only the maker can change
+    // the level itself; anyone signed in can bump plays / clears / likes by exactly 1, and only together with their own
+    // one-per-player marker under the level (levels/{id}/plays/{uid} etc.), so nobody can count twice.
+    // levelMade/{uid} counts each player's shares: at most one a minute and 300 in all. New levels go live straight away,
+    // or wait for the owner when "Approve new levels first" is on (config/app.levelAuto = false). The owner can hide,
+    // feature or delete any level.
+    function levelPath(id) { return /databases/$(db)/documents/levels/$(id); }
+    function madePath() { return /databases/$(db)/documents/levelMade/$(request.auth.uid); }
+    function okLevelName(n) {
+      return n is string && n.size() >= 3 && n.size() <= 24 && n.matches("[A-Za-z0-9 .'!?-]+") && !n.matches('.*[0-9]{6,}.*') && cleanText(n);
+    }
+    function okLevel(d) {
+      return okLevelName(d.name) && okName(d.author) && nameIs(d.author)
+        && d.data is string && d.data.size() >= 10 && d.data.size() <= 60000
+        && d.theme in ['high','middle','elem','college','gym','snowquad','trip_museum','trip_aquarium','trip_science','trip_arcade']
+        && d.speed is int && d.speed >= 8 && d.speed <= 40 && d.len is int && d.len >= 20 && d.len <= 5000
+        && d.n is int && d.n >= 1 && d.n <= 1500 && d.stars is int && d.stars >= 1 && d.stars <= 6
+        && d.dark is bool && d.ver is int;
+    }
+    function newLevelStatus() { return cfgOn('levelAuto') ? 'live' : 'pending'; }
+    function bump(f, by) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly([f]) && request.resource.data[f] == resource.data[f] + by;
+    }
+    function marker(id, c) { return /databases/$(db)/documents/levels/$(id)/$(c)/$(request.auth.uid); }
+    match /levels/{id} {
+      allow read: if true;
+      allow create: if signedIn() && notBanned() && cfgOn('levels') && id.matches('[a-z0-9]{10}')
+        && request.resource.data.keys().hasOnly(['name','by','author','data','theme','speed','len','n','stars','dark','ver','status','featured','likes','plays','clears','ts'])
+        && request.resource.data.by == request.auth.uid && okLevel(request.resource.data)
+        && request.resource.data.status == newLevelStatus() && request.resource.data.featured == false
+        && request.resource.data.likes == 0 && request.resource.data.plays == 0 && request.resource.data.clears == 0
+        && request.resource.data.ts == request.time
+        && existsAfter(madePath()) && getAfter(madePath()).data.lv == id;
+      // the maker updates their own level (not its status, counters, featured flag or date)
+      allow update: if signedIn() && notBanned() && resource.data.by == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name','author','data','theme','speed','len','n','stars','dark','ver'])
+        && okLevel(request.resource.data);
+      // everyone else: +1 play, +1 clear, +1 / -1 like, each with its marker
+      allow update: if signedIn() && notBanned() && (
+           (bump('plays', 1) && !exists(marker(id, 'plays')) && existsAfter(marker(id, 'plays')))
+        || (bump('clears', 1) && !exists(marker(id, 'clears')) && existsAfter(marker(id, 'clears')))
+        || (bump('likes', 1) && !exists(marker(id, 'likes')) && existsAfter(marker(id, 'likes')))
+        || (bump('likes', -1) && exists(marker(id, 'likes')) && !existsAfter(marker(id, 'likes'))));
+      allow delete: if signedIn() && resource.data.by == request.auth.uid;   // "Unshare"
+      allow write: if isOwner();                                             // hide, feature, approve, delete
+
+      match /{c}/{uid} {
+        allow get: if signedIn() && request.auth.uid == uid;
+        allow create: if signedIn() && request.auth.uid == uid && notBanned() && c in ['plays','clears','likes']
+          && request.resource.data.keys().hasOnly(['ts','att']) && request.resource.data.ts == request.time
+          && (!('att' in request.resource.data) || (request.resource.data.att is int && request.resource.data.att >= 1 && request.resource.data.att < 100000))
+          && getAfter(levelPath(id)).data[c] == get(levelPath(id)).data[c] + 1
+          && (c != 'clears' || exists(marker(id, 'plays')));
+        allow delete: if signedIn() && request.auth.uid == uid && c == 'likes'
+          && getAfter(levelPath(id)).data.likes == get(levelPath(id)).data.likes - 1;
+        allow delete: if isOwner();
+      }
+    }
+    // how many levels you've shared (n), when (last) and the newest one (lv). Written in the same batch as levels/{lv}.
+    match /levelMade/{uid} {
+      allow get: if signedIn() && (request.auth.uid == uid || isOwner());
+      allow create, update: if signedIn() && request.auth.uid == uid && notBanned()
+        && request.resource.data.keys().hasOnly(['n','last','lv'])
+        && request.resource.data.last == request.time
+        && request.resource.data.n == (resource == null ? 1 : resource.data.n + 1) && request.resource.data.n <= 300
+        && (resource == null || request.time > resource.data.last + duration.value(60, 's'))
+        && request.resource.data.lv is string && !exists(levelPath(request.resource.data.lv))
+        && existsAfter(levelPath(request.resource.data.lv)) && getAfter(levelPath(request.resource.data.lv)).data.by == uid;
+      allow delete: if isOwner();
+    }
+
+    // anonymous play counts (every age): stats/{date}_{0-4} = totals of visits (v_), seconds played (s_) and runs (r_)
+    // per age group. No ids or names, just numbers. Anyone can only ADD a small amount; only the owner can read them.
+    function statBase(k) { return resource == null ? 0 : resource.data.get(k, 0); }
+    function sbump(k, cap) {
+      return request.resource.data.get(k, 0) is int
+        && request.resource.data.get(k, 0) >= statBase(k)
+        && request.resource.data.get(k, 0) <= statBase(k) + cap;
+    }
+    match /stats/{id} {
+      allow read, delete: if isOwner();
+      allow create, update: if id.matches('^20[0-9][0-9]-[01][0-9]-[0-3][0-9]_[0-4]$')
+        && request.resource.data.keys().hasOnly(['v_kid', 'v_teen', 'v_adult', 'v_unset', 's_kid', 's_teen', 's_adult', 's_unset', 'r_kid', 'r_teen', 'r_adult', 'r_unset', 'n', 'd1', 'd7', 'd30', 'f1', 'f3', 'f10', 'sh', 'dl',
+          't_kid', 't_teen', 't_adult', 't_unset', 'm1', 'm5', 'm15', 'm30', 'm60', 'h0', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'h8', 'h9', 'h10', 'h11', 'h12', 'h13', 'h14', 'h15', 'h16', 'h17', 'h18', 'h19', 'h20', 'h21', 'h22', 'h23'])
+        && sbump('n', 5) && sbump('d1', 5) && sbump('d7', 5) && sbump('d30', 5) && sbump('f1', 5) && sbump('f3', 5) && sbump('f10', 5) && sbump('sh', 5) && sbump('dl', 5)
+        && sbump('v_kid', 5) && sbump('v_teen', 5) && sbump('v_adult', 5) && sbump('v_unset', 5)
+        && sbump('s_kid', 3600) && sbump('s_teen', 3600) && sbump('s_adult', 3600) && sbump('s_unset', 3600)
+        && sbump('r_kid', 50) && sbump('r_teen', 50) && sbump('r_adult', 50) && sbump('r_unset', 50)
+        && sbump('t_kid', 3600) && sbump('t_teen', 3600) && sbump('t_adult', 3600) && sbump('t_unset', 3600)
+        && sbump('m1', 5) && sbump('m5', 5) && sbump('m15', 5) && sbump('m30', 5) && sbump('m60', 5)
+        && sbump('h0', 5) && sbump('h1', 5) && sbump('h2', 5) && sbump('h3', 5) && sbump('h4', 5) && sbump('h5', 5) && sbump('h6', 5) && sbump('h7', 5) && sbump('h8', 5) && sbump('h9', 5) && sbump('h10', 5) && sbump('h11', 5) && sbump('h12', 5) && sbump('h13', 5) && sbump('h14', 5) && sbump('h15', 5) && sbump('h16', 5) && sbump('h17', 5) && sbump('h18', 5) && sbump('h19', 5) && sbump('h20', 5) && sbump('h21', 5) && sbump('h22', 5) && sbump('h23', 5);
+    }
+    // ROUND 29, PLAYING RIGHT NOW: live/{random id} = { ts } only. A random id made fresh on each page load (not tied to
+    // any player), and ts must be the server's own clock. Only the owner can read or delete them.
+    match /live/{id} {
+      allow read, delete: if isOwner();
+      allow create, update: if id.matches('^[a-z0-9]{12}$') && request.resource.data.keys().hasOnly(['ts'])
+        && request.resource.data.ts == request.time;
+    }
+
+    // WORLD GOAL: worldgoal/w{week} = { m: total meters everyone ran this week }. Anyone can read it. A signed-in player
+    // can only ADD the meters of one run (1 to 20,000) at a time; nobody can lower or reset it except the owner.
+    // HALLWAY OF THE DAY: hotd/{uid}_{utcDay} = your best distance on today's shared hallway. Anyone can read the board.
+    // You can only write your own row for today, and only raise it.
+    match /hotd/{id} {
+      allow read: if true;
+      allow create, update: if signedIn() && notBanned()
+        && request.resource.data.keys().hasOnly(['uid', 'name', 'school', 'day', 'm', 'ts'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.day is int && request.resource.data.day == int(request.time.toMillis() / 86400000)
+        && id == request.auth.uid + '_' + string(request.resource.data.day)
+        && okName(request.resource.data.name) && nameIs(request.resource.data.name)
+        && okSchool(request.resource.data.get('school', ''))
+        && request.resource.data.m is int && request.resource.data.m >= 0 && request.resource.data.m < 200000
+        && (resource == null || request.resource.data.m >= resource.data.m);
+      allow delete: if isOwner() || (signedIn() && resource.data.uid == request.auth.uid);
+    }
+
+    // ===== live races: a room (races/{CODE}) made by its host, and one row per racer (racers/{CODE}_{uid}) =====
+    match /races/{code} {
+      allow read: if signedIn();
+      allow create: if signedIn() && notBanned() && code.matches('[A-Z]{4}')
+        && request.resource.data.keys().hasOnly(['host', 'seed', 'startAt', 'ts'])
+        && request.resource.data.host == request.auth.uid
+        && request.resource.data.seed is int && request.resource.data.startAt is int && request.resource.data.ts is int;
+      allow update: if signedIn() && resource.data.host == request.auth.uid
+        && request.resource.data.keys().hasOnly(['host', 'seed', 'startAt', 'ts'])
+        && request.resource.data.host == request.auth.uid && request.resource.data.seed == resource.data.seed;
+      allow delete: if isOwner() || (signedIn() && resource.data.host == request.auth.uid);
+    }
+    match /racers/{id} {
+      allow read: if signedIn();
+      allow create, update: if signedIn() && notBanned()
+        && request.resource.data.keys().hasOnly(['code', 'uid', 'name', 'd', 'sc', 'dead', 'ts'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.code is string && request.resource.data.code.matches('[A-Z]{4}')
+        && id == request.resource.data.code + '_' + request.auth.uid
+        && exists(/databases/$(db)/documents/races/$(request.resource.data.code))
+        && okName(request.resource.data.name) && (request.resource.data.name == 'Runner' || nameIs(request.resource.data.name))
+        && request.resource.data.d is int && request.resource.data.d >= 0 && request.resource.data.d < 200000
+        && request.resource.data.sc is int && request.resource.data.sc >= 0 && request.resource.data.sc < 50000000
+        && request.resource.data.dead is bool;
+      allow delete: if isOwner() || (signedIn() && resource.data.uid == request.auth.uid);
+    }
+
+    match /worldgoal/{id} {
+      allow read: if true;
+      allow create, update: if signedIn() && notBanned() && id.matches('^w[0-9]{4,6}$')
+        && request.resource.data.keys().hasOnly(['m']) && request.resource.data.m is int
+        && request.resource.data.m >= statBase('m') + 1 && request.resource.data.m <= statBase('m') + 20000;
+      allow delete: if isOwner();
+    }
+
+    // LOCKER MARKET: market/d{day} = { itemId: purchases today }. Anyone can read it. A signed-in player can only add 1
+    // to one item per write; nothing can be lowered or removed except by the owner.
+    match /market/{id} {
+      allow read: if true;
+      allow create, update: if signedIn() && notBanned() && id.matches('^d[0-9]{4,6}$')
+        && request.resource.data.diff(resource == null ? {} : resource.data).affectedKeys().size() == 1
+        && request.resource.data.keys().size() <= 200
+        && request.resource.data.diff(resource == null ? {} : resource.data).affectedKeys().toList()[0].matches('^[a-z][a-z0-9_]{0,30}$')
+        && request.resource.data[request.resource.data.diff(resource == null ? {} : resource.data).affectedKeys().toList()[0]] == statBase(request.resource.data.diff(resource == null ? {} : resource.data).affectedKeys().toList()[0]) + 1;
+      allow delete: if isOwner();
+    }
+
+    // banned players can't post scores, schools, levels or reports
+    match /bans/{uid} {
+      allow read, write: if isOwner();
+    }
+
+    // emergency switches (school boards on/off, new schools on/off, approve new schools first, level sharing on/off,
+    // approve new levels first)
+    match /config/{doc} {
+      allow read: if true;
+      allow write: if isOwner();
+    }
+  }
+}
