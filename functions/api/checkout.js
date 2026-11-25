@@ -16,8 +16,8 @@ export async function onRequestPost({ request, env }) {
       'line_items[0][price_data][product_data][description]': item.desc,
       'metadata[sku]': sku, 'metadata[pid]': pid,
       'payment_intent_data[metadata][sku]': sku, 'payment_intent_data[metadata][pid]': pid,
-      success_url: origin + '/?paid={CHECKOUT_SESSION_ID}',
-      cancel_url: origin + '/?paid=cancel'
+      success_url: origin + '/play/?paid={CHECKOUT_SESSION_ID}',
+      cancel_url: origin + '/play/?paid=cancel'
     });
     return json({ url: s.url });
   } catch (e) { return json({ error: 'Checkout is not available right now' }, 502); }

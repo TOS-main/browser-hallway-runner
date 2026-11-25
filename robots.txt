@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /adframe.html
+Disallow: /api/
+
+Sitemap: https://hallwaydash.org/sitemap.xml
