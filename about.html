@@ -4,57 +4,96 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="google-adsense-account" content="ca-pub-9841041313313334">
-<!-- AdSense. Nothing on this page has ad slots, and requests stay non-personalized. -->
-<script>(window.adsbygoogle = window.adsbygoogle || []).requestNonPersonalizedAds = 1;</script>
-<!-- Google Analytics (GA4): counts visits and traffic sources only. No cookies, no saved visitor id, no Google signals or ad features, so no visit is tied to a person.
-     To use a different GA4 property, change the Measurement ID on the next line (it looks like G-XXXXXXXXXX). -->
+<!-- Google Analytics (GA4): visit counts only, no cookies, no visitor id, no Google signals or ad features. It only runs for people who told the game they're 16+. -->
 <script>window.GA_MEASUREMENT_ID = 'G-8XZRP9PG7J';
 (function (id) {
-  if (!id || location.protocol !== 'https:' || window.HallwayAds || /; wv\)/.test(navigator.userAgent)) return; // website only, never the Android app
+  if (!id || location.protocol !== 'https:' || /; wv\)/.test(navigator.userAgent)) return; // website only, never the Android app
   var sv = null; try { sv = JSON.parse(localStorage.getItem('hallwayRush.save.v1') || 'null'); } catch (e) {}
-  if (!sv || sv.age !== 'adult' || (sv.privacy && sv.privacy.analytics === false)) return; // only players who said they're 16+ and left usage stats on
+  if (!sv || sv.age !== 'adult' || (sv.privacy && sv.privacy.analytics === false)) return; // only players who told the game they're 16+ and left usage stats on
   window.dataLayer = window.dataLayer || []; window.gtag = function () { dataLayer.push(arguments); };
   gtag('js', new Date());
   gtag('config', id, { client_storage: 'none', allow_google_signals: false, allow_ad_personalization_signals: false });
   var s = document.createElement('script'); s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(id); document.head.appendChild(s);
-  window.GA_LOADED = true;
 })(window.GA_MEASUREMENT_ID);</script>
+<title>About Hallway Dash and Its Developer</title>
+<meta name="description" content="About Hallway Dash, a free 3D school-hallway runner made by an independent student developer: how it started, how it's made and what's next.">
+<link rel="canonical" href="https://hallwaydash.org/about.html">
 <meta name="theme-color" content="#1b1f3b">
-<title>About &amp; Contact | Hallway Dash</title>
-<meta name="description" content="About Hallway Dash, a free school-hallway runner game, and how to contact its developer.">
-<style>
-body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:linear-gradient(160deg,#1b1f3b,#3a2e6e);color:#fffdf6;line-height:1.6}
-main{max-width:680px;margin:0 auto;padding:40px 24px}
-h1{font-size:clamp(2rem,7vw,3rem);margin:0 0 12px;color:#ffd60a}
-h2{color:#ffd60a;margin-top:32px}
-a{color:#ffd60a}
-.play{display:inline-block;margin:16px 0;padding:12px 36px;font-weight:700;color:#1b1f3b;background:#ffd60a;border-radius:999px;text-decoration:none;box-shadow:0 6px 0 #c9a800}
-footer{margin-top:40px;font-size:.9rem;opacity:.8}
-</style>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Hallway Dash">
+<meta property="og:title" content="About Hallway Dash and Its Developer">
+<meta property="og:description" content="About Hallway Dash, a free 3D school-hallway runner made by an independent student developer: how it started, how it's made and what's next.">
+<meta property="og:url" content="https://hallwaydash.org/about.html">
+<meta property="og:image" content="https://hallwaydash.org/img/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/img/icon-192.png">
+<link rel="stylesheet" href="/site.css">
 </head>
 <body>
-<main>
-<h1>About Hallway Dash</h1>
-<p>Hallway Dash is a free 3D endless runner set in a school hallway. You dodge crowds of students, teachers, janitor carts and hall monitors on your way to class, collect coins, unlock outfits and pets, and race through more than 100 stages from elementary school to college.</p>
-<p>It runs in any modern browser on a phone, tablet or computer, with no download or account needed. An Android version is coming to Google Play.</p>
-<a class="play" href="/">Play Hallway Dash</a>
+<header class="top"><div class="wrap">
+<a class="brand" href="/"><img src="/img/icon-192.png" alt="" width="34" height="34">Hallway Dash</a>
+<nav class="nav" aria-label="Main">
+<a href="/how-to-play.html">How to Play</a>
+<a href="/guides.html">Guides</a>
+<a href="/tips.html">Tips</a>
+<a href="/updates.html">Updates</a>
+<a href="/faq.html">FAQ</a>
+<a href="/parents.html">Parents &amp; Teachers</a>
+<a class="cta" href="/play/">▶ Play free</a>
+</nav>
+</div></header>
+<section class="phead"><div class="wrap"><div class="crumbs"><a href="/">Home</a></div><h1>About Hallway Dash</h1><p>Who makes the game, how it's built, and what we care about.</p></div></section>
+<main class="content wrap">
+<p class="lead">Hallway Dash is a free 3D endless runner set in school hallways. You dodge crowds of students, teachers, janitor carts and hall monitors on your way to class, collect coins, unlock runners, outfits and pets, and race through 150 stages from elementary school to college.</p>
 
 <h2>Who makes it</h2>
-<p>Hallway Dash is made by an independent student developer. The characters, music and sounds are free CC0 and public-domain assets, credited in the game files.</p>
+<p>Hallway Dash is made by an independent student developer. It started from a simple question every student has asked while weaving through a packed hallway between classes: what if this were a game? The first browser version went live in November 2026, and it's been updated almost every day since, often based on what players asked for.</p>
 
-<h2>Safe for every age</h2>
-<p>The game asks for a player's age group the first time it opens. Players under 13 get a kid-safe version: no personal information is collected (we only add their visit to an anonymous daily total), online features are off, and no ad requests are sent. Players 13 to 15 only see non-personalized ads. Read the full <a href="/privacy.html">Privacy Policy</a> for details.</p>
+<h2>What we care about</h2>
+<ul>
+<li><b>Fair fun.</b> Every hallway always has an open lane, hitboxes match what you see, and the game is completely playable without paying.</li>
+<li><b>Safe for students.</b> Players under 13 get a version with no ads, no online features and no personal data collected. No real names anywhere. Leaderboards are moderated. Read more <a href="/parents.html">for parents and teachers</a>.</li>
+<li><b>Works everywhere.</b> The whole game runs in one web page, on school Chromebooks, old laptops and phones, with no install.</li>
+<li><b>Honest ads.</b> Ads only appear when you choose to watch one, or in a short break between some runs for players 13 and up. Never in the middle of a run.</li>
+</ul>
 
-<h2>Ads</h2>
-<p>The free game is supported by ads from Google AdSense. Ads appear only in two places: when a player chooses to watch an ad for a reward, and in a short break between some runs.</p>
+<h2>How it's made</h2>
+<p>Hallway Dash is built with web technology: the 3D graphics use the open-source three.js library, and the entire game, including models, sounds and fonts, is packed into one file so it loads once and keeps working offline. Leaderboards, friends and shared levels use Google Firebase. The original theme song, "Hallway Rush", was made for the game.</p>
+<p>The 3D characters, animations and pets come from generous artists who release their work into the public domain (CC0):</p>
+<ul>
+<li>Characters and animals by <a href="https://quaternius.com" rel="noopener">Quaternius</a></li>
+<li>Cartoon runners and animations by <a href="https://kaylousberg.com" rel="noopener">Kay Lousberg (KayKit)</a></li>
+<li>Announcer voice lines by <a href="https://kenney.nl" rel="noopener">Kenney</a></li>
+<li>Extra music by Kevin MacLeod via <a href="https://freepd.com" rel="noopener">FreePD</a> (public domain)</li>
+<li>Fonts: Luckiest Guy and Patrick Hand (SIL Open Font License)</li>
+</ul>
 
-<h2>Visit counts</h2>
-<p>This site uses Google Analytics to count visits: which page was opened, the site that linked to it, and rough location, device and browser type. It sets no cookies, keeps no visitor id, and has Google signals and ad features turned off, so no visit is tied to a person. Learn <a href="https://policies.google.com/technologies/partner-sites">how Google uses data from sites that use its services</a>.</p>
+<h2>The game in numbers</h2>
+<ul>
+<li>5 schools and 4 field-trip locations</li>
+<li>150 campaign stages, with a boss every tenth stage</li>
+<li>40+ obstacles, from wet-floor signs to cheer pyramids</li>
+<li>30+ runners, 5 sidekicks and hundreds of cosmetic combinations</li>
+<li>11 ways to play, plus the Level Maker</li>
+</ul>
+
+<h2>What's next</h2>
+<p>An Android version is on its way to Google Play. New field trips and events arrive through the school year. You can follow along on the <a href="/updates.html">updates page</a>.</p>
+
+<h2>Ads and visit counts on this website</h2>
+<p>The free game is supported by ads from Google AdSense. This site uses Google Analytics to count visits from people who told the game they're 16 or older: which page was opened, the site that linked to it, and rough location, device and browser type. It sets no cookies, keeps no visitor id, and has Google signals and ad features turned off, so no visit is tied to a person. Learn <a href="https://policies.google.com/technologies/partner-sites">how Google uses data from sites that use its services</a>, or read our <a href="/privacy.html">privacy policy</a>.</p>
 
 <h2>Contact</h2>
-<p>Questions, bug reports, feedback or privacy requests: email <a href="mailto:ibweintraub@gmail.com">ibweintraub@gmail.com</a>. We usually reply within a few days.</p>
+<p>Questions, bug reports, feedback or privacy requests: see the <a href="/contact.html">contact page</a> or email <a href="mailto:ibweintraub@gmail.com">ibweintraub@gmail.com</a>.</p>
+<div class="playband"><p><b>Ready to run?</b> Hallway Dash is free and plays right in your browser. No download or account needed.</p><a class="btn" href="/play/">▶ Play Hallway Dash</a></div>
 
-<footer><a href="/">Play</a> · <a href="/privacy.html">Privacy policy</a> · <a href="/terms.html">Terms of service</a></footer>
 </main>
+<footer class="foot"><div class="wrap">
+<div><h4>Hallway Dash</h4><p style="margin:0">A free 3D endless runner set in school hallways. Dodge crowds, teachers and bosses on the way to class, in any modern browser on phone, tablet or computer.</p><a class="btn" style="margin-top:14px;display:inline-block;color:#1b1f3b" href="/play/">▶ Play now</a></div>
+<div><h4>Learn</h4><a href="/how-to-play.html">How to play</a><a href="/obstacles.html">Obstacle guide</a><a href="/power-ups.html">Power-ups &amp; runners</a><a href="/campaign.html">Campaign &amp; bosses</a><a href="/game-modes.html">Game modes</a><a href="/tips.html">Tips &amp; strategy</a></div>
+<div><h4>News &amp; help</h4><a href="/updates.html">Updates</a><a href="/faq.html">FAQ</a><a href="/parents.html">Parents &amp; teachers</a><a href="/contact.html">Contact</a></div>
+<div><h4>Info</h4><a href="/about.html">About</a><a href="/privacy.html">Privacy policy</a><a href="/terms.html">Terms of service</a><a href="/sitemap.xml">Sitemap</a></div>
+</div><div class="wrap"><small>© 2026 Hallway Dash. Made by an independent student developer. 3D characters, animations and most music are CC0 / public domain; the theme song is original.</small></div></footer>
 </body>
 </html>

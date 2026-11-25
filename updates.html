@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="google-adsense-account" content="ca-pub-9841041313313334">
+<!-- Google Analytics (GA4): visit counts only, no cookies, no visitor id, no Google signals or ad features. It only runs for people who told the game they're 16+. -->
+<script>window.GA_MEASUREMENT_ID = 'G-8XZRP9PG7J';
+(function (id) {
+  if (!id || location.protocol !== 'https:' || /; wv\)/.test(navigator.userAgent)) return; // website only, never the Android app
+  var sv = null; try { sv = JSON.parse(localStorage.getItem('hallwayRush.save.v1') || 'null'); } catch (e) {}
+  if (!sv || sv.age !== 'adult' || (sv.privacy && sv.privacy.analytics === false)) return; // only players who told the game they're 16+ and left usage stats on
+  window.dataLayer = window.dataLayer || []; window.gtag = function () { dataLayer.push(arguments); };
+  gtag('js', new Date());
+  gtag('config', id, { client_storage: 'none', allow_google_signals: false, allow_ad_personalization_signals: false });
+  var s = document.createElement('script'); s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(id); document.head.appendChild(s);
+})(window.GA_MEASUREMENT_ID);</script>
+<title>Hallway Dash Updates and Developer Notes</title>
+<meta name="description" content="What's new in Hallway Dash: the developer's notes on every major update, from the first browser version to the Level Maker and card checkout.">
+<link rel="canonical" href="https://hallwaydash.org/updates.html">
+<meta name="theme-color" content="#1b1f3b">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Hallway Dash">
+<meta property="og:title" content="Hallway Dash Updates and Developer Notes">
+<meta property="og:description" content="What's new in Hallway Dash: the developer's notes on every major update, from the first browser version to the Level Maker and card checkout.">
+<meta property="og:url" content="https://hallwaydash.org/updates.html">
+<meta property="og:image" content="https://hallwaydash.org/img/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/img/icon-192.png">
+<link rel="stylesheet" href="/site.css">
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="/"><img src="/img/icon-192.png" alt="" width="34" height="34">Hallway Dash</a>
+<nav class="nav" aria-label="Main">
+<a href="/how-to-play.html">How to Play</a>
+<a href="/guides.html">Guides</a>
+<a href="/tips.html">Tips</a>
+<a href="/updates.html" aria-current="page">Updates</a>
+<a href="/faq.html">FAQ</a>
+<a href="/parents.html">Parents &amp; Teachers</a>
+<a class="cta" href="/play/">▶ Play free</a>
+</nav>
+</div></header>
+<section class="phead"><div class="wrap"><div class="crumbs"><a href="/">Home</a></div><h1>Updates &amp; Developer Notes</h1><p>What changed in Hallway Dash and why, written by the developer. Newest first.</p></div></section>
+<main class="content wrap">
+<p class="lead">Hallway Dash gets updated often, sometimes several times a day. These notes collect the bigger changes, explain why they were made, and are written by the developer. Newest first.</p>
+
+<article class="post"><time datetime="2026-11-25">November 25, 2026</time>
+<h2>A real home for Hallway Dash</h2>
+<p>Until today, hallwaydash.org opened straight into the game. That was fast, but it meant there was nowhere to explain how the game works, to answer common questions, or to tell parents and teachers how we handle safety. So the site now has a proper home page, and the game itself lives at <a href="/play/">hallwaydash.org/play/</a>.</p>
+<p>Along with it come in-depth guides: <a href="/how-to-play.html">how to play</a>, a full <a href="/obstacles.html">obstacle guide</a>, <a href="/power-ups.html">power-ups and runners</a>, the <a href="/campaign.html">campaign and bosses</a>, <a href="/game-modes.html">every game mode</a>, <a href="/tips.html">25 tips</a>, a <a href="/faq.html">FAQ</a> and a page <a href="/parents.html">for parents and teachers</a>. Your progress is not affected: saves stay in your browser exactly as before, and old links to the game still work.</p>
+</article>
+
+<article class="post"><time datetime="2026-11-11">November 11, 2026</time>
+<h2>Card checkout, a new shop and cartoon runners</h2>
+<p>The School Store on the website can now take card payments through Stripe Checkout for a small set of optional items: a one-time Starter Pack, permanent No Ads and Coin Doubler upgrades, the season's Gold Track, and cash and Gold Star packs. Every item has fixed contents (nothing is random), any purchase also turns off the short ads between runs, and purchases are checked on our server before anything is granted. Players under 13 never see the store.</p>
+<p>This update also added four chunky cartoon runners (Pixie, Bolt, Shades and Captain Recess), made hitboxes match the true size of each obstacle so near-misses feel fair, made the game start faster, and picks smarter graphics settings automatically on low-end Chromebooks and older phones.</p>
+</article>
+
+<article class="post"><time datetime="2026-11-09">November 9, 2026</time>
+<h2>The Level Maker</h2>
+<p>The biggest feature since launch: build your own hallway. Place obstacles lane by lane, set the speed and difficulty, turn the lights out, test it, and share it. To keep shared levels fair, you have to beat a level yourself before you can share it. Players can browse Featured, Newest, Most liked, Most played and Hardest levels, like the ones they enjoy, and report anything inappropriate to the moderator.</p>
+<p>The same week brought unique usernames (changeable once a month), one anonymous player id per browser so your records stay yours, smoother lane changes, a skippable tutorial, a mute button, and lots of fixes. We also added anonymous daily play counts so we can see how many people play without collecting anything about who they are.</p>
+</article>
+
+<article class="post"><time datetime="2026-11-08">November 8, 2026</time>
+<h2>Simpler home screen, automatic saving</h2>
+<p>Testers told us the home screen had too many buttons. Now it's one big <b>Tap to Play</b> and four big buttons (Locker, Modes, Ranks and More), and everything else lives on the More screen, unlocking gradually as you play. Your progress now saves by itself after everything you do, and you can sign in with Google to carry it to another browser, or copy an encrypted save code as a backup.</p>
+<p>We also made controls snappier, brightened the hallway, added new animations and made "add your school" instant. Analytics and ads now wait until after the age check, so nothing loads before we know how old a player is.</p>
+</article>
+
+<article class="post"><time datetime="2026-11-07">November 7, 2026</time>
+<h2>Moving to hallwaydash.org</h2>
+<p>Hallway Dash moved to its own address, hallwaydash.org. Old links from the original GitHub address forward automatically. We also published the <a href="/terms.html">Terms of Service</a>, and added your school to the intro, with a school record to set or break.</p>
+</article>
+
+<article class="post"><time datetime="2026-11-06">November 6, 2026</time>
+<h2>School leaderboards and the theme song</h2>
+<p>You can now add your school and see how it ranks against other schools. Because school boards are seen by students, they come with rules (usernames only, no personal information), a report and block button next to every name, and a moderator who checks new schools and reports. Leaderboards are now split by difficulty and speed, so every board is a fair fight.</p>
+<p>Hallway Dash also got its own original theme song, "Hallway Rush", with an intro that plays when a run starts and optional lyrics on the start screen. Other fixes: track hurdles are now bold red and white so they're easy to see, characters no longer sink into the floor, and teachers step into lanes more fairly.</p>
+</article>
+
+<article class="post"><time datetime="2026-11-05">November 5, 2026</time>
+<h2>Head hops, duels and the side mode list</h2>
+<p>A huge day. Head hops now work on every normal-height person, with lines of students to hop across. The school store, locker boxes, cafeteria and schoolyard zones, a new HUD and friendlier faces arrived. Super Sneakers let you jump over people when you're high enough. On computers, all the play modes now sit down the side of the menu with keyboard shortcuts, and <b>Duel a Friend</b> lets two people race the same hallway.</p>
+<p>We connected the world leaderboard and friends features, and set up ads so that players under 13 never get ad requests at all. The <a href="/privacy.html">privacy policy</a> gained clear steps for deleting your data.</p>
+</article>
+
+<article class="post"><time datetime="2026-11-04">November 4, 2026</time>
+<h2>Hallway Dash comes to the browser</h2>
+<p>The first browser version of Hallway Dash went live: the whole 3D game in a single page that runs on phones, tablets and computers, and keeps working offline once loaded. The same day brought a tutorial you can skip, new obstacles, bleachers to run on, Heel Wheels designs, runner abilities, lunch-table platforms, keyboard controls for computers, save codes and friend challenges, and Ms. Moore, the little teacher.</p>
+</article>
+
+<h2>What's next</h2>
+<ul>
+<li>The Android version on Google Play, with the same hallways and runners.</li>
+<li>More field trip locations and more events through the school year.</li>
+<li>More guides on this site as new features arrive.</li>
+</ul>
+<p>Have an idea or found a bug? <a href="/contact.html">Tell us</a>. Many of the changes above started as player suggestions.</p>
+<div class="playband"><p><b>Ready to run?</b> Hallway Dash is free and plays right in your browser. No download or account needed.</p><a class="btn" href="/play/">▶ Play Hallway Dash</a></div>
+
+</main>
+<footer class="foot"><div class="wrap">
+<div><h4>Hallway Dash</h4><p style="margin:0">A free 3D endless runner set in school hallways. Dodge crowds, teachers and bosses on the way to class, in any modern browser on phone, tablet or computer.</p><a class="btn" style="margin-top:14px;display:inline-block;color:#1b1f3b" href="/play/">▶ Play now</a></div>
+<div><h4>Learn</h4><a href="/how-to-play.html">How to play</a><a href="/obstacles.html">Obstacle guide</a><a href="/power-ups.html">Power-ups &amp; runners</a><a href="/campaign.html">Campaign &amp; bosses</a><a href="/game-modes.html">Game modes</a><a href="/tips.html">Tips &amp; strategy</a></div>
+<div><h4>News &amp; help</h4><a href="/updates.html">Updates</a><a href="/faq.html">FAQ</a><a href="/parents.html">Parents &amp; teachers</a><a href="/contact.html">Contact</a></div>
+<div><h4>Info</h4><a href="/about.html">About</a><a href="/privacy.html">Privacy policy</a><a href="/terms.html">Terms of service</a><a href="/sitemap.xml">Sitemap</a></div>
+</div><div class="wrap"><small>© 2026 Hallway Dash. Made by an independent student developer. 3D characters, animations and most music are CC0 / public domain; the theme song is original.</small></div></footer>
+</body>
+</html>

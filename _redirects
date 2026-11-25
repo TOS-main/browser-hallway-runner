@@ -1,3 +1,10 @@
+# The game lives at /play/ (the root is the website's home page with guides and help)
+/game /play/ 301
+/play /play/ 301
+# The game's watch-an-ad popup loads adframe.html relative to the game page
+/play/adframe.html /adframe.html 200
 # Old GitHub Pages-style links keep working on hallwaydash.org
+/browser-hallway-runner /play/ 301
+/browser-hallway-runner/ /play/ 301
+/browser-hallway-runner/index.html /play/ 301
 /browser-hallway-runner/* /:splat 301
-/browser-hallway-runner /  301
