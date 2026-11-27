@@ -1,6 +1,7 @@
 rules_version = '2';
 // Hallway Dash database rules. Paste this whole file into Firebase console > Firestore Database > Rules > Publish.
 // Steps (and what each collection is for) are in FIREBASE_SETUP.md.
+// Round 30: players/ and runs/ can say where each score was set (plat, dayP, weekP, monthP = 'web' or 'app') for the Computer vs App boards.
 // Round 28: adds races/ and racers/ (Live Race rooms in the Compete tab). Everything else is the same as round 24.
 // Round 24: adds hotd/ (Hallway of the Day board) and new anonymous counters in stats/ (new players, returns, first runs, shares, duel links).
 // Round 23: adds worldgoal/ (the shared World Goal bar) and market/ (Locker Market purchase counts). Your owner UID line is the same as before.
@@ -56,10 +57,17 @@ service cloud.firestore {
     // ===== the leaderboard: one row per player (row id = their anonymous uid) =====
     // best = highest Infinite Run score on any setting; dayS / weekS / monthS = best this UTC day / week / month.
     // The All players, My school and School vs school boards are all read from here.
+    // where a board score was set: 'web' (a browser) or 'app' (the Android app). Optional, so older versions still save.
+    function okPlat(d) {
+      return d.get('plat', 'web') in ['web', 'app'] && d.get('dayP', 'web') in ['web', 'app']
+        && d.get('weekP', 'web') in ['web', 'app'] && d.get('monthP', 'web') in ['web', 'app'];
+    }
+
     match /players/{uid} {
       allow read: if true;
       allow create, update: if signedIn() && request.auth.uid == uid && notBanned()
-        && request.resource.data.keys().hasOnly(['name','code','school','best','bestDist','bestDiff','day','dayS','week','weekS','month','monthS','ts'])
+        && request.resource.data.keys().hasOnly(['name','code','school','best','bestDist','bestDiff','day','dayS','week','weekS','month','monthS','plat','dayP','weekP','monthP','ts'])
+        && okPlat(request.resource.data)
         && okName(request.resource.data.name) && nameIs(request.resource.data.name)
         && okSchool(request.resource.data.get('school', ''))
         && request.resource.data.best is int && request.resource.data.best >= 0 && request.resource.data.best < 5000000
@@ -130,7 +138,8 @@ service cloud.firestore {
       allow create, update: if signedIn() && notBanned()
         && request.resource.data.uid == request.auth.uid
         && id == request.auth.uid + '_' + request.resource.data.diff
-        && request.resource.data.keys().hasOnly(['uid','name','code','school','diff','best','bestDist','day','dayS','week','weekS','month','monthS','ts'])
+        && request.resource.data.keys().hasOnly(['uid','name','code','school','diff','best','bestDist','day','dayS','week','weekS','month','monthS','plat','dayP','weekP','monthP','ts'])
+        && okPlat(request.resource.data)
         && request.resource.data.diff.matches('^(easy|normal|hard|insane)(_(chill|fast|turbo))?$')
         && okName(request.resource.data.name) && nameIs(request.resource.data.name)
         && okSchool(request.resource.data.get('school', ''))

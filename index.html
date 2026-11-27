@@ -236,6 +236,11 @@ input#nameIn,input#oName,input#nameFirst{width:100%;border:3px solid var(--ink);
 .board li{display:flex;align-items:center;gap:10px;border:3px solid var(--ink);border-radius:12px;padding:8px 10px;margin:6px 0;background:#fff;font-weight:800}
 .board li .rk{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:#e6e9f2;font-weight:900;flex:none}
 .board li:nth-child(1) .rk{background:#ffd60a}.board li:nth-child(2) .rk{background:#d6dbe6}.board li:nth-child(3) .rk{background:#e8a46a}
+.board li .pf{flex:none;font-size:11px;font-weight:800;padding:2px 6px;margin:0 6px;border-radius:8px;border:2px solid var(--ink);white-space:nowrap}.board li .pf.web{background:#cfe8ff}.board li .pf.app{background:#c8f7d4}
+.board li .pf i{font-style:normal}@media (max-width:420px){.board li .pf i{display:none}.board li .pf{padding:1px 4px;margin:0 4px}}
+#platBox{margin:6px 0 8px}#platBox .pcRow{display:flex;gap:8px}#platBox .pcCard{flex:1;border:3px solid var(--ink);border-radius:12px;padding:6px 8px;box-shadow:0 3px 0 var(--ink);text-align:center;color:#1d2340}
+#platBox .pcCard.web{background:#cfe8ff}#platBox .pcCard.app{background:#c8f7d4}#platBox .pcCard b{display:block;font-family:'Luckiest Guy',sans-serif;font-size:16px}#platBox .pcCard span{display:block;font-weight:800}#platBox .pcCard small{display:block;font-size:11px;opacity:.8}
+#platBox .pcVerdict{text-align:center;font-weight:800;margin:6px 0 2px;font-size:13px}#platBox .pcFilter{display:flex;gap:6px;justify-content:center;margin-top:4px}#platBox .pcFilter .chip.on{background:#ffd60a}
 .board li .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.board li .nm small{font-weight:700;opacity:.6;font-size:12px;margin-left:4px}
 .board li .sc{font-weight:900}
 .board li.me{background:#fff6c7;border-color:#e0a800}
@@ -1025,6 +1030,7 @@ body.newbie .hGoal .worldCard,body.newbie .hGoal .hHot{display:none!important}
     <div class="seg boardPer" id="boardPer"><button data-bp="all">All-time</button><button data-bp="month">Month</button><button data-bp="week">Week</button><button data-bp="day">Today</button></div>
     <div class="toBeat" id="toBeat" style="display:none"></div>
     <div class="sub" id="boardSub">Top Infinite Runs on this phone. Beat your classmates!</div>
+    <div id="platBox" style="display:none"></div>
     <ol class="board" id="boardList"></ol>
     <button class="btn gold" id="bRanksPlay">Play Infinite Run</button>
     <button class="btn gray" data-back>Back</button>
@@ -4427,7 +4433,7 @@ function openSchoolIntro(then) {
 function buildBoard(highlightT) {
   if ((boardMode === 'world' || boardMode === 'school' || boardMode === 'schools') && !Online.ready()) boardMode = 'local';
   document.querySelectorAll('[data-board]').forEach(x => x.classList.toggle('on', x.dataset.board === boardMode));
-  const ol = $('boardList'); ol.innerHTML = ''; const dk = syncBoardDiff();
+  const ol = $('boardList'); ol.innerHTML = ''; const dk = syncBoardDiff(); if ($('platBox')) $('platBox').style.display = 'none';
   $('friendBox').style.display = boardMode === 'friends' ? 'block' : 'none'; $('chalNow').textContent = save.challenge ? 'Current challenge: beat ' + save.challenge.from + '\'s ' + save.challenge.score.toLocaleString() : 'Got a challenge code from a friend\'s score card? Enter it:'; $('myCode').textContent = myCode() || '------'; $('myUser').textContent = safeName(save.name);
   if (boardMode === 'friends') {
     const rows = (save.friends || []).map(f => ({ n: f.n, s: f.s || 0, d: f.d, code: f.code })); if (save.best > 0) rows.push({ n: save.name || 'You', s: save.best, me: true });
@@ -4442,7 +4448,7 @@ function buildBoard(highlightT) {
     if (!Online.ready()) { $('boardSub').textContent = 'The world leaderboard isn\'t connected yet. (Setup steps are in the README.)'; showToBeat(null, dk); return; }
     const per = boardPer(); $('boardSub').textContent = 'Loading world scores...';
     if (per === 'all') Online.top(100).then(all => checkCrown(all)).catch(() => {});
-    Online.board(dk, per).then(rows => { if (boardMode !== 'world' || boardDK !== dk && boardDK) return; const me = rows.findIndex(r => r.me), mine = me >= 50 ? rows[me] : null; rows = rows.slice(0, 50); if (mine) { mine.rank = me + 1; rows.push(mine); }
+    Online.board(dk, per).then(rows => { if (boardMode !== 'world' || boardDK !== dk && boardDK) return; rows = platBox(rows, () => buildBoard()); const me = rows.findIndex(r => r.me), mine = me >= 50 ? rows[me] : null; rows = rows.slice(0, 50); if (mine) { mine.rank = me + 1; rows.push(mine); }
       $('boardSub').textContent = rows.length ? 'Top runs from every player · ' + bkName(dk) + ' · ' + BOARD_PER[per] : 'No ' + bkName(dk) + ' runs on the world board ' + (per === 'all' ? 'yet' : BOARD_PER[per].toLowerCase()) + '. Be the first!';
       ol.innerHTML = ''; rows.forEach((r, i) => ol.appendChild(boardRow(r, i))); showToBeat(rows, dk); addReportBtns(ol, rows); })
       .catch(() => { if (boardMode !== 'world') return; ol.innerHTML = ''; showToBeat(null, dk); $('boardSub').textContent = per === 'all' ? 'Couldn\'t reach the world board. Check your connection and try again.' : BOARD_PER[per] + ' world boards turn on after one quick Firebase rules update (README → Online leaderboard).'; });
@@ -4453,6 +4459,27 @@ function buildBoard(highlightT) {
   const bb = bestFor(dk); $('rBest').textContent = bkName(dk) + ' best ' + (bb ? bb.s : 0).toLocaleString();
 }
 function addGhostBtns(ol, rows) { [...ol.children].forEach((li, i) => { const r = rows[i]; if (!r || r.me || !(r.d > 0)) return; const b = document.createElement('button'); b.className = 'ghostBtn'; b.textContent = '👻 Race'; b.title = 'Race ' + r.n + '\'s ghost'; b.onclick = e => { e.stopPropagation(); ghostRace(r); }; li.appendChild(b); }); }
+// Computer vs App strip on the world and school boards: each side's best, the average of its top 10 and how many
+// runners it has, which side scores higher, and a filter (All / Computer / App). Returns the rows the filter keeps.
+let boardPlat = 'all';
+function platBox(rows, redraw) {
+  const el = $('platBox'); if (!el) return rows; el.innerHTML = '';
+  const st = { web: [], app: [] }; for (const r of rows) if (st[r.pl]) st[r.pl].push(r.s);
+  if (!st.web.length && !st.app.length) { el.style.display = 'none'; boardPlat = 'all'; return rows; }
+  el.style.display = '';
+  const top10 = a => a.length ? Math.round(a.slice(0, 10).reduce((x, y) => x + y, 0) / Math.min(10, a.length)) : 0;
+  const cards = mk('div', 'pcRow');
+  for (const k of ['web', 'app']) { const a = st[k].sort((x, y) => y - x), u = PLAT_UI[k], c = mk('div', 'pcCard ' + k);
+    c.append(mk('b', '', u.ico + ' ' + u.name), mk('span', '', a.length ? 'Best ' + a[0].toLocaleString() : 'No runs yet'), mk('small', '', a.length ? 'Top 10 average ' + top10(a).toLocaleString() + ' · ' + a.length + ' runner' + (a.length === 1 ? '' : 's') : 'Be the first!'));
+    cards.appendChild(c); }
+  el.appendChild(cards);
+  const w = top10(st.web), ap = top10(st.app);
+  if (w && ap) { const hi = w >= ap ? 'web' : 'app', lo = hi === 'web' ? 'app' : 'web', pct = Math.round((Math.max(w, ap) / Math.max(1, Math.min(w, ap)) - 1) * 100);
+    el.appendChild(mk('div', 'pcVerdict', pct < 3 ? '🤝 Computer and App are neck and neck right now' : PLAT_UI[hi].ico + ' ' + PLAT_UI[hi].name + ' players score ' + pct + '% higher than ' + PLAT_UI[lo].name + ' players (top 10 average)')); }
+  const f = mk('div', 'pcFilter'); for (const [k, t] of [['all', 'All'], ['web', '💻 Computer'], ['app', '📱 App']]) { const b = chipBtn(t, () => { boardPlat = k; redraw(); }, boardPlat === k ? 'on' : ''); f.appendChild(b); }
+  el.appendChild(f);
+  return boardPlat === 'all' ? rows : rows.filter(r => r.pl === boardPlat);
+}
 function boardRow(r, i, highlightT) {
   {
     const li = document.createElement('li'); if (r.me) li.className = 'me';
@@ -4460,7 +4487,8 @@ function boardRow(r, i, highlightT) {
     const nm = document.createElement('span'); nm.className = 'nm'; nm.textContent = r.me ? (save.name || 'You') : r.n;
     const tag = document.createElement('small'); tag.textContent = r.me ? myTitle() + (r.t && r.t === highlightT ? ' · NEW BEST!' : '') : boardMode === 'friends' && !r.me ? 'friend' + (r.code ? ' #' + r.code : '') : r.cpu ? 'classmate' : r.me ? (r.t && r.t === highlightT ? 'NEW BEST!' : 'you') : ''; nm.appendChild(tag);
     const sc = document.createElement('span'); sc.className = 'sc'; sc.textContent = r.s.toLocaleString();
-    li.append(rk, nm, sc); return li;
+    const pu = PLAT_UI[r.pl]; if (pu) { const pf = document.createElement('span'); pf.className = 'pf ' + r.pl; pf.append(pu.ico, mk('i', '', ' ' + pu.name)); pf.title = 'Score set on ' + (r.pl === 'app' ? 'the Android app' : 'a computer / browser'); li.append(rk, nm, pf, sc); } else li.append(rk, nm, sc);
+    return li;
   }
 }
 function recordRun(score, dist) {
@@ -5290,7 +5318,8 @@ const Online = {
       const a = await this.token(), I = v => ({ integerValue: String(Math.floor(v || 0)) }), S = v => ({ stringValue: String(v || '') }); name = await this.claimName();
       const r = await fetch(this.url('/runs/' + encodeURIComponent(a.uid + '_' + dk)), { method: 'PATCH', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + a.idToken }, body: JSON.stringify({ fields: {
         uid: S(a.uid), name: S(safeName(name)), code: S(myCode()), school: S(mySchool()), diff: S(dk), best: I(b.s), bestDist: I(b.d),
-        day: S(p.day), dayS: I(p.dayS), week: S(p.week), weekS: I(p.weekS), month: S(p.month), monthS: I(p.monthS), ts: { timestampValue: new Date().toISOString() } } }) });
+        day: S(p.day), dayS: I(p.dayS), week: S(p.week), weekS: I(p.weekS), month: S(p.month), monthS: I(p.monthS), ...(this.noPlat ? {} : { plat: S(b.p || PLAT()), dayP: S(p.dayP || PLAT()), weekP: S(p.weekP || PLAT()), monthP: S(p.monthP || PLAT()) }), ts: { timestampValue: new Date().toISOString() } } }) });
+      if (r.status === 403 && !this.noPlat) { this.noPlat = 1; return this.submitRun(name, dist); }
       if (r.ok) { p.sent = Date.now(); persist(); } else if (r.status === 403 && mySchool() && !this._retry) { await loadSchools(true).catch(() => {}); if (!mySchool()) { this._retry = 1; try { await this.submitRun(name, dist); } finally { this._retry = 0; } } }
     } catch (e) { /* offline or rules not updated yet: ignore */ }
   },
@@ -5302,9 +5331,11 @@ const Online = {
     if (!r.best) return false; if (!force && !r.dirty && r.sentName === name && r.sentSchool === sch && r.sentUid === (save.fbAuth && save.fbAuth.uid)) return true;
     if (this._syncing) { this._again = 1; return this._syncing; }
     const go = async () => { const a = await this.token(), name = await this.claimName(); const K = perKeys(), cur = per => r[per] === K[per] ? (r[per + 'S'] || 0) : 0;
-      const body = { name, code: myCode(), school: sch, best: r.best, bestDist: r.bestDist || 0, bestDiff: String(r.bestDiff || 'normal'), day: K.day, dayS: Math.min(cur('day'), r.best), week: K.week, weekS: Math.min(cur('week'), r.best), month: K.month, monthS: Math.min(cur('month'), r.best), ts: new Date() };
+      const body = { name, code: myCode(), school: sch, best: r.best, bestDist: r.bestDist || 0, bestDiff: String(r.bestDiff || 'normal'), day: K.day, dayS: Math.min(cur('day'), r.best), week: K.week, weekS: Math.min(cur('week'), r.best), month: K.month, monthS: Math.min(cur('month'), r.best), plat: r.bestP || PLAT(), dayP: cur('day') ? r.dayP || PLAT() : PLAT(), weekP: cur('week') ? r.weekP || PLAT() : PLAT(), monthP: cur('month') ? r.monthP || PLAT() : PLAT(), ts: new Date() };
+      if (this.noPlat) { delete body.plat; delete body.dayP; delete body.weekP; delete body.monthP; }
       try { await fsReq('PATCH', docPath('players', a.uid), a.idToken, fsEnc(body)); }
       catch (e) { if (e.status !== 403) throw e;
+        if (!this.noPlat) { this.noPlat = 1; return go(); } // the live rules don't know the Computer / App fields yet (round 30): send without them
         if (sch) { await loadSchools(true).catch(() => {}); if (mySchool() !== sch) return go(); } // your school was hidden: send without it
         const old = await fsReq('GET', docPath('players', a.uid)).then(fsDoc).catch(() => null); // the board already has a higher best (restored an older save)
         if (old && (old.best || 0) > r.best) { r.best = old.best; r.bestDist = old.bestDist || 0; r.bestDiff = old.bestDiff || r.bestDiff; return go(); }
@@ -5322,7 +5353,7 @@ const Online = {
     else { q.orderBy = [{ field: { fieldPath: 'best' }, direction: 'DESCENDING' }]; q.limit = limit || 200; }
     const uid = save.fbAuth && save.fbAuth.uid, rows = await fsReq('POST', ':runQuery', null, { structuredQuery: q });
     const err = rows.find(x => x.error); if (err) { const e = new Error(err.error.message || 'query failed'); e.status = err.error.code; throw e; }
-    return rows.filter(x => x.document).map(x => fsDoc(x.document)).map(f => ({ n: f.name || 'Runner', s: per === 'all' ? f.best || 0 : f[per + 'S'] || 0, d: per === 'all' ? f.bestDist || 0 : 0, diff: f.bestDiff || '', uid: f.id, sch: f.school || '', me: !!uid && f.id === uid }))
+    return rows.filter(x => x.document).map(x => fsDoc(x.document)).map(f => ({ n: f.name || 'Runner', s: per === 'all' ? f.best || 0 : f[per + 'S'] || 0, d: per === 'all' ? f.bestDist || 0 : 0, diff: f.bestDiff || '', uid: f.id, sch: f.school || '', pl: (per === 'all' ? f.plat : f[per + 'P']) || '', me: !!uid && f.id === uid }))
       .filter(r => r.s > 0 && !isBlocked(r.uid));
   },
   // dk = 'all' (every setting, the default) or one difficulty + speed board (runs/{uid}_{dk})
@@ -5334,14 +5365,14 @@ const Online = {
       if (b.status === 'fulfilled') for (const r of b.value) if (!isBlocked(r.uid)) add(r.uid || r.n + '|' + r.s, r); // players from before this board (older app versions)
       if (a.status === 'rejected' && (b.status === 'rejected' || per !== 'all' || school)) throw a.reason;
       const me = myRow(), myS = per === 'all' ? me.best : myPeriodBest('all', per); // your own row shows straight away, even before it reaches the server
-      if (uid && myS > 0 && (!school || school === mySchool()) && !(best.get(uid) && best.get(uid).s >= myS)) add(uid, { n: safeName(save.name), s: myS, d: per === 'all' ? me.bestDist || 0 : 0, uid, sch: mySchool(), me: true });
+      if (uid && myS > 0 && (!school || school === mySchool()) && !(best.get(uid) && best.get(uid).s >= myS)) add(uid, { n: safeName(save.name), s: myS, d: per === 'all' ? me.bestDist || 0 : 0, uid, sch: mySchool(), pl: (per === 'all' ? me.bestP : me[per + 'P']) || PLAT(), me: true });
       return [...best.values()].sort((x, y) => y.s - x.s);
     }
     const K = perKeys(), fl = [fsEq('diff', dk)]; if (per !== 'all') fl.push(fsEq(per, K[per])); if (school) fl.push(fsEq('school', school));
     const where = fl.length === 1 ? fl[0] : { compositeFilter: { op: 'AND', filters: fl } };
     const rows = await fsReq('POST', ':runQuery', null, { structuredQuery: { from: [{ collectionId: 'runs' }], where, limit: 300 } });
     for (const x of rows) { if (!x.document) continue; const f = fsDoc(x.document), id = f.uid || '', sc = (per === 'all' ? f.best : f[per + 'S']) || 0;
-      if (sc > 0 && !isBlocked(id)) add(id, { n: f.name || 'Runner', s: sc, d: per === 'all' ? f.bestDist || 0 : 0, diff: dk, uid: id, sch: f.school || '', me: !!uid && id === uid }); }
+      if (sc > 0 && !isBlocked(id)) add(id, { n: f.name || 'Runner', s: sc, d: per === 'all' ? f.bestDist || 0 : 0, diff: dk, uid: id, sch: f.school || '', pl: (per === 'all' ? f.plat : f[per + 'P']) || '', me: !!uid && id === uid }); }
     if (per === 'all' && !school) { try { for (const r of await this.top(100)) if ((r.diff || 'normal') === dk && !isBlocked(r.uid)) add(r.uid || r.n + '|' + r.s, r); } catch (e) {} }
     return [...best.values()].sort((x, y) => y.s - x.s);
   },
@@ -5999,14 +6030,16 @@ const wN = () => 0;
 // (and a swinging door, which has no head to land on).
 const NO_HOP = { pyramid: 1, doorswing: 1 };
 function hoppable(o) { return !!(o && o.K.type === 'block' && o.acts && o.acts.length && !NO_HOP[o.kind] && !o.knocked); }
-// Jump assist: a ground jump toward a hoppable person in your lane is tuned so you come down right on their head
-// (before, only short kids were reliably reachable, and adults needed frame-perfect timing and a light backpack).
-function hopAssist(vy) {
-  let nx = null; for (const q of G.objs) if (!q.hopped && !q.ignore && hoppable(q) && Math.abs(q.x - P.lane * laneW) < 0.6 && q.z > PZ && (!nx || q.z < nx.z)) nx = q;
-  if (!nx) return vy; const vz = nx.vz !== undefined ? nx.vz : (nx.K.vz || 0), sp = Math.max(4, G.speed - vz), t = (nx.z - PZ) / sp; if (t < 0.12 || t > 1.25) return vy;
-  const g = 26 * (cheatOn('moon') ? 0.45 : 1), want = (nx.K.h || 1.75) + 0.08 - (P.fl || 0), need = (want + g * t * t / 2) / t;
-  return clamp(Math.max(vy, need), vy, vy * 1.6);
-}
+// ONE JUMP: every jump is the same height. A ground jump always leaves at jumpPower(), and a HEAD HOP bounce sends you
+// to exactly the same height above the head you landed on, wherever in the jump you touched it. (There used to be a
+// jump assist that made a ground jump up to 60% stronger when someone was ahead, a 12% boost on Heel Wheels, and a head
+// hop that was 18% weaker or aimed at the next head, so the height changed from jump to jump.)
+function jumpPower() { return jumpV() * (G.pw.spring > 0 ? 1.55 : 1); }
+function riseG() { return 26 * (cheatOn('moon') ? 0.45 : 1); } // gravity on the way up (the same in every mode)
+function fallG() { return G.mode === 'maker' ? riseG() : riseG() * (save.up.helium ? 0.72 : 1) * (charDef().ab === 'glide' ? 0.55 : 1); }
+function jumpHeight() { const v = jumpPower(); return v * v / (2 * riseG()); }
+function jumpAirT() { const v = jumpPower(); return v / riseG() + Math.sqrt(2 * jumpHeight() / fallG()); } // seconds from take-off back to the same height
+function hopBounceV(headTop) { const up = Math.max(0.05, headTop + jumpHeight() - P.y); return Math.sqrt(2 * riseG() * up); }
 function jumpV() { if (G.mode === 'maker') return 11.2; return lerp(11.2, 9.0, wN()) * (save.up.helium ? 1.1 : 1) * shoeDef().jump * (charDef().perk === 'jump' ? 1.08 : 1); }
 function onTramp() { for (const o of G.objs) if (o.kind === 'tramp' && !o.used && o.z < PZ + 0.3 && o.z + (o.len || 3) > PZ && Math.abs(o.x - P.x) < laneW * 0.55) return o; return null; }
 function onWax() { for (const o of G.objs) if (o.kind === 'wax' && o.z < PZ + 0.3 && o.z + o.len > PZ && Math.abs(o.x - P.x) < laneW * 0.6) return true; return false; }
@@ -6259,9 +6292,9 @@ function spawnRowInner(z) {
   const forceHop = G.scHop && G.dist + z - PZ > G.scHop;
   if (G.mode !== 'tutorial' && !G.fun && (forceHop || (G.dist > 400 && G.dist - (G.lastHopLine || 0) > 550 && Math.random() < 0.18))) {
     const opts2 = [-1, 0, 1].filter(l => l !== safe && !skipL(l)); const L = pick(opts2);
-    if (L !== undefined) { G.lastHopLine = G.dist; G.scHop = 0; const sp = G.speed * 0.45 + 0.55, n = pick([3, 3, 4, 5]); // the bounce lands mid-window on the next head
+    if (L !== undefined) { G.lastHopLine = G.dist; G.scHop = 0; const sp = Math.max(4, G.speed) * jumpAirT(), n = pick([3, 3, 4, 5]); // one bounce (always the same height) lands you on the next head
       for (let k = 0; k < n; k++) { const q = addObj('student', L, z + k * sp, { queue: true }); if (q) { q.vz = 0; q.say = k === 0 ? 'Wait your turn!' : ''; } }
-      for (let k = 0; k < n - 1; k++) for (let c = 1; c <= 3; c++) addObj('coin', L, z + k * sp + sp * c / 4, { y: 2.2 + Math.sin(Math.PI * c / 4) * 1.0, x: L * laneW });
+      for (let k = 0; k < n - 1; k++) for (let c = 1; c <= 3; c++) addObj('coin', L, z + k * sp + sp * c / 4, { y: 1.9 + Math.sin(Math.PI * c / 4) * jumpHeight() * 0.9, x: L * laneW });
       G.hopLane = L; G.hopLineEnd = G.dist + z + n * sp; } } // stored as a hallway distance: row z is always near the spawn point
   const hopL = G.hopLane !== undefined && G.dist + z < (G.hopLineEnd || 0) + 2 ? G.hopLane : null;
   const skipL2 = skipL; const skipLx = l => skipL2(l) || l === hopL;
@@ -6725,7 +6758,7 @@ function act(a) {
   else if (a === 'right' && P.lane < 1) { P.fromLane = P.lane; P.lane++; sfx('lane'); G.laneT = G.t; G.tpLane = true; }
   else if ((a === 'left' && P.lane === -1) || (a === 'right' && P.lane === 1)) lockerSlam(a === 'left' ? -1 : 1);
   else if (a === 'jump') {
-    if (P.y <= (P.fl || 0) + 0.001) { P.vy = hopAssist(jumpV() * (G.heely > 0 ? 1.12 : 1) * (G.pw.spring > 0 ? 1.55 : 1)); if (G.pw.spring > 0) { emit(P.x, 0.1, 0.2, 14, '#7dff9a', 4, 0.5, 0.2, 0, true, true); sfx('power'); } P.slide = 0; P.slideQ = false; P.rollQ = false; P.rollT = 0; sfx('jump'); if (G.heely > 0) startTrick(); G.lastJumpT = G.t; }
+    if (P.y <= (P.fl || 0) + 0.001) { P.vy = jumpPower(); if (G.pw.spring > 0) { emit(P.x, 0.1, 0.2, 14, '#7dff9a', 4, 0.5, 0.2, 0, true, true); sfx('power'); } P.slide = 0; P.slideQ = false; P.rollQ = false; P.rollT = 0; sfx('jump'); if (G.heely > 0) startTrick(); G.lastJumpT = G.t; }
     else if (charDef().ab === 'djump' && G.mode !== 'maker' && !P.dj && P.vy < jumpV() * 0.7) { P.dj = true; P.vy = jumpV() * 0.88; sfx('jump'); popup('DOUBLE JUMP!', '#7bdff2'); emit(P.x, P.y, 0.2, 10, '#ffffff', 2.5, 0.4, 0.15, 0, true, true); }
     else if (P.vy <= 0) P.jumpBuf = G.t; // swiped up a moment before landing: jump the instant your feet touch down
   } else if (a === 'slide') {
@@ -6899,7 +6932,7 @@ function update(dt) {
     if (G.pw.cheat > 0.9 && G.pw.cheat - dt <= 0.9) for (const o of G.objs) if (o.sky && o.z > PZ - 0.5 && !o.dead) { o.dead = true; emit(o.x, o.y, -(o.z - PZ), 4, '#ffd60a', 2, 0.4, 0.1, 0, true, true); } // plane is landing: leftover sky coins pop
   } else if (P.y > P.fl + 0.0001 || P.vy > 0) {
     const g = G.mode === 'maker' ? 26 * (cheatOn('moon') ? 0.45 : 1) : 26 * (save.up.helium && P.vy < 0 ? 0.72 : 1) * (cheatOn('moon') ? 0.45 : 1) * (charDef().ab === 'glide' && P.vy < 0 ? 0.55 : 1);
-    P.vy -= g * dt; P.y += P.vy * dt;
+    P.y += P.vy * dt - 0.5 * g * dt * dt; P.vy -= g * dt; // exact arc: the jump is the same height and length at any frame rate (the old step lost up to 30 cm on a slow phone)
     if (P.y <= P.fl) { P.y = P.fl; P.dj = false; if (G.hopN > 1 && P.fl < 0.3) { G.hopT = 0; } G.hopN = P.fl < 0.3 ? 0 : G.hopN; P.vy = 0; sfx('land'); if (G.trick) landTrick(); emit(P.x, 0.1, 0.2, 10, '#e8e0cc', 2.4, 0.45, 0.28, 2, false, true); P.landT = 0.2; if (P.slideQ) { P.slideQ = false; if (P.rollQ) { P.slide = Math.max(P.rollT, 0.4); P.slideAge = 1; P.rollT = P.slide; P.rollDur = Math.max(P.rollDur || 0, P.rollT); } else startSlide(); } else if (P.jumpBuf && G.t - P.jumpBuf < 0.22) { P.jumpBuf = 0; act('jump'); } P.rollQ = false; }
   }
   else if (P.y < P.fl) P.y = P.fl; // walking up a ramp
@@ -7019,10 +7052,8 @@ function update(dt) {
         else if (K.type === 'high') hit = !sliding || P.y > 0.2;
         else hit = !(G.highAir && P.y > oh - 0.1) && !(P.y > oh + 0.3); // high enough (spring shoes, a table, a big jump) = you sail right over
         if (hopZone) { // HEAD HOP: land on their head and bounce off
-          o.hopped = true; o.ignore = true; P.vy = jumpV() * 0.82;
-          { // aim the bounce at the next person in this lane (makes head-to-head chains land)
-            let nx = null; for (const q of G.objs) if (q !== o && !q.hopped && !q.ignore && hoppable(q) && Math.abs(q.x - P.x) < 0.6 && q.z > o.z + 2 && q.z - PZ < 16 && (!nx || q.z < nx.z)) nx = q;
-            if (nx) { const t = (nx.z - PZ - 0.45) / Math.max(4, G.speed), want = (nx.K.h || 1.75) - 0.2; if (t > 0.25 && t < 1.0) { const v = (want - P.y + 13 * t * t) / t; if (v > 2 && v < 26 * t) P.vy = v; } } } P.dj = false; G.highAir = true; o.shout = 1.4; o.say = pick(['MY HEAD!', 'Hey!!', 'OW!', 'Watch it!']);
+          o.hopped = true; o.ignore = true; P.vy = hopBounceV(hh); // the same jump as from the floor, measured from the top of their head
+          P.dj = false; G.highAir = true; o.shout = 1.4; o.say = pick(['MY HEAD!', 'Hey!!', 'OW!', 'Watch it!']);
           for (const a2 of o.acts) a2.pose('hit', 1.2, 0.08);
           G.hopN = (G.hopT > 0 ? (G.hopN || 0) : 0) + 1; G.hopT = 1.3; const hn = G.hopN, pts = 75 * hn; // chain: bounce person to person without touching the floor
           G.score += pts * scoreMult(); addChain(hn > 1 ? 3 : 2); sfx(hn > 2 ? 'power' : 'jump'); buzz && buzz('push');
@@ -7756,7 +7787,7 @@ function runBK() { return boardKey(runDiff(), runSpeed()); }
 function runDiff() { return (G && G.fixed && G.scene !== 'menu') ? 'normal' : (DIFF[save.difficulty] ? save.difficulty : 'normal'); }
 function migrateBest() { if (save.bestBy) return; save.bestBy = {}; if (save.best > 0) save.bestBy[DIFF[save.difficulty] ? save.difficulty : 'normal'] = { s: save.best, d: save.bestDist || 0, t: save.bestT || 0 }; }
 function bestFor(dk) { migrateBest(); if (dk === 'all') { const r = myRow(); return r.best ? { s: r.best, d: r.bestDist || 0, t: 0 } : null; } return save.bestBy[dk] || null; }
-function logRunByDiff(sc, dist) { migrateBest(); const dk = runBK(), b = save.bestBy[dk]; if (!b || sc > b.s) { save.bestBy[dk] = { s: sc, d: dist, t: Date.now() }; return true; } return false; }
+function logRunByDiff(sc, dist) { migrateBest(); const dk = runBK(), b = save.bestBy[dk]; if (!b || sc > b.s) { save.bestBy[dk] = { s: sc, d: dist, t: Date.now(), p: PLAT() }; return true; } return false; }
 function allTimeBest() { migrateBest(); let top = null; for (const k of Object.keys(save.bestBy)) { const b = save.bestBy[k]; if (b && (!top || b.s > top.s)) top = Object.assign({ k }, b); } return top; }
 var boardDK = null; // which difficulty the leaderboard shows (starts on the one you play)
 function setDifficulty(k) { if (!DIFF[k]) return; save.difficulty = k; persist(); sfx('click'); try { buildModes(); buildSettings(); } catch (e) {} refreshMenu(); toast('Difficulty: ' + DIFF[k].name, DIFF[k].score > 1 ? 'Scores x' + DIFF[k].score : '', 1000); }
@@ -7779,16 +7810,20 @@ function boardPer() { return BOARD_PER[save.boardPer] ? save.boardPer : 'all'; }
 function perKeys(t) { // UTC, so every player in the world is on the same day / week / month
   const d = new Date(t || Date.now()), iso = d.toISOString(), mon = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - (d.getUTCDay() + 6) % 7));
   return { day: iso.slice(0, 10), week: 'W' + mon.toISOString().slice(0, 10), month: iso.slice(0, 7) }; }
+// COMPUTER vs APP: every board row says where the score was set ('web' = a browser on a computer or phone, 'app' =
+// the Android app), so players can see which one scores higher.
+function PLAT() { return IS_WEB ? 'web' : 'app'; }
+const PLAT_UI = { web: { ico: '💻', name: 'Computer' }, app: { ico: '📱', name: 'App' } };
 function logRunPeriods(sc) { const dk = runBK(), K = perKeys(); save.pb = save.pb || {}; const p = save.pb[dk] || (save.pb[dk] = {}); let ch = false;
-  for (const per of ['day', 'week', 'month']) { if (p[per] !== K[per]) { p[per] = K[per]; p[per + 'S'] = sc; ch = true; } else if (sc > (p[per + 'S'] || 0)) { p[per + 'S'] = sc; ch = true; } } return ch; }
+  for (const per of ['day', 'week', 'month']) { if (p[per] !== K[per]) { p[per] = K[per]; p[per + 'S'] = sc; p[per + 'P'] = PLAT(); ch = true; } else if (sc > (p[per + 'S'] || 0)) { p[per + 'S'] = sc; p[per + 'P'] = PLAT(); ch = true; } } return ch; }
 // your row on the main (all settings) board; kept up to date after every Infinite Run that counts
 function myRow() { if (save.pRow && save.pRow.v === 2) return save.pRow;
   const at = allTimeBest(), K = perKeys(), r = { v: 2, best: at ? at.s : 0, bestDist: at ? at.d || 0 : 0, bestDiff: at ? at.k : 'normal', day: K.day, dayS: 0, week: K.week, weekS: 0, month: K.month, monthS: 0, dirty: at ? 1 : 0 };
   for (const k in (save.pb || {})) { const p = save.pb[k]; if (p) for (const per of ['day', 'week', 'month']) if (p[per] === K[per]) r[per + 'S'] = Math.min(r.best, Math.max(r[per + 'S'], p[per + 'S'] || 0)); }
   return (save.pRow = r); }
 function noteBoardRun(sc, dist, dk) { const r = myRow(), K = perKeys(); let ch = false;
-  if (sc > r.best) { r.best = sc; r.bestDist = dist; r.bestDiff = dk; ch = true; }
-  for (const per of ['day', 'week', 'month']) { if (r[per] !== K[per]) { r[per] = K[per]; r[per + 'S'] = sc; ch = true; } else if (sc > (r[per + 'S'] || 0)) { r[per + 'S'] = sc; ch = true; } }
+  if (sc > r.best) { r.best = sc; r.bestDist = dist; r.bestDiff = dk; r.bestP = PLAT(); ch = true; }
+  for (const per of ['day', 'week', 'month']) { if (r[per] !== K[per]) { r[per] = K[per]; r[per + 'S'] = sc; r[per + 'P'] = PLAT(); ch = true; } else if (sc > (r[per + 'S'] || 0)) { r[per + 'S'] = sc; r[per + 'P'] = PLAT(); ch = true; } }
   if (ch) r.dirty = 1; return ch; }
 function myPeriodBest(dk, per) { if (dk === 'all') { const r = myRow(), K = perKeys(); return per === 'all' ? r.best : r[per] === K[per] ? r[per + 'S'] || 0 : 0; }
   if (per === 'all') { const b = bestFor(dk); return b ? b.s : 0; } const p = (save.pb || {})[dk], K = perKeys(); return p && p[per] === K[per] ? p[per + 'S'] || 0 : 0; }
@@ -8358,7 +8393,7 @@ async function buildSchoolBoard(dk, ol) {
   $('boardSub').textContent = 'Loading...';
   try {
     if (mode === 'school') {
-      const rows = (await Online.board(dk, per, save.school)).slice(0, 50);
+      const rows = platBox(await Online.board(dk, per, save.school), () => buildBoard()).slice(0, 50);
       if (stale()) return; ol.innerHTML = ''; rows.forEach((r, i) => ol.appendChild(boardRow(r, i))); addReportBtns(ol, rows); showToBeat(rows, dk);
       $('boardSub').textContent = rows.length ? schoolName(save.school) + ' runners · ' + bkName(dk) + ' · ' + BOARD_PER[per] : 'Nobody from ' + schoolName(save.school) + ' is on this board ' + (per === 'all' ? 'yet' : BOARD_PER[per].toLowerCase()) + '. Play an Infinite Run to set the record!';
     } else if (dk === 'all' && (per === 'week' || per === 'month')) { // School vs School: the 10 best runs of each school add up
@@ -9453,6 +9488,7 @@ $('bRaceLeave').onclick = () => { sfx('click'); raceLeave(); };
 
 // round 28: brand-new players (before their 2nd run) see just the title, Play and the four buttons: no goal cards yet
 { const _rm = refreshMenu; refreshMenu = function () { const r = _rm.apply(this, arguments); try { document.body.classList.toggle('newbie', (save.runsTotal || 0) < 2); } catch (e) {} return r; }; }
+
 
 </script>
 </body>
